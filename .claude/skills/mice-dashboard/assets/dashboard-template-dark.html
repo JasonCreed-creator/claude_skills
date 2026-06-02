@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PROJECT_TITLE}} 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ============================================================
+   jc-design-system 시맨틱 토큰 매핑 (jc-design-mapping.md 참조)
+   v1 4종 자체 팔레트 → JC 토큰 호환
+   ============================================================ */
+:root {
+  /* 라이트 모드 (기본) */
+  --bg-page:        #ffffff;   /* COLOR_BG_PAGE */
+  --bg-card:        #f8fafc;   /* COLOR_BG_CARD */
+  --bg-header:      linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --bg-hover:       #f1f5f9;   /* COLOR_NEUTRAL_HOVER_LIGHT */
+  --bg-stripe:      #f8fafc;
+  --border:         #e2e8f0;   /* COLOR_NEUTRAL_BORDER */
+  --text:           #0f172a;   /* COLOR_TEXT_PRIMARY */
+  --text-secondary: #64748b;   /* COLOR_TEXT_SECONDARY */
+  --brand-primary:  #2563eb;   /* COLOR_BRAND_PRIMARY_BIZ */
+  --success:        #16a34a;   /* COLOR_SEMANTIC_SUCCESS */
+  --danger:         #dc2626;   /* COLOR_SEMANTIC_DANGER */
+  --warning:        #d97706;
+  --info:           #2563eb;
+  /* 차트 시리즈 6 슬롯 */
+  --series-1: #2563eb;
+  --series-2: #7c3aed;
+  --series-3: #0891b2;
+  --series-4: #d97706;
+  --series-5: #db2777;
+  --series-6: #059669;
+  /* tone 배경 (콜아웃·매트릭스) */
+  --tone-success-bg: #f0fdf4;
+  --tone-info-bg:    #eff6ff;
+  --tone-warning-bg: #fffbeb;
+  --tone-danger-bg:  #fef2f2;
+}
+
+[data-theme="dark"] {
+  --bg-page:        #0f172a;   /* COLOR_BG_PAGE_DARK */
+  --bg-card:        #1e293b;   /* COLOR_BG_CARD_DARK */
+  --bg-header:      linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --bg-hover:       #2d3a4f;
+  --bg-stripe:      #1a2332;
+  --border:         #334155;   /* COLOR_NEUTRAL_BORDER_DARK */
+  --text:           #f8fafc;   /* COLOR_TEXT_PRIMARY_DARK */
+  --text-secondary: #94a3b8;
+  --brand-primary:  #3b82f6;
+  --success:        #22c55e;
+  --danger:         #ef4444;
+  --warning:        #f59e0b;
+  --info:           #3b82f6;
+  --series-1: #3b82f6;
+  --series-2: #8b5cf6;
+  --series-3: #06b6d4;
+  --series-4: #f59e0b;
+  --series-5: #ec4899;
+  --series-6: #10b981;
+  --tone-success-bg: #14532d40;
+  --tone-info-bg:    #1e3a8a40;
+  --tone-warning-bg: #78350f40;
+  --tone-danger-bg:  #7f1d1d40;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ============================================================
+   헤더 (다크 변형 5/5)
+   ============================================================ */
+.dashboard-header {
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  padding: 32px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+.dashboard-header h1 { margin: 0; font-size: 1.875rem; color: var(--text); }
+.dashboard-header .meta { color: var(--text-secondary); font-size: 0.875rem; margin-top: 4px; }
+.theme-toggle {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 44px; height: 44px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.theme-toggle:hover { background: var(--bg-hover); }
+.theme-toggle:focus { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+/* ============================================================
+   KPI 카드 (다크 변형 1/5)
+   ============================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: background 0.3s, border 0.3s;
+}
+[data-theme="dark"] .kpi-card { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.kpi-card .label { color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; }
+.kpi-card .value { color: var(--text); font-size: 2rem; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; }
+.kpi-card .delta { font-size: 0.875rem; font-weight: 600; }
+.kpi-card .delta-positive { color: var(--success); }
+.kpi-card .delta-negative { color: var(--danger); }
+
+/* ============================================================
+   차트 (다크 변형 2/5)
+   ============================================================ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.chart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.chart-container .title { color: var(--text); font-size: 1.125rem; font-weight: 600; margin: 0 0 16px; }
+.chart-container .chart-wrap { position: relative; height: 320px; }
+
+/* ============================================================
+   인포그래픽 — 퍼널·매트릭스·레이더 (infographic-patterns.md)
+   ============================================================ */
+.infographic {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.infographic .ig-title { color: var(--text); font-size: 1.125rem; font-weight: 600; margin: 0 0 20px; }
+
+/* 퍼널 */
+.funnel-steps { list-style: none; padding: 0; margin: 0; }
+.funnel-step {
+  display: grid;
+  grid-template-columns: 200px 1fr auto auto;
+  gap: 16px;
+  align-items: center;
+  margin: 8px 0;
+  padding: 16px 20px;
+  width: var(--width);
+  background: var(--color);
+  color: white;
+  border-radius: 0 8px 8px 0;
+  transition: width 0.4s ease;
+  position: relative;
+}
+.funnel-step .step-label { font-weight: 600; }
+.funnel-step .step-value { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.funnel-step .step-pct { font-size: 0.875rem; opacity: 0.9; }
+.funnel-step .step-drop {
+  position: absolute; right: -120px;
+  color: var(--danger); font-size: 0.875rem; font-weight: 600;
+}
+
+/* 매트릭스 */
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr;
+  grid-template-rows: 1fr 1fr 40px;
+  gap: 4px;
+  aspect-ratio: 1.4;
+}
+.matrix-axis-y {
+  grid-column: 1; grid-row: 1 / 3;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; color: var(--text-secondary);
+}
+.matrix-axis-x {
+  grid-column: 2 / 4; grid-row: 3;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; color: var(--text-secondary);
+}
+.quadrant {
+  padding: 20px; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+  border: 2px solid;
+}
+.q-tl { grid-column: 2; grid-row: 1; }
+.q-tr { grid-column: 3; grid-row: 1; }
+.q-bl { grid-column: 2; grid-row: 2; }
+.q-br { grid-column: 3; grid-row: 2; }
+.q-label { font-weight: 700; font-size: 1.125rem; }
+.q-desc { font-size: 0.875rem; opacity: 0.85; }
+.q-items { list-style: '· '; padding-left: 20px; margin: 0; font-size: 0.875rem; }
+
+[data-tone="success"] { background: var(--tone-success-bg); border-color: var(--success); color: var(--success); }
+[data-tone="info"]    { background: var(--tone-info-bg);    border-color: var(--info);    color: var(--info);    }
+[data-tone="warning"] { background: var(--tone-warning-bg); border-color: var(--warning); color: var(--warning); }
+[data-tone="danger"]  { background: var(--tone-danger-bg);  border-color: var(--danger);  color: var(--danger);  }
+
+/* 레이더 인포그래픽 */
+.radar-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
+}
+.radar-chart-wrap { position: relative; aspect-ratio: 1; }
+.radar-evaluations { display: flex; flex-direction: column; gap: 12px; }
+.eval-item {
+  display: grid; grid-template-columns: 140px 80px 1fr; gap: 12px; align-items: center;
+  padding: 12px 16px; border-radius: 8px; border-left: 4px solid;
+}
+.eval-axis { font-weight: 600; }
+.eval-score { font-weight: 700; font-variant-numeric: tabular-nums; }
+.eval-comment { font-size: 0.875rem; opacity: 0.85; }
+
+/* ============================================================
+   콜아웃 (다크 변형 4/5)
+   ============================================================ */
+.callout {
+  border-radius: 8px; padding: 16px 20px; border-left: 4px solid;
+  margin-bottom: 16px;
+}
+.callout-info    { background: var(--tone-info-bg);    border-color: var(--info);    color: var(--info);    }
+.callout-success { background: var(--tone-success-bg); border-color: var(--success); color: var(--success); }
+.callout-warning { background: var(--tone-warning-bg); border-color: var(--warning); color: var(--warning); }
+.callout-danger  { background: var(--tone-danger-bg);  border-color: var(--danger);  color: var(--danger);  }
+
+/* ============================================================
+   데이터 테이블 (다크 변형 3/5)
+   ============================================================ */
+.data-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.data-table-wrap .title { padding: 24px 24px 8px; color: var(--text); font-size: 1.125rem; font-weight: 600; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table thead { background: var(--bg-stripe); }
+.data-table th, .data-table td {
+  padding: 12px 16px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.data-table th { color: var(--text-secondary); font-weight: 600; font-size: 0.875rem; }
+.data-table td { color: var(--text); }
+.data-table tbody tr:nth-child(even) { background: var(--bg-stripe); }
+.data-table tbody tr:hover { background: var(--bg-hover); }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   푸터
+   ============================================================ */
+.dashboard-footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* ============================================================
+   반응형 (1200px / 768px 브레이크포인트)
+   ============================================================ */
+@media (max-width: 1199px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .radar-grid { grid-template-columns: 1fr; }
+  .matrix-grid { aspect-ratio: 1; }
+}
+@media (max-width: 767px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .dashboard-header { padding: 20px; grid-template-columns: 1fr; }
+  main { padding: 16px; }
+  .funnel-step { grid-template-columns: 1fr; }
+  .funnel-step .step-drop { position: static; }
+}
+
+/* ============================================================
+   인쇄 시 라이트 강제 (PDF 호환)
+   ============================================================ */
+@media print {
+  html[data-theme="dark"] .kpi-card,
+  html[data-theme="dark"] .chart-container,
+  html[data-theme="dark"] .data-table-wrap,
+  html[data-theme="dark"] .infographic {
+    background: white !important;
+    color: black !important;
+    border-color: #e2e8f0 !important;
+  }
+  .theme-toggle { display: none; }
+  .dashboard-header { background: white !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="dashboard-header">
+  <div>
+    <h1>{{PROJECT_TITLE}}</h1>
+    <div class="meta">생성일시: {{GENERATED_AT}} · 데이터 출처: {{DATA_SOURCE}}</div>
+  </div>
+  <button id="theme-toggle" class="theme-toggle" aria-label="라이트/다크 모드 전환">🌙</button>
+</header>
+
+<main>
+
+  <!-- KPI 카드 영역 (3~6개) -->
+  <section class="kpi-grid" id="kpi-grid">
+    <!-- 동적 생성:
+    <article class="kpi-card">
+      <div class="label">총 참가자 수</div>
+      <div class="value">1,850명</div>
+      <div class="delta delta-positive">▲ 12.5% (전년 대비)</div>
+    </article>
+    -->
+  </section>
+
+  <!-- 차트 영역 (2~6개) -->
+  <section class="chart-grid" id="chart-grid">
+    <!-- 동적 생성:
+    <div class="chart-container">
+      <h3 class="title">월별 등록자 추이</h3>
+      <div class="chart-wrap"><canvas id="chart-1"></canvas></div>
+    </div>
+    -->
+  </section>
+
+  <!-- 인포그래픽 영역 (선택, 자동 감지 시) -->
+  <section class="infographic-area" id="infographic-area">
+    <!-- 동적 생성: 퍼널·매트릭스·레이더 (infographic-patterns.md) -->
+  </section>
+
+  <!-- 데이터 테이블 -->
+  <section class="data-table-wrap" id="data-table-wrap">
+    <h3 class="title">원본 데이터 요약</h3>
+    <table class="data-table" id="data-table">
+      <!-- 동적 생성 -->
+    </table>
+  </section>
+
+</main>
+
+<footer class="dashboard-footer">
+  본 대시보드는 mice-dashboard v2.0 으로 자동 생성됨 · 발행: {{PUBLISHER}}
+</footer>
+
+<script>
+/* ============================================================
+   다크 모드 토글 (localStorage 저장)
+   ============================================================ */
+(function() {
+  const toggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+
+  const saved = localStorage.getItem('dashboard-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (prefersDark ? 'dark' : 'light');
+  html.setAttribute('data-theme', initial);
+  toggle.textContent = initial === 'dark' ? '☀️' : '🌙';
+
+  toggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('dashboard-theme', next);
+    toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+    if (typeof applyChartTheme === 'function') {
+      applyChartTheme(next === 'dark');
+      if (typeof Chart !== 'undefined') {
+        Chart.helpers.each(Chart.instances, (chart) => chart.update());
+      }
+    }
+  });
+})();
+
+/* ============================================================
+   Chart.js 글로벌 설정 + 다크 모드 호환
+   ============================================================ */
+function applyChartTheme(isDark) {
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.color = isDark ? '#cbd5e1' : '#475569';
+  Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+  if (Chart.defaults.scale && Chart.defaults.scale.grid) {
+    Chart.defaults.scale.grid.color = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+  }
+  if (Chart.defaults.plugins && Chart.defaults.plugins.tooltip) {
+    Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#0f172a' : '#1e293b';
+  }
+}
+
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.font.family = "'Pretendard', -apple-system, sans-serif";
+  Chart.defaults.font.size = 13;
+  Chart.defaults.plugins.legend.position = 'bottom';
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.padding = 16;
+  Chart.defaults.animation.duration = 800;
+  Chart.defaults.animation.easing = 'easeOutQuart';
+  applyChartTheme(document.documentElement.getAttribute('data-theme') === 'dark');
+}
+
+/* ============================================================
+   한국어 숫자 포맷 유틸 (chart-guide.md formatKR 동일)
+   ============================================================ */
+function formatKR(value, type) {
+  if (value === null || value === undefined) return '-';
+  switch(type) {
+    case 'number':   return value.toLocaleString('ko-KR');
+    case 'currency':
+      if (value >= 100000000) return `${(value/100000000).toFixed(1)}억원`;
+      if (value >= 10000)     return `${(value/10000).toFixed(0)}만원`;
+      return `${value.toLocaleString('ko-KR')}원`;
+    case 'percent':  return `${value.toFixed(1)}%`;
+    case 'people':
+      if (value >= 10000) return `${(value/10000).toFixed(1)}만명`;
+      return `${value.toLocaleString('ko-KR')}명`;
+    default: return value.toLocaleString('ko-KR');
+  }
+}
+</script>
+
+</body>
+</html>
