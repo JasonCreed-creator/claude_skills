@@ -71,6 +71,7 @@ data-2: #F04D85  (Magenta 보정)
 data-3: #FF7649  (Orange 보정)
 data-4: #33EE92  (Neon 보정)
 data-5: #C9CFD8  (Deep Navy 대신 라이트 그레이)
+data-6: #A78BFA  (Violet 보정 — 6카테고리 차트 확장 슬롯)
 ```
 
 ---

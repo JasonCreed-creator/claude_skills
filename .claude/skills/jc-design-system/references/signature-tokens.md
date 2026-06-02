@@ -40,7 +40,7 @@
 | `--jc-point-neon` | `#00E676` | Neon Green. 성장·긍정·라이브 데이터 | `#00C853` (인쇄·구형 모니터) |
 | `--jc-point-blue` | `#2962FF` | Electric Blue (액센트와 동일) | — |
 
-### 1.4 차트 데이터 시리즈 (5단계)
+### 1.4 차트 데이터 시리즈 (5단계 + 확장 data-6)
 
 | 시리즈 | 토큰 | HEX |
 |--------|------|------|
@@ -49,6 +49,9 @@
 | `data-3` | `--jc-data-3` | `#FF5722` (Vivid Orange) |
 | `data-4` | `--jc-data-4` | `#00E676` (Neon Green) |
 | `data-5` | `--jc-data-5` | `#0A2540` (Deep Navy) |
+| `data-6` | `--jc-data-6` | `#7C3AED` (Violet) |
+
+> `data-1`~`data-5`가 기본 5색 정본. **`data-6`(`#7C3AED`)는 6카테고리 이상 차트 전용 확장 슬롯**으로, 5색으로 부족한 경우에만 사용한다(예: mice-dashboard 6시리즈). 다크 모드 보정값은 `mode-mapping.md §3.2` 참조.
 
 ### 1.5 시맨틱 컬러
 
@@ -245,7 +248,7 @@ Sprint 1~6 누적 백로그(BL-S3-1, BL-S3-2, BL-S4-1) 반영. 시그니처 베�
       "neonFallback": "#00C853",
       "blue": "#2962FF"
     },
-    "data": ["#2962FF", "#E91E63", "#FF5722", "#00E676", "#0A2540"],
+    "data": ["#2962FF", "#E91E63", "#FF5722", "#00E676", "#0A2540", "#7C3AED"],
     "semantic": {
       "success": "#00C853",
       "successStrong": "#00733B",
