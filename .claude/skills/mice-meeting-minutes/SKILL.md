@@ -356,4 +356,4 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)에서 추출한 
 
 - `_samples/sample_transcript.txt` — TOBESOFT TECH FORUM 2026 Discovery 미팅 가상 transcript (Sprint 3·4 시나리오 연속성)
 - v2.1.0 강화 후 본 transcript로 샘플 HTML 대시보드 생성·검수
-- 회사 종속 표현 0건 (발주처는 "T社"로 일반화)
+- 회사 종속 표현 0건 (발주처는 "T社"로 일반화) — 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`

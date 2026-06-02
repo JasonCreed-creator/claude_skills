@@ -94,7 +94,7 @@ const FONT_HEADING = "Pretendard";  // 한·영 혼용 헤딩
 
 ### 0-4. pptxgenjs 주의사항
 
-1. hex 컬러는 `#` 없이 6자리만 (`"0A2540"` ✅, `"#0A2540"` ❌)
+1. hex 컬러는 `#` 없이 6자리만 (`"0A2540"` ✅, `"#0A2540"` ❌) — 정본: `jc-design-system/references/shared-rules.md#RULE-PPTX-HEX`
 2. 옵션 객체는 호출마다 새로 생성 (재사용 금지)
 3. `bullet: true` 사용. 유니코드 `•` 직접 사용 금지
 4. `breakLine: true`로 줄바꿈
