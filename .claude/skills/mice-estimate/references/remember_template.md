@@ -93,13 +93,15 @@ Row M  : "total" (A열)  |  {정가합계} (D열)  |  {할인합계} (E열)  |  
 
 ### 6. 스타일 상세
 
+> 색상 역할→토큰 매핑은 [jc-design-mapping.md](jc-design-mapping.md) §3, 값 정본은 jc-design-system `signature-tokens.md §6 JSON 정본`. 아래 hex는 SoT 정본값 미러(Excel 매체 불가피).
+
 #### 섹션 헤더 스타일
 - A열: Bold, 배경색 없음
-- 라벨 셀(A12 "Package Type" 등): Bold, 배경 FF6D01(주황)
+- 라벨 셀(A12 "Package Type" 등): Bold, 배경 `--jc-point-orange` (= `--jc-data-3`, 리멤버 포인트 — SoT 미러: `#FF5722`)
 - 비고(*VAT별도): Bold
 
 #### 열 헤더 스타일
-- 배경: #434343 (진회색), 흰색 텍스트, Bold, 중앙정렬
+- 배경: `--jc-text` (중립 다크 면 — SoT 미러: `#1A1D24`), 텍스트 `--jc-surface` (`#FFFFFF`), Bold, 중앙정렬
 
 #### 열 너비
 | 열 | 너비 |

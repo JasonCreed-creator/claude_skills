@@ -37,14 +37,17 @@ from korean_amount import format_estimate_amount
 
 
 # ============================================================
-# 스타일 정의 (jc-design-system 시맨틱 토큰 매핑 — references/jc-design-mapping.md)
+# 스타일 정의 (jc-design-system SoT 정본 매핑 — references/jc-design-mapping.md)
+# 값의 정본: jc-design-system signature-tokens.md §6 JSON 정본 (라이트).
+# xlsx는 CSS 변수 불가 → hex 리터럴 매체 불가피. 각 값은 SoT 라이트 정본과
+# 일치시키고 'SoT 미러' 주석으로 추적성 유지. openpyxl은 '#' 없는 RRGGBB 사용.
 # ============================================================
 
-COLOR_BRAND_PRIMARY  = '003366'   # 진남색 (mc 오버레이)
-COLOR_BRAND_ACCENT   = '0066CC'   # 파란색 (mc 오버레이, 카테고리)
-COLOR_NEUTRAL_LIGHT  = 'C0C0C0'   # 회색 (소계 배경)
-COLOR_SEMANTIC_DANGER= 'FF0000'   # 빨강 (소계 금액)
-COLOR_NEUTRAL_WHITE  = 'FFFFFF'
+COLOR_BRAND_PRIMARY  = '0A2540'   # SoT 미러: --jc-primary (Deep Navy, 헤더/타이틀 역할)
+COLOR_BRAND_ACCENT   = '2962FF'   # SoT 미러: --jc-accent (Electric Blue, 카테고리 강조)
+COLOR_NEUTRAL_LIGHT  = 'C9CFD8'   # SoT 미러: --jc-border-strong (소계 배경 — 중립 강조 면)
+COLOR_SEMANTIC_DANGER= 'D32F2F'   # SoT 미러: --jc-danger (소계 금액 강조)
+COLOR_NEUTRAL_WHITE  = 'FFFFFF'   # SoT 미러: --jc-surface (카드·시트 흰색)
 
 FONT_BODY = Font(name='Pretendard', size=12)
 FONT_BODY_BOLD = Font(name='Pretendard', size=12, bold=True)
@@ -295,7 +298,7 @@ def _clear_body_rows(ws, start_row: int, end_row: int):
 
 
 def _write_category_row(ws, row: int, title: str):
-    """카테고리 헤더 행: A~I 병합 + #0066CC 배경 + 흰색 Bold."""
+    """카테고리 헤더 행: A~I 병합 + 액센트 배경(SoT 미러: --jc-accent #2962FF) + 흰색 Bold."""
     ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=9)
     ws.merge_cells(start_row=row, start_column=10, end_row=row, end_column=11)  # J:K 병합
     cell = ws.cell(row=row, column=1, value=title)

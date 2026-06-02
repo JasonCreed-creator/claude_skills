@@ -346,15 +346,15 @@ calc_estimate 결과를 M&C 양식에 매핑하는 표준 카테고리:
 - **K9 (RFP 금액)**: 사용자 입력 셀 (파란색 텍스트, 외부 주입)
 - **J17 (비율)**: `=IF(K9>0,I17/K9,"")` — RFP 대비 비율, 0% 형식
 
-### 스타일 규칙 (jc-design-system 시맨틱 매핑은 [jc-design-mapping.md](references/jc-design-mapping.md))
+### 스타일 규칙 (역할→SoT 토큰 매핑은 [jc-design-mapping.md](references/jc-design-mapping.md), 값 정본은 jc-design-system signature-tokens.md §6 JSON 정본)
 
-| 위치 | Excel HEX | JC 시맨틱 토큰 | 클라이언트 오버레이 |
+| 위치 | 시맨틱 역할 | SoT 토큰 | 클라이언트 오버레이 |
 |---|---|---|---|
-| 세부산출내역 타이틀 (Row 19), 열 헤더 (Row 20), 총 견적 (Row 17) | `#003366` | `COLOR_BRAND_PRIMARY` | `mc` |
-| 카테고리 행 | `#0066CC` | `COLOR_BRAND_ACCENT` | `mc` |
-| 소계 금액 빨강 | `#FF0000` | `COLOR_SEMANTIC_DANGER` | 유니버설 |
-| 소계 배경 | `#C0C0C0` | `COLOR_NEUTRAL_LIGHT` | 유니버설 |
-| 본문 폰트 | Pretendard 12pt | `FONT_BODY` | 유니버설 |
+| 세부산출내역 타이틀 (Row 19), 열 헤더 (Row 20), 총 견적 (Row 17) | 헤더·타이틀 | `--jc-primary` | `mc` |
+| 카테고리 행 | 액센트·구분 강조 | `--jc-accent` | `mc` |
+| 소계 금액 강조 | 위험·금액 강조 | `--jc-danger` | 유니버설 |
+| 소계 배경 | 중립 강조 면 | `--jc-border-strong` | 유니버설 |
+| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base` | 유니버설 |
 
 #### 행 높이
 - Row 1 (타이틀): 37.5 / Row 2~10: 25.0 / 구분선: 10.0 / 데이터: 25.0
@@ -398,13 +398,13 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 * KPI 확정 후 모객 규모 및 비용 별도 협의
 ```
 
-### 스타일 규칙
+### 스타일 규칙 (역할→SoT 토큰 매핑은 [jc-design-mapping.md](references/jc-design-mapping.md) §3, 값 정본은 jc-design-system signature-tokens.md §6 JSON 정본)
 
-| 위치 | Excel HEX | JC 시맨틱 토큰 | 클라이언트 오버레이 |
+| 위치 | 시맨틱 역할 | SoT 토큰 | 클라이언트 오버레이 |
 |---|---|---|---|
-| 섹션 라벨 배경 | `#FF6D01` | `COLOR_BRAND_PRIMARY` | `remember` |
-| 열 헤더 배경 | `#434343` | `COLOR_NEUTRAL_DARK` | 유니버설 |
-| 본문 폰트 | 맑은 고딕 10pt | `FONT_BODY_KO_LEGACY` | `remember` |
+| 섹션 라벨 배경 | 포인트·핫 강조 (브랜드 포인트) | `--jc-point-orange` (= `--jc-data-3`) | `remember` |
+| 열 헤더 배경 | 중립 다크 헤더 면 (Charcoal 톤) | `--jc-text` | 유니버설 |
+| 본문 폰트 | 보조 텍스트·테이블 | `--jc-font-ko` + `--jc-text-sm` (맑은 고딕 레거시 폴백) | `remember` |
 
 #### 행 높이
 - 기본 15.75 / 구분선 6.75 / 섹션·열 헤더 29.25
