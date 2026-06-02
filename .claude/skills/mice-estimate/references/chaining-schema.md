@@ -5,6 +5,9 @@
 
 mice-estimate가 다른 MICE 스킬과 데이터를 주고받기 위한 JSON 스키마와 워크플로우상의 위치를 정의한다.
 
+> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`$schema`·`source`·`version`·`generatedAt` 등 공통 메타)와 전체 워크플로우·표준 규약은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
+> 요약: 모든 체이닝 JSON은 최상위에 `"$schema": "ChainPayload/v1"` + `source`(생산 스킬) + `version` 을 두고, 그 아래에 아래 정의된 mice-estimate 고유 페이로드를 평탄하게 담는다. 본 문서는 mice-estimate **고유 입출력 페이로드 매핑**만 정의한다.
+
 ---
 
 ## 1. 풀 워크플로우상의 위치
