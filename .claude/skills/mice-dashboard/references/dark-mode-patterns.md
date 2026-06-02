@@ -26,32 +26,34 @@ v1 mice-dashboard 는 "기업/공식" 톤 하나만 다크였음. v2 는 **5개 
 
 ## 2. 5개 컴포넌트 다크 변형
 
+> **정본 출처**: 아래 CSS·JS 의 모든 hex 는 jc-design-system 정본을 미러한다. 라이트 = `signature-tokens.md` §1·§1.5·§6, 다크 = `mode-mapping.md` §3·§3.2. CSS 구조는 보존하되 값은 정본만 사용한다. (역할 주의: 같은 v1 slate hex 라도 라이트모드 텍스트는 `--jc-text`/`--jc-text-muted` 로, 다크모드 배경/보더는 다크 패밀리로 분기.)
+
 ### 2.1 KPI 카드
 
 ```css
 /* 라이트 */
 .kpi-card {
-  background: #ffffff;            /* COLOR_BG_CARD */
-  border: 1px solid #e2e8f0;      /* COLOR_NEUTRAL_BORDER */
-  color: #1e293b;                 /* COLOR_TEXT_PRIMARY */
+  background: #FFFFFF;            /* SoT 미러: --jc-surface */
+  border: 1px solid #E5E8ED;      /* SoT 미러: --jc-border */
+  color: #1A1D24;                 /* SoT 미러: --jc-text */
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-.kpi-card .label { color: #64748b; }   /* COLOR_TEXT_SECONDARY */
-.kpi-card .value { color: #0f172a; font-size: 2rem; font-weight: 700; }
-.kpi-card .delta-positive { color: #16a34a; }  /* COLOR_SEMANTIC_SUCCESS */
-.kpi-card .delta-negative { color: #dc2626; }  /* COLOR_SEMANTIC_DANGER */
+.kpi-card .label { color: #5A6270; }   /* SoT 미러: --jc-text-muted */
+.kpi-card .value { color: #1A1D24; font-size: 2rem; font-weight: 700; }  /* SoT 미러: --jc-text */
+.kpi-card .delta-positive { color: #00C853; }  /* SoT 미러: --jc-success */
+.kpi-card .delta-negative { color: #D32F2F; }  /* SoT 미러: --jc-danger */
 
 /* 다크 */
 [data-theme="dark"] .kpi-card {
-  background: #1e293b;            /* COLOR_BG_CARD_DARK */
-  border: 1px solid #334155;      /* COLOR_NEUTRAL_BORDER_DARK */
-  color: #f1f5f9;                 /* COLOR_TEXT_PRIMARY_DARK */
+  background: #152134;            /* SoT 미러: 다크 카드 서피스 */
+  border: 1px solid #2A3650;      /* SoT 미러: 다크 보더 */
+  color: #E8ECF2;                 /* SoT 미러: 다크 본문 텍스트 */
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
-[data-theme="dark"] .kpi-card .label { color: #94a3b8; }
-[data-theme="dark"] .kpi-card .value { color: #f8fafc; }
-[data-theme="dark"] .kpi-card .delta-positive { color: #22c55e; }
-[data-theme="dark"] .kpi-card .delta-negative { color: #ef4444; }
+[data-theme="dark"] .kpi-card .label { color: #A0A8B4; }   /* SoT 미러: 다크 보조 텍스트 */
+[data-theme="dark"] .kpi-card .value { color: #E8ECF2; }   /* SoT 미러: 다크 본문 텍스트 */
+[data-theme="dark"] .kpi-card .delta-positive { color: #00C853; }  /* SoT 미러: --jc-success */
+[data-theme="dark"] .kpi-card .delta-negative { color: #D32F2F; }  /* SoT 미러: --jc-danger */
 ```
 
 ### 2.2 차트 영역
@@ -59,28 +61,28 @@ v1 mice-dashboard 는 "기업/공식" 톤 하나만 다크였음. v2 는 **5개 
 ```css
 /* 라이트 */
 .chart-container {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #FFFFFF;             /* SoT 미러: --jc-surface */
+  border: 1px solid #E5E8ED;      /* SoT 미러: --jc-border */
   padding: 24px;
 }
-.chart-container .title { color: #1e293b; }
+.chart-container .title { color: #1A1D24; }  /* SoT 미러: --jc-text */
 
 /* 다크 */
 [data-theme="dark"] .chart-container {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: #152134;            /* SoT 미러: 다크 카드 서피스 */
+  border: 1px solid #2A3650;      /* SoT 미러: 다크 보더 */
 }
-[data-theme="dark"] .chart-container .title { color: #f1f5f9; }
+[data-theme="dark"] .chart-container .title { color: #E8ECF2; }  /* SoT 미러: 다크 본문 텍스트 */
 ```
 
 Chart.js 다크 모드 글로벌 설정:
 
 ```javascript
 function applyChartTheme(isDark) {
-  Chart.defaults.color = isDark ? '#cbd5e1' : '#475569';
-  Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+  Chart.defaults.color = isDark ? '#A0A8B4' : '#5A6270';        // SoT 미러: 다크/라이트 보조 텍스트
+  Chart.defaults.borderColor = isDark ? '#2A3650' : '#E5E8ED';  // SoT 미러: 다크/라이트 보더
   Chart.defaults.scale.grid.color = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-  Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#0f172a' : '#1e293b';
+  Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#0A1220' : '#152134';  // SoT 미러: 다크 페이지 배경 / 다크 카드 서피스
 }
 ```
 
@@ -88,18 +90,18 @@ function applyChartTheme(isDark) {
 
 ```css
 /* 라이트 */
-.data-table { background: #ffffff; }
-.data-table thead { background: #f8fafc; color: #475569; }
-.data-table tbody tr { border-bottom: 1px solid #e2e8f0; }
-.data-table tbody tr:nth-child(even) { background: #f8fafc; }  /* 스트라이프 */
-.data-table tbody tr:hover { background: #f1f5f9; }
+.data-table { background: #FFFFFF; }                                /* SoT 미러: --jc-surface */
+.data-table thead { background: #F1F3F7; color: #5A6270; }          /* SoT 미러: --jc-surface-alt / --jc-text-muted */
+.data-table tbody tr { border-bottom: 1px solid #E5E8ED; }          /* SoT 미러: --jc-border */
+.data-table tbody tr:nth-child(even) { background: #F1F3F7; }       /* SoT 미러: --jc-surface-alt (스트라이프) */
+.data-table tbody tr:hover { background: #F1F3F7; }                 /* SoT 미러: --jc-surface-alt */
 
 /* 다크 */
-[data-theme="dark"] .data-table { background: #1e293b; }
-[data-theme="dark"] .data-table thead { background: #0f172a; color: #cbd5e1; }
-[data-theme="dark"] .data-table tbody tr { border-bottom: 1px solid #334155; }
-[data-theme="dark"] .data-table tbody tr:nth-child(even) { background: #1a2332; }
-[data-theme="dark"] .data-table tbody tr:hover { background: #2d3a4f; }
+[data-theme="dark"] .data-table { background: #152134; }                              /* SoT 미러: 다크 카드 서피스 */
+[data-theme="dark"] .data-table thead { background: #0A1220; color: #A0A8B4; }        /* SoT 미러: 다크 페이지 배경 / 다크 보조 텍스트 */
+[data-theme="dark"] .data-table tbody tr { border-bottom: 1px solid #2A3650; }        /* SoT 미러: 다크 보더 */
+[data-theme="dark"] .data-table tbody tr:nth-child(even) { background: #1F2C42; }     /* SoT 미러: 다크 보조 서피스 */
+[data-theme="dark"] .data-table tbody tr:hover { background: #1F2C42; }               /* SoT 미러: 다크 보조 서피스 */
 ```
 
 ### 2.4 콜아웃 / 배너 (인사이트·경고·확인 등)
@@ -111,16 +113,17 @@ function applyChartTheme(isDark) {
   padding: 16px 20px;
   border-left: 4px solid;
 }
-.callout-info    { background: #eff6ff; border-color: #2563eb; color: #1e40af; }
-.callout-success { background: #f0fdf4; border-color: #16a34a; color: #166534; }
-.callout-warning { background: #fffbeb; border-color: #d97706; color: #92400e; }
-.callout-danger  { background: #fef2f2; border-color: #dc2626; color: #991b1b; }
+/* SoT 미러: bg=시맨틱/액센트 @ ~9% 또는 --jc-accent-soft, border=시맨틱, text=AA 가독 변형 */
+.callout-info    { background: #E8EFFF;    border-color: #2962FF; color: #2962FF; }  /* SoT 미러: --jc-accent-soft / --jc-accent */
+.callout-success { background: #00C85316;  border-color: #00C853; color: #00733B; }  /* SoT 미러: --jc-success / 텍스트 --jc-success-strong(WCAG AA) */
+.callout-warning { background: #FFA00016;  border-color: #FFA000; color: #FFA000; }  /* SoT 미러: --jc-warning */
+.callout-danger  { background: #D32F2F16;  border-color: #D32F2F; color: #D32F2F; }  /* SoT 미러: --jc-danger */
 
-/* 다크 */
-[data-theme="dark"] .callout-info    { background: #1e3a8a20; border-color: #3b82f6; color: #93c5fd; }
-[data-theme="dark"] .callout-success { background: #14532d20; border-color: #22c55e; color: #86efac; }
-[data-theme="dark"] .callout-warning { background: #78350f20; border-color: #f59e0b; color: #fcd34d; }
-[data-theme="dark"] .callout-danger  { background: #7f1d1d20; border-color: #ef4444; color: #fca5a5; }
+/* 다크 — SoT 미러: bg=시맨틱/액센트 @ ~20% 알파, border·text=다크 보정 시맨틱 (mode-mapping §3.1·§3.2·§8) */
+[data-theme="dark"] .callout-info    { background: #2962FF33; border-color: #5B8DEF; color: #5B8DEF; }  /* SoT 미러: 다크 액센트 */
+[data-theme="dark"] .callout-success { background: #00C85333; border-color: #33EE92; color: #33EE92; }  /* SoT 미러: 다크 Neon(= 다크 data-4) */
+[data-theme="dark"] .callout-warning { background: #FFA00033; border-color: #FFB74D; color: #FFB74D; }  /* SoT 미러: DARK_WARNING (mode-mapping §8) */
+[data-theme="dark"] .callout-danger  { background: #D32F2F33; border-color: #F44336; color: #F44336; }  /* SoT 미러: DARK_DANGER (mode-mapping §8) */
 ```
 
 ### 2.5 헤더
@@ -128,20 +131,20 @@ function applyChartTheme(isDark) {
 ```css
 /* 라이트 */
 .dashboard-header {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F1F3F7 100%);  /* SoT 미러: --jc-surface → --jc-surface-alt */
+  border-bottom: 1px solid #E5E8ED;                               /* SoT 미러: --jc-border */
   padding: 32px;
 }
-.dashboard-header h1 { color: #0f172a; }
-.dashboard-header .meta { color: #64748b; }
+.dashboard-header h1 { color: #1A1D24; }     /* SoT 미러: --jc-text */
+.dashboard-header .meta { color: #5A6270; }  /* SoT 미러: --jc-text-muted */
 
 /* 다크 */
 [data-theme="dark"] .dashboard-header {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-bottom: 1px solid #334155;
+  background: linear-gradient(135deg, #0A1220 0%, #152134 100%);  /* SoT 미러: 다크 bg → surface */
+  border-bottom: 1px solid #2A3650;                               /* SoT 미러: 다크 보더 */
 }
-[data-theme="dark"] .dashboard-header h1 { color: #f8fafc; }
-[data-theme="dark"] .dashboard-header .meta { color: #94a3b8; }
+[data-theme="dark"] .dashboard-header h1 { color: #E8ECF2; }     /* SoT 미러: 다크 본문 텍스트 */
+[data-theme="dark"] .dashboard-header .meta { color: #A0A8B4; }  /* SoT 미러: 다크 보조 텍스트 */
 ```
 
 ---
@@ -194,7 +197,7 @@ function applyChartTheme(isDark) {
   [data-theme="dark"] .data-table {
     background: white !important;
     color: black !important;
-    border-color: #e2e8f0 !important;
+    border-color: #E5E8ED !important;   /* SoT 미러: --jc-border */
   }
 }
 ```
@@ -203,13 +206,15 @@ function applyChartTheme(isDark) {
 
 ## 5. 접근성 (WCAG 2.1 AA 기준)
 
-| 다크 모드 색상 조합 | 대비비 | 판정 |
-|---|---|---|
-| #f1f5f9 텍스트 on #1e293b 배경 | 13.6:1 | ✅ AAA |
-| #94a3b8 보조 텍스트 on #1e293b | 5.8:1 | ✅ AA |
-| #3b82f6 액센트 on #0f172a | 5.9:1 | ✅ AA |
+> 대비비는 `mode-mapping.md` §9(WebAIM 표준)·§5 정본 수치를 미러한다. 색상은 SoT 다크 패밀리.
 
-모든 다크 변형은 최소 4.5:1 대비 유지.
+| 다크 모드 색상 조합 | 대비비 (WebAIM 기준) | 판정 |
+|---|---|---|
+| `#E8ECF2` 본문 텍스트 on `#0A1220` 배경 | 14.96:1 | ✅ AAA |
+| `#A0A8B4` 보조 텍스트 on `#0A1220` | 8.21:1 | ✅ AAA |
+| `#FFFFFF` on `#5B8DEF` (다크 액센트) | 3.41:1 | ✅ AA(큰 텍스트만) |
+
+모든 다크 변형은 본문 4.5:1 / 큰 텍스트 3:1 (WCAG AA) 이상 유지. 수치 산출 공식·도구는 `mode-mapping.md` §9.1·§9.3 표준.
 
 ---
 
@@ -219,4 +224,4 @@ function applyChartTheme(isDark) {
 - ✅ 토글 스크립트 + localStorage 저장
 - ✅ 인쇄 시 라이트 강제
 - ✅ 접근성 대비비 보장
-- ⏳ Sprint 7: jc-design-system 의 mode-mapping.md 와 토큰명 정합화
+- ✅ jc-design-system 의 mode-mapping.md(§3·§3.2) 와 토큰명·값 정합화 완료 (R1 SoT 정합화 — 모든 hex 를 SoT 다크 패밀리/시맨틱으로 교정, slate 계열 제거)
