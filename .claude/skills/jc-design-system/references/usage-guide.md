@@ -123,6 +123,8 @@ client_id 미지정 시:
 
 ### 3.1 Python (PPTX·DOCX·XLSX 생성)
 
+> ✅ **구현체 제공:** `jc-design-system/scripts/jc_tokens.py` (`load_tokens`/`color`, 테스트 `test_jc_tokens.py`). mice-estimate·pt-script·mice-sponsor-deck 스크립트가 형제 경로의 SoT §6 JSON 을 **런타임 로딩**하며, 실패 시 미러값으로 폴백한다. (구 'Sprint 7 런타임 fetch' 목표 완결.)
+
 ```python
 import json
 import re
