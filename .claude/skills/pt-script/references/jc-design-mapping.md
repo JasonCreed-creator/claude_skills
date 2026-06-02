@@ -16,50 +16,56 @@
 
 ### 2-1. 문서 영역별 토큰 매핑 표
 
-| docx 영역 | JC 토큰 | HEX | 적용 방식 |
-|----------|---------|-----|---------|
-| 표지 배경 | `--jc-primary` | 0A2540 | Section Header Shading (paragraph_format.shading 또는 Run highlight) |
-| 표지 제목 텍스트 | `--jc-surface` | FFFFFF | 흰색 폰트 (Deep Navy 배경 위) |
-| 메인 본문 텍스트 | `--jc-text` | 1A1D24 | Run.font.color.rgb |
-| Heading2 슬라이드 번호+제목 | `--jc-accent` | 2962FF | 헤딩 컬러 |
-| "발표 멘트" 레이블 | `--jc-accent-strong` | 1E4DCC | Bold + 색상 |
-| 발표 팁 (Italic) | `--jc-text-muted` | 5A6270 | 이탤릭 + 회색 |
-| 시간 배분표 헤더 배경 | `--jc-primary` | 0A2540 | 셀 음영 (cell shading) |
-| 시간 배분표 헤더 텍스트 | `--jc-surface` | FFFFFF | 흰색 |
-| 시간 배분표 짝수 행 배경 | `--jc-surface-alt` | F1F3F7 | 줄무늬 |
-| 시간 배분표 홀수 행 배경 | `--jc-surface` | FFFFFF | 기본 |
-| 표 보더 | `--jc-border` | E5E8ED | 1pt 솔리드 |
-| Q&A 질문 | `--jc-text` (Bold) | 1A1D24 | Bold |
-| Q&A 답변 핵심 키워드 | `--jc-success` | 00C853 | 강조 색상 (선택적) |
-| 시간 초과 알림 | `--jc-warning` | FFA000 | 경고 음영 (시간 배분 ±10% 초과 시) |
-| 일반 보더 강조 | `--jc-border-strong` | C9CFD8 | 표지·섹션 구분선 |
+> **컬러 값은 jc-design-system `signature-tokens.md` §6 JSON 정본을 따른다.** 아래 표는 docx 영역 → SoT 토큰명 매핑만 정의하며, HEX 리터럴을 본 문서에 중복 기재하지 않는다. (docx는 CSS 변수를 못 쓰므로 실제 빌드 시 `build_script.py` 가 SoT 정본값을 RGBColor 리터럴로 미러링한다 — 해당 상수의 `SoT 미러` 주석 참조.)
+
+| docx 영역 | SoT 토큰 (값=signature-tokens.md §6 JSON) | 적용 방식 |
+|----------|------------------------------------------|---------|
+| 표지 배경 | `--jc-primary` | Section Header Shading (paragraph_format.shading 또는 Run highlight) |
+| 표지 제목 텍스트 | `--jc-surface` | 흰색 폰트 (Deep Navy 배경 위) |
+| 메인 본문 텍스트 | `--jc-text` | Run.font.color.rgb |
+| Heading2 슬라이드 번호+제목 | `--jc-accent` | 헤딩 컬러 |
+| "발표 멘트" 레이블 | `--jc-accent-strong` | Bold + 색상 |
+| 발표 팁 (Italic) | `--jc-text-muted` | 이탤릭 + 회색 |
+| 시간 배분표 헤더 배경 | `--jc-primary` | 셀 음영 (cell shading) |
+| 시간 배분표 헤더 텍스트 | `--jc-surface` | 흰색 |
+| 시간 배분표 짝수 행 배경 | `--jc-surface-alt` | 줄무늬 |
+| 시간 배분표 홀수 행 배경 | `--jc-surface` | 기본 |
+| 표 보더 | `--jc-border` | 1pt 솔리드 |
+| Q&A 질문 | `--jc-text` (Bold) | Bold |
+| Q&A 답변 핵심 키워드 | `--jc-success` | 강조 색상 (선택적) |
+| 시간 초과 알림 | `--jc-warning` | 경고 음영 (시간 배분 ±10% 초과 시) |
+| 일반 보더 강조 | `--jc-border-strong` | 표지·섹션 구분선 |
 
 ### 2-2. 시맨틱 컬러
 
-| 토큰 | HEX | docx 용도 |
-|------|-----|---------|
-| `--jc-success` | 00C853 | Q&A 답변 강조, 발표 체크리스트 ✓ |
-| `--jc-warning` | FFA000 | 시간 초과 알림, ±10% 오차 경고 |
-| `--jc-danger` | D32F2F | 회사 종속 표현 검출 시 경고 (제거 권고) |
-| `--jc-info` | 2962FF | 일반 메모·노트 |
+> 값은 jc-design-system `signature-tokens.md` §1.5 / §6 JSON `semantic` 정본 참조.
+
+| 토큰 | docx 용도 |
+|------|---------|
+| `--jc-success` | Q&A 답변 강조, 발표 체크리스트 ✓ |
+| `--jc-warning` | 시간 초과 알림, ±10% 오차 경고 |
+| `--jc-danger` | 회사 종속 표현 검출 시 경고 (제거 권고) |
+| `--jc-info` | 일반 메모·노트 |
 
 ### 2-3. python-docx 적용 코드 예시
+
+docx는 CSS 변수를 못 쓰므로 RGBColor 리터럴은 "매체 불가피"로 남되, 값은 jc-design-system `signature-tokens.md` §6 JSON 라이트 정본과 일치시킨다 (`SoT 미러` 주석).
 
 ```python
 from docx.shared import RGBColor
 
-# 토큰 상수
-JC_PRIMARY = RGBColor(0x0A, 0x25, 0x40)
-JC_ACCENT = RGBColor(0x29, 0x62, 0xFF)
-JC_ACCENT_STRONG = RGBColor(0x1E, 0x4D, 0xCC)
-JC_TEXT = RGBColor(0x1A, 0x1D, 0x24)
-JC_TEXT_MUTED = RGBColor(0x5A, 0x62, 0x70)
-JC_SURFACE = RGBColor(0xFF, 0xFF, 0xFF)
-JC_SURFACE_ALT = RGBColor(0xF1, 0xF3, 0xF7)
-JC_BORDER = RGBColor(0xE5, 0xE8, 0xED)
-JC_BORDER_STRONG = RGBColor(0xC9, 0xCF, 0xD8)
-JC_SUCCESS = RGBColor(0x00, 0xC8, 0x53)
-JC_WARNING = RGBColor(0xFF, 0xA0, 0x00)
+# 토큰 상수 — 값은 jc-design-system signature-tokens.md §6 JSON 정본 미러
+JC_PRIMARY = RGBColor(0x0A, 0x25, 0x40)        # SoT 미러: --jc-primary (#0A2540)
+JC_ACCENT = RGBColor(0x29, 0x62, 0xFF)         # SoT 미러: --jc-accent (#2962FF)
+JC_ACCENT_STRONG = RGBColor(0x1E, 0x4D, 0xCC)  # SoT 미러: --jc-accent-strong (#1E4DCC)
+JC_TEXT = RGBColor(0x1A, 0x1D, 0x24)           # SoT 미러: --jc-text (#1A1D24)
+JC_TEXT_MUTED = RGBColor(0x5A, 0x62, 0x70)     # SoT 미러: --jc-text-muted (#5A6270)
+JC_SURFACE = RGBColor(0xFF, 0xFF, 0xFF)        # SoT 미러: --jc-surface (#FFFFFF)
+JC_SURFACE_ALT = RGBColor(0xF1, 0xF3, 0xF7)    # SoT 미러: --jc-surface-alt (#F1F3F7)
+JC_BORDER = RGBColor(0xE5, 0xE8, 0xED)         # SoT 미러: --jc-border (#E5E8ED)
+JC_BORDER_STRONG = RGBColor(0xC9, 0xCF, 0xD8)  # SoT 미러: --jc-border-strong (#C9CFD8)
+JC_SUCCESS = RGBColor(0x00, 0xC8, 0x53)        # SoT 미러: --jc-success (#00C853)
+JC_WARNING = RGBColor(0xFF, 0xA0, 0x00)        # SoT 미러: --jc-warning (#FFA000)
 
 # 사용 예
 heading2.runs[0].font.color.rgb = JC_ACCENT
@@ -80,7 +86,7 @@ def set_cell_shading(cell, hex_color):
     shd = OxmlElement('w:shd')
     shd.set(qn('w:val'), 'clear')
     shd.set(qn('w:color'), 'auto')
-    shd.set(qn('w:fill'), hex_color)  # "0A2540" 형식
+    shd.set(qn('w:fill'), hex_color)  # 6자리 hex 문자열 형식 (예: --jc-primary = "0A2540", SoT 미러)
     tc_pr.append(shd)
 ```
 
@@ -205,7 +211,7 @@ def set_cell_margins(cell, top=80, bottom=80, left=120, right=120):
 | `conference` (컨퍼런스) | `--jc-primary` (0A2540) | `--jc-primary-soft` (1A3556) | 차분·전문성 |
 | `forum` (포럼) | `--jc-primary` (0A2540) | `--jc-primary-soft` (1A3556) | 비전 제시 |
 | `corporate_event` (기업행사) | `--jc-primary` (0A2540) | `--jc-point-orange` (FF5722) | 활기·참여 |
-| `mc` (MC/사회자) | `--jc-point-orange-soft` (FFE5DD) | `--jc-point-orange` (FF5722) | 활기·환영 |
+| `mc` (MC/사회자) | `--jc-point-orange-softest` (FFF3E0, SoT 미러) | `--jc-point-orange` (FF5722) | 활기·환영 |
 | `general_business` (일반 비즈) | `--jc-primary` (0A2540) | `--jc-accent` (2962FF) | 명확·간결 |
 
 **기본값**: `bidding_pt` (mice-proposal 출력 연동 시 가장 흔한 케이스)
@@ -238,7 +244,7 @@ def apply_client_overlay(client_id):
 
 ## 7. JSON 스키마 (빠른 참조)
 
-`build_script.py` 가 내부에서 사용하는 매핑 객체.
+`build_script.py` 가 내부에서 사용하는 매핑 객체. docx는 CSS 변수를 못 쓰므로 아래 HEX 리터럴은 "매체 불가피"이며, **모든 값은 jc-design-system `signature-tokens.md` §6 JSON 라이트 정본의 미러**다(권위 값은 SoT 단일 정본 참조). `cover_bg`=`--jc-primary`, `cover_text`/`table_header_text`/`table_row_odd`=`--jc-surface`, `body_text`=`--jc-text`, `heading2`=`--jc-accent`, `label_mention`=`--jc-accent-strong`, `tip_text`=`--jc-text-muted`, `table_row_even`=`--jc-surface-alt`, `table_border`=`--jc-border`, `qna_answer_keyword`=`--jc-success`, `time_overrun_warning`=`--jc-warning`, `mc.cover_bg`=`--jc-point-orange-softest`.
 
 ```json
 {
@@ -287,7 +293,7 @@ def apply_client_overlay(client_id):
     "conference": { "heading_accent": "1A3556" },
     "forum": { "heading_accent": "1A3556" },
     "corporate_event": { "heading_accent": "FF5722" },
-    "mc": { "heading_accent": "FF5722", "cover_bg": "FFE5DD" },
+    "mc": { "heading_accent": "FF5722", "cover_bg": "FFF3E0" },
     "general_business": { "heading_accent": "2962FF" }
   }
 }
@@ -299,12 +305,14 @@ def apply_client_overlay(client_id):
 
 본 매핑 적용 docx의 자가검증 체크리스트:
 
-- [ ] 모든 HEX 컬러가 본 문서 §2-1 표에 존재 (외부 컬러 사용 금지)
-- [ ] 표지 배경 + 텍스트 콘트라스트 WCAG AA 이상 (Deep Navy 0A2540 + White FFFFFF = 17.41:1 ✅)
-- [ ] Heading2 + 본문 콘트라스트 WCAG AA 이상 (Electric Blue 2962FF + White F8F9FB = 6.32:1 ✅)
-- [ ] 본문 텍스트 + 배경 콘트라스트 (Charcoal 1A1D24 + White FFFFFF = 17.74:1 ✅)
-- [ ] 발표 팁 + 배경 콘트라스트 (Muted 5A6270 + White FFFFFF = 6.21:1 ✅)
-- [ ] 시간 배분표 헤더 + 텍스트 (Deep Navy + White = 17.41:1 ✅)
+> 대비비 수치는 jc-design-system `mode-mapping.md` §9(WebAIM 표준) 정본을 따른다. 아래 값은 SoT §9.5 미러이며 근사값을 임의 채택하지 않는다.
+
+- [ ] 모든 HEX 컬러가 본 문서 §2-1 표(=SoT 토큰) 에 존재 (외부 컬러 사용 금지)
+- [ ] 표지 배경 + 텍스트 콘트라스트 WCAG AA 이상 (White FFFFFF on Deep Navy 0A2540 = 14.04:1 AAA ✅, SoT §9.5)
+- [ ] Heading2 강조 콘트라스트 WCAG AA 이상 (White FFFFFF on Electric Blue 2962FF = 4.79:1 AA ✅, SoT §9.5)
+- [ ] 본문 텍스트 + 배경 콘트라스트 (Charcoal 1A1D24 on White FFFFFF = 16.30:1 AAA ✅, SoT §9.5)
+- [ ] 발표 팁 + 배경 콘트라스트 (Muted 5A6270 on White FFFFFF = 6.34:1 AA ✅, SoT §9.5)
+- [ ] 시간 배분표 헤더 + 텍스트 (White on Deep Navy 0A2540 = 14.04:1 AAA ✅, SoT §9.5)
 - [ ] 한글 폰트 EastAsia 속성 명시 (CJK 폴백 보장)
 - [ ] 본문 사이즈 14pt 이상 (가독성)
 - [ ] 사이즈 스케일이 jc-design-system §0-4 와 1:1 매칭

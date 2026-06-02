@@ -48,23 +48,27 @@ if hasattr(sys.stderr, "reconfigure"):
 # ============================================================
 # JC Design System 토큰 (jc-design-mapping.md §2-3 기준)
 # ============================================================
+# docx는 CSS 변수를 못 쓰므로 HEX 리터럴은 "매체 불가피"로 남되,
+# 값은 jc-design-system signature-tokens.md §6 JSON 라이트 정본과 일치시킨다 (SoT 미러).
 
 # 컬러 토큰 (HEX)
-JC_PRIMARY = "0A2540"
-JC_PRIMARY_SOFT = "1A3556"
-JC_ACCENT = "2962FF"
-JC_ACCENT_STRONG = "1E4DCC"
-JC_TEXT = "1A1D24"
-JC_TEXT_MUTED = "5A6270"
-JC_SURFACE = "FFFFFF"
-JC_SURFACE_ALT = "F1F3F7"
-JC_BORDER = "E5E8ED"
-JC_BORDER_STRONG = "C9CFD8"
-JC_SUCCESS = "00C853"
-JC_WARNING = "FFA000"
-JC_DANGER = "D32F2F"
-JC_POINT_ORANGE = "FF5722"
-JC_POINT_ORANGE_SOFT = "FFE5DD"
+JC_PRIMARY = "0A2540"            # SoT 미러: --jc-primary
+JC_PRIMARY_SOFT = "1A3556"       # SoT 미러: --jc-primary-soft
+JC_ACCENT = "2962FF"             # SoT 미러: --jc-accent
+JC_ACCENT_STRONG = "1E4DCC"      # SoT 미러: --jc-accent-strong
+JC_TEXT = "1A1D24"               # SoT 미러: --jc-text
+JC_TEXT_MUTED = "5A6270"         # SoT 미러: --jc-text-muted
+JC_SURFACE = "FFFFFF"            # SoT 미러: --jc-surface
+JC_SURFACE_ALT = "F1F3F7"        # SoT 미러: --jc-surface-alt
+JC_BORDER = "E5E8ED"             # SoT 미러: --jc-border
+JC_BORDER_STRONG = "C9CFD8"      # SoT 미러: --jc-border-strong
+JC_SUCCESS = "00C853"            # SoT 미러: --jc-success
+JC_WARNING = "FFA000"            # SoT 미러: --jc-warning
+JC_DANGER = "D32F2F"             # SoT 미러: --jc-danger
+JC_POINT_ORANGE = "FF5722"       # SoT 미러: --jc-point-orange
+# mc 표지용 옅은 오렌지 배경. SoT 정본은 --jc-point-orange-softest (#FFF3E0).
+# 기존 drift값 FFE5DD → SoT 정본 FFF3E0 으로 교정 (dark text 대비 14.8:1 AAA 유지).
+JC_POINT_ORANGE_SOFTEST = "FFF3E0"  # SoT 미러: --jc-point-orange-softest
 
 # 발표 유형별 강조 컬러 매핑 (jc-design-mapping.md §5)
 PRESENTATION_TYPE_OVERRIDES = {
@@ -72,7 +76,7 @@ PRESENTATION_TYPE_OVERRIDES = {
     "conference": {"heading_accent": JC_PRIMARY_SOFT, "cover_bg": JC_PRIMARY},
     "forum": {"heading_accent": JC_PRIMARY_SOFT, "cover_bg": JC_PRIMARY},
     "corporate_event": {"heading_accent": JC_POINT_ORANGE, "cover_bg": JC_PRIMARY},
-    "mc": {"heading_accent": JC_POINT_ORANGE, "cover_bg": JC_POINT_ORANGE_SOFT},
+    "mc": {"heading_accent": JC_POINT_ORANGE, "cover_bg": JC_POINT_ORANGE_SOFTEST},
     "general_business": {"heading_accent": JC_ACCENT, "cover_bg": JC_PRIMARY},
 }
 
