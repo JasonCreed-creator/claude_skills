@@ -55,17 +55,37 @@
   --jc-space-7: 48px;
   --jc-space-8: 64px;
 
-  /* Dark-mode tokens */
-  --jc-dark-bg: #0A2540;
-  --jc-dark-bg-alt: #1A3556;
-  --jc-dark-surface: #12304D;
-  --jc-dark-text: #FFFFFF;
-  --jc-dark-text-muted: #B8C5D6;
-  --jc-dark-text-disabled: #6B7B92;
-  --jc-dark-border: #2A4A6E;
-  --jc-dark-border-strong: #3D5F87;
-  --jc-dark-accent: #2962FF;
-  --jc-dark-accent-soft: #1E4DCC;
+  /* ============================================================
+     Dark-mode tokens — R1 정합: mode-mapping.md §3 다크 패밀리 정본 미러
+     (D1 확정: 다크 페이지 배경은 #0A2540 덱계열이 아니라 #0A1220)
+     값 정본: mode-mapping.md §3 / signature-tokens.md §6
+     ============================================================ */
+  --jc-dark-bg: #0A1220;            /* SoT 미러: 다크 페이지 배경 (§3) — 구 #0A2540 D1 drift 교정 */
+  --jc-dark-bg-alt: #152134;        /* SoT 미러: 다크 카드 서피스 (§3) — 구 #1A3556 교정 */
+  --jc-dark-surface: #1F2C42;       /* SoT 미러: 다크 보조 서피스 (§3) — 구 #12304D 교정 */
+  --jc-dark-text: #E8ECF2;          /* SoT 미러: 다크 본문 텍스트 (§3) — 구 #FFFFFF 교정 */
+  --jc-dark-text-muted: #A0A8B4;    /* SoT 미러: 다크 보조 텍스트 (§3) — 구 #B8C5D6 교정 */
+  --jc-dark-text-disabled: #5A6270; /* SoT 미러: 다크 비활성 텍스트 (§3) — 구 #6B7B92 교정 */
+  --jc-dark-border: #2A3650;        /* SoT 미러: 다크 보더 (§3) — 구 #2A4A6E 교정 */
+  --jc-dark-border-strong: #3D4A66; /* SoT 미러: 다크 강조 보더 (§3) — 구 #3D5F87 교정 */
+  --jc-dark-accent: #5B8DEF;        /* SoT 미러: 다크 액센트 (§3) — 구 #2962FF(라이트) D1 drift 교정 */
+  --jc-dark-accent-hover: #7BA3F2;  /* SoT 미러: 다크 액센트 호버 (§3) */
+  --jc-dark-point-neon: #33EE92;    /* SoT 미러: 다크 Neon 보정 (§3.1) — 다크 서피스 위 강조 헤딩용 */
+  --jc-dark-accent-soft: #1E4DCC;   /* SoT 미러: --jc-accent-strong — 다크 hover/pressed 배경(라이트 텍스트 대비 확보), 매체 불가피 리터럴 */
+}
+
+/* ============================================================
+   Tier 색상 다크 모드 변형 — R1 정합: mode-mapping.md §7 정본 미러
+   라이트 슬라이드는 :root 라이트 Tier 유지, 다크 활성 슬라이드만 §7 다크 Tier 적용
+   값 정본: mode-mapping.md §7 (T1~T6 다크 변형 표)
+   ============================================================ */
+[data-theme="dark"] {
+  --tier-t1: #F06292;  /* SoT 미러 §7: Lighter Magenta (구 #E91E63 라이트값을 다크 배경에 사용하던 drift 교정) */
+  --tier-t2: #5B8DEF;  /* SoT 미러 §7: Lighter Blue (다크 액센트와 동일) */
+  --tier-t3: #FF7043;  /* SoT 미러 §7: Lighter Orange */
+  --tier-t4: #B8C5D6;  /* SoT 미러 §7: DARK_TEXT_MUTED */
+  --tier-t5: #3D5F87;  /* SoT 미러 §7: DARK_BORDER_STRONG */
+  --tier-t6: #69F0AE;  /* SoT 미러 §7: Lighter Neon */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -378,7 +398,7 @@ html, body {
   border-left-color: var(--jc-dark-accent);
 }
 [data-theme="dark"] .slide-toggleable .why-event-card h3 {
-  color: var(--jc-point-neon);
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
 }
 [data-theme="dark"] .slide-toggleable .why-event-card p {
   color: var(--jc-dark-text);
@@ -754,7 +774,7 @@ html, body {
   border-bottom-color: var(--jc-dark-border);
 }
 [data-theme="dark"] .slide-toggleable .roi-stage h4 {
-  color: var(--jc-point-neon);
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
 }
 [data-theme="dark"] .slide-toggleable .roi-stage ul,
 [data-theme="dark"] .slide-toggleable .roi-stage p {
@@ -818,7 +838,7 @@ html, body {
 .always-dark .cta-headline {
   font-size: 26px;
   font-weight: 700;
-  color: var(--jc-point-neon);
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
   line-height: 1.3;
   margin-bottom: var(--jc-space-5);
 }

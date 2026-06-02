@@ -175,10 +175,14 @@ ROI_INDUSTRY_LABELS = {
     "public": "공공·교육·연구 스폰서 ROI"
 }
 
-# CHART_SERIES 5색 (jc-design-system data series)
-CHART_COLORS = ["2962FF", "E91E63", "FF5722", "00E676", "0A2540"]
+# CHART_SERIES 5색 — SoT 미러 (값 정본: signature-tokens.md §1.4 / §6 라이트 data-1~5)
+# 주의: 끝의 "0A2540"은 data-5(Deep Navy 5순위 차트 시리즈) 정본이며 *페이지 배경 아님*.
+#       다크 차트 시리즈는 mode-mapping.md §3.2 (data-5=C9CFD8) 정본 사용.
+CHART_COLORS = ["2962FF", "E91E63", "FF5722", "00E676", "0A2540"]  # SoT 라이트 data 시리즈
 
-# Tier 컬러 토큰 (HEX without #)
+# Tier 컬러 토큰 (HEX without #) — SoT 미러: 라이트 Tier 정본 (design-tokens-mapping.md §2.2 / signature-tokens.md)
+# 다크(dark_mixed) 렌더 시 Tier 다크 변형은 mode-mapping.md §7 정본을 빌더가 적용
+# (T1 #F06292 · T2 #5B8DEF · T3 #FF7043 · T4 #B8C5D6 · T5 #3D5F87 · T6 #69F0AE).
 TIER_COLORS_HEX = {
     "T1": "E91E63",
     "T2": "2962FF",

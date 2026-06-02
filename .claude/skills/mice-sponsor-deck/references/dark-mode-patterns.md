@@ -8,67 +8,80 @@ mice-proposal v2.1.1 `dark-mode-patterns.md` 를 sponsor-deck 컨텍스트로 �
 
 ### 0-1. 다크 색상 변수 (JC 시그니처 기준)
 
+> **✅ R1 정합 완료 — 값 정본은 SoT 단일 출처.** 아래 `DARK_*` const는 SoT 다크 정본의 **미러**이며, 빌드 시 값의 권위는 항상 다음 SoT 파일이다:
+> - 다크 패밀리(bg·surface·text·border·accent): `mode-mapping.md §3`
+> - 다크 차트 시리즈: `mode-mapping.md §3.2`
+> - 다크 Tier(T1~T6): `mode-mapping.md §7`
+> - 라이트 베이스 hex: `signature-tokens.md §6`
+>
+> ⚠️ D1 확정: 다크 *페이지 배경*은 덱계열 `#0A2540`가 아니라 **`#0A1220`**. (`#0A2540`는 라이트 `--jc-primary`/표지/차트 data-5 전용.)
+
 ```javascript
-// 다크 모드 컬러 변수 (mice-proposal v2.1.1 dark-mode-patterns 동일)
-const DARK_BG = "0A2540";              // 메인 배경 (Deep Navy)
-const DARK_BG_ALT = "1A3556";          // 카드·시트 배경 (Primary Soft)
-const DARK_BG_PLACEHOLDER = "1F4068";  // 이미지 placeholder
-const DARK_SURFACE = "12304D";         // 보조 서피스
+// 다크 모드 컬러 변수 — SoT 미러 (값 정본: mode-mapping.md §3)
+const DARK_BG = "0A1220";              // SoT 미러 §3: 다크 페이지 배경 (구 0A2540 D1 drift 교정)
+const DARK_BG_ALT = "152134";          // SoT 미러 §3: 다크 카드·시트 배경 (구 1A3556 교정)
+const DARK_BG_PLACEHOLDER = "1F2C42";  // SoT 미러 §3: 다크 보조 서피스 계열(placeholder) (구 1F4068 교정)
+const DARK_SURFACE = "1F2C42";         // SoT 미러 §3: 다크 보조 서피스 (구 12304D 교정)
 
-const DARK_TEXT = "FFFFFF";            // 본문 흰색
-const DARK_TEXT_MUTED = "B8C5D6";      // 보조 글자
-const DARK_TEXT_DISABLED = "6B7B92";   // 비활성
+const DARK_TEXT = "E8ECF2";            // SoT 미러 §3: 다크 본문 텍스트 (구 FFFFFF 교정 — 헤더 텍스트만 FFFFFF 유지)
+const DARK_TEXT_MUTED = "A0A8B4";      // SoT 미러 §3: 다크 보조 텍스트 (구 B8C5D6 교정)
+const DARK_TEXT_DISABLED = "5A6270";   // SoT 미러 §3: 다크 비활성 텍스트 (구 6B7B92 교정)
 
-const DARK_BORDER = "2A4A6E";          // 테두리
-const DARK_BORDER_STRONG = "3D5F87";   // 강조 테두리
+const DARK_BORDER = "2A3650";          // SoT 미러 §3: 다크 테두리 (구 2A4A6E 교정)
+const DARK_BORDER_STRONG = "3D4A66";   // SoT 미러 §3: 다크 강조 테두리 (구 3D5F87 교정)
 
-const DARK_ACCENT = "2962FF";          // Electric Blue (라이트와 동일)
-const DARK_ACCENT_SOFT = "1E4DCC";     // 호버 상태
+const DARK_ACCENT = "5B8DEF";          // SoT 미러 §3: 다크 액센트 (구 2962FF 라이트값 D1 drift 교정)
+const DARK_ACCENT_HOVER = "7BA3F2";    // SoT 미러 §3: 다크 액센트 호버
+const DARK_ACCENT_SOFT = "1E4DCC";     // SoT 미러: --jc-accent-strong — 다크 hover/pressed 배경(라이트 텍스트 대비 확보), 매체 불가피 리터럴
+const DARK_POINT_NEON = "33EE92";      // SoT 미러 §3.1: 다크 Neon 보정 (다크 서피스 위 강조 헤딩용)
 
-// 차트 데이터 시리즈는 라이트와 동일 (가독성 검증 완료)
-const DARK_CHART_SERIES = ["2962FF", "E91E63", "FF5722", "00E676", "B8C5D6"];
+// 차트 데이터 시리즈 — SoT 미러 (값 정본: mode-mapping.md §3.2)
+const DARK_CHART_SERIES = ["5B8DEF", "F04D85", "FF7649", "33EE92", "C9CFD8"];  // §3.2 다크 보정(data-5=C9CFD8). data-6 확장 시 "A78BFA"
 
-// Tier 색상은 라이트와 동일 (브랜드 일관성)
+// Tier 색상 — SoT 미러 (값 정본: mode-mapping.md §7)
 const DARK_TIER_COLORS = {
-  T1: "E91E63",  // Magenta — 다크에서 더 강한 임팩트
-  T2: "2962FF",  // Electric Blue
-  T3: "FF5722",  // Vivid Orange
-  T4: "B8C5D6",  // Muted (라이트의 5A6270 → 다크에서는 B8C5D6 으로 가독성 확보)
-  T5: "6B7B92",  // 다크 환경의 Border Strong 대응
-  T6: "00E676"   // Neon Green
+  T1: "F06292",  // SoT §7: Lighter Magenta (구 E91E63 라이트값 drift 교정)
+  T2: "5B8DEF",  // SoT §7: Lighter Blue (다크 액센트와 동일)
+  T3: "FF7043",  // SoT §7: Lighter Orange (구 FF5722 교정)
+  T4: "B8C5D6",  // SoT §7: DARK_TEXT_MUTED
+  T5: "3D5F87",  // SoT §7: DARK_BORDER_STRONG (구 6B7B92 교정)
+  T6: "69F0AE"   // SoT §7: Lighter Neon (구 00E676 교정)
 };
 ```
 
 ```css
-/* HTML CSS 변수 (다크 모드) */
+/* HTML CSS 변수 (다크 모드) — SoT 미러 (값 정본: mode-mapping.md §3·§7) */
 [data-theme="dark"] {
-  --jc-bg: #0A2540;
-  --jc-surface: #1A3556;
-  --jc-surface-alt: #12304D;
-  --jc-text: #FFFFFF;
-  --jc-text-muted: #B8C5D6;
-  --jc-text-disabled: #6B7B92;
-  --jc-border: #2A4A6E;
-  --jc-border-strong: #3D5F87;
-  --jc-accent: #2962FF;
-  --jc-accent-soft: #1E4DCC;
-  /* Tier 색상은 동일 유지 */
+  --jc-bg: #0A1220;            /* SoT 미러 §3: 다크 페이지 배경 (구 #0A2540 D1 drift 교정) */
+  --jc-surface: #152134;       /* SoT 미러 §3: 다크 카드 서피스 (구 #1A3556 교정) */
+  --jc-surface-alt: #1F2C42;   /* SoT 미러 §3: 다크 보조 서피스 (구 #12304D 교정) */
+  --jc-text: #E8ECF2;          /* SoT 미러 §3: 다크 본문 텍스트 (구 #FFFFFF 교정) */
+  --jc-text-muted: #A0A8B4;    /* SoT 미러 §3: 다크 보조 텍스트 (구 #B8C5D6 교정) */
+  --jc-text-disabled: #5A6270; /* SoT 미러 §3: 다크 비활성 텍스트 (구 #6B7B92 교정) */
+  --jc-border: #2A3650;        /* SoT 미러 §3: 다크 테두리 (구 #2A4A6E 교정) */
+  --jc-border-strong: #3D4A66; /* SoT 미러 §3: 다크 강조 테두리 (구 #3D5F87 교정) */
+  --jc-accent: #5B8DEF;        /* SoT 미러 §3: 다크 액센트 (구 #2962FF 라이트값 D1 drift 교정) */
+  --jc-accent-soft: #1E4DCC;   /* SoT 미러: --jc-accent-strong 다크 hover/pressed 배경, 매체 불가피 리터럴 */
+  /* Tier 색상 다크 변형은 mode-mapping.md §7 정본 적용:
+     --tier-t1 #F06292 · --tier-t2 #5B8DEF · --tier-t3 #FF7043 · --tier-t4 #B8C5D6 · --tier-t5 #3D5F87 · --tier-t6 #69F0AE */
 }
 ```
 
 ### 0-2. 라이트 → 다크 매핑 표
 
-| 라이트 요소 | 라이트 컬러 | 다크 컬러 |
+> 값 정본: 라이트 = `signature-tokens.md §6`, 다크 = `mode-mapping.md §3`. 아래는 SoT 미러.
+
+| 라이트 요소 | 라이트 컬러 | 다크 컬러 (SoT §3) |
 |------------|------------|----------|
-| 페이지 배경 | `#F8F9FB` | `#0A2540` |
-| 카드 배경 | `#FFFFFF` | `#1A3556` |
-| 보조 서피스 | `#F1F3F7` | `#12304D` |
-| 짝수 행 배경 | `#F8F9FB` | `#12304D` |
-| 본문 글자 | `#1A1D24` | `#FFFFFF` |
-| 보조 글자 | `#5A6270` | `#B8C5D6` |
-| 테두리 | `#E5E8ED` | `#2A4A6E` |
-| 강조 테두리 | `#C9CFD8` | `#3D5F87` |
-| 이미지 placeholder | `#E5E8ED` | `#1F4068` |
+| 페이지 배경 | `#F8F9FB` | `#0A1220` (구 #0A2540 D1 drift 교정) |
+| 카드 배경 | `#FFFFFF` | `#152134` (구 #1A3556) |
+| 보조 서피스 | `#F1F3F7` | `#1F2C42` (구 #12304D) |
+| 짝수 행 배경 | `#F8F9FB` | `#1F2C42` (구 #12304D) |
+| 본문 글자 | `#1A1D24` | `#E8ECF2` (구 #FFFFFF) |
+| 보조 글자 | `#5A6270` | `#A0A8B4` (구 #B8C5D6) |
+| 테두리 | `#E5E8ED` | `#2A3650` (구 #2A4A6E) |
+| 강조 테두리 | `#C9CFD8` | `#3D4A66` (구 #3D5F87) |
+| 이미지 placeholder | `#E5E8ED` | `#1F2C42` (보조 서피스 계열, 구 #1F4068) |
 
 ### 0-3. 적용 컨텍스트 — 슬라이드별 라이트/다크 권장 매트릭스 (sponsor-deck 핵심)
 
@@ -89,7 +102,7 @@ const DARK_TIER_COLORS = {
 1. **다크 슬라이드 ≤ 30%**: 전체 슬라이드 15장이면 다크 슬라이드 최대 4~5장
 2. **데이터·표 슬라이드는 라이트 강제**: S3·S4·S6 다크 금지
 3. **표지·임팩트·종결 슬라이드는 다크 권장**: S1·S7·S9
-4. **WCAG AA 대비비 (4.5:1) 검증 의무**: 흰색 텍스트 + Deep Navy 배경 = 13.1:1 (충분)
+4. **WCAG AA 대비비 (4.5:1) 검증 의무**: 다크 본문 `#E8ECF2` + 다크 배경 `#0A1220` = 14.96:1 (mode-mapping.md §9.5, 충분)
 5. **인쇄 시 라이트 강제 토글 지원**: `@media print` + 다크 토글 스크립트
 
 ---
@@ -109,7 +122,7 @@ const DARK_TIER_COLORS = {
 ```html
 <section class="slide slide-dark" data-theme="dark">
   <div class="tier-grid">
-    <article class="tier-card dark" data-tier="T1" style="--tier-color: #E91E63;">
+    <article class="tier-card dark" data-tier="T1" style="--tier-color: #F06292;"><!-- SoT 미러 §7 다크 T1 (구 #E91E63 라이트값 drift 교정) -->
       <div class="tier-accent"></div>
       <div class="tier-body">
         <header class="tier-header">
@@ -131,28 +144,29 @@ const DARK_TIER_COLORS = {
 </section>
 
 <style>
+/* SoT 미러 — 값 정본: mode-mapping.md §3 (다크 패밀리) */
 .slide-dark {
-  background: #0A2540;
-  color: #FFFFFF;
+  background: #0A1220;  /* SoT §3 다크 페이지 배경 (구 #0A2540 D1 drift 교정) */
+  color: #E8ECF2;       /* SoT §3 다크 본문 텍스트 (구 #FFFFFF) */
 }
 .tier-card.dark {
-  background: #1A3556;
-  border: 0.5px solid #2A4A6E;
+  background: #152134;            /* SoT §3 다크 카드 서피스 (구 #1A3556) */
+  border: 0.5px solid #2A3650;   /* SoT §3 다크 테두리 (구 #2A4A6E) */
 }
 .tier-card.dark .tier-name {
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .tier-card.dark .tier-slots {
-  color: #B8C5D6;
+  color: #A0A8B4;  /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 .tier-card.dark .tier-price {
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .tier-card.dark .tier-benefits {
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .tier-card.dark .tier-meta {
-  border-bottom-color: #2A4A6E;
+  border-bottom-color: #2A3650;  /* SoT §3 (구 #2A4A6E) */
 }
 </style>
 ```
@@ -276,30 +290,31 @@ function addDarkTierCard(slide, opts) {
 </section>
 
 <style>
+/* SoT 미러 — 값 정본: mode-mapping.md §3 */
 .benefits-matrix.dark {
-  background: #0A2540;
-  color: #FFFFFF;
-  border: 1px solid #2A4A6E;
+  background: #0A1220;            /* SoT §3 다크 페이지 배경 (구 #0A2540 D1 drift 교정) */
+  color: #E8ECF2;                /* SoT §3 다크 본문 텍스트 (구 #FFFFFF) */
+  border: 1px solid #2A3650;     /* SoT §3 다크 테두리 (구 #2A4A6E) */
 }
 .benefits-matrix.dark thead th {
-  background: #2962FF;
-  color: #FFFFFF;
-  border-bottom: 2px solid #1E4DCC;
+  background: #5B8DEF;               /* SoT §3 다크 액센트 (구 #2962FF 라이트값 drift 교정) */
+  color: #FFFFFF;                    /* 헤더 텍스트는 #FFFFFF 유지 (SoT §3 헤더 텍스트 동일) */
+  border-bottom: 2px solid #1E4DCC;  /* SoT 미러: --jc-accent-strong 매체 불가피 리터럴 */
 }
 .benefits-matrix.dark tbody th.cat-row {
-  background: #12304D;
-  color: #B8C5D6;
+  background: #1F2C42;  /* SoT §3 다크 보조 서피스 (구 #12304D) */
+  color: #A0A8B4;       /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 .benefits-matrix.dark tbody td {
-  border-bottom: 1px solid #2A4A6E;
-  color: #FFFFFF;
+  border-bottom: 1px solid #2A3650;  /* SoT §3 (구 #2A4A6E) */
+  color: #E8ECF2;                    /* SoT §3 (구 #FFFFFF) */
 }
 .benefits-matrix.dark tbody tr:nth-child(even) td,
 .benefits-matrix.dark tbody tr:nth-child(even) th.cat-row {
-  background: #1A3556;
+  background: #152134;  /* SoT §3 다크 카드 서피스 (구 #1A3556) */
 }
 .benefits-matrix.dark .dash {
-  color: #6B7B92;
+  color: #5A6270;  /* SoT §3 다크 비활성 텍스트 (구 #6B7B92) */
 }
 </style>
 ```
@@ -347,7 +362,7 @@ function makeDarkMatrixBodyRow(catName, cellValues, rowIndex) {
   cellValues.forEach(val => {
     let cellColor, cellBold;
     if (val === "✓") {
-      cellColor = "00E676";  // Neon Green (다크에서 더 잘 보임)
+      cellColor = DARK_POINT_NEON;  // SoT §3.1 다크 Neon 보정 #33EE92 (구 라이트 00E676 교정)
       cellBold = true;
     } else if (val === "—") {
       cellColor = DARK_TEXT_DISABLED;
@@ -436,40 +451,41 @@ slide.addTable(matrixRows, {
 </section>
 
 <style>
+/* SoT 미러 — 값 정본: mode-mapping.md §3 / §3.1 */
 .roi-card.dark {
-  background: #1A3556;
-  border: 0.5px solid #2A4A6E;
+  background: #152134;           /* SoT §3 다크 카드 서피스 (구 #1A3556) */
+  border: 0.5px solid #2A3650;   /* SoT §3 다크 테두리 (구 #2A4A6E) */
 }
 .roi-card.dark .roi-header {
-  background: #2962FF;
+  background: #5B8DEF;  /* SoT §3 다크 액센트 (구 #2962FF 라이트값 drift 교정) */
 }
 .roi-card.dark .roi-stage {
-  border-bottom: 1px solid #2A4A6E;
+  border-bottom: 1px solid #2A3650;  /* SoT §3 (구 #2A4A6E) */
 }
 .roi-card.dark .roi-stage h4 {
-  color: #00E676;  /* Neon Green — 다크에서 강한 식별 */
+  color: #33EE92;  /* SoT §3.1 다크 Neon 보정 — 다크에서 강한 식별 (구 #00E676) */
 }
 .roi-card.dark .roi-stage ul,
 .roi-card.dark .roi-stage p {
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .roi-card.dark .stage-estimate {
-  background: #2962FF;  /* Electric Blue 풀 배경 — 임팩트 강화 */
+  background: #5B8DEF;  /* SoT §3 다크 액센트 풀 배경 — 임팩트 강화 (구 #2962FF) */
   border-bottom: none;
 }
 .roi-card.dark .stage-estimate h4 {
-  color: #FFFFFF;
+  color: #FFFFFF;  /* 액센트 배경 위 헤더 텍스트는 #FFFFFF 유지 */
 }
 .roi-card.dark .roi-estimate-headline strong {
-  color: #FFFFFF;
+  color: #FFFFFF;  /* 액센트 배경 위 강조 텍스트(26px, 라지) #FFFFFF 유지 */
   font-size: 26px;
 }
 .roi-card.dark .roi-estimate-secondary {
-  color: #E8EFFF;
+  color: #E8EFFF;  /* SoT 미러: --jc-accent-soft 페일 틴트(액센트 배경 위 캡션) */
 }
 .roi-card.dark .roi-caption.dark {
-  background: #12304D;
-  color: #B8C5D6;
+  background: #1F2C42;  /* SoT §3 다크 보조 서피스 (구 #12304D) */
+  color: #A0A8B4;       /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 </style>
 ```
@@ -504,13 +520,13 @@ function addDarkRoiCard(slide, opts) {
     align: "left", valign: "middle", margin: 0
   });
 
-  // 1단: 전제 조건 — Neon Green 헤더
+  // 1단: 전제 조건 — Neon Green 헤더 (SoT §3.1 다크 Neon)
   let stageY = y + 0.65;
   slide.addText("① 전제 조건", {
     x: x + 0.2, y: stageY, w: w - 0.4, h: 0.25,
     fontSize: 11, bold: true,
     fontFace: FONT_KO,
-    color: "00E676",
+    color: DARK_POINT_NEON,  // SoT §3.1 다크 Neon #33EE92 (구 라이트 00E676 교정)
     align: "left", valign: "middle", margin: 0
   });
   const premiseItems = premise.map(p => ({
@@ -528,7 +544,7 @@ function addDarkRoiCard(slide, opts) {
     x: x + 0.2, y: stageY, w: w - 0.4, h: 0.25,
     fontSize: 11, bold: true,
     fontFace: FONT_KO,
-    color: "00E676",
+    color: DARK_POINT_NEON,  // SoT §3.1 다크 Neon #33EE92 (구 라이트 00E676 교정)
     align: "left", valign: "middle", margin: 0
   });
   const formulaItems = formula.map(f => ({
@@ -621,29 +637,30 @@ function addDarkRoiCard(slide, opts) {
 </section>
 
 <style>
+/* SoT 미러 — 값 정본: mode-mapping.md §3 / §3.1 */
 .kpi-callout.dark {
-  background: #1A3556;
-  border: 0.5px solid #2A4A6E;
-  border-left: 6px solid #2962FF;
+  background: #152134;            /* SoT §3 다크 카드 서피스 (구 #1A3556) */
+  border: 0.5px solid #2A3650;   /* SoT §3 다크 테두리 (구 #2A4A6E) */
+  border-left: 6px solid #5B8DEF; /* SoT §3 다크 액센트 (구 #2962FF 라이트값 drift 교정) */
 }
 .kpi-callout.dark .kpi-number {
-  color: #2962FF;
+  color: #5B8DEF;  /* SoT §3 다크 액센트 (구 #2962FF) */
   font-size: 72px;
 }
 .kpi-callout.dark .kpi-number.neon {
-  color: #00E676;  /* 강조용 — 1순위 KPI에만 사용 */
+  color: #33EE92;  /* SoT §3.1 다크 Neon — 강조용 1순위 KPI에만 (구 #00E676) */
 }
 .kpi-callout.dark .kpi-unit {
-  color: #2962FF;
+  color: #5B8DEF;  /* SoT §3 다크 액센트 (구 #2962FF) */
 }
 .kpi-callout.dark .kpi-number.neon + .kpi-unit {
-  color: #00E676;
+  color: #33EE92;  /* SoT §3.1 다크 Neon (구 #00E676) */
 }
 .kpi-callout.dark .kpi-label {
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .kpi-callout.dark .kpi-source {
-  color: #B8C5D6;
+  color: #A0A8B4;  /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 </style>
 ```
@@ -664,8 +681,8 @@ function addDarkKpiCallout(slide, opts) {
     rectRadius: 0.08
   });
 
-  // 좌측 6px Accent 보더
-  const borderColor = neon ? "00E676" : DARK_ACCENT;
+  // 좌측 6px Accent 보더 (neon=true는 SoT §3.1 다크 Neon)
+  const borderColor = neon ? DARK_POINT_NEON : DARK_ACCENT;  // SoT 미러: #33EE92 / 다크 액센트 #5B8DEF
   slide.addShape(pres.shapes.RECTANGLE, {
     x, y, w: 0.08, h,
     fill: { color: borderColor },
@@ -682,7 +699,7 @@ function addDarkKpiCallout(slide, opts) {
     x: x + 0.1, y: y + 0.3, w: w - 0.2, h: h * 0.48,
     fontSize: 60, bold: true,
     fontFace: FONT_MONO,
-    color: neon ? "00E676" : DARK_ACCENT,
+    color: neon ? DARK_POINT_NEON : DARK_ACCENT,  // SoT 미러: #33EE92 / #5B8DEF
     align: "center", valign: "middle", margin: 0
   });
 
@@ -692,7 +709,7 @@ function addDarkKpiCallout(slide, opts) {
       x: x + 0.1, y: y + 0.3 + h * 0.48, w: w - 0.2, h: 0.3,
       fontSize: 20, bold: true,
       fontFace: FONT_KO,
-      color: neon ? "00E676" : DARK_ACCENT,
+      color: neon ? DARK_POINT_NEON : DARK_ACCENT,  // SoT 미러: #33EE92 / #5B8DEF
       align: "center", valign: "top", margin: 0
     });
   }
@@ -779,9 +796,11 @@ darkKpis.forEach((kpi, idx) => {
 </section>
 
 <style>
+/* SoT 미러 — 값 정본: mode-mapping.md §3. 다크 표지는 다크 페이지 배경 #0A1220 사용
+   (라이트 표지의 --jc-primary #0A2540 풀블리드와 구별 — DARK-COVER는 다크 컨텍스트) */
 .slide-cover-dark {
-  background: #0A2540;
-  color: #FFFFFF;
+  background: #0A1220;  /* SoT §3 다크 페이지 배경 (구 #0A2540 D1 drift 교정) */
+  color: #E8ECF2;       /* SoT §3 다크 본문 텍스트 (구 #FFFFFF) */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -795,8 +814,8 @@ darkKpis.forEach((kpi, idx) => {
 .cover-badge {
   display: inline-block;
   padding: 6px 14px;
-  background: #2962FF;
-  color: #FFFFFF;
+  background: #5B8DEF;  /* SoT §3 다크 액센트 (구 #2962FF 라이트값 drift 교정) */
+  color: #FFFFFF;       /* 액센트 배경 위 배지 텍스트 #FFFFFF 유지 */
   font-family: var(--jc-font-mono, 'JetBrains Mono');
   font-size: 11px;
   font-weight: 600;
@@ -809,26 +828,26 @@ darkKpis.forEach((kpi, idx) => {
   font-family: var(--jc-font-heading, Pretendard);
   font-size: 56px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 다크 본문 텍스트 (구 #FFFFFF) */
   margin: 0 0 12px;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 .cover-subtitle {
   font-size: 22px;
-  color: #B8C5D6;
+  color: #A0A8B4;  /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
   margin: 0 0 24px;
   font-weight: 400;
 }
 .cover-accent-line {
   width: 120px;
   height: 4px;
-  background: #2962FF;
+  background: #5B8DEF;  /* SoT §3 다크 액센트 (구 #2962FF) */
   margin: 24px 0;
 }
 .cover-meta {
   font-size: 16px;
-  color: #FFFFFF;
+  color: #E8ECF2;  /* SoT §3 (구 #FFFFFF) */
 }
 .cover-date,
 .cover-venue {
@@ -836,7 +855,7 @@ darkKpis.forEach((kpi, idx) => {
 }
 .cover-divider {
   margin: 0 12px;
-  color: #B8C5D6;
+  color: #A0A8B4;  /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 .cover-footer {
   position: absolute;
@@ -846,7 +865,7 @@ darkKpis.forEach((kpi, idx) => {
 .cover-version {
   font-family: var(--jc-font-mono, 'JetBrains Mono');
   font-size: 11px;
-  color: #B8C5D6;
+  color: #A0A8B4;  /* SoT §3 다크 보조 텍스트 (구 #B8C5D6) */
 }
 </style>
 ```
@@ -1111,10 +1130,10 @@ slide.addChart(pres.charts.BAR, [{
 - [ ] 이미지 placeholder `DARK_BG_PLACEHOLDER`
 - [ ] 카드 좌측 보더가 Accent 또는 Neon (식별성)
 
-### 8-2. WCAG AA 대비비 검증
-- [ ] 흰색 (`#FFFFFF`) on Deep Navy (`#0A2540`) = **13.1:1** ✓ (목표 4.5:1 충분 초과)
-- [ ] B8C5D6 on `#0A2540` = 7.5:1 ✓
-- [ ] DARK_ACCENT (`#2962FF`) on `#FFFFFF` = 5.8:1 ✓
+### 8-2. WCAG AA 대비비 검증 (값 정본: mode-mapping.md §9.5)
+- [ ] 다크 본문 (`#E8ECF2`) on 다크 배경 (`#0A1220`) = **14.96:1** ✓ (목표 4.5:1 충분 초과)
+- [ ] 다크 보조 (`#A0A8B4`) on `#0A1220` = 8.21:1 ✓
+- [ ] 다크 액센트 (`#5B8DEF`) 위 흰색 텍스트 = 3.41:1 → **큰 텍스트(18pt bold+)에만** 사용 (배지·헤더·KPI 숫자)
 - [ ] 다크 그라데이션 사용 금지 (인쇄 호환성)
 
 ### 8-3. 분량 검증
