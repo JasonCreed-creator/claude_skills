@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+/* =====================================================================
+   v2.1.0 — 라이트(기본) / 다크 테마 CSS 변수
+   라이트: jc-design-system 시그니처 토큰
+   다크: mice-proposal v2.1.1 dark-mode-patterns DARK_* 토큰 (1:1 매핑)
+   ===================================================================== */
+:root,
+[data-theme="light"] {
+  /* jc-design-system signature tokens (라이트) */
+  --primary: #0A2540;
+  --accent: #2962FF;
+  --accent-soft: #1E4DCC;
+  --point-orange: #FF5722;
+  --point-magenta: #E91E63;
+  --point-neon: #00E676;
+
+  --bg: #F5F7FA;
+  --bg-alt: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F3F7;
+
+  --bg-primary-soft: #E3F2FD;
+  --bg-orange-soft: #FFF3E0;
+  --bg-magenta-soft: #FCE4EC;
+  --bg-neon-soft: #E8F5E9;
+  --bg-blue-soft: #E3F2FD;
+
+  --text: #1A1A1A;
+  --text-muted: #808080;
+  --text-disabled: #BBBBBB;
+
+  --border: #E0E0E0;
+  --border-strong: #C9CFD8;
+
+  --white: #FFFFFF;
+  --header-bg: #0A2540;
+  --header-text: #FFFFFF;
+  --kanban-col-bg: #F5F7FA;
+  --chart-bg: #FFFFFF;
+  --tooltip-bg: #FFFFFF;
+  --tooltip-text: #1A1A1A;
+
+  /* typography */
+  --font-ko: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-en: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* shadow */
+  --shadow-card: 0 2px 8px rgba(10, 37, 64, 0.06);
+  --shadow-toolbar: 0 -2px 8px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] {
+  /* mice-proposal v2.1.1 DARK_* 토큰 (1:1) */
+  --primary: #0A2540;
+  --accent: #2962FF;
+  --accent-soft: #1E4DCC;
+  --point-orange: #FF5722;
+  --point-magenta: #E91E63;
+  --point-neon: #00E676;
+
+  --bg: #0A2540;             /* DARK_BG */
+  --bg-alt: #1A3556;         /* DARK_BG_ALT */
+  --surface: #1A3556;        /* 카드 배경 */
+  --surface-alt: #12304D;    /* DARK_SURFACE 보조 */
+
+  --bg-primary-soft: rgba(41, 98, 255, 0.15);
+  --bg-orange-soft: rgba(255, 87, 34, 0.18);
+  --bg-magenta-soft: rgba(233, 30, 99, 0.18);
+  --bg-neon-soft: rgba(0, 230, 118, 0.18);
+  --bg-blue-soft: rgba(41, 98, 255, 0.15);
+
+  --text: #FFFFFF;           /* DARK_TEXT */
+  --text-muted: #B8C5D6;     /* DARK_TEXT_MUTED */
+  --text-disabled: #6B7B92;  /* DARK_TEXT_DISABLED */
+
+  --border: #2A4A6E;         /* DARK_BORDER */
+  --border-strong: #3D5F87;  /* DARK_BORDER_STRONG */
+
+  --white: #FFFFFF;
+  --header-bg: #12304D;      /* 다크에서 헤더 살짝 밝게 — 구분 강화 */
+  --header-text: #FFFFFF;
+  --kanban-col-bg: #12304D;
+  --chart-bg: #1A3556;
+  --tooltip-bg: #1A3556;
+  --tooltip-text: #FFFFFF;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-toolbar: 0 -2px 8px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: var(--font-ko);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button {
+  font-family: var(--font-ko);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: var(--font-ko);
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* ===================== HEADER ===================== */
+.header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.header-band {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--point-orange));
+  margin: -16px -24px 16px -24px;
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--header-text);
+}
+.header-subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 2px;
+  color: var(--header-text);
+}
+.header-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.mode-toggle {
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 2px;
+}
+.mode-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--header-text);
+  opacity: 0.6;
+  transition: all 0.15s;
+}
+.mode-btn.active {
+  background: var(--white);
+  color: var(--primary);
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* ===================== THEME TOGGLE (v2.1.0 신규) ===================== */
+.theme-toggle {
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 2px;
+  align-items: center;
+}
+.theme-btn {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--header-text);
+  opacity: 0.6;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.theme-btn.active {
+  background: var(--white);
+  color: var(--primary);
+  opacity: 1;
+}
+.theme-btn-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+.theme-btn-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+@media (max-width: 600px) {
+  .theme-btn-label { display: none; }
+  .theme-btn { padding: 6px 8px; }
+}
+
+/* ===================== CONTAINER ===================== */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ===================== KPI CARDS ===================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+.kpi-card.kpi-magenta::before { background: var(--point-magenta); }
+.kpi-card.kpi-orange::before { background: var(--point-orange); }
+.kpi-card.kpi-neon::before { background: var(--point-neon); }
+
+.kpi-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+[data-theme="dark"] .kpi-value {
+  color: var(--white);
+}
+.kpi-suffix {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+.kpi-detail {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ===================== TABS ===================== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.tab.active {
+  background: var(--accent);
+  color: var(--white);
+  font-weight: 600;
+}
+[data-theme="light"] .tab.active {
+  background: var(--primary);
+}
+.tab.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===================== PANEL ===================== */
+.panel {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+[data-theme="light"] .panel-title {
+  color: var(--primary);
+}
+.panel-title::before {
+  content: '';
+  width: 3px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+.empty-state h2 {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+[data-theme="light"] .empty-state h2 {
+  color: var(--primary);
+}
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* ===================== INPUT AREA ===================== */
+.input-area {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.input-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.input-field, .textarea-field, .select-field {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  width: 100%;
+  font-family: var(--font-ko);
+}
+.input-field:focus, .textarea-field:focus, .select-field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg-primary-soft);
+}
+.textarea-field {
+  min-height: 200px;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.btn-primary:hover {
+  background: var(--accent-soft);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.btn-secondary:hover {
+  background: var(--surface-alt);
+}
+
+/* ===================== AGENDA ===================== */
+.agenda-list {
+  list-style: none;
+}
+.agenda-item {
+  padding: 10px 14px;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  color: var(--text);
+}
+.agenda-num {
+  color: var(--accent);
+  font-weight: 700;
+  font-family: var(--font-mono);
+  min-width: 20px;
+}
+
+/* ===================== DECISIONS ===================== */
+.decision-card {
+  background: var(--bg-blue-soft);
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.decision-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+[data-theme="light"] .decision-text {
+  color: var(--primary);
+}
+.decision-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ===================== KANBAN ===================== */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .kanban { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .kanban { grid-template-columns: 1fr; }
+}
+.kanban-col {
+  background: var(--kanban-col-bg);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 200px;
+  border: 1px solid var(--border);
+}
+.kanban-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.kanban-header-todo { color: var(--text-muted); }
+.kanban-header-doing { color: var(--accent); }
+.kanban-header-blocked { color: var(--point-magenta); }
+.kanban-header-done { color: var(--point-neon); }
+
+.action-card {
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  cursor: grab;
+  transition: all 0.15s;
+  color: var(--text);
+}
+.action-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.action-card.priority-p0 { border-left: 3px solid var(--point-magenta); }
+.action-card.priority-p1 { border-left: 3px solid var(--point-orange); }
+.action-card.priority-p2 { border-left: 3px solid var(--text-muted); }
+.action-card.priority-p3 { border-left: 3px solid var(--border); }
+.action-card.carry-over { background: var(--bg-orange-soft); }
+
+.action-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.action-title {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+  line-height: 1.4;
+}
+[data-theme="light"] .action-title {
+  color: var(--primary);
+}
+.action-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: var(--text-muted);
+  align-items: center;
+}
+.action-priority-badge {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.priority-p0 .action-priority-badge { background: var(--bg-magenta-soft); color: var(--point-magenta); }
+.priority-p1 .action-priority-badge { background: var(--bg-orange-soft); color: var(--point-orange); }
+.priority-p2 .action-priority-badge { background: var(--surface-alt); color: var(--text-muted); }
+.priority-p3 .action-priority-badge { background: var(--surface-alt); color: var(--text-muted); }
+
+.action-status-select {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  color: var(--text);
+}
+
+/* Due 임박/지연 표시 */
+.due-soon { color: var(--point-orange); font-weight: 600; }
+.due-overdue { color: var(--point-magenta); font-weight: 700; }
+
+/* ===================== RISK / PENDING ===================== */
+.risk-item, .pending-item {
+  padding: 12px 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.risk-item {
+  background: var(--bg-magenta-soft);
+  border-left: 3px solid var(--point-magenta);
+}
+.pending-item {
+  background: var(--bg-orange-soft);
+  border-left: 3px solid var(--point-orange);
+}
+.pending-item.carry-over {
+  border-left-style: dashed;
+  border-left-width: 4px;
+}
+.risk-title, .pending-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+[data-theme="light"] .risk-title,
+[data-theme="light"] .pending-title {
+  color: var(--primary);
+}
+.risk-meta, .pending-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ===================== FILTERS ===================== */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filter-chip {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.filter-chip.active {
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+}
+.search-input {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  font-size: 12px;
+  flex: 1;
+  min-width: 180px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ===================== SERIES CHARTS ===================== */
+.chart-container {
+  background: var(--chart-bg);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+}
+.chart-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+[data-theme="light"] .chart-title {
+  color: var(--primary);
+}
+
+/* Recharts 다크 호환 — 그리드선·축 라벨 */
+[data-theme="dark"] .recharts-cartesian-grid line {
+  stroke: var(--border) !important;
+}
+[data-theme="dark"] .recharts-cartesian-axis-tick text {
+  fill: var(--text-muted) !important;
+}
+[data-theme="dark"] .recharts-legend-item-text {
+  color: var(--text) !important;
+}
+
+/* ===================== STRATEGY ===================== */
+.strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.strategy-card {
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+.strategy-q {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.strategy-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.strategy-content {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+[data-theme="light"] .strategy-content {
+  color: var(--primary);
+}
+
+/* ===================== DISCUSSION ===================== */
+.discussion-block {
+  margin-bottom: 16px;
+}
+.discussion-agenda {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.discussion-utt {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.discussion-utt:last-child { border-bottom: none; }
+.discussion-speaker {
+  font-weight: 600;
+  color: var(--text);
+  min-width: 100px;
+}
+[data-theme="light"] .discussion-speaker {
+  color: var(--primary);
+}
+.discussion-text {
+  flex: 1;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ===================== NEXT STEPS ===================== */
+.next-step {
+  background: var(--bg-blue-soft);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--accent);
+}
+.next-step-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+[data-theme="light"] .next-step-title {
+  color: var(--primary);
+}
+.next-step-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ===================== TOOLBAR FOOTER ===================== */
+.toolbar {
+  position: sticky;
+  bottom: 0;
+  background: var(--header-bg);
+  padding: 12px 24px;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-toolbar);
+  flex-wrap: wrap;
+}
+.toolbar-info {
+  font-size: 11px;
+  color: var(--header-text);
+  opacity: 0.7;
+}
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-toolbar {
+  background: rgba(255,255,255,0.1);
+  color: var(--header-text);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-toolbar:hover {
+  background: rgba(255,255,255,0.2);
+}
+.btn-toolbar-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.btn-toolbar-primary:hover {
+  background: var(--accent-soft);
+}
+
+/* ===================== TOAST ===================== */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 200;
+  animation: slideIn 0.2s;
+}
+.toast-success { background: var(--point-neon); color: var(--primary); font-weight: 600; }
+.toast-error { background: var(--point-magenta); }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===================== PRINT (라이트 강제) ===================== */
+@media print {
+  /* 인쇄 시 다크 → 라이트 강제 */
+  :root, [data-theme="dark"], [data-theme="light"] {
+    --bg: #FFFFFF;
+    --bg-alt: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-alt: #F8F9FA;
+    --text: #1A1A1A;
+    --text-muted: #606060;
+    --border: #DDDDDD;
+    --header-bg: #0A2540;
+    --header-text: #FFFFFF;
+    --kanban-col-bg: #F5F7FA;
+    --chart-bg: #FFFFFF;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+  }
+  .header, .toolbar, .tabs, .input-area, .filter-bar, .empty-state { display: none !important; }
+  .container { padding: 0; max-width: 100%; }
+  .panel { page-break-inside: avoid; border: 1px solid #999; box-shadow: none; background: #FFFFFF !important; }
+  .kanban { grid-template-columns: repeat(2, 1fr); }
+  .theme-toggle, .mode-toggle { display: none !important; }
+}
+
+/* mobile responsive */
+@media (max-width: 720px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .input-row { grid-template-columns: 1fr; }
+  .strategy-grid { grid-template-columns: 1fr; }
+  .header-title { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, useMemo, useCallback } = React;
+const {
+  LineChart, Line, AreaChart, Area, BarChart, Bar,
+  PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} = Recharts;
+
+/* =========================================================
+   초기 데이터 (서버 사이드에서 주입)
+   ========================================================= */
+const INITIAL_DATA = {{INITIAL_DATA}};
+
+const TOKENS = {
+  primary: '#0A2540',
+  accent: '#2962FF',
+  orange: '#FF5722',
+  magenta: '#E91E63',
+  neon: '#00E676',
+};
+
+/* =========================================================
+   v2.1.0 — 테마 관리 (라이트/다크)
+   - localStorage 키: mm-theme
+   - 우선순위: localStorage > prefers-color-scheme > 'light'
+   - 인쇄 시 라이트 강제는 CSS @media print 에서 처리
+   ========================================================= */
+const THEME_KEY = 'mm-theme';
+function getInitialTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark' || saved === 'light') return saved;
+  } catch { /* localStorage 차단 환경 */ }
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    try {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    } catch { /* matchMedia 없음 */ }
+  }
+  return 'light';
+}
+function applyThemeToRoot(theme) {
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  try { localStorage.setItem(THEME_KEY, theme); } catch { /* */ }
+}
+
+/* =========================================================
+   Storage Adapter (window.storage 우선, localStorage fallback)
+   ========================================================= */
+const Storage = {
+  async get(key) {
+    if (typeof window.storage !== 'undefined') {
+      try {
+        const r = await window.storage.get(key);
+        return r ? JSON.parse(r.value) : null;
+      } catch { return null; }
+    }
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : null;
+    } catch { return null; }
+  },
+  async set(key, value) {
+    const json = JSON.stringify(value);
+    if (typeof window.storage !== 'undefined') {
+      try { await window.storage.set(key, json); return true; }
+      catch { return false; }
+    }
+    try { localStorage.setItem(key, json); return true; }
+    catch { return false; }
+  },
+  async list(prefix) {
+    if (typeof window.storage !== 'undefined') {
+      try {
+        const r = await window.storage.list(prefix);
+        return r?.keys || [];
+      } catch { return []; }
+    }
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) keys.push(k);
+    }
+    return keys;
+  }
+};
+
+/* =========================================================
+   유틸 함수
+   ========================================================= */
+function dueStatus(due, status) {
+  if (!due || status === 'DONE') return 'normal';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(due);
+  const diff = Math.ceil((d - today) / 86400000);
+  if (diff < 0) return 'overdue';
+  if (diff <= 3) return 'soon';
+  return 'normal';
+}
+
+function showToast(msg, type='') {
+  const root = document.body;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  root.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch { return false; }
+}
+
+function downloadJSON(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function formatDateForFilename(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}${m}${day}`;
+}
+
+function sanitizeFilename(name) {
+  return String(name || 'meeting').replace(/[^a-zA-Z0-9가-힣._-]/g, '-').slice(0, 60);
+}
+
+function buildSlackMd(data) {
+  const lines = [];
+  lines.push(`**[${data.project_name}] 미팅 요약 (${data.meeting_date})**`);
+  if (data.series_id) {
+    lines.push(`_시리즈 ${data.series_id} / ${data.series_session_no}차_`);
+  }
+  lines.push('');
+  if (data.attendees?.length) {
+    lines.push(`**참석:** ${data.attendees.join(', ')}`);
+    lines.push('');
+  }
+  if (data.decisions?.length) {
+    lines.push('**결정사항**');
+    data.decisions.slice(0,3).forEach(d => lines.push(`- ${d.text}`));
+    if (data.decisions.length > 3) lines.push(`- (외 ${data.decisions.length-3}건)`);
+    lines.push('');
+  }
+  if (data.actions?.length) {
+    lines.push('**Action**');
+    data.actions.slice(0,3).forEach(a => lines.push(`- (${a.owner}) ${a.action} — ${a.due}`));
+    if (data.actions.length > 3) lines.push(`- (외 Action ${data.actions.length-3}건)`);
+    lines.push('');
+  }
+  if (data.next_steps?.length) {
+    const ns = data.next_steps[0];
+    lines.push(`**다음:** ${ns.title}${ns.date_str ? ' (' + ns.date_str + ')' : ''}`);
+    lines.push('');
+  }
+  if (data.mode === 'internal' && data.strategy_oneliner) {
+    lines.push(`**전략 코멘트:** ${data.strategy_oneliner}`);
+  }
+  lines.push('---');
+  lines.push(data.mode === 'external' ? '_본 요약은 양측 공유용입니다._' : '_[Internal] 외부 공유 금지_');
+  return lines.join('\n');
+}
+
+/* =========================================================
+   메인 앱 컴포넌트
+   ========================================================= */
+function App() {
+  const [data, setData] = useState(INITIAL_DATA);
+  const [activeTab, setActiveTab] = useState('current');
+  const [mode, setMode] = useState(INITIAL_DATA.mode || 'internal');
+  const [theme, setTheme] = useState(getInitialTheme);
+  const [filter, setFilter] = useState({owner: 'all', priority: 'all', search: ''});
+  const [seriesHistory, setSeriesHistory] = useState([]);
+
+  // 테마 적용 (mount 시 + theme 변경 시)
+  useEffect(() => {
+    applyThemeToRoot(theme);
+  }, [theme]);
+
+  // 시리즈 모드 활성화 시 영속 저장 + 누적 로드
+  useEffect(() => {
+    if (data.series_id) {
+      const key = `mice-mtg:${data.series_id}`;
+      Storage.get(key).then(saved => {
+        if (saved && Array.isArray(saved)) {
+          setSeriesHistory(saved);
+        }
+      });
+    }
+  }, [data.series_id]);
+
+  // 모드 변경 시 데이터 모드 갱신
+  useEffect(() => {
+    setData(prev => ({...prev, mode}));
+  }, [mode]);
+
+  /* ============ KPI 계산 ============ */
+  const kpis = useMemo(() => {
+    const actions = data.actions || [];
+    const total = actions.length;
+    const done = actions.filter(a => a.status === 'DONE').length;
+    const blocked = actions.filter(a => a.status === 'BLOCKED').length;
+    const overdue = actions.filter(a => dueStatus(a.due, a.status) === 'overdue').length;
+    return {
+      decisions: (data.decisions || []).length,
+      actions: total,
+      pending: (data.pending || []).length,
+      completion: total ? Math.round(done / total * 100) : 0,
+      blocked,
+      overdue
+    };
+  }, [data]);
+
+  /* ============ Action Status 변경 ============ */
+  const updateActionStatus = useCallback((id, newStatus) => {
+    setData(prev => ({
+      ...prev,
+      actions: prev.actions.map(a =>
+        a.id === id ? {...a, status: newStatus} : a
+      )
+    }));
+  }, []);
+
+  /* ============ 필터링된 Action ============ */
+  const filteredActions = useMemo(() => {
+    let list = data.actions || [];
+    if (filter.owner !== 'all') list = list.filter(a => a.owner === filter.owner);
+    if (filter.priority !== 'all') list = list.filter(a => a.priority === filter.priority);
+    if (filter.search) {
+      const s = filter.search.toLowerCase();
+      list = list.filter(a =>
+        (a.action || '').toLowerCase().includes(s) ||
+        (a.owner || '').toLowerCase().includes(s) ||
+        (a.id || '').toLowerCase().includes(s)
+      );
+    }
+    return list;
+  }, [data.actions, filter]);
+
+  const ownerList = useMemo(() => {
+    const set = new Set((data.actions || []).map(a => a.owner));
+    return Array.from(set);
+  }, [data.actions]);
+
+  /* ============ 시리즈 차트 데이터 ============ */
+  const seriesChartData = useMemo(() => {
+    return seriesHistory.map(s => ({
+      session: `${s.session_no}차`,
+      완료율: s.completion_rate ? Math.round(s.completion_rate * 100) : 0,
+      신규: s.new_actions || 0,
+      Carryover: s.carry_over_actions || 0,
+      DONE: s.done || 0,
+      BLOCKED: s.blocked || 0,
+    }));
+  }, [seriesHistory]);
+
+  /* ============ Status Donut ============ */
+  const statusDonutData = useMemo(() => {
+    const counts = {TODO:0, DOING:0, BLOCKED:0, DONE:0};
+    (data.actions || []).forEach(a => { counts[a.status] = (counts[a.status]||0) + 1; });
+    return [
+      {name: 'TODO', value: counts.TODO, color: '#808080'},
+      {name: 'DOING', value: counts.DOING, color: TOKENS.accent},
+      {name: 'BLOCKED', value: counts.BLOCKED, color: TOKENS.magenta},
+      {name: 'DONE', value: counts.DONE, color: TOKENS.neon},
+    ].filter(d => d.value > 0);
+  }, [data.actions]);
+
+  /* ============ Owner별 Bar ============ */
+  const ownerBarData = useMemo(() => {
+    const counts = {};
+    (data.actions || []).forEach(a => {
+      if (!counts[a.owner]) counts[a.owner] = {owner: a.owner, total: 0, done: 0};
+      counts[a.owner].total += 1;
+      if (a.status === 'DONE') counts[a.owner].done += 1;
+    });
+    return Object.values(counts);
+  }, [data.actions]);
+
+  /* ============ Slack 페이스트 ============ */
+  const handleSlackCopy = async () => {
+    const md = buildSlackMd(data);
+    const ok = await copyToClipboard(md);
+    showToast(ok ? '✅ Slack 페이스트 복사 완료' : '⚠️ 복사 실패', ok ? 'toast-success' : 'toast-error');
+  };
+
+  /* ============ PDF Export (브라우저 인쇄 활용) ============ */
+  const handlePdfExport = () => {
+    showToast('💡 인쇄 대화상자에서 "PDF로 저장" 선택', '');
+    setTimeout(() => window.print(), 300);
+  };
+
+  /* ============ JSON 백업 (v2.1.0 강화 — 시리즈 누적 포함 + 메타데이터) ============ */
+  const handleJsonBackup = () => {
+    const today = formatDateForFilename();
+    const projectSafe = sanitizeFilename(data.project_name);
+    const filename = data.series_id
+      ? `mm-series-backup-${sanitizeFilename(data.series_id)}-${today}.json`
+      : `mm-backup-${projectSafe}-${today}.json`;
+    const payload = {
+      _meta: {
+        backup_date: new Date().toISOString(),
+        skill_version: 'v2.1.0',
+        project_name: data.project_name,
+        series_id: data.series_id || null,
+        theme: theme,
+        mode: mode,
+      },
+      current_session: {
+        meeting_date: data.meeting_date,
+        type_label: data.type_label,
+        attendees: data.attendees,
+        agenda: data.agenda,
+        decisions: data.decisions,
+        actions: data.actions,
+        risks: data.risks,
+        pending: data.pending,
+        next_steps: data.next_steps,
+        discussion: data.discussion,
+        strategy_note: data.strategy_note,
+        strategy_oneliner: data.strategy_oneliner,
+      },
+      series_history: seriesHistory,
+    };
+    downloadJSON(payload, filename);
+    showToast('✅ JSON 백업 다운로드 — ' + filename, 'toast-success');
+  };
+
+  /* ============ 시리즈 저장 ============ */
+  const handleSaveSession = async () => {
+    if (!data.series_id) {
+      showToast('⚠️ 시리즈 ID가 없습니다', 'toast-error');
+      return;
+    }
+    const session = {
+      session_no: data.series_session_no || (seriesHistory.length + 1),
+      date: data.meeting_date,
+      new_actions: (data.actions || []).filter(a => !a.is_carry_over).length,
+      carry_over_actions: (data.actions || []).filter(a => a.is_carry_over).length,
+      done: (data.actions || []).filter(a => a.status === 'DONE').length,
+      doing: (data.actions || []).filter(a => a.status === 'DOING').length,
+      blocked: (data.actions || []).filter(a => a.status === 'BLOCKED').length,
+      todo: (data.actions || []).filter(a => a.status === 'TODO').length,
+      completion_rate: kpis.completion / 100,
+      data_snapshot: data,
+    };
+    const updated = [...seriesHistory.filter(s => s.session_no !== session.session_no), session];
+    updated.sort((a,b) => a.session_no - b.session_no);
+    const key = `mice-mtg:${data.series_id}`;
+    const ok = await Storage.set(key, updated);
+    if (ok) {
+      setSeriesHistory(updated);
+      showToast('✅ 시리즈 저장 완료', 'toast-success');
+    } else {
+      showToast('⚠️ 저장 실패', 'toast-error');
+    }
+  };
+
+  /* ============ 빈 상태 체크 ============ */
+  const isEmpty = !data.project_name || !data.meeting_date;
+
+  /* ============================================ */
+  /*                  RENDER                       */
+  /* ============================================ */
+  return (
+    <div>
+      <Header data={data} mode={mode} setMode={setMode} theme={theme} setTheme={setTheme} kpis={kpis} onJsonBackup={handleJsonBackup} isEmpty={isEmpty} />
+
+      <div className="container">
+        {isEmpty && <EmptyState />}
+
+        {!isEmpty && (
+          <>
+            <KpiCards kpis={kpis} data={data} />
+
+            <Tabs activeTab={activeTab} setActiveTab={setActiveTab}
+                  hasSeries={!!data.series_id}
+                  showStrategy={mode === 'internal'} />
+
+            {activeTab === 'current' && (
+              <CurrentMeetingTab data={data} mode={mode} />
+            )}
+            {activeTab === 'actions' && (
+              <ActionTab
+                actions={filteredActions}
+                allActions={data.actions || []}
+                filter={filter}
+                setFilter={setFilter}
+                ownerList={ownerList}
+                onUpdateStatus={updateActionStatus}
+                statusDonutData={statusDonutData}
+                ownerBarData={ownerBarData}
+                theme={theme}
+              />
+            )}
+            {activeTab === 'series' && data.series_id && (
+              <SeriesTab
+                seriesId={data.series_id}
+                history={seriesHistory}
+                chartData={seriesChartData}
+                onSave={handleSaveSession}
+                theme={theme}
+              />
+            )}
+            {activeTab === 'strategy' && mode === 'internal' && (
+              <StrategyTab note={data.strategy_note} />
+            )}
+          </>
+        )}
+      </div>
+
+      <Toolbar
+        mode={mode}
+        onSlack={handleSlackCopy}
+        onPdf={handlePdfExport}
+        onJson={handleJsonBackup}
+        onSaveSession={handleSaveSession}
+        hasSeries={!!data.series_id}
+        isEmpty={isEmpty}
+      />
+    </div>
+  );
+}
+
+/* ============ Header (v2.1.0 — 테마 토글 추가) ============ */
+function Header({data, mode, setMode, theme, setTheme, kpis, onJsonBackup, isEmpty}) {
+  const seriesText = data.series_id
+    ? ` · 시리즈 ${data.series_id} / ${data.series_session_no || 1}차`
+    : '';
+  const dueAlert = kpis.overdue > 0 ? ` · 🚨 지연 ${kpis.overdue}건` : '';
+  return (
+    <header className="header">
+      <div className="header-band"></div>
+      <div className="header-row">
+        <div>
+          <div className="header-title">{data.project_name || 'Meeting Minutes Dashboard'}</div>
+          <div className="header-subtitle">
+            {data.meeting_date || ''} · {data.type_label || ''}{seriesText}{dueAlert}
+          </div>
+        </div>
+        <div className="header-controls">
+          {/* External / Internal 모드 토글 (콘텐츠 톤) */}
+          <div className="mode-toggle" role="group" aria-label="모드 토글">
+            <button
+              className={`mode-btn ${mode==='internal'?'active':''}`}
+              onClick={() => setMode('internal')}
+              aria-pressed={mode==='internal'}
+            >Internal</button>
+            <button
+              className={`mode-btn ${mode==='external'?'active':''}`}
+              onClick={() => setMode('external')}
+              aria-pressed={mode==='external'}
+            >External</button>
+          </div>
+
+          {/* 라이트 / 다크 테마 토글 (v2.1.0 신규) */}
+          <div className="theme-toggle" role="group" aria-label="테마 토글">
+            <button
+              className={`theme-btn ${theme==='light'?'active':''}`}
+              onClick={() => setTheme('light')}
+              aria-pressed={theme==='light'}
+              title="라이트 모드"
+            >
+              <span className="theme-btn-icon">☀</span>
+              <span className="theme-btn-label">라이트</span>
+            </button>
+            <button
+              className={`theme-btn ${theme==='dark'?'active':''}`}
+              onClick={() => setTheme('dark')}
+              aria-pressed={theme==='dark'}
+              title="다크 모드"
+            >
+              <span className="theme-btn-icon">☾</span>
+              <span className="theme-btn-label">다크</span>
+            </button>
+          </div>
+
+          {/* JSON 백업 다운로드 버튼 (v2.1.0 강화 — 헤더 영역 진입) */}
+          {!isEmpty && (
+            <button
+              className="theme-btn"
+              style={{background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '6px'}}
+              onClick={onJsonBackup}
+              title="JSON 백업 다운로드"
+            >
+              <span className="theme-btn-icon">💾</span>
+              <span className="theme-btn-label">JSON</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ============ Empty State ============ */
+function EmptyState() {
+  return (
+    <div className="empty-state">
+      <div className="empty-state-icon">📋</div>
+      <h2>미팅 데이터가 없습니다</h2>
+      <p>Claude에 미팅 transcript를 입력하여 본 대시보드를 채워주세요.<br/>
+      클로바노트·Otter·Whisper·Zoom·Meet·Teams export 모두 지원합니다.</p>
+    </div>
+  );
+}
+
+/* ============ KPI Cards ============ */
+function KpiCards({kpis, data}) {
+  return (
+    <div className="kpi-grid">
+      <KpiCard
+        label="결정사항"
+        value={kpis.decisions}
+        suffix="건"
+      />
+      <KpiCard
+        label="Action 총개"
+        value={kpis.actions}
+        suffix="건"
+        detail={`완료 ${data.actions?.filter(a => a.status === 'DONE').length || 0}건`}
+      />
+      <KpiCard
+        label="미결 사항"
+        value={kpis.pending}
+        suffix="건"
+        accent="orange"
+        detail={kpis.blocked > 0 ? `+ Action 차단 ${kpis.blocked}건` : ''}
+      />
+      <KpiCard
+        label="Action 완료율"
+        value={kpis.completion}
+        suffix="%"
+        accent="neon"
+        detail={kpis.overdue > 0 ? `🚨 지연 ${kpis.overdue}건` : '정시 진행'}
+      />
+    </div>
+  );
+}
+
+function KpiCard({label, value, suffix, detail, accent=''}) {
+  const accentClass = accent ? `kpi-${accent}` : '';
+  return (
+    <div className={`kpi-card ${accentClass}`}>
+      <div className="kpi-label">{label}</div>
+      <div className="kpi-value">
+        {value}
+        {suffix && <span className="kpi-suffix">{suffix}</span>}
+      </div>
+      {detail && <div className="kpi-detail">{detail}</div>}
+    </div>
+  );
+}
+
+/* ============ Tabs ============ */
+function Tabs({activeTab, setActiveTab, hasSeries, showStrategy}) {
+  const tabs = [
+    {id: 'current', label: '본 미팅'},
+    {id: 'actions', label: 'Action 트래커'},
+    {id: 'series', label: '시리즈 누적', disabled: !hasSeries},
+    {id: 'strategy', label: '전략 메모', disabled: !showStrategy},
+  ];
+  return (
+    <div className="tabs">
+      {tabs.map(t => (
+        <button
+          key={t.id}
+          className={`tab ${activeTab===t.id?'active':''} ${t.disabled?'disabled':''}`}
+          onClick={() => !t.disabled && setActiveTab(t.id)}
+        >{t.label}</button>
+      ))}
+    </div>
+  );
+}
+
+/* ============ Current Meeting Tab ============ */
+function CurrentMeetingTab({data, mode}) {
+  return (
+    <div>
+      {/* 안건 */}
+      <div className="panel">
+        <div className="panel-title">안건</div>
+        {data.agenda?.length ? (
+          <ul className="agenda-list">
+            {data.agenda.map((item, i) => (
+              <li key={i} className="agenda-item">
+                <span className="agenda-num">{i+1}.</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        ) : <EmptyMsg text="안건 미식별" />}
+      </div>
+
+      {/* 결정사항 */}
+      <div className="panel">
+        <div className="panel-title">결정사항</div>
+        {data.decisions?.length ? (
+          data.decisions.map((d, i) => (
+            <div key={i} className="decision-card">
+              <div className="decision-text">[결정 {i+1}] {d.text}</div>
+              {(d.timestamp || d.rationale) && (
+                <div className="decision-meta">
+                  {d.timestamp && `합의 시점: ${d.timestamp}`}
+                  {d.timestamp && d.rationale && ' · '}
+                  {d.rationale && `근거: ${d.rationale}`}
+                </div>
+              )}
+            </div>
+          ))
+        ) : <EmptyMsg text="결정사항 미식별 — 회의록 내용 재확인 필요" />}
+      </div>
+
+      {/* 발언 요지 */}
+      {data.discussion && Object.keys(data.discussion).length > 0 && (
+        <div className="panel">
+          <div className="panel-title">발언 요지</div>
+          {Object.entries(data.discussion).map(([idx, statements]) => {
+            const label = data.agenda?.[parseInt(idx)] || `안건 ${idx}`;
+            return (
+              <div key={idx} className="discussion-block">
+                <div className="discussion-agenda">[{label}]</div>
+                {statements.map((s, i) => (
+                  <div key={i} className="discussion-utt">
+                    <div className="discussion-speaker">{s[0] || s.speaker}</div>
+                    <div className="discussion-text">{s[1] || s.text}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 리스크 */}
+      <div className="panel">
+        <div className="panel-title">리스크·이슈</div>
+        {data.risks?.length ? (
+          data.risks.map((r, i) => (
+            <div key={i} className="risk-item">
+              <div className="risk-title">[리스크 {i+1}] {r.text}</div>
+              <div className="risk-meta">
+                영향도: {r.impact}
+                {r.timestamp && ` · 식별 시점: ${r.timestamp}`}
+                {r.response && ` · 대응안: ${r.response}`}
+              </div>
+            </div>
+          ))
+        ) : <EmptyMsg text="식별된 리스크 없음" />}
+      </div>
+
+      {/* 미결 사항 */}
+      <div className="panel">
+        <div className="panel-title">미결 사항</div>
+        {data.pending?.length ? (
+          data.pending.map((p, i) => (
+            <div key={i} className={`pending-item ${p.is_carry_over?'carry-over':''}`}>
+              <div className="pending-title">
+                {p.is_carry_over && '↻ '}
+                [미결 {i+1}] {p.text}
+              </div>
+              <div className="pending-meta">
+                보류 사유: {p.reason}
+                {p.next_review && ` · 재논의: ${p.next_review}`}
+                {p.owner && ` · 책임자: ${p.owner}`}
+              </div>
+            </div>
+          ))
+        ) : <EmptyMsg text="미결 사항 없음" />}
+      </div>
+
+      {/* 후속 일정 */}
+      <div className="panel">
+        <div className="panel-title">후속 일정</div>
+        {data.next_steps?.length ? (
+          data.next_steps.map((n, i) => (
+            <div key={i} className="next-step">
+              <div className="next-step-title">[다음 단계 {i+1}] {n.title}</div>
+              <div className="next-step-meta">
+                {n.date_str && `일자: ${n.date_str}`}
+                {n.attendees && ` · 참석: ${n.attendees}`}
+                {n.agenda && ` · 아젠다: ${n.agenda}`}
+              </div>
+            </div>
+          ))
+        ) : <EmptyMsg text="후속 일정 미정" />}
+      </div>
+    </div>
+  );
+}
+
+function EmptyMsg({text}) {
+  return <div style={{color: 'var(--text-muted)', fontSize: 13, padding: '8px 0'}}>({text})</div>;
+}
+
+/* ============ Action Tab ============ */
+function ActionTab({actions, allActions, filter, setFilter, ownerList, onUpdateStatus, statusDonutData, ownerBarData, theme}) {
+  const cols = [
+    {id: 'TODO', label: 'TODO', headerClass: 'kanban-header-todo'},
+    {id: 'DOING', label: 'DOING', headerClass: 'kanban-header-doing'},
+    {id: 'BLOCKED', label: 'BLOCKED', headerClass: 'kanban-header-blocked'},
+    {id: 'DONE', label: 'DONE', headerClass: 'kanban-header-done'},
+  ];
+
+  // 다크 모드 시 차트 그리드·축 라벨 색상 적용
+  const gridStroke = theme === 'dark' ? '#2A4A6E' : '#eee';
+  const axisTickColor = theme === 'dark' ? '#B8C5D6' : '#666';
+  const tooltipStyle = theme === 'dark'
+    ? {backgroundColor: '#1A3556', border: '1px solid #2A4A6E', color: '#FFFFFF'}
+    : undefined;
+
+  return (
+    <div>
+      {/* 차트 영역 */}
+      {allActions.length > 0 && (
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 12, marginBottom: 16}}>
+          <div className="chart-container">
+            <div className="chart-title">Status 분포</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={statusDonutData}
+                  cx="50%" cy="50%"
+                  innerRadius={50} outerRadius={80}
+                  dataKey="value"
+                  label={(e) => `${e.name} ${e.value}`}
+                >
+                  {statusDonutData.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={tooltipStyle} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chart-container">
+            <div className="chart-title">Owner별 Action</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={ownerBarData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="owner" tick={{fontSize: 10, fill: axisTickColor}} />
+                <YAxis tick={{fontSize: 10, fill: axisTickColor}} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="total" fill={TOKENS.accent} name="총 Action" />
+                <Bar dataKey="done" fill={TOKENS.neon} name="완료" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* 필터 */}
+      <div className="filter-bar">
+        <input
+          className="search-input"
+          placeholder="Action 검색..."
+          value={filter.search}
+          onChange={e => setFilter({...filter, search: e.target.value})}
+        />
+        <button
+          className={`filter-chip ${filter.priority==='all'?'active':''}`}
+          onClick={() => setFilter({...filter, priority: 'all'})}
+        >전체 우선순위</button>
+        {['P0','P1','P2','P3'].map(p => (
+          <button
+            key={p}
+            className={`filter-chip ${filter.priority===p?'active':''}`}
+            onClick={() => setFilter({...filter, priority: p})}
+          >{p}</button>
+        ))}
+        <select
+          className="select-field"
+          style={{width: 160}}
+          value={filter.owner}
+          onChange={e => setFilter({...filter, owner: e.target.value})}
+        >
+          <option value="all">전체 Owner</option>
+          {ownerList.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+      </div>
+
+      {/* 칸반 */}
+      <div className="kanban">
+        {cols.map(col => {
+          const colActions = actions.filter(a => a.status === col.id);
+          return (
+            <div key={col.id} className="kanban-col">
+              <div className={`kanban-header ${col.headerClass}`}>
+                <span>{col.label}</span>
+                <span>{colActions.length}</span>
+              </div>
+              {colActions.map(a => (
+                <ActionCard key={a.id} action={a} onUpdateStatus={onUpdateStatus} />
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ActionCard({action, onUpdateStatus}) {
+  const ds = dueStatus(action.due, action.status);
+  return (
+    <div className={`action-card priority-${action.priority?.toLowerCase()} ${action.is_carry_over?'carry-over':''}`}>
+      <div className="action-id">
+        {action.is_carry_over && '↻ '}
+        {action.id}
+      </div>
+      <div className="action-title">{action.action}</div>
+      <div className="action-meta">
+        <span className="action-priority-badge">{action.priority}</span>
+        <span>{action.owner}</span>
+        <span className={ds === 'overdue' ? 'due-overdue' : ds === 'soon' ? 'due-soon' : ''}>
+          {action.due}
+        </span>
+        <select
+          className="action-status-select"
+          value={action.status}
+          onChange={e => onUpdateStatus(action.id, e.target.value)}
+        >
+          <option value="TODO">TODO</option>
+          <option value="DOING">DOING</option>
+          <option value="BLOCKED">BLOCKED</option>
+          <option value="DONE">DONE</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
+/* ============ Series Tab ============ */
+function SeriesTab({seriesId, history, chartData, onSave, theme}) {
+  const gridStroke = theme === 'dark' ? '#2A4A6E' : '#eee';
+  const axisTickColor = theme === 'dark' ? '#B8C5D6' : '#666';
+  const tooltipStyle = theme === 'dark'
+    ? {backgroundColor: '#1A3556', border: '1px solid #2A4A6E', color: '#FFFFFF'}
+    : undefined;
+  const tableBgEven = 'var(--surface-alt)';
+
+  return (
+    <div>
+      <div className="panel">
+        <div className="panel-title">시리즈 정보 — {seriesId}</div>
+        <div style={{display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <div style={{fontSize: 13, color: 'var(--text-muted)'}}>
+            누적 회차: {history.length}회 · 본 회차 데이터를 시리즈에 저장하여 누적 추적 시작
+          </div>
+          <button className="btn-primary" onClick={onSave}>본 회차 시리즈 저장</button>
+        </div>
+      </div>
+
+      {history.length === 0 && (
+        <EmptyMsg text="아직 누적된 시리즈 데이터가 없습니다. 본 회차를 저장하여 시작하세요." />
+      )}
+
+      {history.length > 0 && (
+        <>
+          <div className="chart-container">
+            <div className="chart-title">회차별 완료율 추이</div>
+            <ResponsiveContainer width="100%" height={240}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="session" tick={{fontSize: 11, fill: axisTickColor}} />
+                <YAxis domain={[0, 100]} tick={{fontSize: 11, fill: axisTickColor}} unit="%" />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend />
+                <Line type="monotone" dataKey="완료율" stroke={TOKENS.neon} strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="chart-container">
+            <div className="chart-title">회차별 Action 분포</div>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="session" tick={{fontSize: 11, fill: axisTickColor}} />
+                <YAxis tick={{fontSize: 11, fill: axisTickColor}} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend />
+                <Bar dataKey="신규" stackId="a" fill={TOKENS.accent} />
+                <Bar dataKey="Carryover" stackId="a" fill={TOKENS.orange} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="panel">
+            <div className="panel-title">회차 누적 통계</div>
+            <table style={{width: '100%', fontSize: 12, borderCollapse: 'collapse', color: 'var(--text)'}}>
+              <thead>
+                <tr style={{background: 'var(--surface-alt)', textAlign: 'left'}}>
+                  <th style={{padding: 8}}>회차</th>
+                  <th style={{padding: 8}}>일자</th>
+                  <th style={{padding: 8}}>신규</th>
+                  <th style={{padding: 8}}>Carry-over</th>
+                  <th style={{padding: 8}}>DONE</th>
+                  <th style={{padding: 8}}>BLOCKED</th>
+                  <th style={{padding: 8}}>완료율</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((s, i) => (
+                  <tr key={i} style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: 8, fontFamily: 'var(--font-mono)'}}>{s.session_no}</td>
+                    <td style={{padding: 8}}>{s.date}</td>
+                    <td style={{padding: 8}}>{s.new_actions}</td>
+                    <td style={{padding: 8, color: 'var(--point-orange)'}}>{s.carry_over_actions}</td>
+                    <td style={{padding: 8, color: 'var(--point-neon)'}}>{s.done}</td>
+                    <td style={{padding: 8, color: 'var(--point-magenta)'}}>{s.blocked}</td>
+                    <td style={{padding: 8, fontWeight: 600}}>{Math.round((s.completion_rate || 0) * 100)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ============ Strategy Tab ============ */
+function StrategyTab({note}) {
+  if (!note) {
+    return (
+      <div className="panel">
+        <div className="panel-title">전략 메모</div>
+        <EmptyMsg text="전략 메모가 작성되지 않았습니다 (Internal 모드 한정)" />
+      </div>
+    );
+  }
+  const cards = [
+    {q: 'WHO', hint: '누가 영향을 받는가?', content: note.who},
+    {q: 'WHAT', hint: '진짜 안건은 무엇이었나?', content: note.what},
+    {q: 'WHEN', hint: '타이밍은 적절했나?', content: note.when_ || note.when},
+    {q: 'WHERE', hint: '결과가 어디까지 확산되나?', content: note.where},
+    {q: 'WHY', hint: '왜 이 결정이 나왔나?', content: note.why},
+    {q: 'HOW', hint: '어떻게 활용할 것인가?', content: note.how},
+  ].filter(c => c.content);
+
+  return (
+    <div className="panel">
+      <div className="panel-title">전략 메모 (Internal 한정 — 외부 송부 금지)</div>
+      <div className="strategy-grid">
+        {cards.map((c, i) => (
+          <div key={i} className="strategy-card">
+            <div className="strategy-q">{c.q}</div>
+            <div className="strategy-hint">{c.hint}</div>
+            <div className="strategy-content">{c.content}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============ Toolbar ============ */
+function Toolbar({mode, onSlack, onPdf, onJson, onSaveSession, hasSeries, isEmpty}) {
+  if (isEmpty) return null;
+  return (
+    <div className="toolbar">
+      <div className="toolbar-info">
+        {mode === 'internal' ? '🔒 [Internal] 외부 공유 금지' : '📤 [External] 송부 가능'}
+      </div>
+      <div className="toolbar-actions">
+        <button className="btn-toolbar btn-toolbar-primary" onClick={onSlack}>
+          💬 Slack 페이스트
+        </button>
+        <button className="btn-toolbar" onClick={onPdf}>
+          📄 PDF 저장
+        </button>
+        <button className="btn-toolbar" onClick={onJson}>
+          💾 JSON 백업
+        </button>
+        {hasSeries && (
+          <button className="btn-toolbar" onClick={onSaveSession}>
+            ↻ 시리즈 저장
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============ Mount ============ */
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+
+</body>
+</html>

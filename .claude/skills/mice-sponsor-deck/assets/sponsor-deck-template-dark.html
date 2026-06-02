@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[행사명] — Sponsorship Deck (Dark Mixed)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+<style>
+/* ============================================================
+   jc-design-system Signature Tokens — Light (base)
+   ============================================================ */
+:root {
+  --jc-primary: #0A2540;
+  --jc-primary-soft: #1A3556;
+  --jc-accent: #2962FF;
+  --jc-accent-soft: #E8EFFF;
+  --jc-accent-strong: #1E4DCC;
+  --jc-text: #1A1D24;
+  --jc-text-muted: #5A6270;
+  --jc-text-disabled: #A0A6B0;
+  --jc-surface: #FFFFFF;
+  --jc-surface-alt: #F1F3F7;
+  --jc-bg: #F8F9FB;
+  --jc-border: #E5E8ED;
+  --jc-border-strong: #C9CFD8;
+  --jc-point-magenta: #E91E63;
+  --jc-point-orange: #FF5722;
+  --jc-point-neon: #00E676;
+  --jc-success: #00C853;
+  --jc-warning: #FFA000;
+  --jc-danger: #D32F2F;
+
+  --tier-t1: var(--jc-point-magenta);
+  --tier-t2: var(--jc-accent);
+  --tier-t3: var(--jc-point-orange);
+  --tier-t4: var(--jc-text-muted);
+  --tier-t5: var(--jc-border-strong);
+  --tier-t6: var(--jc-point-neon);
+
+  --jc-data-1: #2962FF;
+  --jc-data-2: #E91E63;
+  --jc-data-3: #FF5722;
+  --jc-data-4: #00E676;
+  --jc-data-5: #0A2540;
+
+  --jc-font-ko: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --jc-font-heading: 'Pretendard', 'Inter', -apple-system, sans-serif;
+  --jc-font-mono: 'JetBrains Mono', 'D2Coding', 'Consolas', 'Monaco', monospace;
+
+  --jc-space-2: 8px;
+  --jc-space-3: 12px;
+  --jc-space-4: 16px;
+  --jc-space-5: 24px;
+  --jc-space-6: 32px;
+  --jc-space-7: 48px;
+  --jc-space-8: 64px;
+
+  /* ============================================================
+     Dark-mode tokens — R1 정합: mode-mapping.md §3 다크 패밀리 정본 미러
+     (D1 확정: 다크 페이지 배경은 #0A2540 덱계열이 아니라 #0A1220)
+     값 정본: mode-mapping.md §3 / signature-tokens.md §6
+     ============================================================ */
+  --jc-dark-bg: #0A1220;            /* SoT 미러: 다크 페이지 배경 (§3) — 구 #0A2540 D1 drift 교정 */
+  --jc-dark-bg-alt: #152134;        /* SoT 미러: 다크 카드 서피스 (§3) — 구 #1A3556 교정 */
+  --jc-dark-surface: #1F2C42;       /* SoT 미러: 다크 보조 서피스 (§3) — 구 #12304D 교정 */
+  --jc-dark-text: #E8ECF2;          /* SoT 미러: 다크 본문 텍스트 (§3) — 구 #FFFFFF 교정 */
+  --jc-dark-text-muted: #A0A8B4;    /* SoT 미러: 다크 보조 텍스트 (§3) — 구 #B8C5D6 교정 */
+  --jc-dark-text-disabled: #5A6270; /* SoT 미러: 다크 비활성 텍스트 (§3) — 구 #6B7B92 교정 */
+  --jc-dark-border: #2A3650;        /* SoT 미러: 다크 보더 (§3) — 구 #2A4A6E 교정 */
+  --jc-dark-border-strong: #3D4A66; /* SoT 미러: 다크 강조 보더 (§3) — 구 #3D5F87 교정 */
+  --jc-dark-accent: #5B8DEF;        /* SoT 미러: 다크 액센트 (§3) — 구 #2962FF(라이트) D1 drift 교정 */
+  --jc-dark-accent-hover: #7BA3F2;  /* SoT 미러: 다크 액센트 호버 (§3) */
+  --jc-dark-point-neon: #33EE92;    /* SoT 미러: 다크 Neon 보정 (§3.1) — 다크 서피스 위 강조 헤딩용 */
+  --jc-dark-accent-soft: #1E4DCC;   /* SoT 미러: --jc-accent-strong — 다크 hover/pressed 배경(라이트 텍스트 대비 확보), 매체 불가피 리터럴 */
+}
+
+/* ============================================================
+   Tier 색상 다크 모드 변형 — R1 정합: mode-mapping.md §7 정본 미러
+   라이트 슬라이드는 :root 라이트 Tier 유지, 다크 활성 슬라이드만 §7 다크 Tier 적용
+   값 정본: mode-mapping.md §7 (T1~T6 다크 변형 표)
+   ============================================================ */
+[data-theme="dark"] {
+  --tier-t1: #F06292;  /* SoT 미러 §7: Lighter Magenta (구 #E91E63 라이트값을 다크 배경에 사용하던 drift 교정) */
+  --tier-t2: #5B8DEF;  /* SoT 미러 §7: Lighter Blue (다크 액센트와 동일) */
+  --tier-t3: #FF7043;  /* SoT 미러 §7: Lighter Orange */
+  --tier-t4: #B8C5D6;  /* SoT 미러 §7: DARK_TEXT_MUTED */
+  --tier-t5: #3D5F87;  /* SoT 미러 §7: DARK_BORDER_STRONG */
+  --tier-t6: #69F0AE;  /* SoT 미러 §7: Lighter Neon */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--jc-bg);
+  color: var(--jc-text);
+  font-family: var(--jc-font-ko);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background 200ms ease, color 200ms ease;
+}
+
+/* ============================================================
+   Theme toggle: data-theme="dark" applies dark to allowed slides
+   - 라이트 슬라이드(S3·S4·S6·S8)는 가독성 강제로 항상 라이트
+   - 다크 슬라이드(S1·S2·S5·S7·S9)는 토글에 따라 다크 적용
+   ============================================================ */
+[data-theme="dark"] body {
+  background: var(--jc-dark-bg);
+}
+[data-theme="dark"] .deck-nav {
+  background: var(--jc-dark-bg-alt);
+  color: var(--jc-dark-text);
+  border-color: var(--jc-dark-border);
+}
+[data-theme="dark"] .deck-nav button {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .deck-nav button:hover {
+  background: var(--jc-dark-accent-soft);
+  color: var(--jc-dark-text);
+}
+
+/* ============================================================
+   Deck container · slides
+   ============================================================ */
+.deck {
+  width: 100%;
+  height: 100%;
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.slide {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: 16 / 9;
+  padding: var(--jc-space-7);
+  background: var(--jc-bg);
+  color: var(--jc-text);
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  position: relative;
+  page-break-after: always;
+  overflow: hidden;
+  transition: background 200ms ease, color 200ms ease;
+}
+.slide-title {
+  font-family: var(--jc-font-heading);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--jc-text);
+  margin-bottom: var(--jc-space-5);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  position: relative;
+  padding-left: var(--jc-space-4);
+}
+.slide-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 4px;
+  background: var(--jc-accent);
+  border-radius: 2px;
+}
+.slide-footer {
+  position: absolute;
+  bottom: var(--jc-space-5);
+  left: var(--jc-space-7);
+  right: var(--jc-space-7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--jc-text-muted);
+  border-top: 1px solid var(--jc-border);
+  padding-top: 8px;
+}
+
+.deck-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(10, 37, 64, 0.10);
+  font-family: var(--jc-font-mono);
+  font-size: 12px;
+  color: var(--jc-text);
+  z-index: 50;
+  transition: background 200ms ease, color 200ms ease;
+}
+.deck-nav button {
+  background: transparent;
+  border: none;
+  color: var(--jc-text);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.deck-nav button:hover {
+  background: var(--jc-accent-soft);
+  color: var(--jc-accent);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--jc-border);
+  background: var(--jc-surface);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease;
+  box-shadow: 0 2px 8px rgba(10, 37, 64, 0.10);
+}
+.theme-toggle:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(10, 37, 64, 0.16);
+}
+[data-theme="dark"] .theme-toggle {
+  background: var(--jc-dark-bg-alt);
+  border-color: var(--jc-dark-border);
+  color: var(--jc-dark-text);
+}
+[data-theme="light"] .toggle-icon-dark { display: none; }
+[data-theme="dark"] .toggle-icon-light { display: none; }
+
+/* ============================================================
+   S1 — Cover (always dark for impact)
+   S9 — Contact (always dark for closing tone)
+   These have .always-dark class
+   ============================================================ */
+.always-dark {
+  background: var(--jc-dark-bg) !important;
+  color: var(--jc-dark-text) !important;
+}
+.always-dark .slide-title {
+  color: var(--jc-dark-text);
+}
+.always-dark .slide-title::before {
+  background: var(--jc-dark-accent);
+}
+.always-dark .slide-footer {
+  color: var(--jc-dark-text-muted);
+  border-top-color: var(--jc-dark-border);
+}
+
+/* ============================================================
+   Theme-toggleable slides — S2, S5, S7
+   ============================================================ */
+[data-theme="dark"] .slide-toggleable {
+  background: var(--jc-dark-bg);
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .slide-title {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .slide-title::before {
+  background: var(--jc-dark-accent);
+}
+[data-theme="dark"] .slide-toggleable .slide-footer {
+  color: var(--jc-dark-text-muted);
+  border-top-color: var(--jc-dark-border);
+}
+
+/* ============================================================
+   S3 · S4 · S6 · S8 — Force LIGHT regardless of theme
+   가독성 우선: 데이터·표·리스트 슬라이드는 라이트 강제
+   ============================================================ */
+.slide-force-light {
+  background: var(--jc-bg) !important;
+  color: var(--jc-text) !important;
+}
+.slide-force-light .slide-title {
+  color: var(--jc-text) !important;
+}
+.slide-force-light .slide-title::before {
+  background: var(--jc-accent) !important;
+}
+.slide-force-light .slide-footer {
+  color: var(--jc-text-muted) !important;
+  border-top-color: var(--jc-border) !important;
+}
+
+/* ============================================================
+   S1 — DARK COVER
+   ============================================================ */
+.slide-cover {
+  justify-content: center;
+  padding: var(--jc-space-8);
+}
+.cover-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--jc-dark-accent);
+  color: var(--jc-dark-text);
+  font-family: var(--jc-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
+  margin-bottom: var(--jc-space-5);
+  text-transform: uppercase;
+  width: fit-content;
+}
+.cover-title {
+  font-family: var(--jc-font-heading);
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: var(--jc-space-3);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 80%;
+  color: var(--jc-dark-text);
+}
+.cover-subtitle {
+  font-size: 22px;
+  color: var(--jc-dark-text-muted);
+  margin-bottom: var(--jc-space-5);
+  max-width: 70%;
+}
+.cover-accent-line {
+  width: 120px;
+  height: 4px;
+  background: var(--jc-dark-accent);
+  margin: var(--jc-space-5) 0;
+}
+.cover-meta {
+  font-size: 16px;
+  color: var(--jc-dark-text);
+}
+.cover-meta .cover-divider {
+  margin: 0 12px;
+  color: var(--jc-dark-text-muted);
+}
+.cover-version {
+  position: absolute;
+  bottom: 24px;
+  right: var(--jc-space-7);
+  font-family: var(--jc-font-mono);
+  font-size: 11px;
+  color: var(--jc-dark-text-muted);
+}
+
+/* ============================================================
+   S2 — Why This Event (toggleable)
+   ============================================================ */
+.why-event-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--jc-space-6);
+  margin-top: var(--jc-space-4);
+  flex: 1;
+}
+.why-event-card {
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-left: 4px solid var(--jc-accent);
+  border-radius: 12px;
+  padding: var(--jc-space-5);
+}
+.why-event-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--jc-accent);
+  margin-bottom: var(--jc-space-3);
+}
+.why-event-card p {
+  font-size: 14px;
+  color: var(--jc-text);
+  line-height: 1.6;
+}
+[data-theme="dark"] .slide-toggleable .why-event-card {
+  background: var(--jc-dark-bg-alt);
+  border-color: var(--jc-dark-border);
+  border-left-color: var(--jc-dark-accent);
+}
+[data-theme="dark"] .slide-toggleable .why-event-card h3 {
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
+}
+[data-theme="dark"] .slide-toggleable .why-event-card p {
+  color: var(--jc-dark-text);
+}
+
+/* ============================================================
+   S3 — Who Attends (FORCE LIGHT)
+   ============================================================ */
+.kpi-callout-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--jc-space-4);
+  margin-top: var(--jc-space-4);
+}
+.kpi-callout {
+  background: var(--jc-surface);
+  border: 0.5px solid var(--jc-border);
+  border-left: 4px solid var(--jc-accent);
+  border-radius: 12px;
+  padding: 20px 18px;
+  text-align: center;
+}
+.kpi-number {
+  font-family: var(--jc-font-mono);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--jc-accent);
+  line-height: 1;
+  display: inline-block;
+}
+.kpi-unit {
+  display: inline-block;
+  font-family: var(--jc-font-ko);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--jc-accent);
+  margin-left: 4px;
+  vertical-align: top;
+  padding-top: 4px;
+}
+.kpi-label {
+  font-size: 13px;
+  color: var(--jc-text);
+  font-weight: 500;
+  margin-top: 8px;
+}
+.kpi-source {
+  font-size: 11px;
+  color: var(--jc-text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.industry-bar-chart {
+  width: 100%;
+  font-family: var(--jc-font-ko);
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: 12px;
+  padding: var(--jc-space-5);
+  margin-top: var(--jc-space-4);
+}
+.chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--jc-text);
+  margin-bottom: var(--jc-space-3);
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+.bar-label {
+  font-size: 13px;
+  color: var(--jc-text);
+  text-align: right;
+}
+.bar-track {
+  width: 100%;
+  height: 22px;
+  background: var(--jc-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 320ms ease;
+}
+.bar-value {
+  font-family: var(--jc-font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--jc-text);
+  text-align: right;
+}
+.chart-source {
+  font-size: 11px;
+  color: var(--jc-text-muted);
+  margin-top: 12px;
+  font-style: italic;
+}
+
+/* ============================================================
+   S4 — What We Offer (FORCE LIGHT)
+   ============================================================ */
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--jc-space-4);
+  margin-top: var(--jc-space-4);
+}
+.asset-card {
+  background: var(--jc-surface);
+  border: 0.5px solid var(--jc-border);
+  border-left: 4px solid var(--jc-accent);
+  border-radius: 8px;
+  padding: var(--jc-space-4);
+}
+.asset-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--jc-accent);
+  margin-bottom: 6px;
+}
+.asset-card p {
+  font-size: 13px;
+  color: var(--jc-text);
+  line-height: 1.55;
+}
+
+/* ============================================================
+   S5 — Sponsor Tiers (toggleable, DARK-TIER pattern)
+   ============================================================ */
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--jc-space-3);
+  margin-top: var(--jc-space-4);
+  flex: 1;
+}
+.tier-card {
+  position: relative;
+  display: flex;
+  background: var(--jc-surface);
+  border: 0.5px solid var(--jc-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 200ms ease;
+}
+.tier-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(10, 37, 64, 0.08);
+}
+.tier-accent {
+  width: 6px;
+  background: var(--tier-color);
+  flex-shrink: 0;
+}
+.tier-body {
+  padding: 18px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.tier-id {
+  font-family: var(--jc-font-mono);
+  font-size: 11px;
+  color: var(--tier-color);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.tier-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--jc-text);
+  margin: 4px 0 0;
+  line-height: 1.2;
+}
+.tier-meta {
+  margin: 8px 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--jc-border);
+}
+.tier-slots {
+  font-size: 12px;
+  color: var(--jc-text-muted);
+}
+.tier-price {
+  font-size: 13px;
+  color: var(--jc-text);
+  font-weight: 600;
+  margin: 4px 0 0;
+}
+.tier-benefits {
+  list-style: none;
+  font-size: 12px;
+  color: var(--jc-text);
+  line-height: 1.6;
+}
+.tier-benefits li {
+  padding-left: 12px;
+  position: relative;
+}
+.tier-benefits li::before {
+  content: "·";
+  position: absolute;
+  left: 4px;
+  color: var(--tier-color);
+  font-weight: 700;
+}
+[data-theme="dark"] .slide-toggleable .tier-card {
+  background: var(--jc-dark-bg-alt);
+  border-color: var(--jc-dark-border);
+}
+[data-theme="dark"] .slide-toggleable .tier-name {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .tier-slots {
+  color: var(--jc-dark-text-muted);
+}
+[data-theme="dark"] .slide-toggleable .tier-price {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .tier-meta {
+  border-bottom-color: var(--jc-dark-border);
+}
+[data-theme="dark"] .slide-toggleable .tier-benefits {
+  color: var(--jc-dark-text);
+}
+
+/* ============================================================
+   S6 — Benefits Matrix (FORCE LIGHT, gradability critical)
+   ============================================================ */
+.benefits-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--jc-font-ko);
+  font-size: 12px;
+  border: 1px solid var(--jc-border);
+  margin-top: var(--jc-space-4);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.benefits-matrix thead th {
+  background: var(--jc-primary);
+  color: var(--jc-surface);
+  font-weight: 600;
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 2px solid var(--jc-accent);
+  font-size: 12px;
+}
+.benefits-matrix .cat-col {
+  text-align: left;
+  min-width: 140px;
+}
+.tier-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--jc-font-mono);
+  font-size: 10px;
+  margin-right: 4px;
+  background: rgba(255, 255, 255, 0.20);
+}
+.benefits-matrix tbody th.cat-row {
+  background: var(--jc-surface-alt);
+  text-align: left;
+  font-weight: 500;
+  padding: 10px 12px;
+  color: var(--jc-text);
+  font-size: 12px;
+}
+.benefits-matrix tbody td {
+  text-align: center;
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--jc-border);
+}
+.benefits-matrix tbody tr:nth-child(even) td,
+.benefits-matrix tbody tr:nth-child(even) th.cat-row {
+  background: var(--jc-bg);
+}
+.benefits-matrix .quant { color: var(--jc-text); font-weight: 500; }
+.benefits-matrix .check { color: var(--jc-success); font-weight: 700; font-size: 16px; }
+.benefits-matrix .dash { color: var(--jc-text-disabled); }
+.benefits-matrix .slot-row td,
+.benefits-matrix .slot-row th {
+  background: var(--jc-accent-soft) !important;
+  color: var(--jc-accent);
+  font-weight: 700;
+  border-top: 2px solid var(--jc-accent);
+}
+
+/* ============================================================
+   S7 — ROI Snapshot (toggleable, DARK-ROI + DARK-KPI)
+   ============================================================ */
+.roi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--jc-space-4);
+  margin-top: var(--jc-space-4);
+  flex: 1;
+}
+.roi-card {
+  background: var(--jc-surface);
+  border: 0.5px solid var(--jc-border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.roi-header {
+  background: var(--jc-primary);
+  padding: 12px 16px;
+}
+.roi-industry-badge {
+  color: var(--jc-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+.roi-stage {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--jc-border);
+}
+.roi-stage h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--jc-accent);
+  margin-bottom: 6px;
+}
+.roi-stage ul {
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--jc-text);
+  line-height: 1.55;
+}
+.roi-stage.stage-estimate {
+  background: var(--jc-accent-soft);
+  border-bottom: none;
+}
+.roi-estimate-headline {
+  font-size: 15px;
+  color: var(--jc-text);
+  margin: 4px 0;
+}
+.roi-estimate-headline strong {
+  font-family: var(--jc-font-mono);
+  font-size: 22px;
+  color: var(--jc-accent);
+  font-weight: 700;
+}
+.roi-estimate-secondary {
+  font-size: 11px;
+  color: var(--jc-text-muted);
+}
+.roi-caption {
+  padding: 8px 16px;
+  font-size: 10px;
+  color: var(--jc-text-muted);
+  background: var(--jc-bg);
+  line-height: 1.5;
+  font-style: italic;
+}
+[data-theme="dark"] .slide-toggleable .roi-card {
+  background: var(--jc-dark-bg-alt);
+  border-color: var(--jc-dark-border);
+}
+[data-theme="dark"] .slide-toggleable .roi-stage {
+  border-bottom-color: var(--jc-dark-border);
+}
+[data-theme="dark"] .slide-toggleable .roi-stage h4 {
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
+}
+[data-theme="dark"] .slide-toggleable .roi-stage ul,
+[data-theme="dark"] .slide-toggleable .roi-stage p {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .stage-estimate {
+  background: var(--jc-dark-accent);
+}
+[data-theme="dark"] .slide-toggleable .stage-estimate h4 {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .roi-estimate-headline {
+  color: var(--jc-dark-text);
+}
+[data-theme="dark"] .slide-toggleable .roi-estimate-headline strong {
+  color: var(--jc-dark-text);
+  font-size: 26px;
+}
+[data-theme="dark"] .slide-toggleable .roi-estimate-secondary {
+  color: var(--jc-accent-soft);
+}
+[data-theme="dark"] .slide-toggleable .roi-caption {
+  background: var(--jc-dark-surface);
+  color: var(--jc-dark-text-muted);
+}
+
+/* ============================================================
+   S8 — Past Sponsors (FORCE LIGHT)
+   ============================================================ */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--jc-space-3);
+  margin-top: var(--jc-space-4);
+  flex: 1;
+}
+.logo-cell {
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: 8px;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jc-text-muted);
+  font-size: 11px;
+  filter: grayscale(100%);
+  opacity: 0.85;
+}
+
+/* ============================================================
+   S9 — Contact (ALWAYS DARK — Thank You tone)
+   ============================================================ */
+.contact-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--jc-space-6);
+  margin-top: var(--jc-space-4);
+  flex: 1;
+}
+.always-dark .cta-headline {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--jc-dark-point-neon);  /* R1: 다크 Neon 정본(§3.1), 구 라이트 --jc-point-neon drift 교정 */
+  line-height: 1.3;
+  margin-bottom: var(--jc-space-5);
+}
+.cta-headline .deadline-tag {
+  display: inline-block;
+  font-family: var(--jc-font-mono);
+  font-size: 12px;
+  background: var(--jc-danger);
+  color: var(--jc-dark-text);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.always-dark .next-steps ol {
+  padding-left: 24px;
+  font-size: 15px;
+  color: var(--jc-dark-text);
+  line-height: 2;
+}
+.always-dark .contact-card {
+  background: var(--jc-dark-bg-alt);
+  border: 0.5px solid var(--jc-dark-border);
+  border-left: 4px solid var(--jc-dark-accent);
+  border-radius: 12px;
+  padding: var(--jc-space-5);
+}
+.always-dark .contact-card .manager-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--jc-dark-text);
+}
+.always-dark .contact-card .manager-title {
+  font-size: 13px;
+  color: var(--jc-dark-text-muted);
+  margin-top: 4px;
+}
+.always-dark .contact-card .contact-line {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--jc-dark-text);
+}
+.always-dark .contact-card .contact-line .label {
+  display: inline-block;
+  width: 50px;
+  color: var(--jc-dark-text-muted);
+  font-family: var(--jc-font-mono);
+  font-size: 12px;
+}
+
+/* ============================================================
+   Print mode — FORCE LIGHT for all slides
+   ============================================================ */
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body { background: #FFFFFF !important; }
+  .deck-nav, .theme-toggle { display: none !important; }
+  .slide,
+  .always-dark,
+  [data-theme="dark"] .slide-toggleable {
+    background: #FFFFFF !important;
+    color: #1A1D24 !important;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+  .always-dark .slide-title,
+  [data-theme="dark"] .slide-toggleable .slide-title {
+    color: #1A1D24 !important;
+  }
+  .always-dark .cover-title { color: #0A2540 !important; }
+  .always-dark .cover-subtitle { color: #5A6270 !important; }
+  .always-dark .cover-meta { color: #1A1D24 !important; }
+  .always-dark .cta-headline { color: #2962FF !important; }
+}
+
+/* Responsive fallback */
+@media (max-width: 1024px) {
+  .tier-grid, .kpi-callout-grid { grid-template-columns: repeat(2, 1fr); }
+  .roi-grid, .why-event-body, .contact-body { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Theme toggle button -->
+<button class="theme-toggle" id="themeToggle" aria-label="다크 모드 토글" title="라이트/다크 토글">
+  <span class="toggle-icon-light">☾</span>
+  <span class="toggle-icon-dark">☀</span>
+</button>
+
+<!-- Deck navigation -->
+<div class="deck-nav" role="navigation" aria-label="Slide navigation">
+  <button onclick="navSlide(-1)" aria-label="Previous slide">‹</button>
+  <span id="navIndicator">1 / 11</span>
+  <button onclick="navSlide(1)" aria-label="Next slide">›</button>
+</div>
+
+<main class="deck" id="deck">
+
+  <!-- S1 — DARK COVER (ALWAYS DARK) -->
+  <section class="slide slide-cover always-dark" data-slide="1">
+    <div class="cover-badge">For Sponsors</div>
+    <h1 class="cover-title">[행사명]</h1>
+    <p class="cover-subtitle">[행사 부제 — 한 줄 요약]</p>
+    <div class="cover-accent-line"></div>
+    <div class="cover-meta">
+      <span class="cover-date">[YYYY.MM.DD]</span>
+      <span class="cover-divider">·</span>
+      <span class="cover-venue">[행사장]</span>
+    </div>
+    <span class="cover-version">v1.0 · [발행연월]</span>
+  </section>
+
+  <!-- S2 — Why This Event (TOGGLEABLE) -->
+  <section class="slide slide-toggleable" data-slide="2">
+    <h2 class="slide-title">Why This Event</h2>
+    <div class="why-event-body">
+      <article class="why-event-card">
+        <h3>제 [N]회 · [산업/주제] 분야</h3>
+        <p>[행사명]은 [산업/주제] 분야의 [국내 최대/연간 정기/특화] 행사입니다. 참가자 [N]명 + 부스 [N]개 + 협찬사 [N]개사 규모.</p>
+      </article>
+      <article class="why-event-card">
+        <h3>시장 맥락 — 왜 지금</h3>
+        <p>한국 [산업] 시장 규모 [출처: 통계]. 최근 [N]년간 [트렌드 1줄].</p>
+      </article>
+      <article class="why-event-card">
+        <h3>핵심 차별점</h3>
+        <p>· [차별점 1: 청중 자산]<br>· [차별점 2: 콘텐츠]<br>· [차별점 3: 네트워킹]</p>
+      </article>
+      <article class="why-event-card">
+        <h3>핵심 KPI 3종</h3>
+        <p>· 회차: 제 [N]회<br>· 규모: [N]명<br>· 주관: [주최사]</p>
+      </article>
+    </div>
+    <div class="slide-footer"><span>S2 · Why This Event</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S3 — Who Attends KPI (FORCE LIGHT) -->
+  <section class="slide slide-force-light" data-slide="3">
+    <h2 class="slide-title">Who Attends — 핵심 KPI</h2>
+    <div class="kpi-callout-grid">
+      <div class="kpi-callout">
+        <div class="kpi-number">[5,200]</div><span class="kpi-unit">명</span>
+        <div class="kpi-label">예상 참가자</div>
+        <div class="kpi-source">[2024년 회차 + N% 성장]</div>
+      </div>
+      <div class="kpi-callout">
+        <div class="kpi-number">[32]</div><span class="kpi-unit">%</span>
+        <div class="kpi-label">의사결정권자</div>
+        <div class="kpi-source">[자기 응답 데이터]</div>
+      </div>
+      <div class="kpi-callout">
+        <div class="kpi-number">[23]</div><span class="kpi-unit">%</span>
+        <div class="kpi-label">C-Level + 임원</div>
+        <div class="kpi-source">[직급 기반 분류]</div>
+      </div>
+      <div class="kpi-callout">
+        <div class="kpi-number">[87]</div><span class="kpi-unit">%</span>
+        <div class="kpi-label">B2B 비율</div>
+        <div class="kpi-source">[자기 응답]</div>
+      </div>
+    </div>
+    <div class="slide-footer"><span>S3 · Who Attends · KPI</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S4 — Industry Bar (FORCE LIGHT) -->
+  <section class="slide slide-force-light" data-slide="4">
+    <h2 class="slide-title">Who Attends — 산업 분포</h2>
+    <div class="industry-bar-chart">
+      <h3 class="chart-title">산업 분포 (Top 5)</h3>
+      <div class="bar-row">
+        <span class="bar-label">IT·소프트웨어</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 42%; background: var(--jc-data-1);"></div></div>
+        <span class="bar-value">42%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">금융·보험</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 24%; background: var(--jc-data-2);"></div></div>
+        <span class="bar-value">24%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">제조·산업재</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 18%; background: var(--jc-data-3);"></div></div>
+        <span class="bar-value">18%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">헬스케어·바이오</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 10%; background: var(--jc-data-4);"></div></div>
+        <span class="bar-value">10%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">기타</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 6%; background: var(--jc-text-muted);"></div></div>
+        <span class="bar-value">6%</span>
+      </div>
+      <p class="chart-source">출처: [2024년 회차 등록 산업 분류]</p>
+    </div>
+    <div class="slide-footer"><span>S3 · Who Attends · 산업 분포</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S5 — Asset Inventory (FORCE LIGHT) -->
+  <section class="slide slide-force-light" data-slide="5">
+    <h2 class="slide-title">What We Offer — 노출 자산 인벤토리</h2>
+    <div class="asset-grid">
+      <article class="asset-card"><h4>메인 무대 백드롭 (1점)</h4><p>약 [8]시간 노출 / 메인 키노트·세션 송출.</p></article>
+      <article class="asset-card"><h4>입구 아치 (1개)</h4><p>행사장 정문 / 모든 참가자 통과 동선. T1 단독.</p></article>
+      <article class="asset-card"><h4>행사장 사이니지 (총 12점)</h4><p>위치별 노출 횟수 정량화. 1F 입구·메인홀·VIP 라운지.</p></article>
+      <article class="asset-card"><h4>디지털 자산 (홈페이지·앱·이메일)</h4><p>이메일 [N]만명 × [N]회 발송. 행사 앱 푸시 [N]회.</p></article>
+      <article class="asset-card"><h4>세션 슬롯 (키노트·메인·트랙)</h4><p>키노트 [30]분 (T1), 메인 [45]분 × [N]석, 트랙 [30]분.</p></article>
+      <article class="asset-card"><h4>VIP·네트워킹 자산</h4><p>VIP 만찬 [N]석, 임원 라운지, 바이어 매칭 [N]회.</p></article>
+    </div>
+    <div class="slide-footer"><span>S4 · What We Offer</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S6 — Sponsor Tiers (TOGGLEABLE) -->
+  <section class="slide slide-toggleable" data-slide="6">
+    <h2 class="slide-title">Sponsor Tiers</h2>
+    <div class="tier-grid">
+      <article class="tier-card" data-tier="T1" style="--tier-color: var(--tier-t1);">
+        <div class="tier-accent"></div>
+        <div class="tier-body">
+          <span class="tier-id">T1</span>
+          <h3 class="tier-name">타이틀 (Title)</h3>
+          <div class="tier-meta">
+            <p class="tier-slots">한정 [1]석</p>
+            <p class="tier-price">[가격 별도 협의]</p>
+          </div>
+          <ul class="tier-benefits">
+            <li>행사명 결합권</li><li>키노트 30분</li><li>메인 사이니지 8회</li><li>VIP 만찬 단독</li><li>부스 54㎡</li>
+          </ul>
+        </div>
+      </article>
+      <article class="tier-card" data-tier="T2" style="--tier-color: var(--tier-t2);">
+        <div class="tier-accent"></div>
+        <div class="tier-body">
+          <span class="tier-id">T2</span>
+          <h3 class="tier-name">플래티넘 (Platinum)</h3>
+          <div class="tier-meta">
+            <p class="tier-slots">한정 [3]석</p>
+            <p class="tier-price">[가격 별도 협의]</p>
+          </div>
+          <ul class="tier-benefits">
+            <li>메인 무대 노출</li><li>프리미엄 부스 36㎡</li><li>VIP 만찬 6석</li><li>SNS 2회</li>
+          </ul>
+        </div>
+      </article>
+      <article class="tier-card" data-tier="T3" style="--tier-color: var(--tier-t3);">
+        <div class="tier-accent"></div>
+        <div class="tier-body">
+          <span class="tier-id">T3</span>
+          <h3 class="tier-name">골드 (Gold)</h3>
+          <div class="tier-meta">
+            <p class="tier-slots">한정 [6]석</p>
+            <p class="tier-price">[가격 별도 협의]</p>
+          </div>
+          <ul class="tier-benefits">
+            <li>트랙 세션 30분</li><li>표준 부스 27㎡</li><li>임원 라운지</li><li>리드 400건</li>
+          </ul>
+        </div>
+      </article>
+      <article class="tier-card" data-tier="T4" style="--tier-color: var(--tier-t4);">
+        <div class="tier-accent"></div>
+        <div class="tier-body">
+          <span class="tier-id">T4</span>
+          <h3 class="tier-name">실버 (Silver)</h3>
+          <div class="tier-meta">
+            <p class="tier-slots">한정 [10]석</p>
+            <p class="tier-price">[가격 별도 협의]</p>
+          </div>
+          <ul class="tier-benefits">
+            <li>사이니지 2회</li><li>컴팩트 부스 15㎡</li><li>프로그램북 광고</li>
+          </ul>
+        </div>
+      </article>
+      <article class="tier-card" data-tier="T5" style="--tier-color: var(--tier-t5);">
+        <div class="tier-accent"></div>
+        <div class="tier-body">
+          <span class="tier-id">T5</span>
+          <h3 class="tier-name">브론즈 (Bronze)</h3>
+          <div class="tier-meta">
+            <p class="tier-slots">무제한</p>
+            <p class="tier-price">[가격 별도 협의]</p>
+          </div>
+          <ul class="tier-benefits">
+            <li>프로그램북 내지</li><li>홈페이지 리스트</li><li>행사 패스</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+    <div class="slide-footer"><span>S5 · Sponsor Tiers</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S7 — Benefits Matrix (FORCE LIGHT, gradability critical) -->
+  <section class="slide slide-force-light" data-slide="7">
+    <h2 class="slide-title">Benefits Matrix</h2>
+    <table class="benefits-matrix">
+      <thead>
+        <tr>
+          <th class="cat-col">카테고리 · 항목</th>
+          <th><span class="tier-badge">T1</span>타이틀</th>
+          <th><span class="tier-badge">T2</span>플래티넘</th>
+          <th><span class="tier-badge">T3</span>골드</th>
+          <th><span class="tier-badge">T4</span>실버</th>
+          <th><span class="tier-badge">T5</span>브론즈</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th class="cat-row">메인 사이니지</th><td class="quant">8회</td><td class="quant">6회</td><td class="quant">4회</td><td class="quant">2회</td><td class="check">✓</td></tr>
+        <tr><th class="cat-row">보도자료 명시</th><td class="quant">메인</td><td class="quant">공동</td><td class="quant">본문</td><td class="quant">부록</td><td class="dash">—</td></tr>
+        <tr><th class="cat-row">공식 SNS</th><td class="quant">3회</td><td class="quant">2회</td><td class="quant">1회</td><td class="dash">—</td><td class="dash">—</td></tr>
+        <tr><th class="cat-row">부스 면적</th><td class="quant">54㎡</td><td class="quant">36㎡</td><td class="quant">27㎡</td><td class="quant">15㎡</td><td class="dash">—</td></tr>
+        <tr><th class="cat-row">키노트·세션</th><td class="quant">키노트 30분</td><td class="quant">메인 45분</td><td class="quant">트랙 30분</td><td class="dash">—</td><td class="dash">—</td></tr>
+        <tr><th class="cat-row">리드 데이터</th><td class="quant">1,000건+</td><td class="quant">600건</td><td class="quant">400건</td><td class="quant">200건</td><td class="dash">—</td></tr>
+        <tr><th class="cat-row">VIP 만찬</th><td class="quant">단독 10석</td><td class="quant">6석</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+        <tr class="slot-row"><th class="cat-row">한정 슬롯</th><td class="quant">1석</td><td class="quant">3석</td><td class="quant">6석</td><td class="quant">10석</td><td class="quant">무제한</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-footer"><span>S6 · Benefits Matrix</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S8 — ROI Snapshot (TOGGLEABLE — dark recommended for impact) -->
+  <section class="slide slide-toggleable" data-slide="8">
+    <h2 class="slide-title">ROI Snapshot — 산업별 기대 효과</h2>
+    <div class="roi-grid">
+      <article class="roi-card" data-industry="tech">
+        <header class="roi-header">
+          <span class="roi-industry-badge">Tech 산업 스폰서 ROI</span>
+        </header>
+        <section class="roi-stage stage-premise">
+          <h4>① 전제 조건</h4>
+          <ul><li>IT 참가자 약 [2,184]명</li><li>IT 의사결정권자 약 [655]명</li></ul>
+        </section>
+        <section class="roi-stage stage-formula">
+          <h4>② 산출 공식</h4>
+          <ul><li>부스 전환율 12% × 의사결정권자</li><li>리드 전환율 35% 적용</li></ul>
+        </section>
+        <section class="roi-stage stage-estimate">
+          <h4>③ 보수적 추정값</h4>
+          <p class="roi-estimate-headline">리드 약 <strong>[25~30]건</strong></p>
+          <p class="roi-estimate-secondary">PR 가치 약 KRW [25M]</p>
+        </section>
+        <footer class="roi-caption">ⓘ 본 수치는 산업 벤치마크 기반 추정치이며, 실제 결과는 노출 환경·콘텐츠 품질에 따라 변동됩니다.</footer>
+      </article>
+      <article class="roi-card" data-industry="finance">
+        <header class="roi-header">
+          <span class="roi-industry-badge">Finance 산업 스폰서 ROI</span>
+        </header>
+        <section class="roi-stage stage-premise">
+          <h4>① 전제 조건</h4>
+          <ul><li>금융 참가자 약 [1,248]명</li><li>C-Level + 임원 약 [287]명</li></ul>
+        </section>
+        <section class="roi-stage stage-formula">
+          <h4>② 산출 공식</h4>
+          <ul><li>VIP 만찬 단독 직접 접점 8~10명</li><li>1:1 미팅 평균 LTV × 5% 전환</li></ul>
+        </section>
+        <section class="roi-stage stage-estimate">
+          <h4>③ 보수적 추정값</h4>
+          <p class="roi-estimate-headline">직접 접점 약 <strong>[8~10]명</strong></p>
+          <p class="roi-estimate-secondary">잠재 영업 가치 산업 벤치마크 기반</p>
+        </section>
+        <footer class="roi-caption">ⓘ 본 수치는 산업 벤치마크 기반 추정치이며, 실제 결과는 노출 환경·콘텐츠 품질에 따라 변동됩니다.</footer>
+      </article>
+    </div>
+    <div class="slide-footer"><span>S7 · ROI Snapshot</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S9 — Past Sponsors (FORCE LIGHT) -->
+  <section class="slide slide-force-light" data-slide="9">
+    <h2 class="slide-title">Past Sponsors · Reference Cases</h2>
+    <div class="logo-grid">
+      <div class="logo-cell">[Logo 1]</div><div class="logo-cell">[Logo 2]</div><div class="logo-cell">[Logo 3]</div>
+      <div class="logo-cell">[Logo 4]</div><div class="logo-cell">[Logo 5]</div><div class="logo-cell">[Logo 6]</div>
+      <div class="logo-cell">[Logo 7]</div><div class="logo-cell">[Logo 8]</div><div class="logo-cell">[Logo 9]</div>
+      <div class="logo-cell">[Logo 10]</div>
+    </div>
+    <p class="chart-source" style="margin-top: var(--jc-space-4);">[2020~2024 회차 협찬·후원사 또는 유사 행사 레퍼런스]</p>
+    <div class="slide-footer"><span>S8 · Past Sponsors</span><span>For Sponsors</span></div>
+  </section>
+
+  <!-- S10 — Contact (ALWAYS DARK — Thank You tone) -->
+  <section class="slide always-dark" data-slide="10">
+    <h2 class="slide-title">Contact & Next Steps</h2>
+    <div class="contact-body">
+      <div>
+        <p class="cta-headline">
+          지금 함께하실 수 있는<br>[13]개 슬롯이 남아있습니다
+          <span class="deadline-tag">D-[14]</span>
+        </p>
+        <div class="next-steps">
+          <ol>
+            <li>견적 협의 — 본 사무국 담당자 연락</li>
+            <li>Tier 선정 — 산업·예산 매칭 1:1 컨설팅</li>
+            <li>계약서 송부 — 2주 이내 신청 시 우선 배정</li>
+          </ol>
+        </div>
+      </div>
+      <div class="contact-card">
+        <p class="manager-name">[담당자 이름]</p>
+        <p class="manager-title">[직급 · 부서]</p>
+        <p class="contact-line"><span class="label">EMAIL</span>[이메일]</p>
+        <p class="contact-line"><span class="label">PHONE</span>[전화]</p>
+        <p class="contact-line"><span class="label">DDAY</span>협찬 신청 마감 [YYYY.MM.DD]</p>
+      </div>
+    </div>
+    <div class="slide-footer"><span>S9 · Contact</span><span>For Sponsors</span></div>
+  </section>
+
+</main>
+
+<script>
+// ============================================================
+// Theme toggle with localStorage + prefers-color-scheme
+// 인쇄 시 라이트 강제 (이미 CSS @media print)
+// ============================================================
+(function() {
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  function getInitialTheme() {
+    const saved = localStorage.getItem('sponsor-deck-theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('sponsor-deck-theme', theme);
+  }
+
+  applyTheme(getInitialTheme());
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') || 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+})();
+
+// ============================================================
+// Slide navigation
+// ============================================================
+(function() {
+  const deck = document.getElementById('deck');
+  const slides = document.querySelectorAll('.slide');
+  const indicator = document.getElementById('navIndicator');
+  const total = slides.length;
+
+  function getCurrentIndex() {
+    for (let i = 0; i < slides.length; i++) {
+      const rect = slides[i].getBoundingClientRect();
+      if (rect.top >= -10 && rect.top < window.innerHeight / 2) return i;
+    }
+    return Math.round(deck.scrollTop / window.innerHeight);
+  }
+
+  function updateIndicator() {
+    const idx = getCurrentIndex();
+    if (indicator) indicator.textContent = (idx + 1) + ' / ' + total;
+  }
+
+  window.navSlide = function(delta) {
+    const cur = getCurrentIndex();
+    const target = Math.max(0, Math.min(slides.length - 1, cur + delta));
+    slides[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); navSlide(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); navSlide(-1); }
+    else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ behavior: 'smooth' }); }
+    else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' }); }
+  });
+
+  deck.addEventListener('scroll', updateIndicator);
+  updateIndicator();
+})();
+</script>
+</body>
+</html>
