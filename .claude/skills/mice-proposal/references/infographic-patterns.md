@@ -225,7 +225,7 @@ function addMatrix(slide, opts) {
       const dotX = x + dot.x * w;
       const dotY = y + (1 - dot.y) * h;  // y축은 위쪽이 1
       const dotSize = dot.isOurs ? 0.4 : 0.3;
-      const dotColor = (dot.color || (dot.isOurs ? "#2962FF" : "#94A3B8")).replace("#", "");
+      const dotColor = (dot.color || (dot.isOurs ? "#2962FF" : "#5A6270")).replace("#", "");
 
       slide.addShape(pres.shapes.OVAL, {
         x: dotX - dotSize / 2, y: dotY - dotSize / 2,
@@ -254,9 +254,9 @@ addMatrix(slide, {
   quadrants: ["프리미엄 리더", "니치 전문가", "범용 저가", "대량 표준화"],
   dots: [
     { name: "본 행사", x: 0.7, y: 0.85, isOurs: true, color: "#2962FF" },
-    { name: "경쟁사 A", x: 0.85, y: 0.45, color: "#94A3B8" },
-    { name: "경쟁사 B", x: 0.3, y: 0.6, color: "#94A3B8" },
-    { name: "경쟁사 C", x: 0.5, y: 0.25, color: "#94A3B8" }
+    { name: "경쟁사 A", x: 0.85, y: 0.45, color: "#5A6270" },
+    { name: "경쟁사 B", x: 0.3, y: 0.6, color: "#5A6270" },
+    { name: "경쟁사 C", x: 0.5, y: 0.25, color: "#5A6270" }
   ]
 });
 ```

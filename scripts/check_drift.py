@@ -19,7 +19,7 @@ import sys
 REPO = pathlib.Path(__file__).resolve().parents[1]
 SKILLS = REPO / ".claude" / "skills"
 CONSUMERS = ["mice-estimate", "pt-script", "mice-dashboard", "mice-sponsor-deck", "mice-proposal"]
-EXCLUDE_NAMES = {"infographic-patterns.md"}  # 매체별 구현(히트맵/스케일) — R1 범위 밖
+EXCLUDE_NAMES = set()  # (구) infographic-patterns.md 는 C에서 SoT §1.8 스케일로 정합 → 이제 검사 대상
 SCAN_SUFFIXES = {".md", ".html", ".css", ".js", ".py"}
 
 # R1에서 제거된 '절대 비-canon' drift 값 → 사유. (#7C3AED 는 이제 canon data-6 이므로 제외)
@@ -48,6 +48,15 @@ FORBIDDEN = {
     "ff6d01": "estimate 구 Excel 오렌지",
     "434343": "estimate 구 그레이",
     "0066cc": "estimate 구 블루",
+    # C: 구 infographic Tailwind 스케일 (→ SoT §1.8 scale-blue/green/red/amber 로 정합)
+    "14532d": "tw green-900", "166534": "tw green-800", "22c55e": "tw green-500",
+    "86efac": "tw green-300", "f0fdf4": "tw green-50",
+    "1e3a8a": "tw blue-900", "1e40af": "tw blue-800", "3b82f6": "tw blue-500",
+    "93c5fd": "tw blue-300", "eff6ff": "tw blue-50",
+    "7f1d1d": "tw red-900", "991b1b": "tw red-800", "dc2626": "tw red-600",
+    "ef4444": "tw red-500", "f87171": "tw red-400", "fca5a5": "tw red-300", "fef2f2": "tw red-50",
+    "78350f": "tw amber-900", "92400e": "tw amber-800", "f59e0b": "tw amber-500",
+    "fcd34d": "tw amber-300", "fffbeb": "tw amber-50",
 }
 # 라이브가 아닌 '교정이력/문서' 라인을 한 번 더 걸러내는 방어 마커
 DOC_MARKERS = ("구 ", "구#", "→", "미러", "SoT", "drift", "이력", "기존", "before", "legacy", "deprecat")
