@@ -33,41 +33,44 @@ const COLOR_ACCENT = "F5F5F5";
 #### 모드 2: JC 시그니처 모드 (기본 권장)
 jc-design-system의 시그니처 토큰을 그대로 적용. 일관된 개인 브랜드 표현.
 
+> ✅ R1 정합 완료 — jc-design-system 정본 참조. 아래 `COLOR_*`/`CHART_SERIES` 상수는 `signature-tokens.md §6`(JSON)·`§1.4`(차트 시리즈)의 라이트 모드 토큰을 pptxgenjs용(`#` 없는 6자리)으로 미러한 것이다. **값의 SoT는 `signature-tokens.md §6`이며, 본 블록은 그 미러**다. 다크 모드는 `dark-mode-patterns.md §0` / `mode-mapping.md §3`을 사용한다. 각 줄 주석의 `--jc-*`가 대응 SoT 토큰명이다.
+
 ```javascript
-// JC 시그니처 컬러 (Pretendard·Inter 폰트 패밀리)
-const COLOR_PRIMARY = "0A2540";        // Deep Navy
-const COLOR_PRIMARY_SOFT = "1A3556";   // Primary Soft
-const COLOR_SECONDARY = "1A3556";      // Primary Soft (보조)
-const COLOR_ACCENT = "2962FF";         // Electric Blue
-const COLOR_ACCENT_SOFT = "E8EFFF";    // Accent Soft (배경)
-const COLOR_ACCENT_STRONG = "1E4DCC";  // Accent Strong (호버)
+// JC 시그니처 컬러 — SoT 미러 (signature-tokens.md §6 정본, Pretendard·Inter 폰트 패밀리)
+const COLOR_PRIMARY = "0A2540";        // Deep Navy. 표지·헤더·로고 한정 (SoT 미러: --jc-primary)
+const COLOR_PRIMARY_SOFT = "1A3556";   // (SoT 미러: --jc-primary-soft)
+const COLOR_SECONDARY = "1A3556";      // Primary Soft 재사용 (SoT 미러: --jc-primary-soft)
+const COLOR_ACCENT = "2962FF";         // Electric Blue (SoT 미러: --jc-accent)
+const COLOR_ACCENT_SOFT = "E8EFFF";    // (SoT 미러: --jc-accent-soft)
+const COLOR_ACCENT_STRONG = "1E4DCC";  // 호버·프레스드 (SoT 미러: --jc-accent-strong)
 
-const COLOR_TEXT = "1A1D24";           // Charcoal
-const COLOR_TEXT_MUTED = "5A6270";     // Muted
-const COLOR_TEXT_DISABLED = "A0A6B0";  // Disabled
+const COLOR_TEXT = "1A1D24";           // Charcoal (SoT 미러: --jc-text)
+const COLOR_TEXT_MUTED = "5A6270";     // (SoT 미러: --jc-text-muted)
+const COLOR_TEXT_DISABLED = "A0A6B0";  // (SoT 미러: --jc-text-disabled)
 
-const COLOR_SURFACE = "FFFFFF";        // 카드 배경
-const COLOR_SURFACE_ALT = "F1F3F7";    // 보조 서피스
-const COLOR_BG = "F8F9FB";             // 페이지 배경
-const COLOR_BG_LIGHT = "F8F9FB";       // 줄무늬 행, 카드 배경
-const COLOR_BG_PLACEHOLDER = "E5E8ED"; // 이미지 placeholder
-const COLOR_BORDER = "E5E8ED";         // 기본 보더
-const COLOR_BORDER_STRONG = "C9CFD8";  // 강조 보더
+const COLOR_SURFACE = "FFFFFF";        // 카드 배경 (SoT 미러: --jc-surface)
+const COLOR_SURFACE_ALT = "F1F3F7";    // 보조 서피스 (SoT 미러: --jc-surface-alt)
+const COLOR_BG = "F8F9FB";             // 페이지 배경 (SoT 미러: --jc-bg)
+const COLOR_BG_LIGHT = "F8F9FB";       // 줄무늬 행 (SoT 미러: --jc-bg)
+const COLOR_BG_PLACEHOLDER = "E5E8ED"; // 이미지 placeholder (SoT 미러: --jc-border)
+const COLOR_BORDER = "E5E8ED";         // 기본 보더 (SoT 미러: --jc-border)
+const COLOR_BORDER_STRONG = "C9CFD8";  // 강조 보더 (SoT 미러: --jc-border-strong)
 
 // 포인트 컬러 풀 (한 화면 최대 3종)
-const COLOR_POINT_ORANGE = "FF5722";   // Vivid Orange (핫·우선순위)
-const COLOR_POINT_MAGENTA = "E91E63";  // Magenta (차별화·Track B)
-const COLOR_POINT_NEON = "00E676";     // Neon Green (성장·긍정, 면적 5% 이내)
-const COLOR_POINT_NEON_PRINT = "00C853"; // 인쇄용 폴백
+const COLOR_POINT_ORANGE = "FF5722";   // Vivid Orange (SoT 미러: --jc-point-orange)
+const COLOR_POINT_MAGENTA = "E91E63";  // Magenta·Track B (SoT 미러: --jc-point-magenta)
+const COLOR_POINT_NEON = "00E676";     // Neon Green, 면적 5% 이내 (SoT 미러: --jc-point-neon)
+const COLOR_POINT_NEON_PRINT = "00C853"; // 인쇄용 폴백 (SoT 미러: --jc-point-neon 폴백/--jc-success)
 
-// 차트 데이터 시리즈 (5단계)
+// 차트 데이터 시리즈 (5단계, 라이트) — SoT 미러: signature-tokens.md §1.4 data-1~5
 const CHART_SERIES = ["2962FF", "E91E63", "FF5722", "00E676", "0A2540"];
+// 6시리즈 이상 확장 시 data-6 추가: "7C3AED" (SoT 미러: --jc-data-6). 다크 차트는 mode-mapping.md §3.2
 
 // 시맨틱 컬러
-const COLOR_SUCCESS = "00C853";
-const COLOR_WARNING = "FFA000";
-const COLOR_DANGER = "D32F2F";
-const COLOR_INFO = "2962FF";
+const COLOR_SUCCESS = "00C853";        // (SoT 미러: --jc-success)
+const COLOR_WARNING = "FFA000";        // (SoT 미러: --jc-warning)
+const COLOR_DANGER = "D32F2F";         // (SoT 미러: --jc-danger)
+const COLOR_INFO = "2962FF";           // 액센트 재사용 (SoT 미러: --jc-info)
 ```
 
 #### 모드 3: JC + 클라이언트 오버레이 모드

@@ -6,38 +6,44 @@
 
 ## 0. 다크 모드 컬러 매핑
 
+> ✅ R1 정합 완료 — jc-design-system 정본 참조. 다크 모드 토큰값은 `jc-design-system/references/mode-mapping.md §3`(다크 패밀리)·`§3.2`(차트 다크) 정본이며, 본 문서의 `DARK_*` 상수는 그 SoT 미러다. SoT 다크 페이지 배경은 `#0A1220` 패밀리(헤더/표지/로고용 `#0A2540`과 구분).
+
 ### 0-1. 색상 변수 (다크 모드)
 
+아래 `DARK_*` 상수는 SoT(`mode-mapping.md §3`)의 다크 토큰을 pptxgenjs용(`#` 없는 6자리)으로 미러한 것이다. 값은 `mode-mapping.md §3` 정본을 따른다.
+
 ```javascript
-// 다크 모드 컬러 변수 (JC 시그니처 기준)
-const DARK_BG = "0A2540";              // 메인 배경 (Deep Navy)
-const DARK_BG_ALT = "1A3556";          // 카드·시트 배경 (Primary Soft)
-const DARK_BG_PLACEHOLDER = "1F4068";  // 이미지 placeholder
-const DARK_SURFACE = "12304D";         // 보조 서피스
+// 다크 모드 컬러 변수 — SoT 미러 (mode-mapping.md §3 정본)
+const DARK_BG = "0A1220";              // 다크 페이지 배경 (SoT 미러: --jc-bg 다크 #0A1220)
+const DARK_BG_ALT = "152134";          // 카드·시트 배경 (SoT 미러: --jc-surface 다크 #152134)
+const DARK_BG_PLACEHOLDER = "1F2C42";  // 이미지 placeholder (SoT 미러: --jc-surface-alt 다크 #1F2C42)
+const DARK_SURFACE = "1F2C42";         // 보조 서피스 (SoT 미러: --jc-surface-alt 다크 #1F2C42)
 
-const DARK_TEXT = "FFFFFF";            // 본문 흰색
-const DARK_TEXT_MUTED = "B8C5D6";      // 보조 글자
-const DARK_TEXT_DISABLED = "6B7B92";   // 비활성
+const DARK_TEXT = "E8ECF2";            // 본문 (SoT 미러: --jc-text 다크 #E8ECF2)
+const DARK_TEXT_MUTED = "A0A8B4";      // 보조 글자 (SoT 미러: --jc-text-muted 다크 #A0A8B4)
+const DARK_TEXT_DISABLED = "5A6270";   // 비활성 (SoT 미러: --jc-text-disabled 다크 #5A6270)
 
-const DARK_BORDER = "2A4A6E";          // 테두리
-const DARK_BORDER_STRONG = "3D5F87";   // 강조 테두리
+const DARK_BORDER = "2A3650";          // 테두리 (SoT 미러: --jc-border 다크 #2A3650)
+const DARK_BORDER_STRONG = "3D4A66";   // 강조 테두리 (SoT 미러: --jc-border-strong 다크 #3D4A66)
 
-const DARK_ACCENT = "2962FF";          // Electric Blue (라이트와 동일)
-const DARK_ACCENT_SOFT = "1E4DCC";     // 호버 상태
+const DARK_ACCENT = "5B8DEF";          // 다크 액센트 (SoT 미러: --jc-accent 다크 #5B8DEF)
+const DARK_ACCENT_SOFT = "7BA3F2";     // 다크 액센트 호버 (SoT 미러: accent-hover 다크 #7BA3F2)
 ```
 
 ### 0-2. 라이트 → 다크 매핑 표
 
-| 라이트 요소 | 라이트 컬러 | 다크 컬러 |
-|------------|------------|----------|
-| 페이지 배경 | `FFFFFF` | `0A2540` |
-| 카드 배경 | `FFFFFF` | `1A3556` |
-| 보조 서피스 | `F1F3F7` | `12304D` |
-| 짝수행 배경 | `F9FAFB` | `12304D` |
-| 본문 글자 | `1E293B` | `FFFFFF` |
-| 보조 글자 | `64748B` | `B8C5D6` |
-| 테두리 | `E5E8ED` | `2A4A6E` |
-| 이미지 placeholder | `E5E7EB` | `1F4068` |
+라이트값은 `signature-tokens.md §6`, 다크값은 `mode-mapping.md §3` 정본 미러.
+
+| 라이트 요소 | 라이트 컬러 (SoT 토큰) | 다크 컬러 (SoT 미러) |
+|------------|------------------------|----------------------|
+| 페이지 배경 | `#FFFFFF`(`--jc-surface`) / `#F8F9FB`(`--jc-bg`) | `0A1220` (다크 `--jc-bg`) |
+| 카드 배경 | `#FFFFFF` (`--jc-surface`) | `152134` (다크 `--jc-surface`) |
+| 보조 서피스 | `#F1F3F7` (`--jc-surface-alt`) | `1F2C42` (다크 `--jc-surface-alt`) |
+| 짝수행 배경 | `#F1F3F7` (`--jc-surface-alt`) | `1F2C42` (다크 `--jc-surface-alt`) |
+| 본문 글자 | `#1A1D24` (`--jc-text`) | `E8ECF2` (다크 `--jc-text`) |
+| 보조 글자 | `#5A6270` (`--jc-text-muted`) | `A0A8B4` (다크 `--jc-text-muted`) |
+| 테두리 | `#E5E8ED` (`--jc-border`) | `2A3650` (다크 `--jc-border`) |
+| 이미지 placeholder | `#E5E8ED` (`--jc-border`) | `1F2C42` (다크 `--jc-surface-alt`) |
 
 ### 0-3. 적용 컨텍스트
 
@@ -109,7 +115,7 @@ slide.addTable([darkHeader, ...darkBody], {
 
 ## 2. DARK-CHART 패턴 (다크 차트)
 
-차트 자체의 색상은 라이트·다크 모두 동일하게 jc-design-system 데이터 시리즈(`#2962FF`, `#E91E63`, `#FF5722`, `#00E676`, `#0A2540`)를 사용한다. 단, **배경·라벨·그리드 색상은 다크 변형 적용**.
+차트 데이터 시리즈는 다크 배경 가독성을 위해 **다크 보정 시리즈**(`mode-mapping.md §3.2` 정본: `#5B8DEF`, `#F04D85`, `#FF7649`, `#33EE92`, `#C9CFD8`, `#A78BFA`)를 사용한다. 라이트 시리즈는 `signature-tokens.md §1.4` 참조. 배경·라벨·그리드 색상도 다크 변형 적용.
 
 ### 2-1. 다크 도넛 차트
 
@@ -122,7 +128,7 @@ slide.addChart(pres.charts.DOUGHNUT, [{
   values: [25, 30, 20, 25]
 }], {
   x: 0.5, y: 1.5, w: 6.0, h: 5.0,
-  chartColors: ["2962FF", "E91E63", "FF5722", "00E676"],  // 데이터 시리즈 동일
+  chartColors: ["5B8DEF", "F04D85", "FF7649", "33EE92"],  // 다크 보정 시리즈 (SoT 미러: mode-mapping.md §3.2)
   chartArea: { fill: { color: DARK_BG } },               // 차트 배경 다크
   plotArea: { fill: { color: DARK_BG } },
   showLegend: true,
@@ -150,7 +156,7 @@ slide.addChart(pres.charts.BAR, [{
 }], {
   x: 0.5, y: 1.5, w: 12.33, h: 5.0,
   barDir: "col",
-  chartColors: ["2962FF"],
+  chartColors: ["5B8DEF"],  // 다크 보정 data-1 (SoT 미러: mode-mapping.md §3.2)
   chartArea: { fill: { color: DARK_BG } },
   plotArea: { fill: { color: DARK_BG } },
   catAxisLabelColor: DARK_TEXT_MUTED,                    // 카테고리 라벨
