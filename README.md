@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page), 총 11종을 git으로 버전 관리하며, 앞으로 이 레포에서
-스킬을 **업그레이드 · 통합 · 폐합**합니다.
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종**, 총 19종을 git으로 버전 관리하며, 앞으로 이 레포에서
+스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (11종)
+## 스킬 카탈로그 (19종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -19,6 +19,21 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `pt-script` | v2.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
 | `mice-dashboard` | v2.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
 | `mice-meeting-minutes` | v2.1.0 | 회의록 transcript를 8축으로 구조화 | 인터랙티브 HTML 대시보드 |
+
+### 기본 프리셋 개조 8종 (preset → jc)
+
+원본 프리셋 스킬을 jc 생태계(jc-design-system SoT)에 맞춰 개조. 관통 원칙: **jc는 홈베이스(기본값), 자유는 명시적 opt-in.**
+
+| 스킬 | 버전 | 원본 프리셋 | 역할 | 주요 산출물 |
+|------|------|------------|------|------------|
+| `jc-theme-factory` | v1.0.0 | theme-factory | 시그니처+오버레이 쇼케이스·선택·발행·적용 (테마 프론트엔드) | 쇼케이스 HTML + 검증 스크립트 |
+| `jc-brand-styling` | v1.0.0 | brand-guidelines | 기존 PPTX/HTML에 jc 시그니처 입히는 후처리 엔진 | `style_pptx.py` |
+| `jc-comms` | v1.0.0 | internal-comms | 한국 B2B·MICE 내부/대외 커뮤니케이션 글쓰기 | 3P·뉴스레터·FAQ·보고 |
+| `jc-doc-coauthor` | v1.0.0 | doc-coauthoring | MICE 문서 3단계 공동작성 (검증=jc-redteam) | 산문 문서 |
+| `jc-visual-philosophy` | v1.0.0 | canvas-design | 미학 선언→정적 캔버스 아트 (홈베이스/자유모드) | .md + .pdf/.png |
+| `jc-generative-art` | v1.0.0 | algorithmic-art | p5.js 제너러티브 아트 (뷰어 jc 리브랜딩) | 단일 HTML 아티팩트 |
+| `jc-mcp-builder` | v1.0.0 | mcp-builder | MICE 도구 커넥터용 MCP 서버 개발 가이드 | MCP 서버 |
+| `jc-skill-creator` | v1.0.0 | skill-creator | jc 하우스 규칙 메타 층 (스킬 제작·개조 표준) | 스킬 |
 
 ### 체이닝 흐름 (참고)
 
