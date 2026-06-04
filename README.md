@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종, 총 20종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 1종, 총 21종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (20종)
+## 스킬 카탈로그 (21종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -44,10 +44,19 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 
 > `jc-skill-forge`는 *외부 대조를 통한 라이브러리 진화*, `jc-skill-creator`는 *하우스 표준 스킬 제작*. 둘은 자매 관계다. 두 형태(스킬+커맨드)는 같은 인테이크 워크플로우를 자동 트리거/명시 호출로 각각 제공한다.
 
+### 외부 인테이크 신규 (forge)
+
+`jc-skill-forge` / `/skillupgrade` 워크플로우로 외부 생태계 패턴을 흡수해 신규 보강한 스킬 (파일 복사 없이 패턴만 흡수, jc 네이티브 재구성).
+
+| 스킬 | 버전 | 흡수 패턴(출처) | 역할 | 주요 산출물 |
+|------|------|----------------|------|------------|
+| `jc-strategy-canvas` | v1.0.0 | 전략 프레임워크 (maigentic/stratarts, MIT) | 6대 프레임워크(BMC·5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 전략 구조화, 검증=jc-redteam | 전략 캔버스 HTML + ChainPayload(→proposal/rfp) |
+
 ### 체이닝 흐름 (참고)
 
 ```
 mice-rfp-analyzer ──► mice-proposal ──► pt-script
+jc-strategy-canvas ──► mice-proposal / mice-rfp-analyzer (전략 논거)
 mice-meeting-minutes ──► mice-proposal / mice-estimate
 mice-estimate · mice-meeting-minutes ──► mice-dashboard
 jc-design-system ──► (모든 산출물 스킬이 디자인 일관성 위해 참조)
