@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 1종(mice-run-of-show), 총 23종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath), 총 24종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (23종)
+## 스킬 카탈로그 (24종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -20,6 +20,7 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `mice-run-of-show` | v1.0.0 | 행사 운영 큐시트(run of show)·진행 시나리오. 시간 무결성 자동검증 | 버전드 XLSX(10컬럼) + 변경이력 |
 | `mice-dashboard` | v2.0.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
 | `mice-meeting-minutes` | v2.1.0 | 회의록 transcript를 8축으로 구조화 | 인터랙티브 HTML 대시보드 |
+| `mice-aftermath` | v1.0.0 | 행사 사후 종합 결과보고서 + 재사용 레퍼런스 케이스(영업 재활용) | 결과보고서(HTML/md) + ChainPayload(→proposal/sponsor-deck) |
 
 ### 기본 프리셋 개조 8종 (preset → jc)
 
@@ -63,6 +64,7 @@ mice-market-intel ──► jc-strategy-canvas / mice-rfp-analyzer / mice-propos
 jc-strategy-canvas ──► mice-proposal / mice-rfp-analyzer (전략 논거)
 mice-meeting-minutes ──► mice-proposal / mice-estimate
 mice-estimate · mice-meeting-minutes ──► mice-dashboard
+mice-dashboard · mice-estimate · mice-meeting-minutes · mice-run-of-show ──► mice-aftermath ──► mice-proposal / mice-sponsor-deck (사후 결과·재사용 케이스)
 jc-design-system ──► (모든 산출물 스킬이 디자인 일관성 위해 참조)
 모든 산출물 ──► jc-redteam (최종 검증)
 ```
