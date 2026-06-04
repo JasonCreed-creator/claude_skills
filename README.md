@@ -13,11 +13,11 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `jc-artifact-builder` | v1.0.0 | jc 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React+shadcn) 빌더 | 단일 HTML 아티팩트 |
 | `jc-landing-page` | v1.1.0 | jc 테마 B2B 모바일 랜딩페이지(고정스케일·GAS 폼). 검증은 jc-redteam LP 패널 | 단일 HTML LP |
 | `mice-rfp-analyzer` | v1.0.1 | RFP·비딩 공고를 7축으로 분석 | .docx 보고서 + .xlsx 평가 매트릭스 |
-| `mice-proposal` | — | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
-| `mice-estimate` | v2.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) | .xlsx 견적서 |
-| `mice-sponsor-deck` | v2.0 | 스폰서·협찬·후원사 유치 영업 데크 | HTML 데크 (+ PPTX / 매트릭스 XLSX) |
-| `pt-script` | v2.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
-| `mice-dashboard` | v2.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
+| `mice-proposal` | v2.1.1 | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
+| `mice-estimate` | v2.0.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) | .xlsx 견적서 |
+| `mice-sponsor-deck` | v2.0.0 | 스폰서·협찬·후원사 유치 영업 데크 | HTML 데크 (+ PPTX / 매트릭스 XLSX) |
+| `pt-script` | v2.0.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
+| `mice-dashboard` | v2.0.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
 | `mice-meeting-minutes` | v2.1.0 | 회의록 transcript를 8축으로 구조화 | 인터랙티브 HTML 대시보드 |
 
 ### 체이닝 흐름 (참고)
