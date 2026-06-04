@@ -15,7 +15,7 @@
 | 결정 | 스킬 | 흡수 패턴 (출처·라이선스) | 근거 | 상태 |
 |------|------|--------------------------|------|------|
 | 🆕 | `jc-strategy-canvas` | 전략 프레임워크 6종 (maigentic/stratarts, MIT) | 전략가인데 자사 전략수립 프레임워크 부재. mice-rfp는 RFP-입력 종속이라 별개 | ✅ 빌드·검수 완료 |
-| 🆕 | `mice-market-intel` | 2단계 구조화 리서치 (Weizhena/Deep-Research, MIT + Anjos2/recursive-research) | 시장·경쟁 인텔 부재. built-in deep-research는 범용·비-MICE·비-체이닝 | ⬜ 빌드 예정 |
+| 🆕 | `mice-market-intel` | 2단계 구조화 리서치 (Weizhena/Deep-Research, MIT + Anjos2/recursive-research) | 시장·경쟁 인텔 부재. built-in deep-research는 범용·비-MICE·비-체이닝 | ✅ 빌드·검수 완료 |
 | ⬆️ | `mice-estimate` | 전략 프라이싱(Van Westendorp·티어 논리) (stratarts/pricing-strategy-architect, MIT) | 원가기반 산출만, 전략적 가격결정 논리 부재 | ⬜ 빌드 예정 |
 | ⏸ | `mice-sponsor-deck` | 영업 실행층(반론대응·아웃리치·리드자격) (coreyhaines31, Composio/lead-research) | 데크 생성만, 영업 실행층 부재 | ⏸ 보류 (이번 미승인) |
 | ⛔ | (다수) | 마케팅 그로스·CRM 자동화·dev-process·공식 문서엔진·resume/invoice | MICE 전략 코어와 무관·중복·이미커버 | — |
@@ -27,3 +27,10 @@
 - 하우스 규약: jc-* 명명 · 한국어 푸시형 description · SoT 토큰 런타임 참조(값 하드코딩 0) · `RULE-NO-COMPANY`(회사·실명 0건) · ChainPayload(→proposal/rfp) · jc-redteam 검증 끼움.
 - check_drift `CONSUMERS`에 등록(전략 캔버스 HTML = 디자인 소비). drift-guard ✅.
 - 검수(jc-redteam 렌즈): 트리거·형제경계 명확, mice-rfp-analyzer("경쟁") 경계는 description에서 "RFP 입력 종속 vs 자사 전략"으로 분리 명시. 오탈자 0, 보안(외부 스크립트·시크릿) 해당 없음.
+
+### mice-market-intel 빌드 노트 (v1.0.0)
+- 구조: SKILL.md(148줄) + references 4종(research-outline-templates·source-tiering·report-spec·chaining-schema) + LICENSE.
+- 방법론: 2단계 리서치(아웃라인→병렬조사→리포트) + Phase 1 HITL 정지점. 출처 티어링(T1~T4)·교차확인·추정금지.
+- 형제경계: built-in deep-research(범용) vs 본 스킬(MICE 도메인+체이닝)을 description·§1에 분리 명시. jc-strategy-canvas(판단)와 수집-판단 분리.
+- 하우스 규약: SoT 토큰 런타임 참조·RULE-NO-COMPANY(자사 식별 변수화, *조사 대상* 공개 기업명은 사실·출처로 허용)·check_drift CONSUMERS 등록·drift-guard ✅.
+- 배선: 두 신규 스킬을 `chaining-protocol.md`(ChainPayload/v1 SoT) 적용대상·source enum·페이로드 매핑표에 등록.

@@ -21,8 +21,8 @@ SKILLS = REPO / ".claude" / "skills"
 CONSUMERS = ["mice-estimate", "pt-script", "mice-dashboard", "mice-sponsor-deck", "mice-proposal",
              # 프리셋 개조로 추가된 디자인 토큰 소비/임베드 스킬 (회귀 방지 확장)
              "jc-theme-factory", "jc-brand-styling", "jc-visual-philosophy", "jc-generative-art",
-             # forge 인테이크 신규 (전략 캔버스 HTML — 디자인 토큰 소비)
-             "jc-strategy-canvas"]
+             # forge 인테이크 신규 (전략 캔버스 HTML · 리서치 리포트 — 디자인 토큰 소비)
+             "jc-strategy-canvas", "mice-market-intel"]
 EXCLUDE_NAMES = set()  # (구) infographic-patterns.md 는 C에서 SoT §1.8 스케일로 정합 → 이제 검사 대상
 SCAN_SUFFIXES = {".md", ".html", ".css", ".js", ".py"}
 

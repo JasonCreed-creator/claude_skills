@@ -3,7 +3,7 @@
 > **정본(Single Source of Truth)**: MICE 스킬 간 데이터 교환에 쓰이는 공통 "봉투(envelope)" 구조를 한 곳에서 권위 정의한다.
 > 각 스킬의 reference 문서(`chaining-guide.md` / `chaining-schema.md`)는 **자기 고유의 input/output 페이로드 매핑**만 정의하고, 봉투 구조는 본 문서를 참조한다.
 >
-> 적용 대상 스킬: `mice-rfp-analyzer` · `mice-proposal` · `mice-estimate` · `pt-script` · `mice-dashboard` · `mice-meeting-minutes` · `mice-sponsor-deck` · `jc-redteam`.
+> 적용 대상 스킬: `mice-rfp-analyzer` · `mice-proposal` · `mice-estimate` · `pt-script` · `mice-dashboard` · `mice-meeting-minutes` · `mice-sponsor-deck` · `jc-redteam` · `jc-strategy-canvas` · `mice-market-intel`.
 
 ---
 
@@ -68,7 +68,7 @@
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
 | `$schema` | string | ✅ | 봉투 버전 식별자. **항상 `"ChainPayload/v1"`**. 입력 라우팅의 1차 판별 키. |
-| `source` | string | ✅ | 생산 스킬 ID. `mice-rfp-analyzer` \| `mice-proposal` \| `mice-estimate` \| `pt-script` \| `mice-dashboard` \| `mice-meeting-minutes` \| `mice-sponsor-deck` 중 하나. |
+| `source` | string | ✅ | 생산 스킬 ID. `mice-rfp-analyzer` \| `mice-proposal` \| `mice-estimate` \| `pt-script` \| `mice-dashboard` \| `mice-meeting-minutes` \| `mice-sponsor-deck` \| `jc-strategy-canvas` \| `mice-market-intel` 중 하나. |
 | `version` | string | ✅ | 생산 스킬의 시맨틱 버전 (예: `"v2.0"`, `"v2.1.1"`). 다운스트림 호환성 판단용. |
 | `generatedAt` | ISO 8601 string | ✅ | 생성 시각 (예: `"2026-05-27T10:00:00+09:00"`). |
 | `target` | string | optional | 의도된 수신 스킬 ID. 다대다 체이닝에서 라우팅 힌트. 생략 가능. |
@@ -95,6 +95,8 @@
 | mice-sponsor-deck | `mice-sponsor-deck/references/chaining-schema.md` | `event_meta`, `sponsor_candidates`, `audience_hints` |
 | pt-script | `pt-script/references/chaining-schema.md` | `proposal_meta` (client_name, presentation_minutes, tone, …) |
 | jc-redteam | `jc-redteam/references/chaining-guide.md` | 페이로드 스키마 없음 — 임의 산출물/텍스트 수용 |
+| jc-strategy-canvas | `jc-strategy-canvas/references/chaining-schema.md` | `topic`, `decision`, `recommendation`, `differentiation_axes`, `key_messages`, `evidence_flags` |
+| mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size`, `competitors`, `trends`, `sponsor_candidates`, `benchmarks`, `sources` |
 
 > **이 페이로드 매핑들은 "중복"이 아니다.** 각 스킬만의 고유 필드·예시·변환 룰이므로 해당 스킬 문서에 그대로 보존한다.
 
