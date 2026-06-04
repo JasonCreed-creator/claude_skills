@@ -1,16 +1,17 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 1종(jc-artifact-builder), 총 10종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page), 총 11종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다.
 
-## 스킬 카탈로그 (10종)
+## 스킬 카탈로그 (11종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
 | `jc-design-system` | v1.2.0 | 디자인 토큰 시스템 (다른 스킬이 참조하는 reference 자산, 인포그래픽 스케일 포함) | 토큰·컴포넌트 패턴 |
-| `jc-redteam` | v1.0.1 | 결론·완성 산출물을 적대적으로 재검증 (워크플로우 최종 품질 게이트) | Quick Strike / Deep Audit |
+| `jc-redteam` | v1.1.0 | 결론·완성 산출물 적대적 재검증 (+ LP 마케팅 패널 모드) | Quick Strike / Deep Audit / LP 패널 |
 | `jc-artifact-builder` | v1.0.0 | jc 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React+shadcn) 빌더 | 단일 HTML 아티팩트 |
+| `jc-landing-page` | v1.1.0 | jc 테마 B2B 모바일 랜딩페이지(고정스케일·GAS 폼). 검증은 jc-redteam LP 패널 | 단일 HTML LP |
 | `mice-rfp-analyzer` | v1.0.1 | RFP·비딩 공고를 7축으로 분석 | .docx 보고서 + .xlsx 평가 매트릭스 |
 | `mice-proposal` | — | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
 | `mice-estimate` | v2.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) | .xlsx 견적서 |
