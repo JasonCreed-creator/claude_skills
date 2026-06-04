@@ -108,11 +108,9 @@ pt-script (발표 세그먼트 시간) ─┘                     └─(선택)
 
 ---
 
-## 5. source enum 등록 노트 (후속)
+## 5. source enum 등록 (완료)
 
-`mice-run-of-show`는 ChainPayload **신규 source**다. 본 스킬은 1차적으로 **소비자**(입력 source=`mice-proposal`/`pt-script` — 이미 enum 등재)라 현 상태로 동작한다. 다만 본 스킬이 *출력* 봉투(`source=mice-run-of-show`)를 낼 때의 완전한 정합을 위해, 봉투 정본(`jc-design-system/references/chaining-protocol.md §3` source enum + §4 페이로드 매핑표 + §5 엣지)에 본 스킬 **추가 등록을 권고**한다.
-
-> 봉투 정본 수정은 **jc-design-system 변경**이므로 본 스킬 범위 밖 — 별도 승인 후 추가한다. 그 전까지 다운스트림 `detect_input_source()`는 `source` 문자열로 본 스킬을 식별하되, 정본 enum 미등재 상태임을 인지한다.
+`mice-run-of-show`는 ChainPayload **신규 source**다. 봉투 정본(`jc-design-system/references/chaining-protocol.md`)의 §1 적용 대상 · §3 source enum · §4 페이로드 매핑표 · §5 엣지에 본 스킬이 **등록 완료**(F-1)되었다. 다운스트림 `detect_input_source()`가 `source` 문자열로 본 스킬을 식별한다.
 
 ---
 
