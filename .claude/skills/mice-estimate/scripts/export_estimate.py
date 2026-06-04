@@ -43,11 +43,28 @@ from korean_amount import format_estimate_amount
 # 일치시키고 'SoT 미러' 주석으로 추적성 유지. openpyxl은 '#' 없는 RRGGBB 사용.
 # ============================================================
 
-COLOR_BRAND_PRIMARY  = '0A2540'   # SoT 미러: --jc-primary (Deep Navy, 헤더/타이틀 역할)
-COLOR_BRAND_ACCENT   = '2962FF'   # SoT 미러: --jc-accent (Electric Blue, 카테고리 강조)
-COLOR_NEUTRAL_LIGHT  = 'C9CFD8'   # SoT 미러: --jc-border-strong (소계 배경 — 중립 강조 면)
-COLOR_SEMANTIC_DANGER= 'D32F2F'   # SoT 미러: --jc-danger (소계 금액 강조)
-COLOR_NEUTRAL_WHITE  = 'FFFFFF'   # SoT 미러: --jc-surface (카드·시트 흰색)
+# jc-design-system(SoT) 런타임 로딩: 실행 시 §6 JSON 에서 값을 읽고, 실패하면 미러 폴백.
+def _load_jc_tokens():
+    import json, re
+    from pathlib import Path
+    try:
+        sot = Path(__file__).resolve().parents[2] / "jc-design-system" / "references" / "signature-tokens.md"
+        m = re.search(r"```json\s*\n(.*?)\n```", sot.read_text(encoding="utf-8"), re.S)
+        return json.loads(m.group(1)) if m else {}
+    except Exception:
+        return {}
+
+_JC = _load_jc_tokens()
+def _jc(key, fallback):
+    c = _JC.get("color", {})
+    v = c.get(key) or c.get("point", {}).get(key) or c.get("semantic", {}).get(key) or fallback
+    return v.lstrip("#")
+
+COLOR_BRAND_PRIMARY  = _jc("primary", "0A2540")       # --jc-primary (Deep Navy, 헤더/타이틀)
+COLOR_BRAND_ACCENT   = _jc("accent", "2962FF")        # --jc-accent (Electric Blue, 카테고리 강조)
+COLOR_NEUTRAL_LIGHT  = _jc("borderStrong", "C9CFD8")  # --jc-border-strong (소계 배경)
+COLOR_SEMANTIC_DANGER= _jc("danger", "D32F2F")        # --jc-danger (소계 금액 강조)
+COLOR_NEUTRAL_WHITE  = _jc("surface", "FFFFFF")       # --jc-surface (흰색)
 
 FONT_BODY = Font(name='Pretendard', size=12)
 FONT_BODY_BOLD = Font(name='Pretendard', size=12, bold=True)

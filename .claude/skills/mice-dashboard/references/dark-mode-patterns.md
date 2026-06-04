@@ -185,6 +185,8 @@ function applyChartTheme(isDark) {
 
 ## 4. 인쇄 시 라이트 강제 (PDF 출력 호환)
 
+> 정본: `jc-design-system/references/shared-rules.md#RULE-PRINT-LIGHT` (라이트 강제 토큰 값은 `mode-mapping.md §4.2`). 아래는 본 스킬의 구현 예.
+
 ```css
 @media print {
   /* 다크 모드라도 인쇄는 항상 라이트로 */
@@ -206,7 +208,7 @@ function applyChartTheme(isDark) {
 
 ## 5. 접근성 (WCAG 2.1 AA 기준)
 
-> 대비비는 `mode-mapping.md` §9(WebAIM 표준)·§5 정본 수치를 미러한다. 색상은 SoT 다크 패밀리.
+> 대비 목표·정책 정본: `jc-design-system/references/shared-rules.md#RULE-WCAG`. 대비비 수치·계산 표준은 `mode-mapping.md` §9(WebAIM 표준)·§5 정본을 미러한다. 색상은 SoT 다크 패밀리.
 
 | 다크 모드 색상 조합 | 대비비 (WebAIM 기준) | 판정 |
 |---|---|---|

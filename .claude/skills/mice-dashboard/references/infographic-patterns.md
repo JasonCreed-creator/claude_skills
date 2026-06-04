@@ -75,11 +75,11 @@ v1 mice-dashboard 는 Chart.js 기반 표준 차트 6종(바·라인·도넛·�
 .step-drop {
   position: absolute;
   right: -120px;
-  color: #dc2626;
+  color: #D32F2F;
   font-size: 0.875rem;
   font-weight: 600;
 }
-[data-theme="dark"] .step-drop { color: #f87171; }
+[data-theme="dark"] .step-drop { color: #E57373; }
 ```
 
 ### 1.3 자동 생성 입력 (Python 측)
@@ -180,15 +180,15 @@ def render_funnel(steps: list[dict]) -> str:
 .q-desc { font-size: 0.875rem; opacity: 0.85; }
 .q-items { list-style: '· '; padding-left: 20px; margin: 0; font-size: 0.875rem; }
 
-[data-tone="success"] { background: #f0fdf4; border-color: #22c55e; color: #166534; }
-[data-tone="info"]    { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
-[data-tone="warning"] { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
-[data-tone="danger"]  { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+[data-tone="success"] { background: #E6F8EE; border-color: #4CDE8A; color: #00C853; }
+[data-tone="info"]    { background: #E8EFFF; border-color: #2962FF; color: #1E4DCC; }
+[data-tone="warning"] { background: #FFF3E0; border-color: #FFA000; color: #C77F00; }
+[data-tone="danger"]  { background: #FBEAEA; border-color: #E57373; color: #D32F2F; }
 
-[data-theme="dark"] [data-tone="success"] { background: #14532d40; color: #86efac; }
-[data-theme="dark"] [data-tone="info"]    { background: #1e3a8a40; color: #93c5fd; }
-[data-theme="dark"] [data-tone="warning"] { background: #78350f40; color: #fcd34d; }
-[data-theme="dark"] [data-tone="danger"]  { background: #7f1d1d40; color: #fca5a5; }
+[data-theme="dark"] [data-tone="success"] { background: #00733B40; color: #9CEBC4; }
+[data-theme="dark"] [data-tone="info"]    { background: #0A254040; color: #5B9BD5; }
+[data-theme="dark"] [data-tone="warning"] { background: #8A520040; color: #FFC24D; }
+[data-theme="dark"] [data-tone="danger"]  { background: #8E1F1F40; color: #F2B8B8; }
 ```
 
 ---

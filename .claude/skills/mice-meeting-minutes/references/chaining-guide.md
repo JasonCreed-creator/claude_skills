@@ -2,6 +2,9 @@
 
 Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에서 추출한 5개 데이터를 mice-proposal 스킬 입력 JSON 패키지로 자동 변환하는 룰.
 
+> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`$schema`·`source`·`version`·`generatedAt`)·전체 워크플로우·표준 규약은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
+> 요약: 출력 JSON 봉투는 `"source": "mice-meeting-minutes"` 를 둔다(아래 §3 예시는 본 스킬 페이로드 관례를 보존). 본 스킬은 proposal·estimate·dashboard·sponsor-deck 으로 분기 체이닝하며, 본 문서는 그 **고유 페이로드 매핑**(Discovery 5데이터 추출·변환)만 정의한다.
+
 ---
 
 ## 1. 체이닝 트리거 조건
@@ -309,32 +312,10 @@ mice-proposal이 본 패키지를 받으면 제안서 1차 초안의 70%가 자�
 
 ## 8. 풀 워크플로우 체인 (참고)
 
+본 스킬의 발원 위치(요약):
+
 ```
-[비딩 공고/RFP]
-    ↓
-mice-rfp-analyzer
-    ↓
-[분석 보고서 + 평가 매트릭스]
-    ↓
-[GO 판정]
-    ↓
-Discovery Meeting 진행
-    ↓
-mice-meeting-minutes (Type A, --external) ← 본 스킬
-    ↓
-[회의록 + Action Items + 공유 요약 + 체이닝 JSON]
-    ↓
-mice-proposal (체이닝 JSON 입력)
-    ↓
-[제안서 .pptx]
-    ↓
-mice-estimate → [견적서 .xlsx]
-    ↓
-pt-script → [발표 대본 .docx]
-    ↓
-[비딩 PT 진행]
-    ↓
-mice-meeting-minutes (Type C, --external) ← 사후 협의 회의록
-    ↓
-시리즈 누적 → 행사 운영 단계까지 추적
+mice-rfp-analyzer → [GO] → Discovery Meeting → mice-meeting-minutes(본 스킬, Type A) → mice-proposal → mice-estimate → pt-script → 비딩 PT → mice-meeting-minutes(Type C 사후) → 시리즈 누적
 ```
+
+→ 전체 체이닝 흐름도(회의록 발원 분기·시리즈→dashboard·jc-redteam 게이트 포함)는 **봉투 정본** [chaining-protocol.md §5](../../jc-design-system/references/chaining-protocol.md) 참조.

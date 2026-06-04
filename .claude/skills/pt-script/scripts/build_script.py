@@ -51,24 +51,39 @@ if hasattr(sys.stderr, "reconfigure"):
 # docx는 CSS 변수를 못 쓰므로 HEX 리터럴은 "매체 불가피"로 남되,
 # 값은 jc-design-system signature-tokens.md §6 JSON 라이트 정본과 일치시킨다 (SoT 미러).
 
-# 컬러 토큰 (HEX)
-JC_PRIMARY = "0A2540"            # SoT 미러: --jc-primary
-JC_PRIMARY_SOFT = "1A3556"       # SoT 미러: --jc-primary-soft
-JC_ACCENT = "2962FF"             # SoT 미러: --jc-accent
-JC_ACCENT_STRONG = "1E4DCC"      # SoT 미러: --jc-accent-strong
-JC_TEXT = "1A1D24"               # SoT 미러: --jc-text
-JC_TEXT_MUTED = "5A6270"         # SoT 미러: --jc-text-muted
-JC_SURFACE = "FFFFFF"            # SoT 미러: --jc-surface
-JC_SURFACE_ALT = "F1F3F7"        # SoT 미러: --jc-surface-alt
-JC_BORDER = "E5E8ED"             # SoT 미러: --jc-border
-JC_BORDER_STRONG = "C9CFD8"      # SoT 미러: --jc-border-strong
-JC_SUCCESS = "00C853"            # SoT 미러: --jc-success
-JC_WARNING = "FFA000"            # SoT 미러: --jc-warning
-JC_DANGER = "D32F2F"             # SoT 미러: --jc-danger
-JC_POINT_ORANGE = "FF5722"       # SoT 미러: --jc-point-orange
-# mc 표지용 옅은 오렌지 배경. SoT 정본은 --jc-point-orange-softest (#FFF3E0).
-# 기존 drift값 FFE5DD → SoT 정본 FFF3E0 으로 교정 (dark text 대비 14.8:1 AAA 유지).
-JC_POINT_ORANGE_SOFTEST = "FFF3E0"  # SoT 미러: --jc-point-orange-softest
+# 컬러 토큰 (HEX) — jc-design-system(SoT) §6 JSON 런타임 로딩, 실패 시 미러 폴백.
+def _load_jc_tokens():
+    import json, re
+    from pathlib import Path
+    try:
+        sot = Path(__file__).resolve().parents[2] / "jc-design-system" / "references" / "signature-tokens.md"
+        m = re.search(r"```json\s*\n(.*?)\n```", sot.read_text(encoding="utf-8"), re.S)
+        return json.loads(m.group(1)) if m else {}
+    except Exception:
+        return {}
+
+_JC = _load_jc_tokens()
+def _jc(key, fallback):
+    c = _JC.get("color", {})
+    v = c.get(key) or c.get("point", {}).get(key) or c.get("semantic", {}).get(key) or fallback
+    return v.lstrip("#")
+
+JC_PRIMARY = _jc("primary", "0A2540")              # --jc-primary
+JC_PRIMARY_SOFT = _jc("primarySoft", "1A3556")     # --jc-primary-soft
+JC_ACCENT = _jc("accent", "2962FF")                # --jc-accent
+JC_ACCENT_STRONG = _jc("accentStrong", "1E4DCC")   # --jc-accent-strong
+JC_TEXT = _jc("text", "1A1D24")                    # --jc-text
+JC_TEXT_MUTED = _jc("textMuted", "5A6270")         # --jc-text-muted
+JC_SURFACE = _jc("surface", "FFFFFF")              # --jc-surface
+JC_SURFACE_ALT = _jc("surfaceAlt", "F1F3F7")       # --jc-surface-alt
+JC_BORDER = _jc("border", "E5E8ED")                # --jc-border
+JC_BORDER_STRONG = _jc("borderStrong", "C9CFD8")   # --jc-border-strong
+JC_SUCCESS = _jc("success", "00C853")              # --jc-success
+JC_WARNING = _jc("warning", "FFA000")              # --jc-warning
+JC_DANGER = _jc("danger", "D32F2F")                # --jc-danger
+JC_POINT_ORANGE = _jc("orange", "FF5722")          # --jc-point-orange
+# mc 표지용 옅은 오렌지 배경 (--jc-point-orange-softest). 구 drift값 FFE5DD → FFF3E0 정합 (대비 14.8:1 AAA).
+JC_POINT_ORANGE_SOFTEST = _jc("orangeSoftest", "FFF3E0")  # --jc-point-orange-softest
 
 # 발표 유형별 강조 컬러 매핑 (jc-design-mapping.md §5)
 PRESENTATION_TYPE_OVERRIDES = {

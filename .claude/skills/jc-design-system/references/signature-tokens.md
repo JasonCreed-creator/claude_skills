@@ -106,6 +106,21 @@ Sprint 1~6 누적 백로그(BL-S3-1, BL-S3-2, BL-S4-1) 반영. 시그니처 베�
 | `--jc-point-magenta-soft` `#FCE4EC` | `#3D1F2A` | 짙은 마젠타 톤 배경 |
 | `--jc-success-strong` `#00733B` | `#33C272` | 다크에서는 밝은 그린으로 |
 
+### 1.8 인포그래픽 스케일 (v1.2.0 — 5단계 그라데이션)
+
+히트맵·매트릭스·퍼널 등 **다중 셰이드 그라데이션이 필요한 인포그래픽 전용** 스케일.
+각 스케일은 시맨틱 앵커(3단계)를 중심으로 deep→bg 5단계. 단일 카테고리 구분은 §1.4 data 시리즈를 우선 쓰고, 연속/단계 표현에만 본 스케일을 사용한다.
+
+| 스케일 | 1 deep | 2 | 3 anchor | 4 | 5 bg | 앵커 |
+|--------|--------|---|----------|---|------|------|
+| `scale-blue`  | `#0A2540` | `#1E4DCC` | `#2962FF` | `#5B9BD5` | `#E8EFFF` | `--jc-accent` |
+| `scale-green` | `#00733B` | `#00C853` | `#4CDE8A` | `#9CEBC4` | `#E6F8EE` | `--jc-success` |
+| `scale-red`   | `#8E1F1F` | `#D32F2F` | `#E57373` | `#F2B8B8` | `#FBEAEA` | `--jc-danger` |
+| `scale-amber` | `#8A5200` | `#C77F00` | `#FFA000` | `#FFC24D` | `#FFF3E0` | `--jc-warning` |
+
+- `scale-blue`는 전부 기존 시그니처 토큰(primary/accent-strong/accent/accent-light/accent-soft) — 신규 색 없음.
+- 토큰명 `--jc-scale-<hue>-<1..5>`. 기계 파싱은 §6 JSON `color.scales`.
+
 ---
 
 ## 2. 타이포그래피
@@ -249,6 +264,12 @@ Sprint 1~6 누적 백로그(BL-S3-1, BL-S3-2, BL-S4-1) 반영. 시그니처 베�
       "blue": "#2962FF"
     },
     "data": ["#2962FF", "#E91E63", "#FF5722", "#00E676", "#0A2540", "#7C3AED"],
+    "scales": {
+      "blue":  ["#0A2540", "#1E4DCC", "#2962FF", "#5B9BD5", "#E8EFFF"],
+      "green": ["#00733B", "#00C853", "#4CDE8A", "#9CEBC4", "#E6F8EE"],
+      "red":   ["#8E1F1F", "#D32F2F", "#E57373", "#F2B8B8", "#FBEAEA"],
+      "amber": ["#8A5200", "#C77F00", "#FFA000", "#FFC24D", "#FFF3E0"]
+    },
     "semantic": {
       "success": "#00C853",
       "successStrong": "#00733B",

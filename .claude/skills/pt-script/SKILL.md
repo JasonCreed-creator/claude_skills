@@ -266,6 +266,8 @@ python scripts/build_script.py \
 
 본 스킬은 개인 자산이다. 회사 종속 표현은 산출물에 절대 포함하지 않는다.
 
+> 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`. 코드 레벨 구현은 `scripts/build_script.py` 의 `sanitize_text()` (정본 문서의 '구현 예'). 아래는 본 스킬 고유 적용 메모.
+
 - "엠앤씨", "M&C커뮤니케이션즈", "리멤버앤컴퍼니", "신사업실", 실명 등 0건
 - 회사명·발표자 직함은 **외부 주입 변수**로 처리 (사용자가 Phase 2 에서 직접 입력)
 - 기본 표기는 일반화된 표현 사용: "본 PCO", "당사", "발표자" 등

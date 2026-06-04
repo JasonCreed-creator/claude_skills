@@ -266,7 +266,7 @@ pptx.layout = 'LAYOUT_16x9';  // 13.33 x 7.5 inch
 
 ### 4.4 색상·폰트 설정
 
-`design-tokens-mapping.md` 룰을 그대로 적용:
+`design-tokens-mapping.md` 룰을 그대로 적용 (hex `#` 제외 정본: `jc-design-system/references/shared-rules.md#RULE-PPTX-HEX`):
 
 ```javascript
 const TOKENS = {

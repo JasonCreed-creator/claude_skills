@@ -2,6 +2,9 @@
 
 본 문서는 sponsor-deck이 다른 스킬과 어떻게 체이닝되는지 명시한다. 1차 입력은 mice-meeting-minutes Discovery 미팅 정리에서 추출한 **스폰서 후보 JSON**이다.
 
+> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`source`·`version`·`generatedAt` 등 공통 메타)·전체 워크플로우·표준 규약은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
+> 요약: 본 스킬은 입력 검증에 자기 전용 식별자 `"$schema": "mice-sponsor-deck/v2.0"` + `extracted_from` 을 쓴다(아래 스키마·검증 룰은 본 스킬 고유 — 그대로 보존). 공통 라우팅은 `source`(`mice-meeting-minutes`)로 수렴한다. 본 문서는 sponsor-deck **고유 입출력 페이로드 스키마**(event_meta·sponsor_candidates·deck-content 변환)만 정의한다.
+
 ---
 
 ## 1. 체이닝 워크플로우 전체

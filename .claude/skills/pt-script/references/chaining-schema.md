@@ -2,6 +2,9 @@
 
 본 문서는 pt-script v2.0 가 mice-proposal 의 산출물을 자동으로 받아 발표 대본을 생성하는 체이닝 워크플로우와 입력 JSON 스키마를 정의한다.
 
+> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`source`·`version`·`generatedAt` 등 공통 메타)·전체 워크플로우·표준 규약은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
+> 요약: 본 스킬은 입력 검증에 자기 전용 식별자 `"$schema": "pt-script/v2.0"` + `extracted_from` 을 쓴다(아래 스키마·검증 룰은 본 스킬 고유 — 그대로 보존). 공통 라우팅은 `source`(`mice-proposal`)로 수렴한다. 본 문서는 pt-script **고유 입력 페이로드 스키마**(proposal-meta.json·발표 메타 매핑)만 정의한다.
+
 ---
 
 ## 1. 체이닝 워크플로우 전체

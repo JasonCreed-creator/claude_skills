@@ -175,10 +175,21 @@ ROI_INDUSTRY_LABELS = {
     "public": "공공·교육·연구 스폰서 ROI"
 }
 
-# CHART_SERIES 5색 — SoT 미러 (값 정본: signature-tokens.md §1.4 / §6 라이트 data-1~5)
-# 주의: 끝의 "0A2540"은 data-5(Deep Navy 5순위 차트 시리즈) 정본이며 *페이지 배경 아님*.
+# CHART_SERIES — jc-design-system(SoT) §6 JSON 의 color.data 를 런타임 로딩(실패 시 폴백).
+# 주의: "0A2540"은 data-5(Deep Navy 5순위 차트 시리즈) 정본이며 *페이지 배경 아님*.
 #       다크 차트 시리즈는 mode-mapping.md §3.2 (data-5=C9CFD8) 정본 사용.
-CHART_COLORS = ["2962FF", "E91E63", "FF5722", "00E676", "0A2540"]  # SoT 라이트 data 시리즈
+def _load_jc_data():
+    import json, re
+    from pathlib import Path
+    try:
+        sot = Path(__file__).resolve().parents[2] / "jc-design-system" / "references" / "signature-tokens.md"
+        m = re.search(r"```json\s*\n(.*?)\n```", sot.read_text(encoding="utf-8"), re.S)
+        return (json.loads(m.group(1)).get("color", {}) or {}).get("data") if m else None
+    except Exception:
+        return None
+
+CHART_COLORS = [c.lstrip("#") for c in (_load_jc_data()
+                or ["#2962FF", "#E91E63", "#FF5722", "#00E676", "#0A2540"])][:5]  # SoT 라이트 data 시리즈
 
 # Tier 컬러 토큰 (HEX without #) — SoT 미러: 라이트 Tier 정본 (design-tokens-mapping.md §2.2 / signature-tokens.md)
 # 다크(dark_mixed) 렌더 시 Tier 다크 변형은 mode-mapping.md §7 정본을 빌더가 적용

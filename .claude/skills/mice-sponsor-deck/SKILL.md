@@ -346,6 +346,8 @@ PPTX 생성은 반드시 `/mnt/skills/public/pptx/SKILL.md` 의 pptxgenjs 방식
 
 ### 회사 종속 표현 배제
 
+> 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY` (금칙어·허용 표현·구현 예 전체 정의). 아래는 본 스킬 고유 적용 메모.
+
 - 본 스킬은 "MICE 전문가" 또는 "행사 기획팀" 일반 용어만 사용
 - 클라이언트·발주처·소속사 정보는 외부 주입 변수로만 처리
 - "당사" 같은 자기 지칭 표현 금지 → "행사 기획팀" 또는 "본 행사 사무국"으로 대체

@@ -1,0 +1,30 @@
+name: drift-guard
+
+# jc-design-system(SoT) 디자인 토큰 정합 회귀 방지.
+# consumer 스킬에 R1에서 제거한 비-canon 토큰값이 다시 들어오면 CI 실패.
+
+on:
+  pull_request:
+    paths:
+      - ".claude/skills/**"
+      - "scripts/check_drift.py"
+      - ".github/workflows/drift-guard.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".claude/skills/**"
+      - "scripts/check_drift.py"
+  workflow_dispatch:
+
+jobs:
+  drift-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: 탐지기 자체 검증
+        run: python3 scripts/check_drift.py --selftest
+      - name: SoT 토큰 드리프트 검사
+        run: python3 scripts/check_drift.py

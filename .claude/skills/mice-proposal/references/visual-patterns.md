@@ -131,7 +131,7 @@ const RADIUS_XL = 0.12;   // 16px (큰 컨테이너)
 ```
 
 ### 0-5. pptxgenjs 주의사항 (반복 강조)
-1. hex 컬러는 `#` 없이 6자리만 (`"0A2540"` ✅, `"#0A2540"` ❌)
+1. hex 컬러는 `#` 없이 6자리만 (`"0A2540"` ✅, `"#0A2540"` ❌) — 정본: `jc-design-system/references/shared-rules.md#RULE-PPTX-HEX`
 2. 옵션 객체는 호출마다 새로 생성 (재사용 금지 — pptxgenjs가 in-place 변경함)
 3. `bullet: true` 사용. 유니코드 `•` 사용 금지
 4. `breakLine: true`로 줄바꿈

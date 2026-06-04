@@ -102,8 +102,8 @@ const DARK_TIER_COLORS = {
 1. **다크 슬라이드 ≤ 30%**: 전체 슬라이드 15장이면 다크 슬라이드 최대 4~5장
 2. **데이터·표 슬라이드는 라이트 강제**: S3·S4·S6 다크 금지
 3. **표지·임팩트·종결 슬라이드는 다크 권장**: S1·S7·S9
-4. **WCAG AA 대비비 (4.5:1) 검증 의무**: 다크 본문 `#E8ECF2` + 다크 배경 `#0A1220` = 14.96:1 (mode-mapping.md §9.5, 충분)
-5. **인쇄 시 라이트 강제 토글 지원**: `@media print` + 다크 토글 스크립트
+4. **WCAG AA 대비비 (4.5:1) 검증 의무**: 다크 본문 `#E8ECF2` + 다크 배경 `#0A1220` = 14.96:1 (mode-mapping.md §9.5, 충분). 대비 목표 정본: `jc-design-system/references/shared-rules.md#RULE-WCAG`
+5. **인쇄 시 라이트 강제 토글 지원**: `@media print` + 다크 토글 스크립트. 정본: `jc-design-system/references/shared-rules.md#RULE-PRINT-LIGHT`
 
 ---
 
