@@ -1,6 +1,6 @@
 ---
 name: mice-estimate
-version: "v2.0.0"
+version: "v2.1.0"
 description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 두 가지 양식을 지원한다: (1) M&C 견적서 — 국가계약법 기반 산출내역서 양식 + calcEstimate 자동 산출 엔진, (2) 리멤버 견적서 — 패키지 할인 구조의 견적서 양식. 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서'를 언급할 때. 특히 'M&C 견적서', '리멤버 견적서' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. mice-proposal·mice-rfp-analyzer 체이닝 입력을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다."
 dependencies:
   - openpyxl
@@ -9,6 +9,14 @@ dependencies:
 # MICE 견적서 생성 스킬
 
 ## 버전 히스토리
+
+### v2.1.0 — 2026-06-04
+
+**전략 프라이싱 레이어 추가** (forge 인테이크). 원가 산출(pricing-engine)을 넘어 *제안가·할인·패키지 가격*을 전략적으로 정하는 가격 결정 논리.
+
+#### 신규 추가
+- `references/pricing-strategy.md` — 4대 가격 레버(가치기반·Van Westendorp PSM·티어/패키지·앵커링) + MICE 입찰/스폰서 맥락. 출처 패턴 maigentic/stratarts(MIT), 방법만 흡수.
+- SKILL.md "전략 프라이싱(선택)" 절 — 원가↔제안가 경계 + 체이닝(`mice-market-intel`·`jc-strategy-canvas`) 명시.
 
 ### v2.0 — 2026-05-25
 
@@ -286,6 +294,14 @@ wb.save(output)
 
 ---
 
+## 전략 프라이싱 (선택 — 원가→제안가)
+
+`calc_estimate`/`pricing-engine.md`가 *원가·마진*을 산출한다면, 견적의 **제안가·할인폭·패키지 가격을 전략적으로** 정해야 할 때는 [pricing-strategy.md](references/pricing-strategy.md)를 참조한다. 4대 레버(가치기반·Van Westendorp 가격민감도·티어/패키지 구조·앵커링)로 "얼마에 제안할까"를 설계한다.
+
+- 기계적 원가 산출만 필요하면 이 절을 건너뛴다(과함).
+- 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션 *판단*은 `jc-strategy-canvas`, *원가*는 `pricing-engine`. 본 절은 그 사이 가격 *결정 논리*.
+- 데이터 없는 지불의향·경쟁가는 `[가설]` — 추정 금지. 저가수주 리스크·낙관 마진은 `jc-redteam`으로 점검.
+
 ## M&C 견적서 상세 규칙
 
 ### 자동 산출 매핑 (v2 신규)
@@ -446,7 +462,8 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 
 ## References
 
-- [pricing-engine.md](references/pricing-engine.md) — calc_estimate 엔진 사용법·공식
+- [pricing-engine.md](references/pricing-engine.md) — calc_estimate 엔진 사용법·공식 (원가 산출)
+- [pricing-strategy.md](references/pricing-strategy.md) — 전략 프라이싱(가치기반·Van Westendorp·티어·앵커링), 원가→제안가 결정 논리
 - [option-catalog.md](references/option-catalog.md) — 9종 옵션·상호배제 규칙
 - [venue-db.md](references/venue-db.md) — 베뉴 DB 스키마 + 슬롯 (데이터 보류)
 - [jc-design-mapping.md](references/jc-design-mapping.md) — Excel 색상 → JC 시맨틱 토큰
