@@ -100,4 +100,4 @@ mice-run-of-show ─┘            │
    ※ 한 행사의 결과가 다음 수주·협찬의 자산이 되는 선순환 고리
 ```
 
-> source enum 노트: `mice-aftermath`는 신규 source다. 봉투 정본(`chaining-protocol.md §3` enum + §4 매핑 + §5 엣지)에 추가 등록 권고(후속 — jc-design-system 변경이라 별도 승인).
+> source enum 등록 (완료): `mice-aftermath`를 봉투 정본(`chaining-protocol.md` §1 적용대상 + §3 enum + §4 매핑 + §5 엣지)에 **등록 완료**(F-1). 다운스트림은 `source` 문자열로 식별한다.

@@ -51,6 +51,16 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 
 ---
 
+## 2026-06-05 — F-1 ChainPayload source enum 등록 (run-of-show · aftermath)
+
+- **결정**: 두 신규 스킬을 봉투 정본에 등록해 체이닝 정합 완성(사용자 선택 "#8 머지 + F-1").
+- **변경**: `jc-design-system/references/chaining-protocol.md` — §1 적용 대상 · §3 source enum · §4 페이로드 매핑표(2행) · §5-5 엣지표(4행)에 `mice-run-of-show`·`mice-aftermath` **추가**(additive). 두 스킬의 `chaining-schema.md` 등록 노트를 "완료"로 갱신.
+- **버전**: jc-design-system 버전 범프 없음 — strategy-canvas·market-intel가 v1.2.0에서 무범프 등록된 **선례 일치**(순수 additive enum 등록).
+- **검증**: drift-guard PASS(jc-design-system은 CONSUMERS 비대상, 텍스트 additive·JSON 무변경), 금칙 토큰 0.
+- F-1/F-1' 후속 권고 **해소 완료**.
+
+---
+
 ## 부속 발견 — 병렬 포지 작업과의 정합 (별도 보고)
 
 이번 N1은 **옛 11종 스냅샷** 기반으로 착수했으나, 작업 중 `main`이 PR #1~#6으로 **22종 동기화**돼 있음을 확인. 그 과정에서:

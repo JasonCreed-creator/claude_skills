@@ -3,7 +3,7 @@
 > **정본(Single Source of Truth)**: MICE 스킬 간 데이터 교환에 쓰이는 공통 "봉투(envelope)" 구조를 한 곳에서 권위 정의한다.
 > 각 스킬의 reference 문서(`chaining-guide.md` / `chaining-schema.md`)는 **자기 고유의 input/output 페이로드 매핑**만 정의하고, 봉투 구조는 본 문서를 참조한다.
 >
-> 적용 대상 스킬: `mice-rfp-analyzer` · `mice-proposal` · `mice-estimate` · `pt-script` · `mice-dashboard` · `mice-meeting-minutes` · `mice-sponsor-deck` · `jc-redteam` · `jc-strategy-canvas` · `mice-market-intel`.
+> 적용 대상 스킬: `mice-rfp-analyzer` · `mice-proposal` · `mice-estimate` · `pt-script` · `mice-dashboard` · `mice-meeting-minutes` · `mice-sponsor-deck` · `jc-redteam` · `jc-strategy-canvas` · `mice-market-intel` · `mice-run-of-show` · `mice-aftermath`.
 
 ---
 
@@ -68,7 +68,7 @@
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
 | `$schema` | string | ✅ | 봉투 버전 식별자. **항상 `"ChainPayload/v1"`**. 입력 라우팅의 1차 판별 키. |
-| `source` | string | ✅ | 생산 스킬 ID. `mice-rfp-analyzer` \| `mice-proposal` \| `mice-estimate` \| `pt-script` \| `mice-dashboard` \| `mice-meeting-minutes` \| `mice-sponsor-deck` \| `jc-strategy-canvas` \| `mice-market-intel` 중 하나. |
+| `source` | string | ✅ | 생산 스킬 ID. `mice-rfp-analyzer` \| `mice-proposal` \| `mice-estimate` \| `pt-script` \| `mice-dashboard` \| `mice-meeting-minutes` \| `mice-sponsor-deck` \| `jc-strategy-canvas` \| `mice-market-intel` \| `mice-run-of-show` \| `mice-aftermath` 중 하나. |
 | `version` | string | ✅ | 생산 스킬의 시맨틱 버전 (예: `"v2.0"`, `"v2.1.1"`). 다운스트림 호환성 판단용. |
 | `generatedAt` | ISO 8601 string | ✅ | 생성 시각 (예: `"2026-05-27T10:00:00+09:00"`). |
 | `target` | string | optional | 의도된 수신 스킬 ID. 다대다 체이닝에서 라우팅 힌트. 생략 가능. |
@@ -97,6 +97,8 @@
 | jc-redteam | `jc-redteam/references/chaining-guide.md` | 페이로드 스키마 없음 — 임의 산출물/텍스트 수용 |
 | jc-strategy-canvas | `jc-strategy-canvas/references/chaining-schema.md` | `topic`, `decision`, `recommendation`, `differentiation_axes`, `key_messages`, `evidence_flags` |
 | mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size`, `competitors`, `trends`, `sponsor_candidates`, `benchmarks`, `sources` |
+| mice-run-of-show | `mice-run-of-show/references/chaining-schema.md` | `plan` (startTime, endTime, totalMinutes, cues), `version_no` |
+| mice-aftermath | `mice-aftermath/references/chaining-schema.md` | `event`, `performance`, `cases`, `lessons`, `next` |
 
 > **이 페이로드 매핑들은 "중복"이 아니다.** 각 스킬만의 고유 필드·예시·변환 룰이므로 해당 스킬 문서에 그대로 보존한다.
 
@@ -170,6 +172,10 @@ mice-proposal / mice-estimate / mice-sponsor-deck / mice-dashboard / mice-rfp-an
 | mice-sponsor-deck | pt-script | `mice-sponsor-deck` | 영업 데크 PPTX |
 | (모든 스킬) | jc-redteam | (각 source) | 최종 산출물 검증 |
 | mice-dashboard | mice-proposal/rfp-analyzer | `mice-dashboard` | 차기 행사 기획용 전년 실적 (선순환) |
+| mice-proposal · pt-script | mice-run-of-show | `mice-proposal`/`pt-script` | 프로그램·발표 세그먼트 시간 → 큐시트 |
+| mice-run-of-show | mice-aftermath | `mice-run-of-show` | 계획 타임라인 (계획 대비 실제 진행) |
+| mice-dashboard · mice-estimate · mice-meeting-minutes | mice-aftermath | (각 source) | 행사 결과·예산·교훈 → 사후 종합 |
+| mice-aftermath | mice-proposal · mice-sponsor-deck | `mice-aftermath` | 재사용 케이스 (R1 비딩 레퍼런스·R2 스폰서 ROI) |
 
 ---
 
