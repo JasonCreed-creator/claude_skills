@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종**, 총 19종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종, 총 20종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (19종)
+## 스킬 카탈로그 (20종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -34,6 +34,15 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `jc-generative-art` | v1.0.0 | algorithmic-art | p5.js 제너러티브 아트 (뷰어 jc 리브랜딩) | 단일 HTML 아티팩트 |
 | `jc-mcp-builder` | v1.0.0 | mcp-builder | MICE 도구 커넥터용 MCP 서버 개발 가이드 | MCP 서버 |
 | `jc-skill-creator` | v1.0.0 | skill-creator | jc 하우스 규칙 메타 층 (스킬 제작·개조 표준) | 스킬 |
+
+### 라이브러리 관리 (신규)
+
+| 스킬 / 커맨드 | 종류 | 역할 |
+|------|------|------|
+| `jc-skill-forge` | 스킬 | 외부 스킬 생태계 대조 → 내 라이브러리 업그레이드·통폐합·신규보강. 읽기전용 스캔 → 승인 게이트 → 승인분만 적용 |
+| `/skillupgrade` | 슬래시 커맨드 | 위 워크플로우의 커맨드 버전 (`.claude/commands/`, `$ARGUMENTS`로 범위 한정) |
+
+> `jc-skill-forge`는 *외부 대조를 통한 라이브러리 진화*, `jc-skill-creator`는 *하우스 표준 스킬 제작*. 둘은 자매 관계다. 두 형태(스킬+커맨드)는 같은 인테이크 워크플로우를 자동 트리거/명시 호출로 각각 제공한다.
 
 ### 체이닝 흐름 (참고)
 
