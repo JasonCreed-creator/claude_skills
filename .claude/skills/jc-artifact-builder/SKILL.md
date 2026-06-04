@@ -1,5 +1,6 @@
 ---
 name: jc-artifact-builder
+version: "v1.0.0"
 description: jc-design-system 시그니처 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React + TypeScript + Tailwind + shadcn/ui) 빌더. 상태관리·라우팅·다중 컴포넌트가 필요한 복합 아티팩트를 단일 HTML로 번들한다. 폰트(Pretendard)·컬러(accent #2962FF·navy #0A2540)·라이트/다크·차트 시리즈·인포그래픽 스케일이 jc-design-system 정본에서 자동 매핑된다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '아티팩트', 'artifact', 'React 아티팩트', '인터랙티브 앱', '웹앱', 'claude.ai 아티팩트', 'shadcn', '컴포넌트 앱', '상태관리 UI', '라우팅 있는 화면', '인터랙티브 대시보드 앱'을 언급할 때. MICE 데이터(견적·회의록·실적)를 입력하며 '클릭 가능한 앱으로', '필터 되는 대시보드로', '탭/모달 있는 화면으로 만들어줘'를 요청할 때. 단, 단순 단일 HTML/JSX 한 장은 본 스킬을 쓰지 말 것(과함). 정적 결과보고 KPI 대시보드 1장은 mice-dashboard, 회의록 대시보드는 mice-meeting-minutes, 발주처 제안서(PPTX)는 mice-proposal, 스폰서 데크(HTML)는 mice-sponsor-deck 영역. 본 스킬은 그 산출물의 ChainPayload/v1 JSON을 입력으로 받아 인터랙티브 React 아티팩트로 확장할 수 있다.
 license: Complete terms in LICENSE.txt
 ---

@@ -1,5 +1,6 @@
 ---
 name: jc-landing-page
+version: "v1.1.0"
 description: jc-design-system 테마 기반 B2B 모바일 최적화 랜딩페이지(ABM/리드젠/웨비나)를 단일 HTML 파일로 생성. 사용자가 "랜딩페이지", "랜딩", "LP", "리드 페이지", "신청 페이지", "웨비나 페이지", "ABM 페이지", "리포트 신청", "백서 다운로드", "세미나 모집" 등을 언급하거나, 특정 캠페인/리포트/웨비나/제품의 모바일 단일 페이지를 만들어달라고 요청할 때 트리거. 고정비율 스케일링(375px·rem)·Pretendard·Google Apps Script 폼 백엔드가 표준 산출물. 색·타이포는 jc-design-system 정본 + 캠페인별 client-overlays로 주입. **1차 산출물 직후 jc-redteam의 'LP 마케팅 패널' 모드(5인 마케터 + 3인 고객)로 검증해 최종본을 도출 — 검증 생략 불가.**
 ---
 

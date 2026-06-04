@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종, 총 20종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종, 총 22종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (20종)
+## 스킬 카탈로그 (22종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -13,11 +13,11 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `jc-artifact-builder` | v1.0.0 | jc 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React+shadcn) 빌더 | 단일 HTML 아티팩트 |
 | `jc-landing-page` | v1.1.0 | jc 테마 B2B 모바일 랜딩페이지(고정스케일·GAS 폼). 검증은 jc-redteam LP 패널 | 단일 HTML LP |
 | `mice-rfp-analyzer` | v1.0.1 | RFP·비딩 공고를 7축으로 분석 | .docx 보고서 + .xlsx 평가 매트릭스 |
-| `mice-proposal` | — | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
-| `mice-estimate` | v2.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) | .xlsx 견적서 |
-| `mice-sponsor-deck` | v2.0 | 스폰서·협찬·후원사 유치 영업 데크 | HTML 데크 (+ PPTX / 매트릭스 XLSX) |
-| `pt-script` | v2.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
-| `mice-dashboard` | v2.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
+| `mice-proposal` | v2.1.1 | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
+| `mice-estimate` | v2.1.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) + 전략 프라이싱 | .xlsx 견적서 |
+| `mice-sponsor-deck` | v2.0.0 | 스폰서·협찬·후원사 유치 영업 데크 | HTML 데크 (+ PPTX / 매트릭스 XLSX) |
+| `pt-script` | v2.0.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
+| `mice-dashboard` | v2.0.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
 | `mice-meeting-minutes` | v2.1.0 | 회의록 transcript를 8축으로 구조화 | 인터랙티브 HTML 대시보드 |
 
 ### 기본 프리셋 개조 8종 (preset → jc)
@@ -44,10 +44,21 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 
 > `jc-skill-forge`는 *외부 대조를 통한 라이브러리 진화*, `jc-skill-creator`는 *하우스 표준 스킬 제작*. 둘은 자매 관계다. 두 형태(스킬+커맨드)는 같은 인테이크 워크플로우를 자동 트리거/명시 호출로 각각 제공한다.
 
+### 외부 인테이크 신규 (forge)
+
+`jc-skill-forge` / `/skillupgrade` 워크플로우로 외부 생태계 패턴을 흡수해 신규 보강한 스킬 (파일 복사 없이 패턴만 흡수, jc 네이티브 재구성).
+
+| 스킬 | 버전 | 흡수 패턴(출처) | 역할 | 주요 산출물 |
+|------|------|----------------|------|------------|
+| `jc-strategy-canvas` | v1.0.0 | 전략 프레임워크 (maigentic/stratarts, MIT) | 6대 프레임워크(BMC·5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 전략 구조화, 검증=jc-redteam | 전략 캔버스 HTML + ChainPayload(→proposal/rfp) |
+| `mice-market-intel` | v1.0.0 | 2단계 구조화 리서치 (Weizhena/Deep-Research, MIT) | MICE 시장·경쟁·동향·스폰서·벤치마크 데스크 리서치(출처 티어링·HITL) | 리서치 리포트(md/HTML) + ChainPayload(→strategy-canvas/rfp/proposal/sponsor) |
+
 ### 체이닝 흐름 (참고)
 
 ```
 mice-rfp-analyzer ──► mice-proposal ──► pt-script
+mice-market-intel ──► jc-strategy-canvas / mice-rfp-analyzer / mice-proposal (시장·경쟁 근거)
+jc-strategy-canvas ──► mice-proposal / mice-rfp-analyzer (전략 논거)
 mice-meeting-minutes ──► mice-proposal / mice-estimate
 mice-estimate · mice-meeting-minutes ──► mice-dashboard
 jc-design-system ──► (모든 산출물 스킬이 디자인 일관성 위해 참조)
