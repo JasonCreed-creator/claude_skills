@@ -1,10 +1,10 @@
 # JC MICE 스킬 라이브러리
 
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종, 총 22종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 1종(mice-run-of-show), 총 23종을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (22종)
+## 스킬 카탈로그 (23종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -17,6 +17,7 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `mice-estimate` | v2.1.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) + 전략 프라이싱 | .xlsx 견적서 |
 | `mice-sponsor-deck` | v2.0.0 | 스폰서·협찬·후원사 유치 영업 데크 | HTML 데크 (+ PPTX / 매트릭스 XLSX) |
 | `pt-script` | v2.0.0 | 발표 대본·MC 멘트 생성 | .docx 스크립트 |
+| `mice-run-of-show` | v1.0.0 | 행사 운영 큐시트(run of show)·진행 시나리오. 시간 무결성 자동검증 | 버전드 XLSX(10컬럼) + 변경이력 |
 | `mice-dashboard` | v2.0.0 | KPI·차트·인포그래픽 대시보드 | 단일 HTML + PDF |
 | `mice-meeting-minutes` | v2.1.0 | 회의록 transcript를 8축으로 구조화 | 인터랙티브 HTML 대시보드 |
 
@@ -57,6 +58,7 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 
 ```
 mice-rfp-analyzer ──► mice-proposal ──► pt-script
+mice-proposal · pt-script ──► mice-run-of-show (행사 운영 큐시트)
 mice-market-intel ──► jc-strategy-canvas / mice-rfp-analyzer / mice-proposal (시장·경쟁 근거)
 jc-strategy-canvas ──► mice-proposal / mice-rfp-analyzer (전략 논거)
 mice-meeting-minutes ──► mice-proposal / mice-estimate
