@@ -292,17 +292,56 @@ def self_test() -> int:
     return 0
 
 
+def lint_all(root: str) -> int:
+    """root 아래 모든 스킬(SKILL.md 보유 디렉터리)을 채점. NO-GO 있으면 exit 1.
+
+    CONDITIONAL은 경고(통과). CI 게이트용 — 최악 회귀(frontmatter 누락·명명 불일치·
+    PII 누출·비-SemVer)만 차단하고 경미한 결함은 막지 않는다.
+    """
+    if not os.path.isdir(root):
+        print(f"디렉터리 없음: {root}", file=sys.stderr)
+        return 2
+    dirs = sorted(
+        os.path.join(root, n) for n in os.listdir(root)
+        if os.path.isfile(os.path.join(root, n, "SKILL.md"))
+    )
+    if not dirs:
+        print(f"스킬 없음: {root}", file=sys.stderr)
+        return 2
+    results = [lint(d) for d in dirs]
+    icon = {"GO": "✅", "CONDITIONAL": "⚠️", "NO-GO": "❌"}
+    for r in sorted(results, key=lambda x: x["score"]):
+        print(f"{r['score']:>3}/100  {icon[r['verdict']]} {r['verdict']:<12} {r['skill']}")
+    counts: dict = {}
+    for r in results:
+        counts[r["verdict"]] = counts.get(r["verdict"], 0) + 1
+    print("-" * 56)
+    print(f"합계 {len(results)}종 — " + " · ".join(f"{k} {counts[k]}" for k in sorted(counts)))
+    nogo = [r["skill"] for r in results if r["verdict"] == "NO-GO"]
+    if nogo:
+        print(f"❌ NO-GO 차단: {', '.join(nogo)}", file=sys.stderr)
+        return 1
+    print("✅ NO-GO 없음 — 게이트 통과(CONDITIONAL은 경고).")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="jc-skill 결정적 lint 채점기")
     ap.add_argument("skill_dir", nargs="?", help="채점할 스킬 디렉터리")
     ap.add_argument("--json", action="store_true", help="JSON으로 출력(CI·체이닝)")
     ap.add_argument("--self-test", action="store_true", help="내장 픽스처로 자가검증")
+    ap.add_argument("--all", action="store_true",
+                    help="skill_dir를 루트로 전 스킬 일괄 채점(NO-GO 있으면 exit 1)")
     args = ap.parse_args(argv)
 
     if args.self_test:
         return self_test()
+    if args.all:
+        if not args.skill_dir:
+            ap.error("--all 에는 스킬 루트 경로가 필요합니다 (예: .claude/skills)")
+        return lint_all(args.skill_dir)
     if not args.skill_dir:
-        ap.error("skill_dir 또는 --self-test 가 필요합니다")
+        ap.error("skill_dir / --all / --self-test 중 하나가 필요합니다")
     if not os.path.isdir(args.skill_dir):
         print(f"디렉터리 없음: {args.skill_dir}", file=sys.stderr)
         return 2

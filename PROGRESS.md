@@ -110,3 +110,14 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **lint C7 견고화**: 정의부(`shared-rules.md#RULE-NO-COMPANY`)·블록리스트(`FORBIDDEN_TERMS=[...]`)가 마커는 선언 줄에만 두고 리터럴은 다음 줄에 둬서 발생한 **오탐 2건**(jc-design-system·pt-script) 해소 → 마커 면제를 **±3줄 윈도우**로 확장. 실제 누출은 주변 마커가 없어 그대로 검출(self-test PASS 유지). 루브릭 정본 동기화.
 - **남은 CONDITIONAL 1종**: `jc-landing-page` 80 — SKILL.md 738줄(C5)·references 없음(C8). **실제 구조 신호** → SKILL.md를 references로 분할하는 별도 리팩터 권고(본 스윕 범위 밖).
 - **검증**: `lint_skill.py --self-test` PASS, 전 스킬 재채점 23 GO/1 COND, drift-guard 통과.
+
+---
+
+## 2026-06-05 — jc-landing-page 리팩터 + CI lint 게이트 (라이브러리 24/24 GO)
+
+- **결정**: 사용자 선택(① LP 리팩터 → ② CI 게이트 → ③ 마무리).
+- **① jc-landing-page 리팩터 (v1.1.0 → v1.1.1)**: 738줄 SKILL.md(루브릭 C5 위반)를 references 3종으로 분할 → **267줄**. `form-standard.md`(폼)·`scaling-implementation.md`(고정비율 스케일링 핵심)·`hero-video.md`(Hero 영상) 추출, SKILL.md엔 포인터만. 동작 변경 0(순수 구조 분할). description에 형제 경계(jc-artifact-builder·mice-proposal·mice-sponsor-deck) 추가(C4). → **80 CONDITIONAL → 100 GO**. 안티패턴 D-1 자가 교정 사례.
+- **② CI lint 게이트**: `lint_skill.py`에 `--all <root>` 모드 추가(전 스킬 일괄 채점, NO-GO 있으면 exit 1, CONDITIONAL은 경고). 신규 워크플로 `.github/workflows/skill-lint.yml` — PR마다 self-test + `--all .claude/skills`. drift-guard와 별개 체크. 최악 회귀(frontmatter·명명·PII·SemVer)만 차단, 경미한 결함은 비차단.
+- **결과**: 라이브러리 **24/24 GO** (이번 세션 시작 시 7 CONDITIONAL → 0). 
+- **검증**: `--all` 24 GO exit 0, `--self-test` PASS, drift-guard 통과. 본 PR에서 skill-lint 워크플로 자체가 첫 게이트 통과를 시연.
+- **남은 후속(선택)**: 미검증 신규 2종(strategy-canvas·market-intel) 실사용 스모크, mice-aftermath HTML 샘플(둘 다 사용자 미선택).

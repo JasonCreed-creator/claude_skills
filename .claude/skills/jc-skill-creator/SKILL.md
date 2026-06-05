@@ -54,12 +54,14 @@ quick이라도 **lint는 항상** 돌린다(규약 회귀 방지). 상위 평가
 
 ```
 python3 .claude/skills/jc-skill-creator/scripts/lint_skill.py <skill-dir>
-# C1~C8 → GO(≥90) / CONDITIONAL(70–89) / NO-GO(<70). NO-GO는 종료코드 1(CI 게이트).
+# C1~C8 → GO(≥90) / CONDITIONAL(70–89) / NO-GO(<70). NO-GO는 종료코드 1.
+python3 .claude/skills/jc-skill-creator/scripts/lint_skill.py --all .claude/skills  # 전 스킬 일괄(NO-GO 차단)
 python3 .claude/skills/jc-skill-creator/scripts/lint_skill.py --self-test   # good=100 GO / bad=NO-GO
 ```
 
 - **잰다(규약)**: 명명·frontmatter·SemVer·description 트리거/경계·분량·LICENSE·RULE-NO-COMPANY·구조.
 - **안 잰다(품질)**: 논리·설득력·디자인 완성도 → `jc-redteam`(정성) 몫. **lint=규약 게이트, redteam=품질 게이트, 둘 다 통과**가 마감 조건(보완재, 대체 아님).
+- **CI 강제**: `.github/workflows/skill-lint.yml`가 PR마다 `--all`로 전 스킬을 채점 — **NO-GO면 머지 차단**(CONDITIONAL은 경고).
 
 ## 평가가 필요할 때 (상위 기계 위임)
 
