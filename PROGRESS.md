@@ -67,3 +67,17 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 
 - 본래 Wave 1(키스톤 `jc-skill-creator` 신규)을 별도 빌드했으나, **main에 이미 `jc-skill-creator`가 존재**(병렬 작업) → 사용자 결정으로 **내 키스톤은 폐기**, main 것 유지. 본 PR은 **mice-run-of-show만** 반영.
 - **관찰(권고)**: main의 `jc-skill-creator`는 상위 skill-creator에 평가 기계를 위임하는 얇은 층이며, forge 문서 **U1이 의무화한 4대 요소(worked example·anti-pattern 라이브러리·결정적 스코어링 루브릭·quick/std/deep)와 자동 채점기(lint)를 갖추지 않았다.** U1 완성을 원하면 별도 사이클에서 main 키스톤에 4대 요소·lint를 보강 권고(폐기한 키스톤 작업물 재활용 가능).
+
+---
+
+## 2026-06-05 — 보안: 공개 레포 PII 스크럽 (RULE-NO-COMPANY 정합)
+
+- **결정**: 공개 레포에 하드코딩돼 있던 실명·회사 이메일·사명·부서를 `RULE-NO-COMPANY` 외부 주입 변수로 치환(사용자 선택). PR #1·#2가 반복 플래그한 잔여 이슈 해소.
+- **스크럽(실제 노출 → 변수화)**:
+  - `mice-proposal/references/slide-masters.md` (3곳: 푸터 198 · 담당자 마스터 301 · Thank You 376) — `M&C커뮤니케이션즈 신사업실 / 이진철 실장 / leejc@mnccomm.com / 010-...` → `{{company_name}} {{author_dept}} {{author_name}} {{author_title}} {{author_email}} {{author_phone}}`.
+  - `.claude/commands/skillupgrade.md` 페르소나 — 실명/사명/직함 제거, 기능 맥락("MICE 18년 전략가")만 유지.
+  - `jc-skill-forge/SKILL.md` description — "기획자님(이진철)" → "기획자님". version v1.0.0→**v1.0.1**.
+- **SoT 등록**: `shared-rules.md#RULE-NO-COMPANY` §허용 슬롯에 연락처 3종(`{{author_dept}}`·`{{author_email}}`·`{{author_phone}}`) additive 등록(무범프 — chaining enum 선례 일치).
+- **보존(의도)**: `pt-script`·`mice-sponsor-deck`의 sanitizer 차단 리스트(`FORBIDDEN_TERMS`·`forbidden`·`re.sub`)와 `shared-rules.md`의 RULE 정의부는 *회사명을 출력에서 검출·제거하기 위해 보유*하는 항목이라 그대로 둠. `mice-estimate`의 `M&C 견적서`는 §120 양식 식별자로 허용.
+- **검증**: 실명·이메일(`이진철`·`leejc`·`mnccomm`) 전수 **0건**. 잔존 `M&C커뮤니케이션즈`/`신사업실`은 전부 sanitizer/정의부(8곳, 의도된 보유). 디자인 토큰 무변경이라 drift-guard 영향 없음.
+- **주의**: 현재 파일은 정리됐으나 **git 히스토리에는 PII가 잔존**. 완전 제거를 원하면 히스토리 재작성(filter-repo) 또는 레포 private 전환을 별도 결정해야 함.
