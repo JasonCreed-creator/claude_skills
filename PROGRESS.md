@@ -81,3 +81,21 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **보존(의도)**: `pt-script`·`mice-sponsor-deck`의 sanitizer 차단 리스트(`FORBIDDEN_TERMS`·`forbidden`·`re.sub`)와 `shared-rules.md`의 RULE 정의부는 *회사명을 출력에서 검출·제거하기 위해 보유*하는 항목이라 그대로 둠. `mice-estimate`의 `M&C 견적서`는 §120 양식 식별자로 허용.
 - **검증**: 실명·이메일(`이진철`·`leejc`·`mnccomm`) 전수 **0건**. 잔존 `M&C커뮤니케이션즈`/`신사업실`은 전부 sanitizer/정의부(8곳, 의도된 보유). 디자인 토큰 무변경이라 drift-guard 영향 없음.
 - **주의**: 현재 파일은 정리됐으나 **git 히스토리에는 PII가 잔존**. 완전 제거를 원하면 히스토리 재작성(filter-repo) 또는 레포 private 전환을 별도 결정해야 함.
+
+---
+
+## 2026-06-05 — jc-skill-creator U1 완성 (4대 의무요소 + lint)
+
+- **결정**: PR #7이 관찰·권고했던 **U1 미충족**(main 키스톤이 worked example·anti-pattern·결정적 루브릭·quick/std/deep·자동채점기 부재)을 해소(사용자 선택). `jc-skill-creator` v1.0.0 → **v1.1.0**.
+- **산출**:
+  - `scripts/lint_skill.py` — **결정적 자동 채점기**(stdlib only). 8기준 100점 → GO(≥90)/CONDITIONAL/NO-GO. `--json`(CI·체이닝)·`--self-test`. NO-GO 종료코드 1 = CI 게이트.
+  - `references/scoring-rubric.md` — 8기준 루브릭 **정본**(lint와 1:1, 둘이 항상 일치).
+  - `references/anti-patterns.md` — 제작 안티패턴 라이브러리(A 메타데이터·B description·C 디자인/식별·D 구조/생태계), 각 항목 루브릭 연결.
+  - `references/worked-example.md` — 신규 스킬(`jc-checklist`) end-to-end 완주 + lint 채점 표본.
+  - `SKILL.md` — **quick/std/deep** 작업 깊이 + **결정적 품질 루브릭(lint)** 섹션 + 마감 절차에 lint GO 게이트 추가 + 파일 구조·description 갱신.
+- **설계 원칙**: lint=**규약 게이트**(명명·메타·SemVer·description·분량·LICENSE·RULE-NO-COMPANY·구조), jc-redteam=**품질 게이트**(논리·설득력·디자인). 둘은 보완재, 마감은 둘 다 통과 요구. 상위 skill-creator 평가 기계와 별개(그건 deep 모드에서만 호출).
+- **검증**:
+  - `lint_skill.py --self-test` **PASS**(good=100 GO / bad=33 NO-GO, C2 명명·C3 SemVer·C7 PII 감점 단위검증).
+  - 라이브러리 회귀 스캔: jc-skill-creator 100 / jc-strategy-canvas 100 / mice-run-of-show 90 — **GO**, 오탐 0. (mice-proposal 86 CONDITIONAL = version 미기재 실제 신호, 본 PR 범위 밖.)
+  - **lint→교정→재채점 루프 실증**: anti-patterns.md가 금칙어를 *교육 목적 인용*해 C7 플래그 → "금칙" 프레이밍으로 정정 → **100 GO**.
+- **후속(선택)**: ① CI 워크플로에 lint NO-GO 게이트 추가(현재는 수동/마감 절차). ② mice-proposal 등 CONDITIONAL 스킬 version 보강.
