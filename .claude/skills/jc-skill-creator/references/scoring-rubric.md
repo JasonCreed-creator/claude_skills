@@ -21,7 +21,7 @@ jc 스킬이 "하우스 표준을 지켰는가"를 **결정적**(동일 입력 �
 
 - **C1·C3** — frontmatter는 `house-conventions.md`의 4필드 템플릿. version은 SemVer 강제(수정 시 범프). 신규는 `v1.0.0`.
 - **C4 트리거 표현** = `사용할 것`·`언제`·`트리거`·`상황에서`·`요청할 때` 중 1개 이상. **형제 경계** = `단,`·`영역`·`경계`·`말 것`·`쓰지 말`·`아니다` 중 1개 이상. (Claude의 undertrigger를 이기려면 둘 다 필요 — `house-conventions.md` description 규칙.)
-- **C7 금칙 리터럴** = `엠앤씨`·`M&C커뮤니케이션즈`·`리멤버앤컴퍼니`·`신사업실`(정본: `shared-rules.md#RULE-NO-COMPANY`). `M&C` 단독은 *양식 식별자*(`M&C 견적서`, §120 허용)라 검사 제외. **면제 줄**: `FORBIDDEN`·`forbidden`·`금칙`·`sanitize`·`re.sub`·`RULE-NO-COMPANY`·`0건` 등 마커가 든 줄 = sanitizer/정의/체크리스트이므로 위반 아님. **이메일**은 `example.com`·`{{변수}}`·`user@`·`name@`가 아닌 실주소만 위반.
+- **C7 금칙 리터럴** = `엠앤씨`·`M&C커뮤니케이션즈`·`리멤버앤컴퍼니`·`신사업실`(정본: `shared-rules.md#RULE-NO-COMPANY`). `M&C` 단독은 *양식 식별자*(`M&C 견적서`, §120 허용)라 검사 제외. **면제 맥락**: `FORBIDDEN`·`forbidden`·`금칙`·`sanitize`·`re.sub`·`RULE-NO-COMPANY`·`0건` 등 마커가 든 줄 **및 그 ±3줄 이내** = sanitizer/정의/체크리스트(정의부·블록리스트는 마커가 선언 줄에만 있고 리터럴은 다음 줄에 오므로 윈도우로 면제). 실제 누출은 주변에 마커가 없어 그대로 검출. **이메일**은 `example.com`·`{{변수}}`·`user@`·`name@`가 아닌 실주소만 위반.
 - **C8** — reference-driven 스킬(스크립트 불요, `mice-market-intel`·`mice-aftermath` 선례)은 scripts 4점을 감점하지 않는다.
 
 ## 판정 밴드

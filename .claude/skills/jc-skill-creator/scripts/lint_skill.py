@@ -78,30 +78,48 @@ def _md_text_files(skill_dir: str) -> list[str]:
     return files
 
 
+def _exempt_lineset(lines: list[str], window: int = 3) -> set:
+    """sanitizer/정의/금칙리스트 마커가 든 줄 ±window 줄을 면제 집합으로 반환.
+
+    정의부(RULE-NO-COMPANY)·블록리스트(FORBIDDEN_TERMS=[...])는 마커가 헤더·선언
+    줄에만 있고 리터럴은 다음 줄에 오므로, 같은 줄만 보면 오탐난다. 윈도우로 해소.
+    실제 누출(템플릿 footer 등)은 주변 ±3줄에 마커가 없어 그대로 검출된다.
+    """
+    marked = [i for i, l in enumerate(lines) if any(m in l for m in SANITIZER_MARKERS)]
+    exempt = set()
+    for i in marked:
+        exempt.update(range(max(0, i - window), min(len(lines), i + window + 1)))
+    return exempt
+
+
 def _scan_company_violations(skill_dir: str) -> list[str]:
-    """sanitizer/정의 줄을 제외하고 금칙 회사 리터럴이 박힌 줄을 찾는다."""
+    """sanitizer/정의 맥락(±3줄)을 제외하고 금칙 회사 리터럴이 박힌 줄을 찾는다."""
     hits = []
     for path in _md_text_files(skill_dir):
-        for i, line in enumerate(_read(path).splitlines(), 1):
-            if any(m in line for m in SANITIZER_MARKERS):
+        lines = _read(path).splitlines()
+        exempt = _exempt_lineset(lines)
+        for idx, line in enumerate(lines):
+            if idx in exempt:
                 continue
             for lit in FORBIDDEN_LITERALS:
                 if lit in line:
-                    hits.append(f"{os.path.basename(path)}:{i} `{lit}`")
+                    hits.append(f"{os.path.basename(path)}:{idx + 1} `{lit}`")
     return hits
 
 
 def _scan_email_violations(skill_dir: str) -> list[str]:
-    """example/플레이스홀더가 아닌 실제 이메일 주소를 찾는다."""
+    """example/플레이스홀더가 아닌 실제 이메일 주소를 찾는다(±3줄 마커 면제)."""
     pat = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
     hits = []
     for path in _md_text_files(skill_dir):
-        for i, line in enumerate(_read(path).splitlines(), 1):
-            if any(m in line for m in SANITIZER_MARKERS):
+        lines = _read(path).splitlines()
+        exempt = _exempt_lineset(lines)
+        for idx, line in enumerate(lines):
+            if idx in exempt:
                 continue
             for m in pat.findall(line):
                 if not any(h in m or h in line for h in ALLOWED_EMAIL_HINTS):
-                    hits.append(f"{os.path.basename(path)}:{i} `{m}`")
+                    hits.append(f"{os.path.basename(path)}:{idx + 1} `{m}`")
     return hits
 
 

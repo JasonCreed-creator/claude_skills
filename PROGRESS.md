@@ -98,4 +98,15 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
   - `lint_skill.py --self-test` **PASS**(good=100 GO / bad=33 NO-GO, C2 명명·C3 SemVer·C7 PII 감점 단위검증).
   - 라이브러리 회귀 스캔: jc-skill-creator 100 / jc-strategy-canvas 100 / mice-run-of-show 90 — **GO**, 오탐 0. (mice-proposal 86 CONDITIONAL = version 미기재 실제 신호, 본 PR 범위 밖.)
   - **lint→교정→재채점 루프 실증**: anti-patterns.md가 금칙어를 *교육 목적 인용*해 C7 플래그 → "금칙" 프레이밍으로 정정 → **100 GO**.
-- **후속(선택)**: ① CI 워크플로에 lint NO-GO 게이트 추가(현재는 수동/마감 절차). ② mice-proposal 등 CONDITIONAL 스킬 version 보강.
+- **후속(선택)**: ① CI 워크플로에 lint NO-GO 게이트 추가(현재는 수동/마감 절차). ② CONDITIONAL 스킬 잔여 보강.
+
+---
+
+## 2026-06-05 — lint 라이브러리 1차 적용 (LICENSE 12종 + C7 견고화)
+
+- **결정**: 방금 만든 `lint_skill.py`를 전 스킬에 적용해 결정적 위반을 스윕(사용자 "다음 스텝 계속 진행").
+- **스코어카드 개선**: **CONDITIONAL 7종 → 1종**, GO 16→23/24.
+- **LICENSE 보강(12종)**: PR #10이 신규 스킬에만 넣어 누락됐던 코어 스킬에 Apache 2.0 `LICENSE.txt`(기존 12종과 동일 해시) 복사 + frontmatter `license:` 필드 추가 — jc-design-system·jc-landing-page·jc-redteam·mice-aftermath·mice-dashboard·mice-estimate·mice-meeting-minutes·mice-proposal·mice-rfp-analyzer·mice-run-of-show·mice-sponsor-deck·pt-script. (C1·C6 각 +5)
+- **lint C7 견고화**: 정의부(`shared-rules.md#RULE-NO-COMPANY`)·블록리스트(`FORBIDDEN_TERMS=[...]`)가 마커는 선언 줄에만 두고 리터럴은 다음 줄에 둬서 발생한 **오탐 2건**(jc-design-system·pt-script) 해소 → 마커 면제를 **±3줄 윈도우**로 확장. 실제 누출은 주변 마커가 없어 그대로 검출(self-test PASS 유지). 루브릭 정본 동기화.
+- **남은 CONDITIONAL 1종**: `jc-landing-page` 80 — SKILL.md 738줄(C5)·references 없음(C8). **실제 구조 신호** → SKILL.md를 references로 분할하는 별도 리팩터 권고(본 스윕 범위 밖).
+- **검증**: `lint_skill.py --self-test` PASS, 전 스킬 재채점 23 GO/1 COND, drift-guard 통과.
