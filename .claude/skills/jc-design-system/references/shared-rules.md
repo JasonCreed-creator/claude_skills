@@ -18,6 +18,7 @@
 | `RULE-WCAG` | WCAG AA 대비 목표 | 전 산출물 | `mode-mapping.md §9` (계산 표준)·§5, `signature-tokens.md §1.7.2` |
 | `RULE-PRINT-LIGHT` | 다크 산출물도 인쇄 시 라이트 강제 | HTML (dashboard·sponsor-deck) | `mode-mapping.md §4.2` |
 | `RULE-NO-COMPANY` | 회사·개인 식별정보 하드코딩 금지 | 전 산출물 | 구현 예: pt-script·sponsor-deck 스크립트 |
+| `RULE-VISUAL-ROUTING` | 시각 에셋 라우팅 (사진·영상=Higgsfield / 표·차트·SVG·HTML=Claude) | 이미지·영상 포함 산출물 | — |
 
 ---
 
@@ -128,7 +129,20 @@
 
 ---
 
+## RULE-VISUAL-ROUTING — 시각 에셋 라우팅
+
+- 사진/래스터 이미지(슬라이드 배경·히어로·키비주얼) → **Higgsfield 이미지 생성**
+- 영상 → **Higgsfield 영상 생성**
+- 표·다이어그램·차트·KPI·인포그래픽, SVG/HTML 빌드 → **Claude 자체 기능(코드)**
+- 예외: 코드 아트(p5.js 제너러티브·캔버스 정적 아트)는 각 스킬 고유 방식 유지
+- 전제: 실행 환경에 Higgsfield 연결이 켜져 있어야 함. 꺼져 있으면 플레이스홀더로 폴백하고 연결을 안내
+
+---
+
 ## 변경 이력
+
+### v1.1.0 (2026-06-04) — 시각 에셋 라우팅 추가
+- `RULE-VISUAL-ROUTING` 신설(사진/래스터·영상=Higgsfield, 표·차트·SVG/HTML=Claude). mice-proposal·mice-sponsor-deck·jc-landing-page·jc-artifact-builder 참조.
 
 ### v1.0.0 (2026-06-02) — R3 공통 룰 통합
 
