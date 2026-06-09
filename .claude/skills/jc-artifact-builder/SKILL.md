@@ -21,6 +21,8 @@ license: Complete terms in LICENSE.txt
 
 ## Design & Style Guidelines (jc-design-system)
 
+> 이미지 에셋은 jc-design-system의 RULE-VISUAL-ROUTING을 따른다 (사진/래스터=Higgsfield, 표·다이어그램·차트=Claude 자체).
+
 **VERY IMPORTANT — "AI slop" 회피 + jc 시그니처 준수:**
 - ❌ 금지: 과도한 중앙정렬, 보라색 그라데이션, 균일한 둥근 모서리 남발, **Inter 폰트**.
 - ✅ jc 시그니처: **Pretendard**(한국어 우선, 자동 주입) · 액센트 **Electric Blue `#2962FF`** · 헤더/표지 **Deep Navy `#0A2540`**(`navy` 또는 `bg-card`+텍스트) · 절제된 그림자 · 라디우스 스케일(sm4/md8/lg12) · 비대칭 그리드/충분한 여백.

@@ -171,6 +171,7 @@ skill이 발동되면 클로드는 다음 형식으로 응답한다:
 - **폼 백엔드**: Google Apps Script (POST endpoint, JSON body)
 - **버튼·UI 인터랙션**: 바닐라 JS (라이브러리 최소화)
 - **이미지**: 가능하면 Base64 인라인 또는 CDN URL. 외부 이미지 사용 시 차후 깨짐 위험 명시.
+  - 이미지 에셋은 jc-design-system의 RULE-VISUAL-ROUTING을 따른다 (사진/래스터=Higgsfield, 표·다이어그램·차트=Claude 자체).
 
 ---
 

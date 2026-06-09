@@ -65,6 +65,8 @@ MICE 행사의 잠재 스폰서·협찬사·후원사·파트너 유치를 위�
 
 ## 비주얼 패턴 라이브러리 (v2.0 신규)
 
+> 이미지 에셋은 jc-design-system의 RULE-VISUAL-ROUTING을 따른다 (사진/래스터=Higgsfield, 표·다이어그램·차트=Claude 자체).
+
 `references/visual-patterns.md` 참조. 본 스킬은 HTML과 PPTX 양쪽에서 사용할 수 있는 7종 표준 비주얼 패턴을 정의한다.
 
 | 코드 | 패턴 | 적용 슬라이드 | 산출물 |
