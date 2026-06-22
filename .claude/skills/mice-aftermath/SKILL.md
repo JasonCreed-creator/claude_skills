@@ -1,6 +1,7 @@
 ---
 name: mice-aftermath
 version: "v1.0.0"
+license: Complete terms in LICENSE.txt
 description: MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 종합 결과보고서와 ② 차기 비딩·영업에 재활용하는 레퍼런스 케이스(case study)를 산출하는 스킬. mice-dashboard(KPI)·mice-estimate(예산 실적)·mice-meeting-minutes(교훈)·mice-run-of-show(계획 대비 실제) 산출을 체이닝 입력으로 받아 목표 대비 성과·예산 실적·운영 하이라이트·이슈/교훈·차기 권고를 8축 프레임으로 구성하고, jc 스타일 결과보고서(HTML/md) + ChainPayload(→mice-proposal·mice-sponsor-deck)로 낸다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '결과보고서', '사후보고', '행사 결과보고', '종합 결과보고', 'post-event report', '행사 결산 보고', '사후 평가', 'wrap-up 리포트', '디브리프', 'debrief', '레퍼런스 케이스', '케이스 스터디', 'case study', '행사 사례화', '실적 레퍼런스', '수행 실적 정리'를 언급할 때. 행사가 끝났고 그 결과를 발주처/내부 보고 + 차기 영업 재활용으로 정리해달라고 할 때. 단, 결과 데이터를 차트·KPI 대시보드로 시각화하는 것은 mice-dashboard(본 스킬은 그 수치를 서사·케이스로 종합), 산문형 문서를 백지에서 함께 써 나가는 공동작성은 jc-doc-coauthor, 발주처 제출 제안서는 mice-proposal, 스폰서 유치 데크는 mice-sponsor-deck, 회의록 구조화는 mice-meeting-minutes, 완성 보고서의 적대적 검증은 jc-redteam 영역이므로 그쪽을 쓸 것. 행사·발주처·실적 식별정보는 외부 주입 변수로 처리.
 ---
 

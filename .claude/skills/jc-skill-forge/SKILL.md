@@ -1,7 +1,7 @@
 ---
 name: jc-skill-forge
-description: 기획자님(이진철)의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다.
-version: "v1.0.0"
+description: 기획자님의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다.
+version: "v1.0.1"
 license: Complete terms in LICENSE.txt
 ---
 

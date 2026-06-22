@@ -2,6 +2,7 @@
 name: mice-meeting-minutes
 description: MICE 행사 기획·운영 과정의 미팅 메모·텍스트 transcript·구술 정리를 입력받아 8축 프레임(안건·발언요지·결정사항·Action Items·리스크·미결사항·후속일정·전략메모)으로 구조화한 인터랙티브 HTML 대시보드를 생성하는 스킬. 대시보드는 KPI 카드·Action 칸반·시리즈 누적 차트·전략 메모 5W1H 카드를 단일 파일로 통합하며, Slack 페이스트·PDF 저장·JSON 백업 옵션을 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '회의록', '미팅록', '미팅 노트', '회의 정리', '회의 요약', '미팅 정리', 'Action Items', '액션 아이템', '후속 조치', '팔로업', 'follow-up', 'Discovery Meeting 정리', '킥오프 미팅 정리', '정기 미팅 정리', '발주처 협의 기록', '사전답사 기록', '협력사 미팅 정리'를 언급할 때. 클로바노트·Otter·Whisper·Zoom·Google Meet·Microsoft Teams 등에서 추출한 transcript 텍스트를 업로드하며 '정리해줘', '구조화해줘', '회의록으로 만들어줘', 'Action 뽑아줘', '대시보드로 만들어줘'를 요청할 때. 외부 클라이언트 송부용/내부 보관용 톤 분기 지원. 정기 미팅 시리즈 모드로 회차 누적 추적 가능 (window.storage 영속화). 본 스킬의 산출물은 mice-proposal 스킬의 입력으로 체이닝 가능 (Discovery 회의록에서 고객 니즈·예산·일정 자동 추출). 단, '발표 스크립트', '발표 대본', 'PT 멘트', 'MC 멘트'는 pt-script 영역이므로 사용하지 말 것. '제안서'는 mice-proposal, '견적서'는 mice-estimate, '행사 결과 KPI 대시보드'는 mice-dashboard 영역. 음성 파일 자체 STT는 본 스킬 범위 밖 — 클로바노트·Otter·Whisper 등 외부 도구로 텍스트 변환 후 입력.
 version: "v2.1.0"
+license: Complete terms in LICENSE.txt
 ---
 
 # mice-meeting-minutes (v2.1.0)

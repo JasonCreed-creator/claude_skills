@@ -195,7 +195,7 @@ pres.defineSlideMaster({
           fontSize: 9, color: "5A6270",
           align: "left", valign: "middle"
         },
-        text: "M&C커뮤니케이션즈 │ [행사명] 제안서"
+        text: "{{company_name}} │ [행사명] 제안서"
       }
     }
   ]
@@ -298,7 +298,7 @@ pres.defineSlideMaster({
           fontSize: 14, color: "B8C5D6",
           align: "center", valign: "top"
         },
-        text: "M&C커뮤니케이션즈 신사업실 │ 이진철 실장\nphone │ email"
+        text: "{{company_name}} {{author_dept}} │ {{author_name}} {{author_title}}\n{{author_phone}} │ {{author_email}}"
       }
     }
   ]
@@ -373,7 +373,7 @@ addImagePlaceholder(contentSlide, {
 
 // 5. Thank You — 마스터 사용
 const endSlide = pres.addSlide({ masterName: "MASTER_THANK_YOU" });
-endSlide.addText("M&C커뮤니케이션즈 신사업실 │ 이진철 실장\nleejc@mnccomm.com │ 010-XXXX-XXXX", { placeholder: "contact_info" });
+endSlide.addText("{{company_name}} {{author_dept}} │ {{author_name}} {{author_title}}\n{{author_email}} │ {{author_phone}}", { placeholder: "contact_info" });
 ```
 
 ---

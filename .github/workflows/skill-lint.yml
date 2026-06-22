@@ -1,0 +1,30 @@
+name: skill-lint
+
+# jc 스킬 하우스 표준 결정적 lint(scoring-rubric 8기준 100점).
+# NO-GO(<70) 스킬이 있으면 CI 실패. CONDITIONAL(70~89)은 경고(통과).
+# 정본: .claude/skills/jc-skill-creator/references/scoring-rubric.md
+# 채점기: .claude/skills/jc-skill-creator/scripts/lint_skill.py
+
+on:
+  pull_request:
+    paths:
+      - ".claude/skills/**"
+      - ".github/workflows/skill-lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".claude/skills/**"
+  workflow_dispatch:
+
+jobs:
+  skill-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: lint 자체 검증 (good=100 GO / bad=NO-GO)
+        run: python3 .claude/skills/jc-skill-creator/scripts/lint_skill.py --self-test
+      - name: 전 스킬 lint (NO-GO 차단)
+        run: python3 .claude/skills/jc-skill-creator/scripts/lint_skill.py --all .claude/skills

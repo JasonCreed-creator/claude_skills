@@ -1,6 +1,7 @@
 ---
 name: mice-run-of-show
 version: "v1.0.0"
+license: Complete terms in LICENSE.txt
 description: MICE 행사 운영 큐시트(run of show)와 진행 시나리오를 버전드 XLSX로 생성하는 스킬. Cue#·시간·세그먼트·무대/발표·Audio·Video·Light·연출 cue·Owner·비고 10컬럼 그리드 + 변경이력 시트로, 쇼콜러가 리허설·본행사에서 바로 쓰는 운영 문서를 만든다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '큐시트', '런오브쇼', 'run of show', 'run-of-show', '진행표', '진행 순서표', '진행 시나리오', '연출 큐시트', '행사 진행 큐', '쇼콜', 'show calling', 'AV 큐시트', '타임테이블 운영표', '큐 시트 만들어줘'를 언급할 때. 행사 프로그램·세그먼트별 시간·연출/AV/조명 cue·담당자를 운영 문서로 정리해달라고 요청할 때. mice-proposal·pt-script의 산출(프로그램·발표 시간)을 체이닝 입력으로 받아 큐시트를 자동 구성할 수 있다. 단 '발표 대본·MC 멘트 원고'는 pt-script, '회의록'은 mice-meeting-minutes, '행사 결과 KPI 대시보드'는 mice-dashboard, '제안서'는 mice-proposal 영역이므로 사용하지 말 것. 공급자·발주처·담당자 등 식별 정보는 외부 주입 변수로 처리한다.
 dependencies:
   - openpyxl
