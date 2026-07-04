@@ -1,7 +1,7 @@
 ---
 name: mice-market-intel
-version: "v1.0.0"
-description: MICE 도메인 특화 시장·경쟁 인텔리전스 스킬. 2단계 구조화 리서치(아웃라인 설계 → 항목별 병렬 웹 조사 → 근거 종합 리포트)로 시장 규모·경쟁 구도·산업 동향·발주처/정책·스폰서 풀·벤치마크 행사를 출처 표기와 함께 조사하고, jc 스타일 리서치 리포트 + ChainPayload(→jc-strategy-canvas/mice-rfp-analyzer/mice-proposal)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '시장 조사', '시장 리서치', '마켓 리서치', '시장 규모', '시장 동향', '산업 동향', '경쟁사 조사', '경쟁사 분석', '경쟁 조사', '경쟁사 찾아줘', '벤치마크 행사', '벤치마킹', '레퍼런스 행사', '스폰서 후보 조사', '발주처 조사', '업계 트렌드', '시장 인텔', '마켓 인텔리전스', '데스크 리서치', 'desk research', '사전 조사', '환경 분석'을 언급할 때. 신사업·신규 행사·비딩을 앞두고 '이 시장 좀 조사해줘', '경쟁사 누구 있는지 찾아줘', '비슷한 행사 사례 모아줘', '시장 규모 자료 찾아줘', '스폰서 될 만한 기업 리스트업'을 요청할 때. 2단계 사이에 사용자 확인(human-in-the-loop)을 둔다. 단, 모은 데이터를 전략 프레임워크로 *판단·구조화*하는 것은 jc-strategy-canvas(본 스킬은 데이터를 *수집*하는 상류), 주어진 RFP·공고 자체를 7축 분석하는 것은 mice-rfp-analyzer(입력 종속), 이미 가진 데이터를 차트·KPI로 시각화하는 것은 mice-dashboard, 범용(비-MICE) 주제의 심층 리서치는 built-in deep-research 영역이므로 그쪽을 쓸 것.
+version: "v1.0.3"
+description: MICE 도메인 특화 시장·경쟁 인텔리전스 스킬. 2단계 구조화 리서치(아웃라인 설계 → 항목별 병렬 웹 조사 → 근거 종합 리포트)로 시장 규모·경쟁 구도·산업 동향·발주처/정책·스폰서 풀·벤치마크 행사를 출처 표기와 함께 조사하고, jc 스타일 리서치 리포트 + ChainPayload(→jc-strategy-canvas/mice-rfp-analyzer/mice-proposal)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '시장 조사', '시장 리서치', '마켓 리서치', '시장 규모', '시장 동향', '산업 동향', '경쟁사 조사', '경쟁사 분석', '경쟁 조사', '경쟁사 찾아줘', '벤치마크 행사', '벤치마킹', '레퍼런스 행사', '스폰서 후보 조사', '발주처 조사', '업계 트렌드', '시장 인텔', '마켓 인텔리전스', '데스크 리서치', 'desk research', '사전 조사', '환경 분석'을 언급할 때. 신사업·신규 행사·비딩을 앞두고 '이 시장 좀 조사해줘', '경쟁사 누구 있는지 찾아줘', '비슷한 행사 사례 모아줘', '시장 규모 자료 찾아줘', '스폰서 될 만한 기업 리스트업'을 요청할 때. 2단계 사이에 사용자 확인(human-in-the-loop)을 둔다. 단, 모은 데이터를 전략 프레임워크로 *판단·구조화*하는 것은 jc-strategy-canvas(본 스킬은 데이터를 *수집*하는 상류), 주어진 RFP·공고 자체를 7축 분석하는 것은 mice-rfp-analyzer(입력 종속), 이미 가진 데이터를 차트·KPI로 시각화하는 것은 mice-dashboard, 범용(비-MICE) 주제의 심층 리서치는 built-in deep-research 영역이므로 그쪽을 쓸 것. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -91,7 +91,7 @@ Phase 4  산출          jc 리포트(HTML/md) + ChainPayload(→strategy-canvas
 - **토큰 값 하드코딩 금지.** SoT 런타임 참조: `jc-design-system/references/signature-tokens.md §6 JSON`. 다크/인쇄 `mode-mapping.md`.
 - 핵심 값(식별용): primary `#0A2540`·accent `#2962FF`·폰트 Pretendard/Inter/JetBrains Mono(숫자·수치) — 정본은 SoT.
 - 차트가 필요하면 `mice-dashboard/references/chart-guide.md` 토큰 매핑 차용(재발명 금지).
-- 공통 룰: `RULE-WCAG`·`RULE-PRINT-LIGHT`. 정본 `jc-design-system/references/shared-rules.md`. 본 스킬은 디자인 소비 스킬이므로 `check_drift.py` CONSUMERS 등록.
+- 공통 룰: `RULE-WCAG`·`RULE-PRINT-LIGHT`. 정본 `jc-design-system/references/shared-rules.md`. 본 스킬은 디자인 소비 스킬이므로 `jc-design-system/references/shared-rules.md`·`signature-tokens.md` 정본 대조 준수.
 
 ## 5. RULE-NO-COMPANY (회사·실명 외부 주입)
 
@@ -146,3 +146,6 @@ mice-market-intel/
 | 버전 | 일자 | 변경 |
 |------|------|------|
 | v1.0.0 | 2026-06-04 | 신규 — `Weizhena/Deep-Research-skills`(MIT)·`Anjos2/recursive-research` 2단계 구조화 리서치 패턴 흡수, MICE 네이티브 재구성. Phase 0~4 + HITL 정지점. 출처 티어링·추정금지. 산출=jc 리포트 + ChainPayload(→strategy-canvas/rfp/proposal/sponsor). references 4종. 한국어·푸시형. |
+| v1.0.1 | (미상) | 중간 버전 — 세부 변경 기록 부재(frontmatter만 존재). CP2에서 이력 계보 완결 위해 행 백필. |
+| v1.0.2 | 2026-07-03 | Fable-정합 감사 후속 조치 — `chaining-schema.md` ChainPayload 예시 버전 표기를 SKILL.md와 정합화(v1.0.0→v1.0.2). T2 경쟁 구도 템플릿에 "미방어 세그먼트 탐지" 분석 렌즈 보강(경쟁사 포지셔닝 벤치마크 패턴 흡수). + description 말미 jc-prompt-builder 브리프 게이트 역참조 삽입(CP-N5). |
+| v1.0.3 | 2026-07-04 | CP2 조치 — v1.0.1 이력 행 백필(계보 완결), v1.0.2 변경 서술에 back-ref 반영 명시. |

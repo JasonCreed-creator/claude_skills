@@ -85,7 +85,7 @@ function addFunnel(slide, opts) {
 
 // 사용 예시: 참가자 모객 퍼널
 const funnelStages = [
-  { label: "리멤버 DB 노출", value: 50000, rate: 1.0 },
+  { label: "타겟 DB 노출", value: 50000, rate: 1.0 },
   { label: "이메일 오픈", value: 12500, rate: 0.7 },
   { label: "랜딩페이지 방문", value: 3000, rate: 0.45 },
   { label: "등록 완료", value: 800, rate: 0.25 },
@@ -104,7 +104,7 @@ slide.addText("최종 전환율", {
 });
 slide.addText("1.22%", {
   x: 10.5, y: 3.0, w: 2.5, h: 1.0,
-  fontSize: 48, bold: true, color: "#2962FF",
+  fontSize: 48, bold: true, color: "2962FF",
   fontFace: "Arial Black",
   align: "left", valign: "top", margin: 0
 });
@@ -287,7 +287,7 @@ pptxgenjs는 RADAR 차트를 네이티브 지원한다.
 // INFO-I3: 레이더 차트 (역량 비교)
 const radarData = [
   {
-    name: "본 행사 (M&C)",
+    name: "본 행사",
     labels: ["기획력", "운영력", "네트워크", "기술력", "디자인", "사후관리"],
     values: [9, 9, 8, 7, 8, 9]
   },
@@ -320,7 +320,7 @@ slide.addChart(pres.charts.RADAR, radarData, {
 // 우측 보조 텍스트 (해석)
 slide.addText("종합 우위 영역", {
   x: 8.5, y: 1.5, w: 4.3, h: 0.5,
-  fontSize: 16, bold: true, color: "#0A2540",
+  fontSize: 16, bold: true, color: "0A2540",
   align: "left", margin: 0
 });
 

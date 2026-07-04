@@ -412,7 +412,7 @@ def validate_dashboard_html(html_path: Path) -> dict:
 
 if __name__ == "__main__":
     sample = DashboardData(
-        project_name="darktrace-discovery",
+        project_name="clientA-discovery",
         meeting_date="2026-05-09",
         meeting_time="14:00~15:30",
         location="PCO 본사 회의실",
@@ -420,27 +420,27 @@ if __name__ == "__main__":
         meeting_type="A",
         type_label="외부 클라이언트 미팅",
         mode="internal",
-        client_id="darktrace",
+        client_id="clientA",
         agenda=["행사 컨셉 검토", "일정 협의", "예산 협의", "후속 미팅 일정"],
         decisions=[
             Decision(text="행사 형식: 1일 컨퍼런스 + 1:1 미팅룸 50%·데모 부스 50%",
                      timestamp="00:01", rationale="양측 동의"),
             Decision(text="행사 일자: 2026-06-18(목)",
-                     timestamp="00:04", rationale="Darktrace 분기 + 베뉴 가용"),
+                     timestamp="00:04", rationale="고객사A 분기 + 베뉴 가용"),
             Decision(text="베뉴 답사: 2026-05-22 양사 동행",
                      timestamp="00:04"),
         ],
         actions=[
-            ActionItem(id="DT-DISC-001", owner="참석자 1 (PCO)",
+            ActionItem(id="CA-DISC-001", owner="참석자 1 (PCO)",
                        action="베뉴 후보 3곳 비교 자료 제출", due="2026-05-12",
                        priority="P1", status="TODO"),
-            ActionItem(id="DT-DISC-002", owner="참석자 2 (협력사)",
+            ActionItem(id="CA-DISC-002", owner="참석자 2 (협력사)",
                        action="명함 데이터 기반 타겟 250명 추출", due="2026-05-14",
                        priority="P1", status="TODO"),
-            ActionItem(id="DT-DISC-003", owner="참석자 3 (발주처)",
+            ActionItem(id="CA-DISC-003", owner="참석자 3 (발주처)",
                        action="본사 동시통역 결재 진행", due="2026-05-15",
                        priority="P1", status="BLOCKED"),
-            ActionItem(id="DT-DISC-004", owner="참석자 1 (PCO)",
+            ActionItem(id="CA-DISC-004", owner="참석자 1 (PCO)",
                        action="베뉴 사전 가예약 6/18·6/25 양일", due="2026-05-12",
                        priority="P0", status="TODO"),
         ],
@@ -450,13 +450,13 @@ if __name__ == "__main__":
         ],
         pending=[
             PendingItem(text="동시통역 부스 설치 여부",
-                        reason="Darktrace 본사 결재 필요",
+                        reason="고객사A 본사 결재 필요",
                         next_review="다음 미팅 (5/16)",
-                        owner="김부장 (Darktrace)"),
+                        owner="김부장 (고객사A)"),
         ],
         next_steps=[
             NextStep(title="다음 미팅", date_str="2026-05-16(금) 14:00",
-                     attendees="본 미팅 동일 + Darktrace 본사 시니어",
+                     attendees="본 미팅 동일 + 고객사A 본사 시니어",
                      agenda="동시통역 결재 결과 + 베뉴 답사 결과"),
         ],
         strategy_note=StrategyNote(
@@ -464,11 +464,11 @@ if __name__ == "__main__":
             what="표면적 행사 컨셉 협의 + 실제로는 운영 역량 검증",
             when_="6월 18일 행사 기준 5/9 미팅은 약간 빠듯",
             where="결정 라인 김부장 → 본사 시니어 → 글로벌 본사",
-            why="Darktrace 한국 시장 본격 진출 시점",
+            why="고객사A 한국 시장 본격 진출 시점",
             how="1:1 미팅룸 ROI 측정 KPI 사전 합의가 다음 행사 수주 관건"
         ),
         strategy_oneliner="본사 시니어 5/16 미팅이 진짜 클라이언트 검증 — KPI 사전 합의 필수",
-        series_id="darktrace-discovery",
+        series_id="clientA-discovery",
         series_session_no=1,
     )
 

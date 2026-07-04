@@ -100,7 +100,7 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에�
     "event_date_confidence": "high",
     "proposal_deadline": "2026-05-22",
     "decision_deadline": "2026-05-30",
-    "decision_maker_schedule": "Darktrace 본사 시니어 5/16 미팅 참석 예정",
+    "decision_maker_schedule": "고객사A 본사 시니어 5/16 미팅 참석 예정",
     "our_response_due": "2026-05-12 (베뉴 후보)"
   }
 }
@@ -121,7 +121,7 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에�
 {
   "decision_makers": [
     {
-      "name": "Darktrace 김부장",
+      "name": "고객사A 김부장",
       "role": "한국 지사 영업 총괄",
       "influence": "high",
       "decision_authority": "한국 단독 결재 가능 — 1.5억 미만",
@@ -131,7 +131,7 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에�
       ]
     },
     {
-      "name": "Darktrace 본사 시니어 (미정)",
+      "name": "고객사A 본사 시니어 (미정)",
       "role": "글로벌 본사 마케팅 시니어",
       "influence": "high",
       "decision_authority": "1.5억 이상 결재 + 글로벌 일관성 검토",
@@ -166,7 +166,7 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에�
     },
     {
       "type": "in_house_alternative",
-      "name": "Darktrace 본사 마케팅팀 직접 운영",
+      "name": "고객사A 본사 마케팅팀 직접 운영",
       "evidence": "본사 시니어 결재 시 '직접 운영 카드'도 검토 중 시사",
       "threat_level": "low"
     }
@@ -181,17 +181,17 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)의 회의록에�
 ```json
 {
   "source_skill": "mice-meeting-minutes",
-  "source_session_id": "darktrace-discovery-001",
-  "source_minutes_file": "meeting-minutes_darktrace-discovery_20260509_A.docx",
+  "source_session_id": "clientA-discovery-001",
+  "source_minutes_file": "meeting-minutes_clientA-discovery_20260509_A.html",
   "generated_at": "2026-05-09T16:30:00+09:00",
   "client": {
-    "id": "darktrace",
-    "name": "Darktrace Korea",
+    "id": "clientA",
+    "name": "고객사A",
     "industry": "Cybersecurity",
     "region": "Korea (Global HQ: UK)"
   },
   "project_context": {
-    "project_name": "Darktrace Korea Discovery",
+    "project_name": "고객사A 디스커버리",
     "event_type_estimate": "Conference + 1:1 Business Matching",
     "scale_estimate": {
       "participants": 250,
@@ -265,7 +265,7 @@ mice-proposal이 본 패키지를 받으면 제안서 1차 초안의 70%가 자�
 
 예시:
 ```
-.chaining/darktrace_20260509_to_proposal.json
+.chaining/clientA_20260509_to_proposal.json
 ```
 
 → mice-proposal 호출 시 본 경로 우선 검색.
@@ -281,7 +281,7 @@ mice-proposal이 본 패키지를 받으면 제안서 1차 초안의 70%가 자�
 
 본 회의록은 mice-proposal 입력 패키지로 변환되었습니다.
 
-저장 위치: .chaining/darktrace_20260509_to_proposal.json
+저장 위치: .chaining/clientA_20260509_to_proposal.json
 추출 데이터:
 - 고객 Pain Point 3건 / 기대 효과 3건
 - 예산 추정: 8천만 ~ 1.5억 (신뢰도 중)
@@ -289,7 +289,7 @@ mice-proposal이 본 패키지를 받으면 제안서 1차 초안의 70%가 자�
 - 의사결정자: 김부장 (한국 단독) + 본사 시니어 (글로벌)
 - 경쟁 추정: 타 PCO 1곳 + 직접 운영 옵션 (낮음)
 
-다음 단계 권장: mice-proposal 호출 ("Darktrace 제안서 작성")
+다음 단계 권장: mice-proposal 호출 ("고객사A 제안서 작성")
 ```
 
 ---

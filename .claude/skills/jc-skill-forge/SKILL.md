@@ -1,7 +1,7 @@
 ---
 name: jc-skill-forge
-description: 기획자님(이진철)의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다.
-version: "v1.0.0"
+description: 기획자님의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v1.0.2"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -37,6 +37,8 @@ WebFetch로 최신 상태 확인(범위 한정):
 ## 3. 적합도 필터
 기획자님 프로필(MICE 전략·제안·리서치·신사업 BM / Track A 현직·Track B 독립 / Chat·Cowork·Code 3환경)에 부합하는 후보만 남기고, 나머지는 SKIP 사유와 함께 제외.
 
+**저작 품질 보조 기준**: 프로필 적합도와 별개로, 후보 스킬의 저작 방식 자체도 품질 신호로 본다 — ① 실패 시나리오를 먼저 관찰하고 그에 대한 최소 대응을 설계했는가(RED→GREEN), ② 압박 상황에서 나올 법한 변명·우회를 반례로 미리 차단했는가(REFACTOR). 이 두 관점은 jc-skill-creator의 저작 검증 루프와 동일 기준이므로, 상세 적용법은 jc-skill-creator를 참조한다(원문 복사 금지, 개념만 흡수해 판정 근거에 인용).
+
 ## 4. 결정 매트릭스
 살아남은 후보를 기존 자산과 매핑:
 - UPGRADE: 기존 스킬에 외부의 우월한 패턴 흡수
@@ -64,3 +66,7 @@ WebFetch로 최신 상태 확인(범위 한정):
 - Claude Code: 전체 1~7단계 수행(로컬 파일 직접 편집·서브에이전트 병렬 가능).
 - Claude Cowork: 1~5단계 병렬 스캔 가능, 적용은 동일 게이트.
 - Claude Chat: 1~5단계(스캔·제안)까지만. 로컬 파일이 없으므로 실제 적용은 Code에서 이어서.
+
+## 변경이력
+
+- v1.0.2 (2026-07-03): CP1 GO-4 외부 패턴 흡수 — §3 적합도 필터에 '저작 품질 보조 기준'(RED→GREEN·REFACTOR 관점, obra/superpowers writing-skills 벤치마크 재구성, 상세는 jc-skill-creator 위임) 추가.

@@ -227,6 +227,15 @@ slide.addNotes(
 ### 2-0-1. 공통 헬퍼 함수
 
 ```javascript
+/**
+ * 숫자를 천단위 콤마 포맷 문자열로 변환 (예산표 등 숫자 컬럼 표준 포매터)
+ * @param {number} n - 포맷할 숫자
+ * @returns {string} 천단위 콤마가 삽입된 문자열 (예: 12345678 → "12,345,678")
+ */
+function fmt(n) {
+  return Number(n).toLocaleString("ko-KR");
+}
+
 function makeHeaderRow(labels) {
   return labels.map(label => ({
     text: label,

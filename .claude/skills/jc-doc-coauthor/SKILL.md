@@ -1,6 +1,6 @@
 ---
 name: jc-doc-coauthor
-description: MICE 문서를 사용자와 함께 단계적으로 써 나가는 공동 작성 프로세스 스킬. 컨텍스트 수집 → 구조·정제 → 리더 테스트(jc-redteam 적대 검증)의 3단계로, 행사 기획서·운영계획서·전략 메모·의사결정 문서(Decision Doc)·사후 결과보고 개요·RFC 같은 산문형 문서를 섹션별 브레인스토밍·큐레이션·외과적 편집으로 완성한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '문서 같이 쓰자', '문서 공동작성', '같이 써줘', '초안 잡아줘', '기획서 초안', '운영계획서', '전략 메모', '의사결정 문서', 'Decision Doc', '디자인 문서', 'design doc', 'RFC', '스펙 작성', '문서 구조 잡아줘', '섹션 나눠줘'를 언급할 때. 머릿속 맥락이 많아 "어디서부터 써야 할지 모르겠다"며 긴 글쓰기를 시작하려 할 때. 단, 본 스킬은 *문서를 함께 써나가는 프로세스*다. 발주처용 제안서(PPTX 슬라이드)는 mice-proposal, 회의 transcript 정리는 mice-meeting-minutes, 이미 완성된 결론·문서의 검증 자체만 원하면 jc-redteam, 디자인 토큰·테마 적용은 jc-design-system / jc-theme-factory 영역이므로 그쪽을 쓸 것. RFP·공고 분석은 mice-rfp-analyzer, 견적은 mice-estimate.
+description: MICE 문서를 사용자와 함께 단계적으로 써 나가는 공동 작성 프로세스 스킬. 컨텍스트 수집 → 구조·정제 → 리더 테스트(jc-redteam 적대 검증)의 3단계로, 행사 기획서·운영계획서·전략 메모·의사결정 문서(Decision Doc)·사후 결과보고 개요·RFC 같은 산문형 문서를 섹션별 브레인스토밍·큐레이션·외과적 편집으로 완성한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '문서 같이 쓰자', '문서 공동작성', '같이 써줘', '초안 잡아줘', '기획서 초안', '운영계획서', '전략 메모', '의사결정 문서', 'Decision Doc', '디자인 문서', 'design doc', 'RFC', '스펙 작성', '문서 구조 잡아줘', '섹션 나눠줘'를 언급할 때. 머릿속 맥락이 많아 "어디서부터 써야 할지 모르겠다"며 긴 글쓰기를 시작하려 할 때. 단, 본 스킬은 *문서를 함께 써나가는 프로세스*다. 발주처용 제안서(PPTX 슬라이드)는 mice-proposal, 회의 transcript 정리는 mice-meeting-minutes, 이미 완성된 결론·문서의 검증 자체만 원하면 jc-redteam, 디자인 토큰·테마 적용은 jc-design-system / jc-theme-factory 영역이므로 그쪽을 쓸 것. RFP·공고 분석은 mice-rfp-analyzer, 견적은 mice-estimate. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
 version: "v1.0.0"
 license: Complete terms in LICENSE.txt
 ---

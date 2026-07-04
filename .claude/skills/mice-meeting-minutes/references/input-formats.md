@@ -182,7 +182,7 @@ John Kim: Sure, I'll share the documents.
 ### 입력 예시
 
 ```
-오늘 Darktrace 미팅 김부장이랑 했음
+오늘 고객사A 미팅 김부장이랑 했음
 6월 18일 행사 확정
 1일 컨퍼런스 + 1:1 미팅룸 50%/데모 50%
 김부장이 ROI 강조 - 본사 보고용 필요
@@ -204,11 +204,11 @@ John Kim: Sure, I'll share the documents.
 
 ### 입력 예시
 ```
-"오늘 Darktrace 김부장이랑 미팅했는데, 6월 18일에 1일 컨퍼런스로 가기로
+"오늘 고객사A 김부장이랑 미팅했는데, 6월 18일에 1일 컨퍼런스로 가기로
 했어. 1:1 미팅룸이랑 데모 부스 반반. 본사 시니어가 5월 16일에 다음 미팅
 참석할 예정이고, 베뉴 답사는 5/22에 같이 가기로 했어. 김부장이 ROI
 강조했고 본사 결재 1.5억 라인이라 견적은 그 안쪽으로 가야 해.
-회의록으로 만들어줘 type=A external client=darktrace"
+회의록으로 만들어줘 type=A external client=clientA"
 ```
 
 ### 처리 룰
@@ -278,7 +278,7 @@ John Kim: Sure, I'll share the documents.
 사용자가 매핑 입력:
 ```
 참석자 1 = 호스트(PCO)
-참석자 2 = 김부장 (Darktrace)
+참석자 2 = 김부장 (고객사A)
 참석자 3 = 주대웅 실장 (리멤버)
 ```
 
@@ -289,7 +289,7 @@ John Kim: Sure, I'll share the documents.
 ```
 1. 발화 내용에 자기 호칭 시그널 매칭
    "제가 [이름]입니다" → 참석자 X = [이름]
-   "Darktrace 김입니다" → 참석자 Y = 김부장 (Darktrace)
+   "고객사A 김입니다" → 참석자 Y = 김부장 (고객사A)
    
 2. 호칭·직함 매칭
    "이 실장님" 발화 시 → 다른 참석자가 발화자를 "이 실장"으로 호칭

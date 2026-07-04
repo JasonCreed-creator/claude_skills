@@ -1,7 +1,7 @@
 ---
 name: jc-generative-art
-description: 알고리즘 철학(.md)을 세우고 그것을 시드 재현 가능한 p5.js 제너러티브 아트(.html 단일 아티팩트)로 표현하는 코드 아트 스킬. 흐름 필드·파티클·노이즈장·재귀·결정화 등 살아 있는 알고리즘으로 생성하며, 시드 탐색(prev/next/random/jump)·파라미터 슬라이더·Regenerate/Reset/Download PNG UX를 단일 자가완결 HTML로 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '제너러티브 아트', '생성 아트', 'generative art', 'p5.js', '플로우 필드', 'flow field', '파티클', 'particle system', '코드 아트', 'creative coding', '모션 배경', '시드 아트', 'seed art', '알고리즘 아트'를 언급할 때. MICE 행사의 모션 배경·데이터 아트·컨퍼런스 비주얼·데크 배경을 코드로 생성해달라고 할 때. **기본 룩은 jc 시그니처 한 가족** — 아트 팔레트는 jc data 시리즈(signature-tokens.md §1.4), 뷰어 UI는 Pretendard·Deep Navy·Electric Blue·라이트 기본. **임의/자유 팔레트는 사용자가 '자유 팔레트 모드'/'free art'를 명시할 때만**. 형제 경계 — 정적 캔버스 아트(.pdf/.png 포스터·키비주얼·무드보드)는 jc-visual-philosophy, 상태관리·라우팅 있는 인터랙티브 *앱*(React)은 jc-artifact-builder, 데이터 KPI·차트 대시보드는 mice-dashboard 영역. 본 스킬은 *p5.js 제너러티브/코드 아트* 전용이다. 디자인 토큰 정의·조회는 jc-design-system, 산출물에 테마/오버레이 입히기는 jc-theme-factory. 기존 아티스트 작품 모사 금지(저작권).
-version: "v1.0.0"
+description: 알고리즘 철학(.md)을 세우고 그것을 시드 재현 가능한 p5.js 제너러티브 아트(.html 단일 아티팩트)로 표현하는 코드 아트 스킬. 흐름 필드·파티클·노이즈장·재귀·결정화 등 살아 있는 알고리즘으로 생성하며, 시드 탐색(prev/next/random/jump)·파라미터 슬라이더·Regenerate/Reset/Download PNG UX를 단일 자가완결 HTML로 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '제너러티브 아트', '생성 아트', 'generative art', 'p5.js', '플로우 필드', 'flow field', '파티클', 'particle system', '코드 아트', 'creative coding', '모션 배경', '시드 아트', 'seed art', '알고리즘 아트'를 언급할 때. MICE 행사의 모션 배경·데이터 아트·컨퍼런스 비주얼·데크 배경을 코드로 생성해달라고 할 때. **기본 룩은 jc 시그니처 한 가족** — 아트 팔레트는 jc data 시리즈(signature-tokens.md §1.4), 뷰어 UI는 Pretendard·Deep Navy·Electric Blue·라이트 기본. **임의/자유 팔레트는 사용자가 '자유 팔레트 모드'/'free art'를 명시할 때만**. 형제 경계 — 정적 캔버스 아트(.pdf/.png 포스터·키비주얼·무드보드)는 jc-visual-philosophy, 상태관리·라우팅 있는 인터랙티브 *앱*(React)은 jc-artifact-builder, 데이터 KPI·차트 대시보드는 mice-dashboard 영역. 본 스킬은 *p5.js 제너러티브/코드 아트* 전용이다. 디자인 토큰 정의·조회는 jc-design-system, 산출물에 테마/오버레이 입히기는 jc-theme-factory. 기존 아티스트 작품 모사 금지(저작권). 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v1.0.2"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -9,7 +9,7 @@ license: Complete terms in LICENSE.txt
 
 알고리즘 철학을 세우고 그것을 **시드 재현 가능한 p5.js 제너러티브 아트**로 표현한다. 원본 프리셋 `algorithmic-art`(p5.js 제너러티브 아트)를 jc 생태계용으로 개조한 버전이다.
 
-원본은 뷰어 UI를 **Anthropic 브랜딩**(Poppins/Lora·`#d97757`·그라디언트)으로 박아두고, 아트 팔레트를 *임의*로 두었다. 본 스킬은 [개조 플레이북 §4 홈베이스 원칙](../../../docs/preset-adaptation-playbook.md)을 적용해 둘을 뒤집는다:
+원본은 뷰어 UI를 **Anthropic 브랜딩**(Poppins/Lora·`#d97757`·그라디언트)으로 박아두고, 아트 팔레트를 *임의*로 두었다. 본 스킬은 아래 **홈베이스 원칙**을 적용해 둘을 뒤집는다:
 
 > 뷰어 크롬은 **jc 시그니처 고정**(Pretendard·Deep Navy·Electric Blue·라이트 기본), 아트 팔레트 기본은 **jc data 시리즈**. 색의 자유(자유 팔레트 모드)는 사용자가 *명시할 때만* opt-in.
 
@@ -63,6 +63,14 @@ HTML을 쓰기 **전에** 반드시:
 구조·원칙 참고서는 `templates/generator_reference.js`(아티팩트엔 포함하지 않음 — 인라인 임베드).
 
 피할 것: ❌ HTML 맨땅 작성 ❌ 커스텀 색 체계 발명 ❌ Anthropic 프리셋 색(`#d97757`·`#6a9bcc`·`#788c5d`·`#141413`·`#faf9f5`)·Poppins/Lora ❌ 사이드바 구조 변경 ❌ 예시 흐름 필드를 그대로 베끼기.
+
+## FORBIDDEN
+
+`references/jc-art-palette.md`·`templates/generator_reference.js`·`templates/viewer.html`이 참조하는 금지 목록의 정본은 여기다.
+
+- **금지 색(Anthropic 프리셋)**: `#d97757`(테라코타) · `#6a9bcc`(세이지 블루) · `#788c5d`(세이지 그린) · `#141413`(웜블랙) · `#faf9f5`(웜화이트) — 자유 팔레트 모드에서도 사용 금지.
+- **금지 폰트**: Poppins · Lora — 뷰어 UI·아트워크 어디에도 사용 금지. 뷰어 UI는 Pretendard·JetBrains Mono만 허용(§홈베이스 원칙).
+- **금지 행위**: 커스텀 색 체계 발명, `templates/viewer.html` 사이드바 구조 변경, 예시 흐름 필드 그대로 베끼기.
 
 #### 시드 재현성 (Art Blocks 패턴)
 
@@ -122,7 +130,7 @@ let params = {
 - **`RULE-NO-COMPANY`** — 회사명·실명·부서 등 식별 정보 하드코딩 0건. 작품 제목·서명이 필요하면 외부 주입 변수(`{{personal_brand}}` 등)로만. 정본 `shared-rules.md#RULE-NO-COMPANY`.
 - **`RULE-WCAG`** — 뷰어 UI 텍스트 대비 본문 4.5:1↑. jc 토큰 조합은 충족(헤더 흰 텍스트 on Navy 14:1). 계산 표준 `mode-mapping.md §9`. → `#RULE-WCAG`
 - **`RULE-PRINT-LIGHT`** — 뷰어를 인쇄/PDF로 뽑으면 배경 라이트 강제(토너 절약). viewer.html `@media print` 포함. → `#RULE-PRINT-LIGHT`
-- 아트 팔레트 상수는 `check_drift.py` FORBIDDEN(비-jc 색) 값을 쓰지 않는다.
+- 아트 팔레트 상수는 산출물 HEX를 `jc-design-system/references/signature-tokens.md` 정본과 수동 대조(또는 `jc-design-system/scripts/jc_tokens.py` 상수 참조)해 비-jc 색이 섞이지 않았는지 확인한다.
 
 ## 생태계 연결
 
@@ -165,5 +173,5 @@ jc-generative-art/
 - [ ] 아트 팔레트 기본 = jc data 시리즈(§1.4). 자유 팔레트는 사용자 명시 시에만
 - [ ] 시드 컨트롤(prev/next/random/jump) + Regenerate/Reset/Download PNG 동작
 - [ ] 단일 자가완결 HTML(p5.js만 CDN, 알고리즘 인라인)
-- [ ] 회사·개인정보 하드코딩 0건(외부 주입 변수) · `check_drift.py` FORBIDDEN 색 0건
+- [ ] 회사·개인정보 하드코딩 0건(외부 주입 변수) · 아트 팔레트 HEX를 `signature-tokens.md` 정본과 수동 대조해 비-jc 색 0건
 - [ ] 1차 산출 후 `jc-redteam`으로 점검 가능

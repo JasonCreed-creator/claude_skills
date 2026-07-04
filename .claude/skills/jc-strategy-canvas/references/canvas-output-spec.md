@@ -8,7 +8,7 @@
 - 라이트/다크·인쇄: `jc-design-system/references/mode-mapping.md` (§3 매핑, §4.2 인쇄 라이트 강제, §9 WCAG 계산).
 - 클라이언트 차별화: `client-overlays.md` (primary/accent/logo 3토큰만, 충돌 회피 §6) — 페이로드 `clientId`가 있을 때만.
 - 형제 경로 탐색: `Path(__file__).resolve().parents[2] / "jc-design-system"`.
-- **FORBIDDEN 값 금지**: `scripts/check_drift.py`가 막는 비-canon 색값(예: 임의 navy/blue 변형)을 본문/스타일에 쓰지 않는다. 본 스킬은 디자인 소비 스킬이므로 check_drift CONSUMERS에 등록한다.
+- **FORBIDDEN 값 금지**: `jc-design-system/references/signature-tokens.md`에 정의되지 않은 비-canon 색값(예: 임의 navy/blue 변형)을 본문/스타일에 쓰지 않는다 — 산출 전 signature-tokens.md 대조로 수동 확인한다.
 
 핵심 값(식별용 — 정본은 위 SoT):
 - primary `#0A2540` (Deep Navy) · accent `#2962FF` (Electric Blue) · 데이터 시리즈는 `signature-tokens.md §1.4`.

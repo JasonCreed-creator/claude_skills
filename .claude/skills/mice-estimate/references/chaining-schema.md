@@ -140,6 +140,7 @@ mice-estimate가 견적 산출 + Excel 생성 후, 후속 스킬에 전달하는
   "$schema": "ChainPayload/v1",
   "source": "mice-estimate",
   "version": "v2.0",
+  "generatedAt": "2026-07-03T10:00:00+09:00",
   "projectTitle": "행사명",
   "format": "mnc",
   "isCustom": false,
@@ -223,10 +224,13 @@ calc_estimate 결과를 그대로 ChainPayload 형식으로 변환하는 헬퍼:
 ```python
 def to_chain_payload(result: dict, meta: dict) -> dict:
     """calc_estimate 결과 → ChainPayload/v1 출력."""
+    from datetime import datetime, timezone
+
     return {
         '$schema': 'ChainPayload/v1',
         'source': 'mice-estimate',
         'version': 'v2.0',
+        'generatedAt': datetime.now(timezone.utc).isoformat(),
         'projectTitle': meta.get('projectTitle', ''),
         'format': meta.get('format', 'mnc'),
         'isCustom': result['isCustom'],

@@ -17,10 +17,10 @@
 
 | series_id | 프로젝트 | 유형 |
 |-----------|---------|------|
-| `darktrace-discovery` | Darktrace Korea | Discovery (수주 전) |
-| `darktrace-execution` | Darktrace Korea | 수주 후 운영 |
+| `clientA-discovery` | 고객사A | Discovery (수주 전) |
+| `clientA-execution` | 고객사A | 수주 후 운영 |
 | `rmb-rebuild26` | RMB REBUILD26 | 정기 협의 |
-| `tobesoft-seminar26` | TOBESOFT GRAND SEMINAR 2026 | 정기 협의 |
+| `clientB-seminar26` | 고객사B 세미나 2026 | 정기 협의 |
 | `confex-bidding` | ConfEx 박람회 | 입찰 단계 |
 | `remember-weekly` | 리멤버 주대웅 실장 | 주간 정기 |
 | `pco-internal-weekly` | 자사 내부 팀 | 주간 내부 |
@@ -44,9 +44,9 @@
 
 ```json
 {
-  "series_id": "darktrace-discovery",
-  "project_name": "Darktrace Korea Discovery",
-  "client_id": "darktrace",
+  "series_id": "clientA-discovery",
+  "project_name": "고객사A 디스커버리",
+  "client_id": "clientA",
   "default_type": "A",
   "created_at": "2026-04-15",
   "last_updated": "2026-05-09",
@@ -55,13 +55,11 @@
       "session_no": 1,
       "date": "2026-04-15",
       "type": "A",
-      "minutes_file": "meeting-minutes_darktrace-discovery_20260415_A.docx",
-      "actions_file": "action-items_darktrace-discovery_20260415.xlsx",
-      "summary_file": "summary_darktrace-discovery_20260415.md",
+      "dashboard_file": "dashboard_clientA-discovery_20260415.html",
       "decisions_count": 3,
       "actions": [
         {
-          "id": "DT-DISC-001",
+          "id": "CA-DISC-001",
           "owner": "호스트",
           "due": "2026-04-22",
           "priority": "P1",
@@ -70,8 +68,8 @@
           "linked": null
         },
         {
-          "id": "DT-DISC-002",
-          "owner": "Darktrace 김부장",
+          "id": "CA-DISC-002",
+          "owner": "고객사A 김부장",
           "due": "2026-05-02",
           "priority": "P1",
           "status": "BLOCKED",
@@ -81,9 +79,9 @@
       ],
       "pending_items": [
         {
-          "id": "DT-DISC-PEND-001",
+          "id": "CA-DISC-PEND-001",
           "item": "동시통역 부스 설치 여부",
-          "reason": "Darktrace 본사 결재 필요",
+          "reason": "고객사A 본사 결재 필요",
           "next_review": "다음 미팅"
         }
       ]
@@ -92,9 +90,9 @@
       "session_no": 2,
       "date": "2026-05-09",
       "type": "A",
-      "minutes_file": "meeting-minutes_darktrace-discovery_20260509_A.docx",
-      "carry_over_actions": ["DT-DISC-002"],
-      "carry_over_pending": ["DT-DISC-PEND-001"],
+      "dashboard_file": "dashboard_clientA-discovery_20260509.html",
+      "carry_over_actions": ["CA-DISC-002"],
+      "carry_over_pending": ["CA-DISC-PEND-001"],
       "new_actions_count": 7,
       "decisions_count": 4
     }
@@ -107,7 +105,7 @@
     "blocked": 2,
     "todo": 2,
     "completion_rate": 0.54,
-    "long_pending_actions": ["DT-DISC-002"]
+    "long_pending_actions": ["CA-DISC-002"]
   }
 }
 ```
@@ -123,7 +121,7 @@
 | Action | TODO | 그대로 carry-over |
 | Action | DOING | 그대로 carry-over (진척도 갱신 시도) |
 | Action | BLOCKED | 그대로 carry-over (해소 시그널 매칭 시 갱신) |
-| Action | DONE | carry-over 제외, 누적 시트에만 기록 |
+| Action | DONE | carry-over 제외, 시리즈 누적 탭에만 기록 |
 | 미결 사항 | (모든 미결) | 그대로 carry-over (본 회차 재논의 시 해소 처리) |
 | 결정사항 | (모든 결정) | carry-over 안 함 (본 회차에는 "지난 결정 참조" 표기만) |
 
@@ -132,25 +130,25 @@
 본 회차 transcript에서 carry-over Action ID 또는 내용 매칭:
 
 ```
-"베뉴 후보 자료 보내드렸습니다"          → DT-DISC-001 → DONE
-"동시통역 결재 아직 못 받았어요"          → DT-DISC-002 → BLOCKED 유지
-"통역 결재 받았습니다"                  → DT-DISC-002 → TODO/DOING 갱신
-"통역사 1명 계약 완료"                  → DT-DISC-002 → DONE
+"베뉴 후보 자료 보내드렸습니다"          → CA-DISC-001 → DONE
+"동시통역 결재 아직 못 받았어요"          → CA-DISC-002 → BLOCKED 유지
+"통역 결재 받았습니다"                  → CA-DISC-002 → TODO/DOING 갱신
+"통역사 1명 계약 완료"                  → CA-DISC-002 → DONE
 ```
 
 매칭 신뢰도 낮은 경우 사용자 확인 요청.
 
 ---
 
-## 4. 본 회차 회의록 내 시리즈 표시
+## 4. 본 회차 대시보드 내 시리즈 표시
 
-### 회의록 .docx 상단 표시
+### 대시보드 헤더 표시
 ```
 [프로젝트명] (시리즈 N차 / 누적 액션 X건 중 Y건 완료, 완료율 Z%)
 ```
 
 ### Carry-over Action 표시
-- Action Items 표에서 carry-over 행은 외곽선 표시 (`color.point.orange`)
+- Action 트래커 칸반에서 carry-over 카드는 외곽선 표시 (`color.point.orange`)
 - ID 옆에 (carried) 마커
 - "처음 등록 회차: N차" 메타 표시
 
@@ -160,26 +158,26 @@
 
 ---
 
-## 5. Action Items 트래커 .xlsx 시리즈 시트
+## 5. 대시보드 시리즈 누적 탭
 
-`series-tracking.md` 시리즈 모드 활성화 시 .xlsx에 추가되는 시트:
+시리즈 모드 활성화 시 HTML 대시보드에 "시리즈 누적" 탭이 추가된다. 데이터 소스는 `.series-data/[series_id].json` + window.storage:
 
-### 시트명: "시리즈 누적"
+### "시리즈 누적" 통계 표
 
 | 회차 | 일자 | 신규 Action | 완료 (DONE) | 진행 (DOING) | 차단 (BLOCKED) | 미시작 (TODO) | 완료율 |
 |------|------|-------------|-------------|--------------|----------------|---------------|--------|
 | 1 | 2026-04-15 | 8 | 6 | 0 | 1 | 1 | 75% |
 | 2 | 2026-05-09 | 12 (신규 7+carry 5) | 9 | 1 | 1 | 1 | 75% |
 
-### 시트명: "장기 미해결"
+### "장기 미해결" 추적 표
 
 3회차 이상 carry-over된 Action 별도 추적:
 
 | ID | 최초 등록 | 회차 횟수 | 현재 Status | Owner | Due | Action |
 |----|----------|----------|-------------|-------|-----|--------|
-| DT-DISC-002 | 2026-04-15 | 3 | BLOCKED | Darktrace 김부장 | 2026-05-02 (지연) | 본사 동시통역 결재 |
+| CA-DISC-002 | 2026-04-15 | 3 | BLOCKED | 고객사A 김부장 | 2026-05-02 (지연) | 본사 동시통역 결재 |
 
-→ 장기 미해결 자동 감지 → 회의록 전략 메모에 "장기 미해결 N건 처리 시급" 자동 권고.
+→ 장기 미해결 자동 감지 → 전략 메모 탭에 "장기 미해결 N건 처리 시급" 자동 권고.
 
 ---
 
@@ -190,10 +188,10 @@
 - 또는 회의록에 "프로젝트 종료" 명시 발화 매칭
 
 ### 종료 시 산출물
-- 시리즈 종합 보고서 .docx 자동 생성
+- 시리즈 종합 HTML 대시보드 자동 생성 (전 회차 통합 뷰)
 - 누적 통계 + 모든 결정사항 통합 + 모든 Action 최종 상태 + 학습 메모
 
-### 시리즈 종합 보고서 구조
+### 시리즈 종합 대시보드 구조
 
 ```
 1. 시리즈 개요 (프로젝트명·기간·총 회차)
@@ -211,17 +209,17 @@
 
 ### 신규 시리즈 시작 (1차 미팅)
 ```
-사용자: "Darktrace Discovery 1차 미팅 정리해줘. transcript는 [붙여넣기]. --series=darktrace-discovery"
+사용자: "고객사A 디스커버리 1차 미팅 정리해줘. transcript는 [붙여넣기]. --series=clientA-discovery"
 ```
 
 → 본 스킬:
-- `.series-data/darktrace-discovery.json` 신규 생성
+- `.series-data/clientA-discovery.json` 신규 생성
 - session_no=1로 기록
-- 일반 회의록 + Action + 요약 산출
+- HTML 대시보드 산출 (본 미팅 탭 + Action 트래커 탭)
 
 ### 2차 미팅 (carry-over 자동 적용)
 ```
-사용자: "Darktrace Discovery 2차 미팅 정리해줘. transcript는 [붙여넣기]. --series=darktrace-discovery"
+사용자: "고객사A 디스커버리 2차 미팅 정리해줘. transcript는 [붙여넣기]. --series=clientA-discovery"
 ```
 
 → 본 스킬:
@@ -229,11 +227,11 @@
 - 본 회차 transcript에서 갱신 시그널 매칭 → Status 갱신
 - 본 회차 신규 Action 추가
 - session_no=2로 기록
-- 회의록에 carry-over 표시 + 누적 통계 + 시리즈 시트
+- 대시보드에 carry-over 표시 + 누적 통계 + 시리즈 누적 탭
 
 ### 시리즈 조회
 ```
-사용자: "darktrace-discovery 시리즈 현황 보여줘"
+사용자: "clientA-discovery 시리즈 현황 보여줘"
 ```
 
 → 본 스킬:
@@ -241,11 +239,11 @@
 
 ### 시리즈 종료
 ```
-사용자: "darktrace-discovery 시리즈 종료 처리해줘"
+사용자: "clientA-discovery 시리즈 종료 처리해줘"
 ```
 
 → 본 스킬:
-- 시리즈 종합 보고서 .docx 산출
+- 시리즈 종합 HTML 대시보드 산출
 - JSON에 closed_at 타임스탬프 추가
 
 ---
@@ -267,7 +265,7 @@ JSON 데이터 파일은 챗 환경 리셋 시 손실될 수 있으므로 외부
 ## 9. 시리즈 모드 미적용 시 동작
 
 `--series` 플래그 없이 호출 시:
-- 단일 회의 회의록만 생성
+- 단일 회의 대시보드만 생성
 - carry-over 처리 없음
-- 시리즈 누적 시트 없음
+- 시리즈 누적 탭 없음
 - 추후 시리즈 모드 추가 시 수기로 JSON에 추가 가능

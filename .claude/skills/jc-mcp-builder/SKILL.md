@@ -1,7 +1,7 @@
 ---
 name: jc-mcp-builder
-description: 외부 서비스(Slack·Google Drive/Calendar·CRM·행사 등록 시스템 등)나 mice-* 산출 데이터(견적·KPI·회의록)를 외부 LLM/도구가 다루게 해주는 MCP(Model Context Protocol) 서버를 설계·구현·테스트·평가하는 개발 가이드. Python(FastMCP) / Node·TypeScript(MCP SDK) 양쪽을 다룬다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 'MCP 서버', 'MCP 만들기', 'MCP 빌드', '커넥터', '외부 API 연동', '도구 서버', 'tool server', 'FastMCP', 'MCP SDK', 'Slack 연동 서버', 'Google 연동 서버', '행사 등록 시스템 연동', 'CRM 연동', 'LLM이 우리 데이터/도구 쓰게'를 언급할 때. MICE 워크플로우(mice-estimate 견적·mice-dashboard KPI·mice-meeting-minutes 회의록)를 외부 에이전트가 읽고 쓰게 하는 커넥터를 만들 때. ChainPayload/v1 JSON을 주고받는 도구를 설계할 때. 형제 경계 — 이것은 *외부 서비스 연동 서버를 개발하는 가이드*다. 산출물 색·테마·디자인 토큰과는 무관하므로 '테마/팔레트/오버레이'는 jc-theme-factory, '디자인 토큰'은 jc-design-system 영역이며 여기서 다루지 않는다. 결론·문서 적대적 검증은 jc-redteam, 데이터 봉투 규약 정의는 jc-design-system/chaining-protocol 영역. 단발성 스크립트 한 개를 짜는 일에는 과하다 — 재사용 가능한 도구 서버(다수 도구·외부 인증·페이지네이션)를 만들 때만 쓴다.
-version: "v1.0.0"
+description: 외부 서비스(Slack·Google Drive/Calendar·CRM·행사 등록 시스템 등)나 mice-* 산출 데이터(견적·KPI·회의록)를 외부 LLM/도구가 다루게 해주는 MCP(Model Context Protocol) 서버를 설계·구현·테스트·평가하는 개발 가이드. Python(FastMCP) / Node·TypeScript(MCP SDK) 양쪽을 다룬다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 'MCP 서버', 'MCP 만들기', 'MCP 빌드', '커넥터', '외부 API 연동', '도구 서버', 'tool server', 'FastMCP', 'MCP SDK', 'Slack 연동 서버', 'Google 연동 서버', '행사 등록 시스템 연동', 'CRM 연동', 'LLM이 우리 데이터/도구 쓰게'를 언급할 때. MICE 워크플로우(mice-estimate 견적·mice-dashboard KPI·mice-meeting-minutes 회의록)를 외부 에이전트가 읽고 쓰게 하는 커넥터를 만들 때. ChainPayload/v1 JSON을 주고받는 도구를 설계할 때. 형제 경계 — 이것은 *외부 서비스 연동 서버를 개발하는 가이드*다. 산출물 색·테마·디자인 토큰과는 무관하므로 '테마/팔레트/오버레이'는 jc-theme-factory, '디자인 토큰'은 jc-design-system 영역이며 여기서 다루지 않는다. 결론·문서 적대적 검증은 jc-redteam, 데이터 봉투 규약 정의는 jc-design-system/chaining-protocol 영역. 단발성 스크립트 한 개를 짜는 일에는 과하다 — 재사용 가능한 도구 서버(다수 도구·외부 인증·페이지네이션)를 만들 때만 쓴다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v1.0.1"
 license: Complete terms in LICENSE.txt
 ---
 

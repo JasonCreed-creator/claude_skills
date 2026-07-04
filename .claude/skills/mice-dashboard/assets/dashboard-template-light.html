@@ -12,61 +12,58 @@
    v1 4종 자체 팔레트 → JC 토큰 호환
    ============================================================ */
 :root {
-  /* 라이트 모드 (기본) — 값은 signature-tokens.md §1·§1.4·§6 / mode-mapping.md §2 정본 */
-  --bg-page:        #F8F9FB;   /* SoT 미러: --jc-bg */
-  --bg-card:        #FFFFFF;   /* SoT 미러: --jc-surface */
-  --bg-header:      linear-gradient(135deg, #FFFFFF 0%, #F1F3F7 100%); /* SoT 미러: --jc-surface → --jc-surface-alt */
-  --bg-hover:       #F1F3F7;   /* SoT 미러: --jc-surface-alt */
-  --bg-stripe:      #F1F3F7;   /* SoT 미러: --jc-surface-alt */
-  --border:         #E5E8ED;   /* SoT 미러: --jc-border */
-  --text:           #1A1D24;   /* SoT 미러: --jc-text */
-  --text-secondary: #5A6270;   /* SoT 미러: --jc-text-muted */
-  --brand-primary:  #2962FF;   /* SoT 미러: --jc-accent */
-  --success:        #00C853;   /* SoT 미러: --jc-success */
-  --danger:         #D32F2F;   /* SoT 미러: --jc-danger */
-  --warning:        #FFA000;   /* SoT 미러: --jc-warning */
-  --info:           #2962FF;   /* SoT 미러: --jc-info (= --jc-accent) */
-  /* 차트 시리즈 6 슬롯 — SoT 미러: --jc-data-1..6 (signature-tokens.md §1.4) */
-  --series-1: #2962FF;   /* SoT 미러: --jc-data-1 */
-  --series-2: #E91E63;   /* SoT 미러: --jc-data-2 */
-  --series-3: #FF5722;   /* SoT 미러: --jc-data-3 */
-  --series-4: #00E676;   /* SoT 미러: --jc-data-4 */
-  --series-5: #0A2540;   /* SoT 미러: --jc-data-5 */
-  --series-6: #7C3AED;   /* SoT 미러: --jc-data-6 */
-  /* tone 배경 (콜아웃·매트릭스) — SoT 시맨틱색 기반 soft 틴트 (라이트 soft-bg 전용 캐논 토큰 부재) */
-  --tone-success-bg: #00C85316;   /* SoT 미러: --jc-success @ ~9% */
-  --tone-info-bg:    #E8EFFF;      /* SoT 미러: --jc-accent-soft */
-  --tone-warning-bg: #FFA00016;    /* SoT 미러: --jc-warning @ ~9% */
-  --tone-danger-bg:  #D32F2F16;    /* SoT 미러: --jc-danger @ ~9% */
+  /* 라이트 모드 (기본) */
+  --bg-page:        #ffffff;   /* COLOR_BG_PAGE */
+  --bg-card:        #F8F9FB;   /* COLOR_BG_CARD */
+  --bg-header:      linear-gradient(135deg, #ffffff 0%, #F8F9FB 100%);
+  --bg-hover:       #F1F3F7;   /* COLOR_NEUTRAL_HOVER_LIGHT */
+  --bg-stripe:      #F8F9FB;
+  --border:         #E5E8ED;   /* COLOR_NEUTRAL_BORDER */
+  --text:           #0A2540;   /* COLOR_TEXT_PRIMARY */
+  --text-secondary: #5A6270;   /* COLOR_TEXT_SECONDARY */
+  --brand-primary:  #2962FF;   /* COLOR_BRAND_PRIMARY_BIZ */
+  --success:        #00C853;   /* COLOR_SEMANTIC_SUCCESS */
+  --danger:         #D32F2F;   /* COLOR_SEMANTIC_DANGER */
+  --warning:        #FF5722;
+  --info:           #2962FF;
+  /* 차트 시리즈 6 슬롯 */
+  --series-1: #2962FF;
+  --series-2: #E91E63;
+  --series-3: #1E4DCC;
+  --series-4: #FF5722;
+  --series-5: #E91E63;
+  --series-6: #00C853;
+  /* tone 배경 (콜아웃·매트릭스) */
+  --tone-success-bg: #E8EFFF;
+  --tone-info-bg:    #E8EFFF;
+  --tone-warning-bg: #FFF3E0;
+  --tone-danger-bg:  #F1F3F7;
 }
 
 [data-theme="dark"] {
-  /* 다크 모드 — 값은 mode-mapping.md §3·§3.2 정본 */
-  --bg-page:        #0A1220;   /* SoT 미러: 다크 페이지 배경 */
-  --bg-card:        #152134;   /* SoT 미러: 다크 카드 서피스 */
-  --bg-header:      linear-gradient(135deg, #0A1220 0%, #152134 100%); /* SoT 미러: 다크 bg → surface */
-  --bg-hover:       #1F2C42;   /* SoT 미러: 다크 보조 서피스(surface-alt) */
-  --bg-stripe:      #1F2C42;   /* SoT 미러: 다크 보조 서피스(surface-alt) */
-  --border:         #2A3650;   /* SoT 미러: 다크 보더 */
-  --text:           #E8ECF2;   /* SoT 미러: 다크 본문 텍스트 */
-  --text-secondary: #A0A8B4;   /* SoT 미러: 다크 보조 텍스트 */
-  --brand-primary:  #5B8DEF;   /* SoT 미러: 다크 액센트 */
-  --success:        #00C853;   /* SoT 미러: --jc-success */
-  --danger:         #D32F2F;   /* SoT 미러: --jc-danger */
-  --warning:        #FFA000;   /* SoT 미러: --jc-warning */
-  --info:           #5B8DEF;   /* SoT 미러: 다크 액센트(= info) */
-  /* 차트 시리즈 6 슬롯 — SoT 미러: mode-mapping.md §3.2 다크 data-1..6 */
-  --series-1: #5B8DEF;   /* SoT 미러: 다크 data-1 */
-  --series-2: #F04D85;   /* SoT 미러: 다크 data-2 */
-  --series-3: #FF7649;   /* SoT 미러: 다크 data-3 */
-  --series-4: #33EE92;   /* SoT 미러: 다크 data-4 */
-  --series-5: #C9CFD8;   /* SoT 미러: 다크 data-5 */
-  --series-6: #A78BFA;   /* SoT 미러: 다크 data-6 */
-  /* tone 배경 — SoT 시맨틱/액센트색 @ ~25% 알파 (다크 soft-bg 관례 유지) */
-  --tone-success-bg: #00C85340;   /* SoT 미러: --jc-success @ ~25% */
-  --tone-info-bg:    #2962FF40;    /* SoT 미러: --jc-accent @ ~25% */
-  --tone-warning-bg: #FFA00040;    /* SoT 미러: --jc-warning @ ~25% */
-  --tone-danger-bg:  #D32F2F40;    /* SoT 미러: --jc-danger @ ~25% */
+  --bg-page:        #0A2540;   /* COLOR_BG_PAGE_DARK */
+  --bg-card:        #1A1D24;   /* COLOR_BG_CARD_DARK */
+  --bg-header:      linear-gradient(135deg, #0A2540 0%, #1A1D24 100%);
+  --bg-hover:       #1A3556;
+  --bg-stripe:      #1A3556;
+  --border:         #5A6270;   /* COLOR_NEUTRAL_BORDER_DARK */
+  --text:           #F8F9FB;   /* COLOR_TEXT_PRIMARY_DARK */
+  --text-secondary: #A0A6B0;
+  --brand-primary:  #2962FF;
+  --success:        #00E676;
+  --danger:         #D32F2F;
+  --warning:        #FFA000;
+  --info:           #2962FF;
+  --series-1: #2962FF;
+  --series-2: #E91E63;
+  --series-3: #2962FF;
+  --series-4: #FFA000;
+  --series-5: #E91E63;
+  --series-6: #00C853;
+  --tone-success-bg: #14532d40;
+  --tone-info-bg:    #1e3a8a40;
+  --tone-warning-bg: #78350f40;
+  --tone-danger-bg:  #7f1d1d40;
 }
 
 * { box-sizing: border-box; }
@@ -308,7 +305,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 32px; }
   html[data-theme="dark"] .infographic {
     background: white !important;
     color: black !important;
-    border-color: #E5E8ED !important;   /* SoT 미러: --jc-border */
+    border-color: #E5E8ED !important;
   }
   .theme-toggle { display: none; }
   .dashboard-header { background: white !important; }
@@ -401,13 +398,13 @@ main { max-width: 1400px; margin: 0 auto; padding: 32px; }
    ============================================================ */
 function applyChartTheme(isDark) {
   if (typeof Chart === 'undefined') return;
-  Chart.defaults.color = isDark ? '#A0A8B4' : '#5A6270';        /* SoT 미러: 다크/라이트 보조 텍스트 */
-  Chart.defaults.borderColor = isDark ? '#2A3650' : '#E5E8ED';  /* SoT 미러: 다크/라이트 보더 */
+  Chart.defaults.color = isDark ? '#C9CFD8' : '#5A6270';
+  Chart.defaults.borderColor = isDark ? '#5A6270' : '#E5E8ED';
   if (Chart.defaults.scale && Chart.defaults.scale.grid) {
     Chart.defaults.scale.grid.color = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
   }
   if (Chart.defaults.plugins && Chart.defaults.plugins.tooltip) {
-    Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#0A1220' : '#152134';  /* SoT 미러: 다크 페이지 배경 / 다크 카드 서피스(라이트 위 다크 칩) */
+    Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#0A2540' : '#1A1D24';
   }
 }
 

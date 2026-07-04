@@ -4,9 +4,7 @@
 **참조**: master-plan §2-1 (표준 강화 체크리스트 jc 연동)
 **적용 범위 (Sprint 2)**: 정적 매핑 문서. 런타임 토큰 fetch는 Sprint 7 통합 검증 시.
 
-mice-dashboard v1 은 4종 자체 컬러 팔레트(slate/blue 계열 등)를 직접 사용 → 디자인 일관성 깨짐. v2 는 각 팔레트를 **jc-design-system(SoT) 시그니처 토큰**으로 매핑하여 정합성을 확보한다.
-
-> **정본 단일 출처(SoT)**: 모든 색상 값은 jc-design-system 정본을 미러한다. 라이트 베이스·차트 data-1..6·시맨틱 = `signature-tokens.md` §1·§1.4·§1.5·§6, 다크 패밀리·차트 다크 = `mode-mapping.md` §3·§3.2. 본 문서는 **토큰명 매핑만** 보유하고 hex 리터럴은 정본 파일을 참조한다. 클라이언트별 오버레이(mc·remember·confex 등) hex 는 본 문서에 하드코딩하지 않고 jc-design-system 의 `client-overlays.md` 가 단일 소유한다.
+mice-dashboard v1 은 4종 자체 컬러 팔레트(`#0A2540`, `#2962FF`, `#E91E63`, `#1A3556` 등)를 직접 사용 → 디자인 일관성 깨짐. v2 는 각 팔레트를 **jc 시맨틱 토큰**으로 매핑하여 클라이언트 오버레이 토글 가능 구조 확보.
 
 ---
 
@@ -18,59 +16,57 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(slate/blue 계열 등)를 직
 
 ---
 
-## 2. 4종 자체 팔레트 → JC(SoT) 토큰 매핑
-
-> 모든 v1 자체 hex 는 폐기하고 아래 **SoT 정본 토큰**으로 흡수한다. hex 값은 `signature-tokens.md` §1·§1.5·§6(라이트·시맨틱) / `mode-mapping.md` §3(다크) 정본. 클라이언트 오버레이 hex 는 `client-overlays.md` 단일 소유 — 본 표에 직접 기입하지 않는다.
+## 2. 4종 자체 팔레트 → JC 토큰 매핑
 
 ### 2.1 v1 "기업/공식" 톤 (다크) → JC 다크 모드
 
-| 영역 | SoT 정본 토큰 (라이트) | SoT 정본 토큰 (다크) |
-|---|---|---|
-| 페이지 배경 | `--jc-bg` | 다크 페이지 배경 (mode-mapping §3) |
-| 카드 배경 | `--jc-surface` | 다크 카드 서피스 (mode-mapping §3) |
-| 액센트 | `--jc-accent` | 다크 액센트 (mode-mapping §3) |
-| 강조/하이라이트 | `--jc-danger` | `--jc-danger` (시맨틱 단일값) |
+| 영역 | v1 hex | JC 시맨틱 토큰 | mc 오버레이 hex (라이트) | mc 오버레이 hex (다크) |
+|---|---|---|---|---|
+| 페이지 배경 | `#0A2540` | `COLOR_BG_PAGE` | `#ffffff` | `#0A2540` |
+| 카드 배경 | `#1A3556` | `COLOR_BG_CARD` | `#F8F9FB` | `#1A1D24` |
+| 액센트 | `#1A3556` | `COLOR_BRAND_PRIMARY` | `#0A2540` | `#1E4DCC` |
+| 강조/하이라이트 | `#E91E63` | `COLOR_SEMANTIC_DANGER` | `#D32F2F` | `#D32F2F` |
 
 ### 2.2 v1 "성과/실적" 톤 (라이트) → JC 라이트 모드 기본
 
-| 영역 | SoT 정본 토큰 |
-|---|---|
-| 페이지 배경 | `--jc-bg` |
-| 카드 배경 | `--jc-surface` |
-| 액센트 | `--jc-accent` |
-| 긍정 | `--jc-success` |
+| 영역 | v1 hex | JC 시맨틱 토큰 | 유니버설 hex |
+|---|---|---|---|
+| 페이지 배경 | `#ffffff` | `COLOR_BG_PAGE` | `#ffffff` |
+| 카드 배경 | `#F8F9FB` | `COLOR_BG_CARD` | `#F8F9FB` |
+| 액센트 | `#2962FF` | `COLOR_BRAND_PRIMARY_BIZ` | `#2962FF` |
+| 긍정 | `#00C853` | `COLOR_SEMANTIC_SUCCESS` | `#00C853` |
 
-### 2.3 v1 "마케팅/이벤트" 톤 → Point 풀 강조
+### 2.3 v1 "마케팅/이벤트" 톤 → confex 오버레이 후보
 
-| 영역 | SoT 정본 토큰 |
-|---|---|
-| 액센트 1 | `--jc-accent` (= `--jc-data-1`) |
-| 액센트 2 | `--jc-point-orange` (= `--jc-data-3`) |
-| 액센트 3 | `--jc-point-magenta` (= `--jc-data-2`) |
+| 영역 | v1 hex | JC 시맨틱 토큰 | confex 오버레이 hex |
+|---|---|---|---|
+| 액센트 1 | `#E91E63` | `COLOR_BRAND_PRIMARY` | `#E91E63` |
+| 액센트 2 | `#FFA000` | `COLOR_BRAND_ACCENT` | `#FFA000` |
+| 액센트 3 | `#E91E63` | `COLOR_BRAND_HIGHLIGHT` | `#E91E63` |
 
 ### 2.4 v1 "재무/회계" 톤 → 보수적 라이트 변형
 
-| 영역 | SoT 정본 토큰 |
-|---|---|
-| 액센트 | `--jc-primary` (Deep Navy `--jc-data-5`) |
-| 긍정 | `--jc-success-strong` (WCAG AA 본문 그린) |
+| 영역 | v1 hex | JC 시맨틱 토큰 | 유니버설 hex |
+|---|---|---|---|
+| 액센트 | `#1A3556` | `COLOR_BRAND_PRIMARY_FINANCE` | `#1A3556` |
+| 긍정 | `#00733B` | `COLOR_SEMANTIC_SUCCESS_SUBDUED` | `#00733B` |
 
 ---
 
 ## 3. 차트 컬러 시퀀스 (시리즈 색상)
 
-차트의 데이터 시리즈별 색상은 SoT 의 `--jc-data-1..6` 시퀀스에 1:1 대응한다. 값은 `signature-tokens.md` §1.4(라이트) / `mode-mapping.md` §3.2(다크) 정본:
+차트의 데이터 시리즈별 색상은 별도 시맨틱 토큰 시퀀스로 관리:
 
-| 슬롯 | SoT 토큰 | 라이트 hex (정본) | 다크 hex (정본) |
+| 슬롯 | JC 토큰 | 라이트 hex | 다크 hex |
 |---|---|---|---|
-| series-1 | `--jc-data-1` | `#2962FF` | `#5B8DEF` |
-| series-2 | `--jc-data-2` | `#E91E63` | `#F04D85` |
-| series-3 | `--jc-data-3` | `#FF5722` | `#FF7649` |
-| series-4 | `--jc-data-4` | `#00E676` | `#33EE92` |
-| series-5 | `--jc-data-5` | `#0A2540` | `#C9CFD8` |
-| series-6 | `--jc-data-6` | `#7C3AED` | `#A78BFA` |
+| series-1 | `COLOR_CHART_SERIES_1` | `#2962FF` | `#2962FF` |
+| series-2 | `COLOR_CHART_SERIES_2` | `#E91E63` | `#E91E63` |
+| series-3 | `COLOR_CHART_SERIES_3` | `#1E4DCC` | `#2962FF` |
+| series-4 | `COLOR_CHART_SERIES_4` | `#FF5722` | `#FFA000` |
+| series-5 | `COLOR_CHART_SERIES_5` | `#E91E63` | `#E91E63` |
+| series-6 | `COLOR_CHART_SERIES_6` | `#00C853` | `#00C853` |
 
-→ Chart.js 글로벌 설정에 위 SoT 정본 hex 주입. (값은 signature-tokens.md §1.4 / mode-mapping.md §3.2 정본)
+→ Chart.js 글로벌 설정에 토큰 매핑된 hex 주입.
 
 ---
 
@@ -78,14 +74,14 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(slate/blue 계열 등)를 직
 
 기획자님이 v1 의 4종 톤(기업/공식·성과/실적·마케팅·재무)을 그대로 사용하고 싶을 때:
 
-| v1 톤 | SoT 토큰 묶음 (모드) | 호출 |
+| v1 톤 | JC 시맨틱 묶음 | 호출 |
 |---|---|---|
-| 기업/공식 (다크) | `--jc-bg`+`--jc-accent` (다크 모드 변형) | `applyTone('corporate-dark')` |
-| 성과/실적 (라이트) | `--jc-bg`+`--jc-accent` (라이트) | `applyTone('business-light')` |
-| 마케팅/이벤트 | `--jc-bg`+`--jc-point-magenta`/`--jc-point-orange` (라이트) | `applyTone('event-light')` |
-| 재무/회계 | `--jc-bg`+`--jc-primary` (라이트) | `applyTone('finance-light')` |
+| 기업/공식 (다크) | `COLOR_BG_PAGE` (다크) + `COLOR_BRAND_PRIMARY` (mc) | `applyTone('corporate-dark')` |
+| 성과/실적 (라이트) | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY_BIZ` | `applyTone('business-light')` |
+| 마케팅/이벤트 | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY` (confex) | `applyTone('event-light')` |
+| 재무/회계 | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY_FINANCE` | `applyTone('finance-light')` |
 
-→ v1 의 4종 톤을 SoT 토큰 + 라이트/다크 모드 조합으로 재현 가능 (회귀 없음). 클라이언트별 hex 치환은 `client-overlays.md` 가 처리.
+→ v1 의 4종 톤을 JC 토큰 + 라이트/다크 모드 조합으로 재현 가능 (회귀 없음).
 
 ---
 
@@ -93,15 +89,13 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(slate/blue 계열 등)를 직
 
 상세는 [dark-mode-patterns.md](dark-mode-patterns.md) 참조.
 
-값은 `mode-mapping.md` §3·§3.2 정본을 따른다.
-
-| 컴포넌트 | 라이트 SoT 토큰 | 다크 SoT 매핑 (mode-mapping §3) |
+| 컴포넌트 | 라이트 토큰 | 다크 토큰 |
 |---|---|---|
-| KPI 카드 배경 | `--jc-surface` | 다크 카드 서피스 |
-| 차트 영역 배경 | `--jc-bg` | 다크 페이지 배경 |
-| 테이블 행 호버 | `--jc-surface-alt` | 다크 보조 서피스 |
-| 콜아웃/배너 | `--jc-accent-soft` | 다크 액센트 기반 틴트 |
-| 헤더 배경 | `--jc-surface`→`--jc-surface-alt` | 다크 bg→surface |
+| KPI 카드 배경 | `COLOR_BG_CARD` | `COLOR_BG_CARD_DARK` |
+| 차트 영역 배경 | `COLOR_BG_PAGE` | `COLOR_BG_PAGE_DARK` |
+| 테이블 행 호버 | `COLOR_NEUTRAL_HOVER_LIGHT` | `COLOR_NEUTRAL_HOVER_DARK` |
+| 콜아웃/배너 | `COLOR_ACCENT_SUBDUED_LIGHT` | `COLOR_ACCENT_SUBDUED_DARK` |
+| 헤더 배경 | `COLOR_BG_HEADER_LIGHT` | `COLOR_BG_HEADER_DARK` |
 
 ---
 
@@ -110,13 +104,14 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(slate/blue 계열 등)를 직
 ```javascript
 // 향후 구현 (Sprint 7)
 import { setOverlay, getToken } from 'jc-design-system';
-setOverlay('<client-id>');                  // 클라이언트 오버레이 선택 (client-overlays.md 정의)
-const primary = getToken('--jc-accent');    // 오버레이별 치환값 반환 (hex 는 client-overlays.md 단일 소유)
+setOverlay('mc');                                  // M&C 클라이언트 행사
+const primary = getToken('COLOR_BRAND_PRIMARY');   // → '#0A2540'
+
+setOverlay('remember');                            // 리멤버 클라이언트
+const primary = getToken('COLOR_BRAND_PRIMARY');   // → '#FF5722'
 ```
 
-> 기본(오버레이 미적용) `--jc-accent` 정본값은 `signature-tokens.md` §1.2(`#2962FF`). 클라이언트별 치환 hex 는 본 문서에 하드코딩하지 않는다 — `client-overlays.md` 가 단일 소유.
-
-현재: HTML 템플릿에 SoT 정본 hex 직접 명시 + `SoT 미러: <토큰명>` 주석. 본 문서의 SoT 토큰명과 1:1 매핑 보장.
+Sprint 2 현재: HTML 템플릿에 hex 직접 명시, 단 본 문서의 토큰명과 1:1 매핑 보장.
 
 ---
 

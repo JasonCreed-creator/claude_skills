@@ -19,6 +19,7 @@ if [ "$NODE_VERSION" -ge 20 ]; then
   VITE_VERSION="latest"
   echo "✅ Using Vite latest (Node 20+)"
 else
+  # 2026-07-03 검증 기준 — 핀 사유: 재현성 (RULE-VERSION-FACTS)
   VITE_VERSION="5.4.11"
   echo "✅ Using Vite $VITE_VERSION (Node 18 compatible)"
 fi
@@ -66,6 +67,7 @@ $SED_INPLACE '/<link rel="icon".*vite\.svg/d' index.html
 $SED_INPLACE 's/<title>.*<\/title>/<title>'"$PROJECT_NAME"'<\/title>/' index.html
 
 # jc: Pretendard 폰트(한국어 우선) CDN 주입 — 미로드 시 system 한글 폰트로 폴백
+# 2026-07-03 검증 기준 — 핀 사유: 재현성 (RULE-VERSION-FACTS)
 echo "🔤 Injecting Pretendard font (jc-design-system)..."
 $SED_INPLACE 's#</head>#  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />\n  </head>#' index.html
 
@@ -79,6 +81,7 @@ if [ "$NODE_VERSION" -lt 20 ]; then
 fi
 
 echo "📦 Installing Tailwind CSS and dependencies..."
+# 2026-07-03 검증 기준 — 핀 사유: 재현성 (RULE-VERSION-FACTS)
 pnpm install -D tailwindcss@3.4.1 postcss autoprefixer @types/node tailwindcss-animate
 pnpm install class-variance-authority clsx tailwind-merge lucide-react next-themes
 
