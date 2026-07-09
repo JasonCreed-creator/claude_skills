@@ -1,7 +1,7 @@
 # code-conductor 설치·검증 지시서
 
 > 실설치는 Code 세션(사용자 머신) 소관 — 챗 샌드박스 설치는 무효. **2머신 체제라면 머신별로 각각 설치**하고 PROGRESS.md에 설치 완료를 로그한다.
-> 전제: WSL(또는 Linux 셸) + python3 + `~/.local/bin`이 PATH에 포함 *(가정 — 머신 환경이 다르면 경로만 치환)*.
+> 전제: WSL(또는 Linux 셸) + python3 + `~/.local/bin`이 PATH에 포함 *(가정 — 머신 환경이 다르면 경로만 치환)*. **Windows 네이티브(Git Bash) 설치는 §6 적응 3건을 함께 적용한다.**
 
 ## 0. 사전 실측 (신뢰하기 전에 확인)
 
@@ -79,6 +79,20 @@ rm -f c*.ts d*.ts
 | `fable on` | 지침 로드 + 리매핑 + 게이트 활성(다음 세션부터) |
 | `fable off` | 전부 비활성 — 로딩 코드는 유지, 심링크·상태만 전환 |
 | `fable status` | 상태 + 로딩 코드 4종 설치 점검 |
+
+## 6. Windows 네이티브 환경 적응 (실측 2026-07-10, Windows 11 + Git Bash)
+
+WSL 없이 Windows 네이티브로 설치할 때 아래 3건을 적용한다. 미적용 시 게이트는 동작하나 안내·상태 표시가 어긋난다.
+
+1. **훅 커맨드는 `python -X utf8` 형태로 명시** — §2-④의 command를 다음처럼 기재한다:
+
+   ```json
+   { "type": "command", "command": "python -X utf8 \"C:/Users/<사용자명>/.claude/fable/hooks/orchestration-gate.py\"" }
+   ```
+
+   `-X utf8`이 없으면 한국어 차단 메시지가 cp949로 인코딩돼 모델에게 깨져 보인다 — 차단 자체는 되지만 위임 안내가 실효를 잃는다.
+2. **심링크(`ln -sfn`)는 Git Bash에서 파일 복사로 동작** — 기능은 동일하나 `fable status`의 agents 심링크 체크가 `[--]`로 나오는 것은 **정상**이다(실패로 오독하지 말 것). 대신 에이전트 원본(`~/.claude/fable/agents/`)을 갱신하면 `~/.claude/agents/`에 **재복사가 필요**하다(자동 반영 안 됨).
+3. **claude CLI 버전이 데스크톱 앱 번들과 다를 수 있음** — §0의 `claude --version`이 요구 버전(2.1.196+) 미만이면 `claude update`로 해결 가능하다(실측: 2.1.123 → 2.1.206).
 
 ## 알려진 한계
 

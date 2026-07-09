@@ -95,3 +95,4 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
   - Windows 적응 3건: ① 훅 커맨드 `python -X utf8 "<경로>"` 명시 — **utf8 플래그 없으면 한국어 차단 메시지 cp949 깨짐**(단위 실측으로 발견·교정) ② 심링크(ln -sfn) → 파일 복사로 대체(agents·active.md — `fable status`의 agents [--]는 정상) ③ 리매핑(env.sh) 생략 — 비용 우선(지시서 §2 선택 조항).
   - §4 실측: (a) 중첩 세션에서 c1·c2 생성 후 c3 차단 + BLOCKED 보고 / (b) 서브에이전트 d1~d3 전부 생성. 훅 단위 실측 7케이스(허용 2→차단·서브 통과·턴 리셋·Bash 리다이렉트 차단·비코드 통과) 전부 정상. 부수 증거: 설치 세션 자체의 Bash 호출이 게이트에 실차단됨(훅 즉시 적용 확인).
   - 잔여: icejc 머신 설치 미수행. INSTALL.md에 Windows 적응 절 추가 권고(→ patch 범프 후보).
+- 후속(2026-07-10): INSTALL.md에 Windows 네이티브 환경 적응 절(§6) 추가 — 위 적응 3건 중 문서화 대상 3건(utf8 훅 커맨드·심링크=복사·`claude update`) 반영, env.sh 생략은 머신별 선택이라 제외. jc-orchestrator **v1.1.0→v1.1.1** patch 범프(Drive 정본 편집 → git·전역 승격, `feat/jc-orchestrator-v1.1.0` 브랜치 추가 커밋). 잔여는 icejc 머신 설치만.
