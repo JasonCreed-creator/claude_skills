@@ -77,3 +77,13 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **보존**: `mice-run-of-show`·`mice-aftermath`(6월 forge 신규, Drive 미포함) — 삭제 없이 유지. 카탈로그 24→25종.
 - **역참조 레이어**: 22종 중 19종 description에 브리프 게이트 역참조 삽입(예외 3종: jc-strategy-canvas 한도초과·jc-design-system reference 자산·jc-redteam 게이트 직행). 정본 맵: `.claude/skills/jc-prompt-builder/references/routing-map.md`.
 - **주의(후속)**: Drive `library/`와 이 레포 `.claude/skills/`가 이제 두 미러 — 향후 편집 지점 일원화 필요. run-of-show/aftermath는 역으로 Drive에 미반영(백로그).
+
+---
+
+## 2026-07-10 — jc-orchestrator v1.1.0 신규 (에이전트 팩토리 실행체)
+
+- **소스**: 챗 빌드(2026-07-10) → claude.ai 업로드본 캐시에서 26파일 회수(챗 ZIP 미다운로드 — 업로드 선행으로 회수 경로 대체). 배포 지시서: `docs/DEPLOY-jc-orchestrator-v1.1.0.md`. 브랜치 `feat/jc-orchestrator-v1.1.0`(베이스: `claude/drive-sync-20260704`).
+- **결정**: 신규 스킬 — 운영지침 §8 에이전트 팩토리의 실행체(카탈로그 8아키타입·킥오프 3종·핸드오프 규약·구성안/PI 형식 SoT). 프리셋 2종: html-pt(8에이전트, 2026-05-07 스펙 재생성 v2) + code-conductor(비용 라우팅+강제 게이트+fable 스위치). 카탈로그 25→**26종**.
+- **정합**: `jc-prompt-builder` v1.0.0→**v1.0.1** — routing-map §2 '멀티 에이전트 팀 구성' 행 '없음(직접 수행)'→매핑=jc-orchestrator + SKILL.md §6 동일 갱신. 계류 v1.1.0 개정 부재로 흡수 불가 → 직접 최소 갱신 판정(지시서 §1-4). description·registry 무변경(CP-N5 게이트 비발동, registry 22종 스냅숏 유지 — 차기 재생성 시 포함 확인).
+- **배포 채널**: claude.ai 업로드 v1.1.0 ✅(2026-07-10, 사용자 수행) / Drive `Skills/library/` ✅ / git 본 브랜치 ✅ / 전역 `~/.claude/skills` — 본 배포에서 설치.
+- **후속**: html-pt 원본(v1) zip 발견 시 재생성본(v2)과 diff 대조 병합 후 patch 범프 / 지침 §8 개정의 사용자 설정 UI 반영 확인(미반영 시 이중 SoT 드리프트) / code-conductor 환경 설치는 머신별 실측 로그 별도 기재.

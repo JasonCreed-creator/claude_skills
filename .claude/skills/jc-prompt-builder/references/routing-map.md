@@ -4,6 +4,7 @@
 > 근거: [`description-registry.md`](description-registry.md) — 정본 소스 `Skills/library/`(22종) 실측 재생성(확정본, 2026-07-04, "Phase 4 확정본 + CP-N5 역참조 + CP2 Major 수정"). 누적 registry 변경: 버전 범프(jc-redteam v1.2.1·jc-strategy-canvas **v1.0.2**·mice-market-intel **v1.0.3**·mice-meeting-minutes **v2.1.2**) + 브리프 게이트 역참조 19종 삽입. §2·§3 매핑 트리거/경계는 변동 없음(역참조·버전범프·CP2 수정 모두 산출물→스킬 매핑 불변; CP2 수정은 references/specs/scripts 대상, description 무변경).
 > **역참조 레이어**: 22종 중 19종 description 말미에 "실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다." 삽입. 3종 예외는 §6 참조.
 > **재해제 조건(챗 CP-N5 게이트)**: Phase 5(CP2) Deep Audit에서 description이 변경되면 재실행. CP2 Major 수정은 description을 건드리지 않았으나(references/specs/scripts만) 버전 범프 3건 반영 위해 재생성·재해제 완료(2026-07-04).
+> **2026-07-10 증분**: 신규 스킬 `jc-orchestrator` v1.1.0 편입 — §2 '멀티 에이전트 팀 구성' 행을 '없음(직접 수행)' → 매핑=jc-orchestrator로 갱신(배포 지시서 §1-4, 계류 v1.1.0 개정 부재로 직접 최소 갱신). registry는 22종 스냅숏 유지 — 차기 재생성 시 본 스킬 포함 확인.
 
 브리프 6필드 중 **'산출물' 필드의 매핑 스킬**을 결정하는 참조표. 지시의 의도·산출물 형태에서 스킬을 찾고, 겹침 구간(§3)은 판별 규칙 또는 승인 카드 내 가정으로 처리한다.
 
@@ -35,7 +36,7 @@
 | p5.js 제너러티브 아트 | jc-generative-art | 'generative art'·'p5.js'·'플로우 필드'·'모션 배경' — 코드 아트 | 단일 HTML |
 | 테마 선택·신규 오버레이 발행 | jc-theme-factory | '테마'·'팔레트'·'쇼케이스'·'어떤 테마 있어'·'신규 클라이언트 컬러' — *무엇을 입힐지 결정·발행·적용* | 오버레이 등록 + 산출물 적용 (PPTX 후처리 엔진은 styling 위임) |
 | 기존 파일 리테마(후처리 실행) | jc-brand-styling | 완성 .pptx/HTML 제공 + 확정된 시그니처/기존 오버레이 '입혀줘'·'리테마' — *적용 엔진, 신규 팔레트 발행 불가* | 수정된 원본 형식 |
-| 멀티 에이전트 팀 구성·오케스트레이션 | 없음(직접 수행) | '팀 짜줘'·'에이전트 여러 개로' — Code/Cowork에 전용 스킬 없음('에이전트 팩토리'는 챗 운영지침 소관 개념). 실행 방식은 브리프 가정 필드로 승인 | 세션 내 직접 수행 |
+| 멀티 에이전트 팀 구성·오케스트레이션 | jc-orchestrator | '팀 짜줘'·'에이전트 팩토리'·'멀티 에이전트'·'Project Instructions'·복합 작업(이질 역량 3+) 실행 체계 요청 — 지침 §8 팩토리의 실행체. 승인된 브리프 필드는 팩토리 프로토콜 1단계 기입력으로 승계 | 구성안 + Project Instructions |
 | 디자인 토큰 정의·수정 | jc-design-system | '디자인 토큰'·'스타일 가이드' — 값의 SoT 직접 작업 | reference 갱신 |
 | MCP 서버 설계·구현 | jc-mcp-builder | 'MCP'·'커넥터'·'외부 API 연동 서버' — 재사용 도구 서버 | 서버 코드 |
 | 스킬 신규 제작·개조·개선 | jc-skill-creator | '스킬 만들어줘'·'프리셋 개조' — 메타 작업 | 스킬 폴더 |
