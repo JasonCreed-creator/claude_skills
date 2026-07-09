@@ -87,3 +87,11 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **정합**: `jc-prompt-builder` v1.0.0→**v1.0.1** — routing-map §2 '멀티 에이전트 팀 구성' 행 '없음(직접 수행)'→매핑=jc-orchestrator + SKILL.md §6 동일 갱신. 계류 v1.1.0 개정 부재로 흡수 불가 → 직접 최소 갱신 판정(지시서 §1-4). description·registry 무변경(CP-N5 게이트 비발동, registry 22종 스냅숏 유지 — 차기 재생성 시 포함 확인).
 - **배포 채널**: claude.ai 업로드 v1.1.0 ✅(2026-07-10, 사용자 수행) / Drive `Skills/library/` ✅ / git 본 브랜치 ✅ / 전역 `~/.claude/skills` — 본 배포에서 설치.
 - **후속**: html-pt 원본(v1) zip 발견 시 재생성본(v2)과 diff 대조 병합 후 patch 범프 / 지침 §8 개정의 사용자 설정 UI 반영 확인(미반영 시 이중 SoT 드리프트) / code-conductor 환경 설치는 머신별 실측 로그 별도 기재.
+
+### code-conductor 설치 로그 (머신별)
+
+- `2026-07-10 | code-conductor 설치 | Jason(DESKTOP-26ACTQL, Windows 네이티브) | (a)차단OK/(b)통과OK`
+  - §0: claude CLI 2.1.123 → **2.1.206 업데이트 후 통과**(요구 2.1.196+). 모델 문자열 2종 유효(2026-07-10).
+  - Windows 적응 3건: ① 훅 커맨드 `python -X utf8 "<경로>"` 명시 — **utf8 플래그 없으면 한국어 차단 메시지 cp949 깨짐**(단위 실측으로 발견·교정) ② 심링크(ln -sfn) → 파일 복사로 대체(agents·active.md — `fable status`의 agents [--]는 정상) ③ 리매핑(env.sh) 생략 — 비용 우선(지시서 §2 선택 조항).
+  - §4 실측: (a) 중첩 세션에서 c1·c2 생성 후 c3 차단 + BLOCKED 보고 / (b) 서브에이전트 d1~d3 전부 생성. 훅 단위 실측 7케이스(허용 2→차단·서브 통과·턴 리셋·Bash 리다이렉트 차단·비코드 통과) 전부 정상. 부수 증거: 설치 세션 자체의 Bash 호출이 게이트에 실차단됨(훅 즉시 적용 확인).
+  - 잔여: icejc 머신 설치 미수행. INSTALL.md에 Windows 적응 절 추가 권고(→ patch 범프 후보).
