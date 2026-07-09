@@ -1,7 +1,7 @@
 ---
 name: mice-dashboard
-version: "v2.0.0"
-description: "분석 보고서용 인터랙티브 대시보드를 생성하는 스킬. Excel/CSV 파일, 대화 입력, 또는 다른 MICE 스킬(mice-meeting-minutes 시리즈·mice-estimate 예산실적)의 체이닝 JSON 입력을 받아 KPI 카드·차트·인포그래픽이 포함된 단일 HTML 대시보드 + PDF 보고서를 자동 생성한다. v2부터 jc-design-system 시맨틱 토큰 매핑, 라이트/다크 모드 5종 변형, 인포그래픽 3종(퍼널·매트릭스·레이더)을 지원한다. 반드시 이 스킬을 사용해야 하는 상황: '대시보드', 'dashboard', 'KPI 대시보드', '분석 대시보드', '실적 대시보드', '데이터 시각화 보고서', '인터랙티브 보고서', '성과 분석 리포트'를 언급할 때. 데이터를 업로드하며 '시각화해줘', '차트로 만들어줘', '대시보드로 보여줘'라고 요청할 때. 행사 실적·매출·KPI·참가자 통계를 대시보드로 정리해달라는 요청. MICE 행사 결과보고서를 대시보드로 만들어달라는 요청. 다크 모드 토글·클라이언트 오버레이는 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다."
+version: v2.0.2
+description: "분석 보고서용 인터랙티브 대시보드를 생성하는 스킬. Excel/CSV 파일, 대화 입력, 또는 다른 MICE 스킬(mice-meeting-minutes 시리즈·mice-estimate 예산실적)의 체이닝 JSON 입력을 받아 KPI 카드·차트·인포그래픽이 포함된 단일 HTML 대시보드 + PDF 보고서를 자동 생성한다. v2부터 jc-design-system 시맨틱 토큰 매핑, 라이트/다크 모드 5종 변형, 인포그래픽 3종(퍼널·매트릭스·레이더)을 지원한다. 반드시 이 스킬을 사용해야 하는 상황: '대시보드', 'dashboard', 'KPI 대시보드', '분석 대시보드', '실적 대시보드', '데이터 시각화 보고서', '인터랙티브 보고서', '성과 분석 리포트'를 언급할 때. 데이터를 업로드하며 '시각화해줘', '차트로 만들어줘', '대시보드로 보여줘'라고 요청할 때. 행사 실적·매출·KPI·참가자 통계를 대시보드로 정리해달라는 요청. MICE 행사 결과보고서를 대시보드로 만들어달라는 요청. 다크 모드 토글·클라이언트 오버레이는 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 단, MICE 맥락 없는 범용 데이터 대시보드·차트 생성은 data:build-dashboard·data:create-viz 영역이므로 사용하지 말 것. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다."
 dependencies:
   - pandas
   - openpyxl
@@ -11,6 +11,34 @@ dependencies:
 # 분석 대시보드 생성 스킬
 
 ## 버전 히스토리
+
+### v2.0.2 — 2026-07-03 (Fable-정합 감사 후속조치)
+
+**핵심 변화**: description 끝에 범용 대시보드/시각화 스킬(data:build-dashboard·data:create-viz)과의 라우팅 경계 문구 추가 — 범용 트리거 어휘로 인한 라우팅 충돌 위험 해소 (Major 결함, CP1 GO-1 승인분).
+
+### v2.0.1 — 2026-05-28 (BL-Phase4-03 패치)
+
+**핵심 변화**: HEX 색상 토큰 jc-design-system 시그니처 정합화 (Phase 4 통합 검증 갭 해소).
+
+#### 변경
+- **HEX 정합화**: Tailwind 계열 HEX 58종 → JC 시그니처 토큰 1:1 매핑 (assets 2종 + references 4종 일괄)
+  - Deep Navy (0F172A·1A1A2E·1A2332·16213E·1E3A5F·0F3460·111827·003366) → `--jc-primary` (0A2540) / `--jc-primary-soft` (1A3556)
+  - Slate Gray (1E293B·334155·475569·64748B·94A3B8·CBD5E1·E2E8F0·F1F5F9·F8FAFC·E5E7EB·6B7280·F8F9FA·FAFAFA) → `--jc-text` / `--jc-text-muted` / `--jc-text-disabled` / `--jc-border` / `--jc-surface-alt` / `--jc-bg`
+  - Tailwind Blue (2563EB·3B82F6·1E40AF·93C5FD·EFF6FF) → `--jc-accent` (2962FF) / `--jc-accent-strong` (1E4DCC) / `--jc-accent-light` (5B9BD5) / `--jc-accent-soft` (E8EFFF)
+  - Tailwind Cyan (06B6D4·0891B2·14B8A6) → `--jc-accent` / `--jc-accent-strong` / `--jc-point-neon` (00E676)
+  - Tailwind Indigo/Purple (6366F1·7C3AED·8B5CF6) → `--jc-point-magenta` (E91E63)
+  - Tailwind Green (10B981·16A34A·22C55E·86EFAC·F0FDF4·166534·059669·2D7D46) → `--jc-success` (00C853) / `--jc-point-neon` (00E676) / `--jc-success-strong` (00733B, v1.1.0)
+  - Tailwind Red (DC2626·EF4444·FCA5A5·FEF2F2·991B1B·F87171·F43F5E) → `--jc-danger` (D32F2F)
+  - Tailwind Pink (EC4899·DB2777) → `--jc-point-magenta` (E91E63)
+  - Tailwind Orange/Yellow (F59E0B·D97706·FFFBEB·FCD34D·92400E·FF6D01·F97316) → `--jc-warning` (FFA000) / `--jc-point-orange` (FF5722) / `--jc-point-orange-softest` (FFF3E0, v1.1.0)
+- **결과**: 잔존 미매핑 HEX **0건** (모든 색상이 JC 토큰)
+- Phase 4 jc-design 일관성: **5/7 → 7/7 달성** (mice-estimate는 의도된 양식 호환)
+
+#### 영향 받지 않은 영역
+- 다크 모드 토글 + localStorage + prefers-color-scheme + 인쇄 라이트 강제 — 모두 유지
+- 4종 시맨틱 모드 (executive·b2b·growth·finance) 구조 — 유지
+- 인포그래픽 3종 (퍼널·매트릭스·레이더) 로직 — 유지
+- 체이닝 JSON 스키마 — 유지
 
 ### v2.0 — 2026-05-25
 
@@ -64,7 +92,7 @@ dependencies:
 
 데이터를 분석하여 한국어 인터랙티브 HTML 대시보드 + PDF 보고서를 자동 생성하는 스킬. MICE 행사 실적/KPI 분석에 최적화되어 있으나 범용 데이터 분석에도 사용. v2부터 다른 MICE 스킬과의 체이닝 입력 + 다크 모드 + 인포그래픽 3종 지원.
 
-**자산 정의 원칙**: 본 스킬은 어떤 회사·개인의 식별 정보도 하드코딩하지 않는다. 프로젝트명·고객사·발행자 등은 모두 **외부 주입 변수**로 처리. (정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`)
+**자산 정의 원칙**: 본 스킬은 어떤 회사·개인의 식별 정보도 하드코딩하지 않는다. 프로젝트명·고객사·발행자 등은 모두 **외부 주입 변수**로 처리.
 
 ## 워크플로우
 

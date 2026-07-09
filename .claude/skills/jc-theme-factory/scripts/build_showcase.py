@@ -60,8 +60,8 @@ def load_signature() -> dict:
                 "border": c.get("border", LIGHT_FALLBACK["border"]),
                 "data": c.get("data", LIGHT_FALLBACK["data"]),
             }
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"경고: SoT({_SOT}) 토큰 로드 실패, 폴백 값 사용 — {e}", file=sys.stderr)
     return dict(LIGHT_FALLBACK)
 
 

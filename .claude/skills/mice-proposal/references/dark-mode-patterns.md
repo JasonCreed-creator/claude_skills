@@ -243,7 +243,7 @@ const d4Cards = [
   { title: "기획력", desc: "18년 MICE 경력 기반\n핵심 컨셉 설계" },
   { title: "운영력", desc: "연간 25건+ 행사\n위기 대응 매뉴얼" },
   { title: "네트워크", desc: "베뉴·연사·F&B\n협력사 200+" },
-  { title: "기술력", desc: "리멤버 DB 활용\n타겟 모객 시스템" }
+  { title: "기술력", desc: "명함 DB 활용\n타겟 모객 시스템" }
 ];
 
 const cardW = 5.5, cardH = 2.5;

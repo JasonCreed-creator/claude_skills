@@ -5,9 +5,6 @@
 
 mice-dashboard 가 다른 MICE 스킬과 데이터를 주고받기 위한 JSON 스키마. 풀 워크플로우상 **마지막 단계** (행사 종료 후 결과 분석).
 
-> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`$schema`·`source`·`version`·`generatedAt` 등 공통 메타)·전체 워크플로우·표준 규약·자동 라우팅(`detect_input_source`)은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
-> 요약: 입력 봉투의 `"$schema": "ChainPayload/v1"` 와 `source` 로 처리 분기한다. 본 문서는 mice-dashboard 가 받고/내보내는 **고유 페이로드 매핑**(시리즈 rounds·예산 vs 실적·KPI 출력 등)만 정의한다.
-
 ---
 
 ## 1. 풀 워크플로우상의 위치
@@ -206,6 +203,17 @@ def to_chain_payload(dashboard_meta: dict) -> dict:
 
 ## 6. 트리거 동작 분기 (자동 라우팅)
 
-봉투 판별 함수 `detect_input_source()` 는 **봉투 정본**([chaining-protocol.md §7](../../jc-design-system/references/chaining-protocol.md))에 정의되어 있다. 입력의 `$schema == "ChainPayload/v1"` 이면 `source`(`mice-meeting-minutes` / `mice-estimate`)를, 파일 객체면 `file_upload`, 인라인이면 `inline_data` 를 반환한다.
+```python
+def detect_input_source(input_payload) -> str:
+    """입력 형식으로 처리 분기 결정."""
+    if isinstance(input_payload, dict) and '$schema' in input_payload:
+        return input_payload.get('source')   # mice-meeting-minutes, mice-estimate
+    if hasattr(input_payload, 'read'):
+        # 파일 객체 (Excel/CSV)
+        return 'file_upload'
+    if isinstance(input_payload, (list, dict)):
+        return 'inline_data'
+    return 'unknown'
+```
 
-mice-dashboard 고유 동작: 판별된 source 에 맞춰 본 문서 §2 의 입력 스키마로 데이터를 파싱하고, 차트·인포그래픽을 자동 선택 분기한다 (`kpi-patterns.md` 참조).
+각 source 에 맞춰 데이터 파싱 + 차트·인포그래픽 자동 선택 분기.

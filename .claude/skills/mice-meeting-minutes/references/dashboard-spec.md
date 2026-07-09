@@ -145,7 +145,7 @@ mice-mtg:settings:[user]                # (옵션) 사용자 설정
 ### 저장 데이터 스키마
 ```json
 {
-  "series_id": "darktrace-discovery",
+  "series_id": "clientA-discovery",
   "sessions": [
     {
       "session_no": 1,
@@ -323,7 +323,7 @@ mice-mtg_[프로젝트]_[YYYY-MM-DD].json
 | 플레이스홀더 치환 | `{{TITLE}}`·`{{INITIAL_DATA}}` 잔존 없음 |
 | 라이브러리 연결 | React + Recharts 확인 |
 | 시그니처 토큰 | 5색 (#0A2540·#2962FF·#FF5722·#E91E63·#00E676) 모두 적용 |
-| 파일 크기 | 100KB 이상 (정상 빌드 시 50~80KB 템플릿 + JSON 데이터) |
+| 파일 크기 | 50KB 이상 (정상 빌드 시 50~80KB 템플릿 + JSON 데이터) |
 
 ---
 

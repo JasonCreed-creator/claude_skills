@@ -1,7 +1,14 @@
 # JC MICE 스킬 라이브러리
 
+> **⚡ 2026-07-04 — Drive 정본 풀 업그레이드 동기화 (확정판)**
+> 이 브랜치는 Google Drive `Skills/library/`(정본)를 반영한다. 3라운드 누적: **Phase 4(CP1 GO-1~4)** + **CP-N5(브리프 게이트 역참조)** + **CP2(Deep Audit Major 수정, Critical 0)**.
+> - **22종 업그레이드** — 최신 버전·범프 사유는 [`docs/CHANGELOG-2026-07-04.md`](docs/CHANGELOG-2026-07-04.md). 각 `SKILL.md` frontmatter의 `version`이 버전 정본.
+> - **신규 +1: `jc-prompt-builder` v1.0.0** — 실행 직전 러프 지시를 '업그레이드 브리프'로 증강하는 default-on 선행 게이트(라우팅 대상 아님; 22종 중 19종 description 말미에 역참조 삽입, 예외 3종).
+> - **보존: `mice-run-of-show`·`mice-aftermath`** — 6월 forge 신규, Drive 미포함이나 삭제 없이 유지.
+> - 카탈로그 **24 → 25종**. 아래 표의 버전 셀은 6월 스냅숏 — 현행 최신은 본 배너·CHANGELOG·각 `SKILL.md`가 정본이다.
+
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath), 총 24종을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath) + **선행 게이트 1종(jc-prompt-builder)**, 총 **25종**을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
 ## 스킬 카탈로그 (24종)

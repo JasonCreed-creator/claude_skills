@@ -227,7 +227,11 @@ def calc_estimate(c: dict) -> dict:
         sysBreakdown, desBreakdown, opsBreakdown, otBreakdown,
         optionsApplied.
     """
-    target = int(c.get('target', 0))
+    if c.get('target') is None:
+        raise ValueError("견적 계산 실패: 'target'(목표 인원) 값이 없습니다. target을 지정해주세요.")
+
+    target = int(c['target'])
+    c = {**c, 'target': target}
 
     if target > TARGET_MAX:
         return {

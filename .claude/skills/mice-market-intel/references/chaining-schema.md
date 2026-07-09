@@ -15,7 +15,7 @@
 {
   "$schema": "ChainPayload/v1",
   "source": "mice-market-intel",
-  "version": "v1.0.0",
+  "version": "v1.0.2",
   "generatedAt": "2026-06-04T10:00:00+09:00",
   "target": "jc-strategy-canvas",
   "clientId": null,

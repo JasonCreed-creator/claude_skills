@@ -1,7 +1,6 @@
 ---
 name: jc-landing-page
-version: "v1.1.0"
-description: jc-design-system 테마 기반 B2B 모바일 최적화 랜딩페이지(ABM/리드젠/웨비나)를 단일 HTML 파일로 생성. 사용자가 "랜딩페이지", "랜딩", "LP", "리드 페이지", "신청 페이지", "웨비나 페이지", "ABM 페이지", "리포트 신청", "백서 다운로드", "세미나 모집" 등을 언급하거나, 특정 캠페인/리포트/웨비나/제품의 모바일 단일 페이지를 만들어달라고 요청할 때 트리거. 고정비율 스케일링(375px·rem)·Pretendard·Google Apps Script 폼 백엔드가 표준 산출물. 색·타이포는 jc-design-system 정본 + 캠페인별 client-overlays로 주입. **1차 산출물 직후 jc-redteam의 'LP 마케팅 패널' 모드(5인 마케터 + 3인 고객)로 검증해 최종본을 도출 — 검증 생략 불가.**
+description: jc-design-system 테마 기반 B2B 모바일 최적화 랜딩페이지(ABM/리드젠/웨비나)를 단일 HTML 파일로 생성. 사용자가 "랜딩페이지", "랜딩", "LP", "리드 페이지", "신청 페이지", "웨비나 페이지", "ABM 페이지", "리포트 신청", "백서 다운로드", "세미나 모집", "사전등록 페이지", "이벤트 신청서", "뉴스레터 구독 페이지" 등을 언급하거나, 특정 캠페인/리포트/웨비나/제품의 모바일 단일 페이지를 만들어달라고 요청할 때 트리거. 고정비율 스케일링(375px·rem)·Pretendard·Google Apps Script 폼 백엔드가 표준 산출물. 색·타이포는 jc-design-system 정본 + 캠페인별 client-overlays로 주입. **1차 산출물 직후 jc-redteam의 'LP 마케팅 패널' 모드(5인 마케터 + 3인 고객)로 검증해 최종본을 도출 — 검증 생략 불가.** 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
 ---
 
 # JC B2B 모바일 랜딩페이지 표준
@@ -167,6 +166,7 @@ skill이 발동되면 클로드는 다음 형식으로 응답한다:
 - **폰트**: Pretendard CDN (jc-design-system 표준 폰트)
   ```html
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <!-- 2026-07-03 검증 기준 — 최신 안정판 여부 미재검증, 핀 유지 (RULE-VERSION-FACTS) -->
   ```
   → `font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;`
 - **폼 백엔드**: Google Apps Script (POST endpoint, JSON body)
@@ -337,6 +337,7 @@ GAS 코드 자리에 플레이스홀더(`GOOGLE_APPS_SCRIPT_WEB_APP_URL`)를 명
 /* 3. body는 1rem(=16px @375)을 기본 폰트로 */
 body {
   font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  /* Pretendard @v1.3.9 CDN — 2026-07-03 검증 기준, 최신 안정판 여부 미재검증, 핀 유지 (RULE-VERSION-FACTS) */
   font-size: 1rem;              /* @375 = 16px */
   line-height: 1.5;
   color: #1A1D24;

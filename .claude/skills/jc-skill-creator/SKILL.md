@@ -1,7 +1,7 @@
 ---
 name: jc-skill-creator
-description: jc 스킬 라이브러리에서 스킬을 신규 제작·프리셋 개조·기존 개선할 때 따르는 하우스 표준. 일반 스킬 제작 기계(테스트 평가·벤치마크·eval-viewer·description 최적화)는 상위 skill-creator에 위임하고, 그 위에 jc 하우스 규칙(jc-* 명명·한국어 푸시형 description·jc-design-system SoT 앵커·shared-rules·RULE-NO-COMPANY·버전/커밋/드래프트 PR/로드맵 갱신·생태계 연결)을 얹어 생성물이 처음부터 jc 네이티브가 되게 한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '스킬 만들어줘', '새 스킬', '스킬 제작', '스킬 개조', '프리셋 최적화', '기본 스킬 업그레이드', '스킬 개선', 'skill 만들기', '이 스킬 나에 맞게'를 언급할 때. 기본 제공(프리셋) 스킬을 jc 생태계로 바꿔달라고 할 때. 단, 디자인 토큰 자체의 정의·수정은 jc-design-system, 완성 산출물의 적대적 검증은 jc-redteam 영역이다. 이 스킬은 '스킬을 만드는 메타 작업' 전용.
-version: "v1.0.0"
+description: jc 스킬 라이브러리에서 스킬을 신규 제작·프리셋 개조·기존 개선할 때 따르는 하우스 표준. 일반 스킬 제작 기계(테스트 평가·벤치마크·eval-viewer·description 최적화)는 상위 skill-creator에 위임하고, 그 위에 jc 하우스 규칙(jc-* 명명·한국어 푸시형 description·jc-design-system SoT 앵커·shared-rules·RULE-NO-COMPANY·버전/커밋/드래프트 PR/로드맵 갱신·생태계 연결)을 얹어 생성물이 처음부터 jc 네이티브가 되게 한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '스킬 만들어줘', '새 스킬', '스킬 제작', '스킬 개조', '프리셋 최적화', '기본 스킬 업그레이드', '스킬 개선', 'skill 만들기', '이 스킬 나에 맞게'를 언급할 때. 기본 제공(프리셋) 스킬을 jc 생태계로 바꿔달라고 할 때. 단, 디자인 토큰 자체의 정의·수정은 jc-design-system, 완성 산출물의 적대적 검증은 jc-redteam 영역이다. 이 스킬은 '스킬을 만드는 메타 작업' 전용. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v1.0.1"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -45,9 +45,19 @@ license: Complete terms in LICENSE.txt
 - **description 트리거 최적화**: 상위 `scripts/improve_description.py`(claude CLI 필요). 한국어·푸시형 + 형제 경계 eval로.
 - **패키징**: 상위 `scripts/package_skill.py`로 `.skill` 산출.
 
+## 저작 검증 루프 (RED → GREEN → REFACTOR)
+
+세 모드 공통. 자가점검 전에 스킬 본문을 이 루프로 한 번 검증한다.
+
+1. **RED** — 새 스킬이 방지해야 할 구체적 실패 시나리오를 먼저 식별하고, 스킬 없이 같은 요청을 던지면 실제로 그 실패가 재현됨을 확인한다. 재현되지 않으면 그 규칙은 불필요.
+2. **GREEN** — 그 실패 하나를 해결하는 최소 분량의 SKILL.md 내용만 작성한다. 무관한 규칙을 미리 얹지 않는다.
+3. **REFACTOR** — 압박·모호한 요청에서 나올 법한 변명·우회 패턴("이번만 예외" 류)을 찾아 반례 표(패턴→올바른 대응)로 명시해 재발을 막는다.
+
+통과 후 [`references/house-conventions.md`](references/house-conventions.md)의 자가점검 체크리스트로 넘어간다.
+
 ## 마감 절차 (jc 하우스 워크플로우)
 
-1. 플레이북 §8 체크리스트 자가점검 + (디자인/소비 스킬이면) `python3 scripts/check_drift.py` 정합.
+1. **저작 검증 루프**(위) 1회 통과 → 플레이북 §8 체크리스트 자가점검 + (디자인/소비 스킬이면) `python3 scripts/check_drift.py` 정합.
 2. `version` 설정/범프(SemVer).
 3. 커밋 `<스킬명>: <요약>`, 작업 브랜치 → **드래프트 PR**.
 4. 프리셋 개조면 `docs/preset-optimization-roadmap.md` 상태 갱신, 신규/주요 변경이면 `README.md` 카탈로그 갱신.

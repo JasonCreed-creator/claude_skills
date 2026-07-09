@@ -208,6 +208,8 @@ total_fill = PatternFill("solid", fgColor=tokens["color"]["accent"].lstrip("#"))
 
 ## 4. 자동 호출 트리거 (다른 스킬 SKILL.md 작성 시 권장)
 
+> ※ 이하는 스킬 저작자를 위한 메타 안내이며 실행 시 참조 불필요.
+
 다른 스킬 작성 시 SKILL.md 본문에 다음 문장 포함을 권장:
 
 ```markdown

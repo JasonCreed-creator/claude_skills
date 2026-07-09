@@ -1,7 +1,7 @@
 ---
 name: jc-theme-factory
-description: jc-design-system 정본을 사람이 쓰는 인터페이스로 감싼 테마 프론트엔드. 시그니처+등록된 클라이언트 오버레이를 시각 쇼케이스로 보여주고, 적용할 오버레이를 고르거나(미지정=개인 시그니처), 맞는 게 없으면 신규 오버레이를 발행(primary/accent/logo 3토큰 한정·색충돌·WCAG 자동 검증)해 client-overlays.md에 등록한 뒤, 산출물(HTML/PPTX/DOCX)에 적용한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '테마', 'theme', '테마 적용', '테마 입혀줘', '팔레트', '컬러 입혀줘', '스타일 입히기', '오버레이', '클라이언트 컬러', '브랜드 컬러 적용', '쇼케이스', '시그니처 보여줘', '어떤 테마 있어', '이 산출물에 우리 톤 적용', '신규 클라이언트 컬러 만들어줘'를 언급할 때. 특정 산출물을 가리키며 '여기에 OO 테마/컬러로 입혀줘'라고 할 때. 단, 토큰 값 자체의 정의·수정·확장(시그니처 변경)은 jc-design-system 직접 영역이고, 임의 팔레트·임의 폰트쌍 생성은 하지 않는다(시그니처 고정). 미학 무드의 캔버스 아트는 jc-visual-philosophy, 제너러티브 아트는 jc-generative-art, 실제 PPTX 후처리 적용 엔진은 jc-brand-styling 영역.
-version: "v1.0.0"
+description: jc-design-system 정본을 사람이 쓰는 인터페이스로 감싼 테마 프론트엔드. 시그니처+등록된 클라이언트 오버레이를 시각 쇼케이스로 보여주고, 적용할 오버레이를 고르거나(미지정=개인 시그니처), 맞는 게 없으면 신규 오버레이를 발행(primary/accent/logo 3토큰 한정·색충돌·WCAG 자동 검증)해 client-overlays.md에 등록한 뒤, 산출물(HTML/PPTX/DOCX)에 적용한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '테마', 'theme', '테마 적용', '테마 입혀줘', '팔레트', '컬러 입혀줘', '스타일 입히기', '오버레이', '클라이언트 컬러', '브랜드 컬러 적용', '쇼케이스', '시그니처 보여줘', '어떤 테마 있어', '이 산출물에 우리 톤 적용', '신규 클라이언트 컬러 만들어줘'를 언급할 때. 특정 산출물을 가리키며 '여기에 OO 테마/컬러로 입혀줘'라고 할 때. 단, 토큰 값 자체의 정의·수정·확장(시그니처 변경)은 jc-design-system 직접 영역이고, 임의 팔레트·임의 폰트쌍 생성은 하지 않는다(시그니처 고정). 미학 무드의 캔버스 아트는 jc-visual-philosophy, 제너러티브 아트는 jc-generative-art, 실제 PPTX 후처리 적용 엔진은 jc-brand-styling 영역. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v1.0.2"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -37,7 +37,7 @@ python3 scripts/build_showcase.py --overlay remember   # 특정 오버레이만
 맞는 오버레이가 없으면 **신규 클라이언트 오버레이를 발행**한다. 임의 테마를 새로 만드는 게 아니라, 시그니처 위에 얹는 3토큰 오버레이를 만드는 것이다. 절차·검증의 정본은 [`references/mint-overlay.md`](references/mint-overlay.md). 요지:
 
 - 주입 가능 토큰은 **`primary` / `accent` / `logo_path` 3개뿐.** 폰트·사이즈·간격·텍스트/배경은 시그니처 고정 → 건드리지 않는다.
-- `scripts/validate_overlay.py`로 **자동 검증**: WCAG 대비비(`RULE-WCAG`), 색충돌 회피(`client-overlays.md §6` — Deep Navy 채도 근접·Point Pool ΔE<5·인쇄 형광), 3토큰 한정.
+- `scripts/validate_overlay.py`로 **자동 검증**: WCAG 대비비(`RULE-WCAG`), 색충돌 회피(`client-overlays.md §6` — Deep Navy 채도 근접·Point Pool ΔE<5·인쇄 형광). 단, 스크립트가 실제 검증하는 값은 `primary`/`accent` 2개뿐 — `logo_path`는 색 수학 대상이 아니므로 스크립트 범위 밖(SoT 등록 시 수동 확인). 오버레이 자체의 "3토큰 한정" 원칙(primary/accent/logo 외 확장 금지)은 유효하다.
 - 검증 통과안을 사용자에게 **리뷰**시킨 뒤, `jc-design-system/references/client-overlays.md`(SoT)에 `§3.X` 형식으로 등록한다.
 
 ```bash
@@ -51,6 +51,15 @@ python3 scripts/validate_overlay.py --primary "#0A2540" --accent "#7C3AED" --pri
 - **토큰 값은 항상 jc-design-system을 SoT로 런타임 참조**(미러 금지). `jc_tokens.py`의 `load_tokens`/`color` + 본 스킬의 오버레이 파서.
 - 모드(라이트/다크)는 `mode-mapping.md §1` 산출물 기본값 → 사용자 지정 우선.
 - 실제 매체별 적용(특히 PPTX 후처리)은 **`jc-brand-styling`에 위임**할 수 있다. 본 스킬은 "어떤 테마"를 결정하고, jc-brand-styling은 "그걸 산출물에 찍는" 엔진이다. 매체별 적용 가이드는 [`references/apply-guide.md`](references/apply-guide.md).
+
+#### 2-pass 비평 루프 (적용 품질 게이트)
+
+오버레이를 곧바로 찍지 말고, 설계와 구현에 각각 비평을 한 번씩 끼워 두 번 검토한다:
+
+1. **설계** — 어떤 오버레이를 어떤 모드·매체에 어떻게 입힐지 적용안을 초안으로 잡는다.
+2. **1차 비평(브리프 대조)** — 초안을 기획자님의 원래 요청·산출물의 톤과 대조해 재비평한다. 어긋나면 설계로 되돌아간다.
+3. **구현** — 통과한 안대로 적용한다. 매체별 절차와 jc-brand-styling 위임 관계는 apply-guide.md를 그대로 따른다.
+4. **2차 비평(결과 재확인)** — 적용된 결과물이 여전히 브리프에 부합하는지, `RULE-WCAG`·모드 규칙이 유지됐는지 재확인한다. 미흡하면 1로 복귀한다.
 
 ## 절대 가드레일
 
@@ -88,3 +97,7 @@ jc-theme-factory/
 - [ ] 신규 발행은 3토큰 한정 + `validate_overlay.py` 통과(WCAG·충돌) 후 SoT 등록
 - [ ] 적용 시 토큰 값은 SoT 런타임 참조(하드코딩 0건), 모드 규칙 준수
 - [ ] 폰트 불변·임의 팔레트 0건, 회사·개인정보 하드코딩 0건
+
+## 변경이력
+
+- v1.0.2 (2026-07-03): CP1 GO-4 외부 패턴 흡수 — §4 적용에 '2-pass 비평 루프'(설계→브리프 대조 비평→구현→적용 후 재비평) 품질 게이트 신설(anthropics/skills frontend-design 벤치마크 재구성, apply-guide.md 위임 관계 무변경).

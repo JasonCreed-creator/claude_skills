@@ -1,6 +1,6 @@
 ---
 name: jc-strategy-canvas
-version: "v1.0.0"
+version: "v1.0.2"
 description: MICE 전략가의 전략적 사고를 검증된 프레임워크로 구조화하는 스킬. 신사업 아이템·행사 콘셉트 전략·경쟁 포지셔닝·비즈니스 모델·시장 진입을 6대 프레임워크(비즈니스 모델 캔버스·Porter 5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 펼쳐 채우고, 교차 종합해 전략 권고를 도출하며, jc-redteam 적대 검증을 거쳐 jc 스타일 전략 캔버스(HTML)와 ChainPayload(→mice-proposal/mice-rfp-analyzer)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '전략', '전략 수립', '비즈니스 모델', 'BM', '비즈니스 모델 캔버스', 'BMC', 'SWOT', 'TOWS', 'Porter', '5 Forces', '다섯 가지 힘', '경쟁 분석', '경쟁 구도', '경쟁 포지셔닝', '포지셔닝', 'JTBD', 'Jobs to be Done', '고객 과업', '시장 규모', 'TAM', 'SAM', 'SOM', '신사업', '신규 사업', '사업 아이템', '사업성 검토', '시장 진입', '시장 매력도', 'GTM 전략', '전략 캔버스', '전략 프레임워크'를 언급할 때. 새 행사·신규 BM·신사업을 구상하며 '전략 짜줘', '프레임워크로 정리해줘', '경쟁 구도 분석해줘', '우리 포지셔닝 잡아줘', '사업성 따져줘', '시장 매력도 봐줘'를 요청할 때. 단, 주어진 RFP·공고를 7축으로 분석하는 것은 mice-rfp-analyzer(입력 종속) 영역, 산문형 전략 메모·기획서를 함께 써 나가는 것은 jc-doc-coauthor, 발주처 제출용 제안서 슬라이드는 mice-proposal, 외부 시장·경쟁 데이터를 리서치로 수집하는 것은 mice-market-intel(본 스킬은 그 데이터를 프레임워크로 구조화·판단하는 상류 사고 도구), 견적은 mice-estimate, 이미 내려진 결론의 적대적 검증만 단독으로 원하면 jc-redteam 영역이므로 그쪽을 쓸 것.
 license: Complete terms in LICENSE.txt
 ---
@@ -63,6 +63,8 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 | F6 | **TAM/SAM/SOM** + 시장기회 | 이 기회는 얼마나 크고 우리 몫은 얼마인가 | 신사업·신규 행사 시장 규모화 |
 
 > **조합 권장**: 단일 프레임워크는 한쪽 눈이다. 신사업 검토 = F6(규모)→F2(매력도)→F3(역량 매칭)→F1(수익구조). 차별화 = F4(고객 과업)→F5(포지셔닝). 본 스킬은 질문을 듣고 **조합과 순서를 제안**한다.
+
+> **확장 프레임워크 옵션**: 위 6대는 기본 세트다. 사용자가 **명시적으로 요청**하면(예: "PESTLE로 봐줘", "Porter's Five Forces로 봐줘") 표준 전략 프레임워크를 캔버스 유형으로 추가 구성한다. 대표적으로 **PESTLE**(정치·경제·사회·기술·법·환경 6축 거시환경 스캔 — 신규 지역·해외 진출 검토에 적합)이 있으며, F2(Porter's Five Forces)는 이미 기본 세트에 포함되어 있으므로 별도 요청 시 그대로 재사용한다. 확장 프레임워크도 §4의 가이드 채우기·근거 표식(`[검증]`/`[가설]`/`[추정]`) 규약과 ⑤ jc-redteam 검증을 동일하게 거친다. 기본 6대와 마찬가지로 과적합을 피하고, 결정에 필요할 때만 추가한다.
 
 ## 4. 워크플로우
 
@@ -141,6 +143,7 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
   - `mice-market-intel` → 시장 규모·경쟁사·트렌드 데이터를 F2/F5/F6의 `[검증]` 근거로 흡수.
   - `mice-meeting-minutes` → Discovery 회의록의 고객 니즈·예산·결정사항을 ① 인테이크·F4(JTBD)로 흡수.
   - 봉투: `ChainPayload/v1`(`jc-design-system/references/chaining-protocol.md`).
+  - 본 스킬은 정본 chaining-protocol §8에 「8종 적용대상 외 — 자율 채택」으로 등재됨(8종 필수 대상 아님).
 - **검증(핵심)**: `jc-redteam` — ⑤ 전체. 짧은 결론=Quick Strike, 캔버스=Deep Audit.
 - **출력 체이닝**:
   - → `mice-proposal` — 전략 권고·차별화 축·핵심 메시지를 제안서 논거로.
@@ -173,4 +176,6 @@ jc-strategy-canvas/
 
 | 버전 | 일자 | 변경 |
 |------|------|------|
+| v1.0.2 | 2026-07-04 | CP2 추적성 보강 — 자율채택 등재 사실·GO-4 PESTLE 몫 명문화(기능 무변경). |
+| v1.0.1 | 2026-07-03 | canvas-output-spec.md의 죽은 check_drift.py 참조 제거(→ signature-tokens.md 수동 대조 원칙으로 재서술) + §3 확장 프레임워크 옵션(PESTLE) 추가(GO-4 프레임워크 확장 몫). |
 | v1.0.0 | 2026-06-04 | 신규 — `maigentic/stratarts`(MIT) 전략 프레임워크 패턴 흡수, jc 네이티브 재구성. 6대 프레임워크(BMC·5 Forces·SWOT/TOWS·JTBD·Positioning·TAM/SAM/SOM) + MICE 렌즈. 검증=jc-redteam, 산출=jc 캔버스 HTML + ChainPayload(→proposal/rfp). references 3종(framework-catalog·canvas-output-spec·chaining-schema). 한국어·푸시형. |

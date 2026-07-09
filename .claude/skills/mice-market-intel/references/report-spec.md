@@ -6,7 +6,7 @@
 
 - 색·타이포·간격: `jc-design-system/references/signature-tokens.md §6 JSON`(구현체 `jc_tokens.py`). 다크/인쇄 `mode-mapping.md`.
 - 식별용: primary `#0A2540`·accent `#2962FF`·폰트 Pretendard/Inter/JetBrains Mono(수치). 정본은 SoT.
-- `RULE-WCAG`·`RULE-PRINT-LIGHT` 준수. FORBIDDEN 비-canon 색값 금지(`check_drift.py`). 본 스킬은 CONSUMERS 등록.
+- `RULE-WCAG`·`RULE-PRINT-LIGHT` 준수. FORBIDDEN 비-canon 색값 금지 — `jc-design-system/references/shared-rules.md`·`signature-tokens.md` 정본 대조로 준수 확인.
 - 차트가 필요하면 `mice-dashboard/references/chart-guide.md`·인포그래픽 패턴 차용(재발명 금지).
 
 ## 1. 리포트 구조

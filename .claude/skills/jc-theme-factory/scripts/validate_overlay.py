@@ -40,8 +40,8 @@ def load_signature() -> dict:
         tok = load_tokens(_SOT)
         if tok:
             return {k: color(tok, k, _FALLBACK[k]) for k in _FALLBACK}
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"경고: SoT({_SOT}) 토큰 로드 실패, 폴백 값 사용 — {e}", file=sys.stderr)
     return dict(_FALLBACK)
 
 

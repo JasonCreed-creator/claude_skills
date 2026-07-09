@@ -14,7 +14,7 @@ mice-sponsor-deck v2.0 - Sample Generator
 Usage:
     python3 sample_generator.py [--out-dir OUT_DIR]
 
-기본 출력 디렉토리: C:/Users/icejc/mice-skills-work/sprint-03-mice-sponsor-deck/_samples/
+기본 출력 디렉토리: 스크립트 위치 기준 상대경로 (scripts/../_samples/)
 
 UTF-8 stdout 표준 (Sprint 2 백로그 BL-S2-근본 반영):
     sys.stdout.reconfigure(encoding='utf-8') - Windows cp949 환경 대응
@@ -661,7 +661,7 @@ def main():
     parser.add_argument(
         "--out-dir",
         type=str,
-        default="C:/Users/icejc/mice-skills-work/sprint-03-mice-sponsor-deck/_samples",
+        default=str(Path(__file__).resolve().parent.parent / "_samples"),
         help="Output directory for generated JSON files"
     )
     parser.add_argument(

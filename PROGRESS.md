@@ -67,3 +67,13 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 
 - 본래 Wave 1(키스톤 `jc-skill-creator` 신규)을 별도 빌드했으나, **main에 이미 `jc-skill-creator`가 존재**(병렬 작업) → 사용자 결정으로 **내 키스톤은 폐기**, main 것 유지. 본 PR은 **mice-run-of-show만** 반영.
 - **관찰(권고)**: main의 `jc-skill-creator`는 상위 skill-creator에 평가 기계를 위임하는 얇은 층이며, forge 문서 **U1이 의무화한 4대 요소(worked example·anti-pattern 라이브러리·결정적 스코어링 루브릭·quick/std/deep)와 자동 채점기(lint)를 갖추지 않았다.** U1 완성을 원하면 별도 사이클에서 main 키스톤에 4대 요소·lint를 보강 권고(폐기한 키스톤 작업물 재활용 가능).
+
+---
+
+## 2026-07-04 — Drive 정본 풀 업그레이드 동기화 (CP2)
+
+- **소스**: Google Drive `Skills/library/`(신규 정본, Jason 머신). 브랜치 `claude/drive-sync-20260704`.
+- **반영**: 22종 overlap 스킬을 Drive 최신본으로 갱신(Phase 4 CP1 GO-1~4 + CP-N5 역참조 + CP2 Deep Audit Major 수정, Critical 0). `jc-prompt-builder` v1.0.0 신규 추가(선행 브리프 게이트, 라우팅 EXCLUDE). 상세: `docs/CHANGELOG-2026-07-04.md`.
+- **보존**: `mice-run-of-show`·`mice-aftermath`(6월 forge 신규, Drive 미포함) — 삭제 없이 유지. 카탈로그 24→25종.
+- **역참조 레이어**: 22종 중 19종 description에 브리프 게이트 역참조 삽입(예외 3종: jc-strategy-canvas 한도초과·jc-design-system reference 자산·jc-redteam 게이트 직행). 정본 맵: `.claude/skills/jc-prompt-builder/references/routing-map.md`.
+- **주의(후속)**: Drive `library/`와 이 레포 `.claude/skills/`가 이제 두 미러 — 향후 편집 지점 일원화 필요. run-of-show/aftermath는 역으로 Drive에 미반영(백로그).

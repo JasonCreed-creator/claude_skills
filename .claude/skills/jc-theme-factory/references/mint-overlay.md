@@ -37,7 +37,7 @@ python3 scripts/validate_overlay.py --primary "#0A2540" --accent "#7C3AED" --pri
 
 검증 항목:
 
-1. **3토큰 한정** — primary/accent/logo 외 입력 거부.
+1. **primary/accent 색 검증** — 스크립트가 실제로 받는 인자는 `--primary`/`--accent` 2개뿐(logo_path는 색 수학 대상이 아니라 파일 배치이므로 스크립트 검증 범위 밖 — SoT 등록 시 수동 확인).
 2. **WCAG 대비** (`RULE-WCAG`, 계산 `mode-mapping.md §9.1`):
    - 흰 텍스트 on `primary` ≥ 4.5:1 (헤더 풀블리드에 흰 글씨가 얹히므로)
    - 흰 텍스트 on `accent` ≥ 3.0:1 (큰 텍스트/버튼) — 본문 라벨로 쓸 거면 4.5:1
@@ -51,7 +51,7 @@ python3 scripts/validate_overlay.py --primary "#0A2540" --accent "#7C3AED" --pri
 
 ### 4. 리뷰
 
-검증 통과안을 사용자에게 보여준다 — primary/accent 스와치, 흰 텍스트 대비비, 통합/유지 권고, 다크 변형. `build_showcase.py --preview-overlay`로 그 오버레이 카드만 미리 렌더해 확인시킨다. 사용자 OK 전까지 등록하지 않는다.
+검증 통과안을 사용자에게 보여준다 — primary/accent 스와치, 흰 텍스트 대비비, 통합/유지 권고, 다크 변형. `build_showcase.py --preview-primary "#..." --preview-accent "#..."`로 그 오버레이 카드만 미리 렌더해 확인시킨다. 사용자 OK 전까지 등록하지 않는다.
 
 ### 5. SoT 등록
 

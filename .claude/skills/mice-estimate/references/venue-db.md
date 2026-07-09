@@ -139,7 +139,7 @@ def _calc_s1_venue(c):
 | `convention_center`·`hotel_grade1` 등 비-5성급 단가 | SSOT 미정의 | 사용자 단가 정책 명시 |
 | 베뉴 amenities·notes 의 자유텍스트 표준화 | 실데이터 형태 미확인 | 데이터 이관 시 결정 |
 
-본 보류 사항은 [validation-report.md](../../validation-report.md) 의 "백로그 승계" 섹션에 기록되어 Sprint 1.5 또는 Phase 1에서 처리.
+본 보류 사항은 validation-report.md(본 패키지 외부 문서 — 개발 워크스페이스 자산으로, 배포 패키지에는 포함되지 않음)의 "백로그 승계" 섹션에 기록되어 Sprint 1.5 또는 Phase 1에서 처리.
 
 ---
 

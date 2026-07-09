@@ -1,0 +1,694 @@
+{
+  "schema_ref": "_canonical/mice-estimate/references/venue-db.md §1 (필드명 참고용 -- venue_type/min_rental 등 완전 1:1 매핑 아님. integration-note.md §2 참조)",
+  "generated_at": "2026-07-03T03:27:54.976964+00:00",
+  "generated_from": [
+    "G:\\내 드라이브\\Claude Workspace\\Claude 프로젝트 지식\\베뉴파인더\\_data\\venues.json",
+    "G:\\내 드라이브\\Claude Workspace\\Claude 프로젝트 지식\\베뉴파인더\\_data\\견적이력_snapshot.csv (교차검증용)",
+    "G:\\내 드라이브\\Claude Workspace\\Claude 프로젝트 지식\\베뉴파인더\\베뉴파인더.html (ALIAS/REGION/VENUE_SPECS/capOf 정규화 로직 이식)"
+  ],
+  "record_count": 25,
+  "venue_hall_groups_from_quotes": 23,
+  "unique_venues": 12,
+  "notes_global": "본 DB는 실제 받은 견적(견적이력) 100건을 베뉴+홀 단위로 그룹핑한 결과물이다. min_rental/max_rental_observed는 받은 견적의 '총액(대관료+F&B 등 포함)' 범위이며 순수 대관료(venue rental only)와 동일하지 않을 수 있다 — mice-estimate의 s1(베뉴 사용료) 라인에 직접 대입하기 전 F&B 포함 여부를 확인할 것. per_pax_rate는 이 이유로 전 레코드 null(미상) 처리했다. venue_type_raw는 전량 '호텔'(FKI타워만 '유니크')이며 canonical 4분류(5star/conference_center/convention_center/hotel_grade1)로의 등급 매핑은 미검증 사유로 수행하지 않았다(미상).",
+  "records": [
+    {
+      "venue_id": "seoul-banpo-jw-marriott--grand-ballroom",
+      "venue_name": "JW메리어트 서울",
+      "hall_name": "그랜드볼룸",
+      "region": "강남권 반포·고속터미널",
+      "venue_type_raw": "호텔",
+      "max_capacity": 360,
+      "per_pax_rate": null,
+      "min_rental": 45000000,
+      "max_rental_observed": 45000000,
+      "amenities": [
+        "LED 17*5.8m"
+      ],
+      "notes": "홀: 그랜드볼룸 | 견적 시점: 2026-06-16 ~ 2026-06-16 (1건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 45,000,000원 ~ 45,000,000원 (참석 360~360명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 그랜드볼룸 프리펑션 넓음 — 부스 다수 가능(수 확인 필요) (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 1,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-06-16",
+          "2026-06-16"
+        ],
+        "diners_observed": [
+          360
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-banpo-jw-marriott--grand-ballroom-1-2",
+      "venue_name": "JW메리어트 서울",
+      "hall_name": "그랜드볼룸 1+2",
+      "region": "강남권 반포·고속터미널",
+      "venue_type_raw": "호텔",
+      "max_capacity": 324,
+      "per_pax_rate": null,
+      "min_rental": 51000000,
+      "max_rental_observed": 51000000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 그랜드볼룸 1+2 | 견적 식사유형: 오찬 (도시락) | 견적 시점: 2026-04-28 ~ 2026-04-28 (2건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 51,000,000원 ~ 51,000,000원 (참석 200~200명 기준) | 최소개런티(minG, 금액원) 관측값: [18200000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 그랜드볼룸 프리펑션 넓음 — 부스 다수 가능(수 확인 필요) (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 2,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-28",
+          "2026-04-28"
+        ],
+        "diners_observed": [
+          200
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-banpo-jw-marriott--salon-1-2-3",
+      "venue_name": "JW메리어트 서울",
+      "hall_name": "살롱 1,2,3",
+      "region": "강남권 반포·고속터미널",
+      "venue_type_raw": "호텔",
+      "max_capacity": 240,
+      "per_pax_rate": null,
+      "min_rental": 26000000,
+      "max_rental_observed": 26000000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 살롱 1,2,3 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (1건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 26,000,000원 ~ 26,000,000원 (참석 200~200명 기준) | 홀 비고(원본 hall 필드 부기): 분할대관 현재 불가 | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 그랜드볼룸 프리펑션 넓음 — 부스 다수 가능(수 확인 필요) (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 1,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          200
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-glad--bloom-b",
+      "venue_name": "글래드 호텔 여의도",
+      "hall_name": "BLOOM B (대연회장 반절)",
+      "region": "여의도권 여의도",
+      "venue_type_raw": "호텔",
+      "max_capacity": 90,
+      "per_pax_rate": null,
+      "min_rental": 8300000,
+      "max_rental_observed": 8300000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: BLOOM B (대연회장 반절) | 견적 식사유형: 만찬 | 견적 시점: 2026-04-23 ~ 2026-04-23 (4건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 8,300,000원 ~ 8,300,000원 (참석 60~60명 기준) | 최소개런티(minG, 금액원) 관측값: [8300000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 4,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-23",
+          "2026-04-23"
+        ],
+        "diners_observed": [
+          60
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-glad--project-room-a",
+      "venue_name": "글래드 호텔 여의도",
+      "hall_name": "Project Room A",
+      "region": "여의도권 여의도",
+      "venue_type_raw": "호텔",
+      "max_capacity": 50,
+      "per_pax_rate": null,
+      "min_rental": 5750000,
+      "max_rental_observed": 5750000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: Project Room A | 견적 식사유형: 만찬 | 견적 시점: 2026-04-23 ~ 2026-04-23 (7건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 5,750,000원 ~ 5,750,000원 (참석 50~50명 기준) | 최소개런티(minG, 금액원) 관측값: [5200000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 7,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-23",
+          "2026-04-23"
+        ],
+        "diners_observed": [
+          50
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-novotel-ambassador--alsace-provence-hall",
+      "venue_name": "노보텔 엠베서더 강남",
+      "hall_name": "알자스 프로방스 홀",
+      "region": "강남권 강남 테헤란로",
+      "venue_type_raw": "호텔",
+      "max_capacity": 72,
+      "per_pax_rate": null,
+      "min_rental": 7920000,
+      "max_rental_observed": 7920000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 알자스 프로방스 홀 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-23 ~ 2026-04-23 (3건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 7,920,000원 ~ 7,920,000원 (참석 60~60명 기준) | 최소개런티(minG, 금액원) 관측값: [6930000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: X배너 가능·현수막 LED규격 온라인. 보르도홀 LL층 단독. 부스 수 확인 필요 (출처: 알리바바 대관현황 2025.11)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 3,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-23",
+          "2026-04-23"
+        ],
+        "diners_observed": [
+          60
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-jung-the-plaza--grand-ballroom",
+      "venue_name": "더플라자호텔 서울",
+      "hall_name": "그랜드볼룸",
+      "region": "도심권 중구 시청",
+      "venue_type_raw": "호텔",
+      "max_capacity": 450,
+      "per_pax_rate": null,
+      "min_rental": 53900000,
+      "max_rental_observed": 53900000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 그랜드볼룸 | 견적 식사유형: 오찬 | 견적 시점: 2026-06-12 ~ 2026-06-12 (4건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 53,900,000원 ~ 53,900,000원 (참석 200~200명 기준) | 최소개런티(minG, 금액원) 관측값: [48400000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 그랜드볼룸 프리펑션 보유 — 부스 설치 가능, 수 확인 필요 (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 4,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-06-12",
+          "2026-06-12"
+        ],
+        "diners_observed": [
+          200
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yongsan-dragon-city--silla-1-2",
+      "venue_name": "드래곤시티",
+      "hall_name": "신라 1,2",
+      "region": "용산권 용산역",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 10000000,
+      "max_rental_observed": 10000000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 신라 1,2 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (3건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 10,000,000원 ~ 10,000,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 3,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yongsan-dragon-city--silla-3-4-5",
+      "venue_name": "드래곤시티",
+      "hall_name": "신라3,4,5",
+      "region": "용산권 용산역",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 15000000,
+      "max_rental_observed": 15000000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 신라3,4,5 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (2건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 15,000,000원 ~ 15,000,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 2,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-jung-lotte--garnet-suite",
+      "venue_name": "롯데호텔",
+      "hall_name": "가넷 스위트",
+      "region": "도심권 중구 소공동",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 16500000,
+      "max_rental_observed": 17600000,
+      "amenities": [
+        "빔프로젝터+LED"
+      ],
+      "notes": "홀: 가넷 스위트 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-05-03 (5건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 16,500,000원 ~ 17,600,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 5,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-05-03"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-jung-lotte--bellevue-suite",
+      "venue_name": "롯데호텔",
+      "hall_name": "벨뷰 스위트",
+      "region": "도심권 중구 소공동",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 17600000,
+      "max_rental_observed": 17600000,
+      "amenities": [
+        "빔프로젝터+LED"
+      ],
+      "notes": "홀: 벨뷰 스위트 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (2건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 17,600,000원 ~ 17,600,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 2,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-westin-chosun-parnas--atlas-hall",
+      "venue_name": "웨스틴 서울 파르나스",
+      "hall_name": "아틀라스홀",
+      "region": "강남권 삼성·코엑스",
+      "venue_type_raw": "호텔",
+      "max_capacity": 240,
+      "per_pax_rate": null,
+      "min_rental": 27200000,
+      "max_rental_observed": 32800000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 아틀라스홀 | 견적 식사유형: 만찬, 만찬 (도시락) | 견적 시점: 2026-04-28 ~ 2026-06-16 (4건, 고객사 3곳) | 견적 총액(대관료+F&B 등 포함) 범위: 27,200,000원 ~ 32,800,000원 (참석 200~240명 기준) | 최소개런티(minG, 금액원) 관측값: [25000000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 로비 DID 행사명 노출·폼보드 스탠드 제공(현수막 가능·X배너 불가). 부스 수 확인 필요 (출처: 알리바바 대관현황 2025.11)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 4,
+        "client_count": 3,
+        "quote_date_range": [
+          "2026-04-28",
+          "2026-06-16"
+        ],
+        "diners_observed": [
+          200,
+          240
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-westin-chosun-parnas--harmony-ballroom",
+      "venue_name": "웨스틴 서울 파르나스",
+      "hall_name": "하모니볼룸",
+      "region": "강남권 삼성·코엑스",
+      "venue_type_raw": "호텔",
+      "max_capacity": 550,
+      "per_pax_rate": null,
+      "min_rental": 71500000,
+      "max_rental_observed": 71500000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 하모니볼룸 | 견적 시점: 2026-06-16 ~ 2026-06-16 (1건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 71,500,000원 ~ 71,500,000원 (참석 550~550명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 로비 DID 행사명 노출·폼보드 스탠드 제공(현수막 가능·X배너 불가). 부스 수 확인 필요 (출처: 알리바바 대관현황 2025.11)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 1,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-06-16",
+          "2026-06-16"
+        ],
+        "diners_observed": [
+          550
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-grand-intercontinental-parnas--orchid",
+      "venue_name": "인터컨티넨탈 그랜드 서울 파르나스",
+      "hall_name": "오키드",
+      "region": "강남권 삼성·코엑스",
+      "venue_type_raw": "호텔",
+      "max_capacity": 252,
+      "per_pax_rate": null,
+      "min_rental": 33000000,
+      "max_rental_observed": 33000000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 오키드 | 견적 식사유형: 만찬, 만찬 (도시락) | 견적 시점: 2026-04-28 ~ 2026-04-28 (4건, 고객사 2곳) | 견적 총액(대관료+F&B 등 포함) 범위: 33,000,000원 ~ 33,000,000원 (참석 200~200명 기준) | 최소개런티(minG, 금액원) 관측값: [33000000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 프리펑션 보유. 부스/등록데스크 설치 일반적 — 수 확인 필요 (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 4,
+        "client_count": 2,
+        "quote_date_range": [
+          "2026-04-28",
+          "2026-04-28"
+        ],
+        "diners_observed": [
+          200
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-josun-palace--the-great-hall-1-2",
+      "venue_name": "조선 팰리스 서울 강남",
+      "hall_name": "더그레이트 홀 1+2",
+      "region": "강남권 강남 도산대로",
+      "venue_type_raw": "호텔",
+      "max_capacity": 300,
+      "per_pax_rate": null,
+      "min_rental": 33000000,
+      "max_rental_observed": 33000000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 더그레이트 홀 1+2 | 견적 식사유형: 만찬, 만찬 (도시락) | 견적 시점: 2026-04-28 ~ 2026-04-28 (7건, 고객사 2곳) | 견적 총액(대관료+F&B 등 포함) 범위: 33,000,000원 ~ 33,000,000원 (참석 200~200명 기준) | 최소개런티(minG, 금액원) 관측값: [33000000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 프리펑션(포이어) 보유 — 부스 설치 가능, 수 확인 필요 (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 7,
+        "client_count": 2,
+        "quote_date_range": [
+          "2026-04-28",
+          "2026-04-28"
+        ],
+        "diners_observed": [
+          200
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-josun-palace--royal-chamber-1",
+      "venue_name": "조선 팰리스 서울 강남",
+      "hall_name": "로얄챔버 1",
+      "region": "강남권 강남 도산대로",
+      "venue_type_raw": "호텔",
+      "max_capacity": 60,
+      "per_pax_rate": null,
+      "min_rental": 9900000,
+      "max_rental_observed": 9900000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 로얄챔버 1 | 견적 식사유형: 만찬 | 견적 시점: 2026-05-19 ~ 2026-05-19 (1건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 9,900,000원 ~ 9,900,000원 (참석 50~50명 기준) | 최소개런티(minG, 금액원) 관측값: [9900000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 프리펑션(포이어) 보유 — 부스 설치 가능, 수 확인 필요 (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 1,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-05-19",
+          "2026-05-19"
+        ],
+        "diners_observed": [
+          50
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-gangnam-josun-palace--private-chamber-1-2",
+      "venue_name": "조선 팰리스 서울 강남",
+      "hall_name": "프라이빗 챔버 1+2",
+      "region": "강남권 강남 도산대로",
+      "venue_type_raw": "호텔",
+      "max_capacity": 60,
+      "per_pax_rate": null,
+      "min_rental": 9900000,
+      "max_rental_observed": 9900000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 프라이빗 챔버 1+2 | 견적 식사유형: 만찬 | 견적 시점: 2026-05-19 ~ 2026-05-19 (3건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 9,900,000원 ~ 9,900,000원 (참석 50~50명 기준) | 최소개런티(minG, 금액원) 관측값: [9900000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상) | 포이어/부스: 프리펑션(포이어) 보유 — 부스 설치 가능, 수 확인 필요 (출처: 일반)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 3,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-05-19",
+          "2026-05-19"
+        ],
+        "diners_observed": [
+          50
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-conrad--studio-8-9-10",
+      "venue_name": "콘래드",
+      "hall_name": "스튜디오 8,9,10",
+      "region": "여의도권 여의도",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 12100000,
+      "max_rental_observed": 12100000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 스튜디오 8,9,10 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-05-04 (6건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 12,100,000원 ~ 12,100,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 6,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-05-04"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-conrad--park-ballroom-1-2-3",
+      "venue_name": "콘래드",
+      "hall_name": "파크볼룸 1+2+3",
+      "region": "여의도권 여의도",
+      "venue_type_raw": "호텔",
+      "max_capacity": 294,
+      "per_pax_rate": null,
+      "min_rental": 32000000,
+      "max_rental_observed": 41789000,
+      "amenities": [
+        "LED",
+        "빔프로젝터"
+      ],
+      "notes": "홀: 파크볼룸 1+2+3 | 견적 식사유형: 만찬, 오찬/만찬 | 견적 시점: 2026-05-04 ~ 2026-06-17 (2건, 고객사 2곳) | 견적 총액(대관료+F&B 등 포함) 범위: 32,000,000원 ~ 41,789,000원 (참석 200~240명 기준) | 최소개런티(minG, 금액원) 관측값: [32000000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 2,
+        "client_count": 2,
+        "quote_date_range": [
+          "2026-05-04",
+          "2026-06-17"
+        ],
+        "diners_observed": [
+          200,
+          240
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-mapo-hotel-naru-mgallery--gallery-3-4",
+      "venue_name": "호텔나루 엠갤러리",
+      "hall_name": "갤러리 3+4",
+      "region": "마포권 합정",
+      "venue_type_raw": "호텔",
+      "max_capacity": 50,
+      "per_pax_rate": null,
+      "min_rental": 7000000,
+      "max_rental_observed": 7000000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 갤러리 3+4 | 견적 식사유형: 오찬 | 견적 시점: 2026-04-21 ~ 2026-04-21 (16건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 7,000,000원 ~ 7,000,000원 (참석 50~50명 기준) | 최소개런티(minG, 금액원) 관측값: [7000000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 16,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-21",
+          "2026-04-21"
+        ],
+        "diners_observed": [
+          50
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-mapo-hotel-naru-mgallery--naru-ballroom-1",
+      "venue_name": "호텔나루 엠갤러리",
+      "hall_name": "나루볼룸 1",
+      "region": "마포권 합정",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 15000000,
+      "max_rental_observed": 15000000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 나루볼룸 1 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (10건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 15,000,000원 ~ 15,000,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 10,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-mapo-hotel-naru-mgallery--naru-ballroom-1-2",
+      "venue_name": "호텔나루 엠갤러리",
+      "hall_name": "나루볼룸 1+2",
+      "region": "마포권 합정",
+      "venue_type_raw": "호텔",
+      "max_capacity": 240,
+      "per_pax_rate": null,
+      "min_rental": 29500000,
+      "max_rental_observed": 29700000,
+      "amenities": [
+        "LED"
+      ],
+      "notes": "홀: 나루볼룸 1+2 | 견적 식사유형: 오찬/만찬 | 견적 시점: 2026-05-04 ~ 2026-06-16 (2건, 고객사 2곳) | 견적 총액(대관료+F&B 등 포함) 범위: 29,500,000원 ~ 29,700,000원 (참석 200~240명 기준) | 최소개런티(minG, 금액원) 관측값: [29700000] | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 2,
+        "client_count": 2,
+        "quote_date_range": [
+          "2026-05-04",
+          "2026-06-16"
+        ],
+        "diners_observed": [
+          200,
+          240
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-mapo-hotel-naru-mgallery--naru-ballroom-2",
+      "venue_name": "호텔나루 엠갤러리",
+      "hall_name": "나루볼룸2",
+      "region": "마포권 합정",
+      "venue_type_raw": "호텔",
+      "max_capacity": 70,
+      "per_pax_rate": null,
+      "min_rental": 22000000,
+      "max_rental_observed": 22000000,
+      "amenities": [
+        "빔프로젝터"
+      ],
+      "notes": "홀: 나루볼룸2 | 견적 식사유형: 만찬 | 견적 시점: 2026-04-29 ~ 2026-04-29 (10건, 고객사 1곳) | 견적 총액(대관료+F&B 등 포함) 범위: 22,000,000원 ~ 22,000,000원 (참석 70~70명 기준) | per_pax_rate는 견적 총액이 대관료+F&B 혼합이라 인당 순수 대관단가로 분리 불가 -> null 유지 (미상)",
+      "source": "견적이력_실데이터",
+      "source_detail": {
+        "quote_count": 10,
+        "client_count": 1,
+        "quote_date_range": [
+          "2026-04-29",
+          "2026-04-29"
+        ],
+        "diners_observed": [
+          70
+        ]
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-fki-tower--diamond-3f",
+      "venue_name": "FKI타워",
+      "hall_name": "다이아몬드 (3F)",
+      "region": "여의도권 여의도 (FKI타워)",
+      "venue_type_raw": "유니크",
+      "max_capacity": 128,
+      "per_pax_rate": null,
+      "min_rental": null,
+      "max_rental_observed": null,
+      "amenities": null,
+      "notes": "연회식 96명 / 강의식(클래스식) 128명 (출처: FKI TOWER 공식 시설안내). 견적이력 없음 — 대관료 데이터 미상. 컨퍼런스센터 로비·라운지 보유(부스·등록데스크 설치 가능, 개수 미상).",
+      "source": "스펙_추정",
+      "source_detail": {
+        "quote_count": 0,
+        "client_count": 0,
+        "quote_date_range": null,
+        "diners_observed": null
+      }
+    },
+    {
+      "venue_id": "seoul-yeouido-fki-tower--emerald-3f",
+      "venue_name": "FKI타워",
+      "hall_name": "에메랄드 (3F)",
+      "region": "여의도권 여의도 (FKI타워)",
+      "venue_type_raw": "유니크",
+      "max_capacity": 108,
+      "per_pax_rate": null,
+      "min_rental": null,
+      "max_rental_observed": null,
+      "amenities": null,
+      "notes": "연회식 80명 / 강의식(클래스식) 108명 (출처: FKI TOWER 공식 시설안내). 견적이력 없음 — 대관료 데이터 미상. 컨퍼런스센터 로비·라운지 보유(부스·등록데스크 설치 가능, 개수 미상).",
+      "source": "스펙_추정",
+      "source_detail": {
+        "quote_count": 0,
+        "client_count": 0,
+        "quote_date_range": null,
+        "diners_observed": null
+      }
+    }
+  ],
+  "field_coverage": {
+    "amenities": "23/25",
+    "hall_name": "23/25",
+    "max_capacity": "23/25",
+    "max_rental_observed": "23/25",
+    "min_rental": "23/25",
+    "notes": "23/25",
+    "region": "23/25",
+    "source": "23/25",
+    "source_detail": "23/25",
+    "venue_id": "23/25",
+    "venue_name": "23/25",
+    "venue_type_raw": "23/25"
+  }
+}

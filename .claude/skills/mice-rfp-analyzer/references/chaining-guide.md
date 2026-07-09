@@ -2,18 +2,31 @@
 
 mice-rfp-analyzer 산출물을 다른 스킬로 전달할 때의 데이터 매핑 규칙.
 
-> **봉투 정본**: 공통 `ChainPayload/v1` 봉투 구조(`$schema`·`source`·`version`·`generatedAt`)·전체 워크플로우 다이어그램·표준 규약은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조.
-> 요약: 본 스킬은 워크플로우의 **시작점**으로, 출력 JSON은 봉투에 `"source": "mice-rfp-analyzer"` 를 둔다. 본 문서는 mice-rfp-analyzer **고유 입출력 페이로드 매핑**(7축 분석 결과 → 각 후속 스킬 활용)만 정의한다.
-
 ---
 
-## 1. 풀 워크플로우상의 위치 (요약)
+## 1. 풀 워크플로우 체인 (전체 그림)
 
 ```
-[RFP 원문] → mice-rfp-analyzer(본 스킬, 시작점) → mice-proposal → mice-estimate → pt-script → (행사 후) mice-dashboard
+[RFP 원문 파일]
+    ↓ 분석
+[mice-rfp-analyzer]
+    ├── rfp-analysis-report.docx     (의사결정용)
+    └── rfp-evaluation-matrix.xlsx   (실무용)
+    ↓ GO 판정 시
+[mice-proposal]
+    └── proposal.pptx                (제안 PPT)
+    ↓ 제안 확정 시
+[mice-estimate]
+    └── estimate.xlsx                (견적서)
+    ↓ 발표 준비
+[pt-script]
+    └── presentation-script.docx     (발표 대본)
+    ↓ 행사 종료 후
+[mice-dashboard]
+    └── result-dashboard.html        (결과 대시보드)
 ```
 
-→ 본 스킬은 후속 스킬에 양질의 입력을 전달하는 것이 핵심 기능. **전체 체이닝 흐름도(회의록 발원·영업 분기·jc-redteam 게이트 포함)는 봉투 정본 §5 참조.**
+→ 본 스킬은 워크플로우의 **시작점**. 후속 스킬에 양질의 입력을 전달하는 것이 핵심 기능.
 
 ---
 
@@ -168,9 +181,9 @@ mice-proposal에 전달하는 표준 JSON 구조:
 
 ## 7. 데이터 무결성 원칙
 
-공통 무결성 규약(단일 진실 소스·변경 추적·버전 표기)은 **봉투 정본** [chaining-protocol.md §6-2](../../jc-design-system/references/chaining-protocol.md) 참조.
-
-→ 본 스킬 특수: **RFP 원문이 모든 데이터의 출처**이며, analyzer 결과는 워크플로우 전체의 단일 진실 소스로 기능한다. 후속 스킬이 받아 임의 변경하지 않는다.
+- **단일 진실 소스 (Single Source of Truth)**: RFP 원문이 모든 데이터의 출처. analyzer 결과를 다른 스킬이 받아 변경하지 않음.
+- **변경 추적**: 후속 스킬에서 분석 결과를 수정해야 할 경우, 변경 사유를 명시하고 analyzer에 피드백.
+- **버전 관리**: 산출물 파일명에 날짜 포함. 동일 RFP에 대한 분석을 여러 번 갱신할 경우 버전 표기.
 
 ---
 

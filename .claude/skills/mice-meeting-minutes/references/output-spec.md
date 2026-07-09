@@ -12,7 +12,7 @@ dashboard_[프로젝트]_[YYYYMMDD].html
 ```
 
 예시:
-- `dashboard_darktrace-discovery_20260509.html`
+- `dashboard_clientA-discovery_20260509.html`
 - `dashboard_rmb-rebuild26_20260509.html`
 - `dashboard_internal-weekly_20260509.html`
 
