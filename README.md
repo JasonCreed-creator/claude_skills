@@ -7,11 +7,13 @@
 > - **보존: `mice-run-of-show`·`mice-aftermath`** — 6월 forge 신규, Drive 미포함이나 삭제 없이 유지.
 > - 카탈로그 **24 → 25종**. 아래 표의 버전 셀은 6월 스냅숏 — 현행 최신은 본 배너·CHANGELOG·각 `SKILL.md`가 정본이다.
 
+> **➕ 2026-07-10 — 신규: `jc-orchestrator` v1.1.0** — 운영지침 §8 에이전트 팩토리의 실행체(멀티 에이전트 팀 설계·구성안/PI 발행 + 프리셋 2종: html-pt 8에이전트·code-conductor 비용 라우팅+강제 게이트). 카탈로그 **25 → 26종**. 배포 지시서: [`docs/DEPLOY-jc-orchestrator-v1.1.0.md`](docs/DEPLOY-jc-orchestrator-v1.1.0.md)
+
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
-claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath) + **선행 게이트 1종(jc-prompt-builder)**, 총 **25종**을 git으로 버전 관리하며, 앞으로 이 레포에서
+claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath) + **선행 게이트 1종(jc-prompt-builder)** + **오케스트레이션 1종(jc-orchestrator)**, 총 **26종**을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.
 
-## 스킬 카탈로그 (24종)
+## 스킬 카탈로그 (25종)
 
 | 스킬 | 버전 | 역할 | 주요 산출물 |
 |------|------|------|------------|
@@ -19,6 +21,7 @@ claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·
 | `jc-redteam` | v1.1.0 | 결론·완성 산출물 적대적 재검증 (+ LP 마케팅 패널 모드) | Quick Strike / Deep Audit / LP 패널 |
 | `jc-artifact-builder` | v1.0.0 | jc 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React+shadcn) 빌더 | 단일 HTML 아티팩트 |
 | `jc-landing-page` | v1.1.0 | jc 테마 B2B 모바일 랜딩페이지(고정스케일·GAS 폼). 검증은 jc-redteam LP 패널 | 단일 HTML LP |
+| `jc-orchestrator` | v1.1.0 | 복합 작업 멀티 에이전트 팀 설계 — 지침 §8 에이전트 팩토리 실행체 (프리셋: html-pt 8에이전트 · code-conductor 비용 라우팅+게이트) | 구성안 + Project Instructions |
 | `mice-rfp-analyzer` | v1.0.1 | RFP·비딩 공고를 7축으로 분석 | .docx 보고서 + .xlsx 평가 매트릭스 |
 | `mice-proposal` | v2.1.1 | RFP 기반 MICE 제안서 자동 구성 | .pptx 제안서 |
 | `mice-estimate` | v2.1.0 | 견적서 생성 (M&C 산출내역서 / 리멤버 양식) + 전략 프라이싱 | .xlsx 견적서 |
