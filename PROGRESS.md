@@ -96,3 +96,19 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
   - §4 실측: (a) 중첩 세션에서 c1·c2 생성 후 c3 차단 + BLOCKED 보고 / (b) 서브에이전트 d1~d3 전부 생성. 훅 단위 실측 7케이스(허용 2→차단·서브 통과·턴 리셋·Bash 리다이렉트 차단·비코드 통과) 전부 정상. 부수 증거: 설치 세션 자체의 Bash 호출이 게이트에 실차단됨(훅 즉시 적용 확인).
   - 잔여: icejc 머신 설치 미수행. INSTALL.md에 Windows 적응 절 추가 권고(→ patch 범프 후보).
 - 후속(2026-07-10): INSTALL.md에 Windows 네이티브 환경 적응 절(§6) 추가 — 위 적응 3건 중 문서화 대상 3건(utf8 훅 커맨드·심링크=복사·`claude update`) 반영, env.sh 생략은 머신별 선택이라 제외. jc-orchestrator **v1.1.0→v1.1.1** patch 범프(Drive 정본 편집 → git·전역 승격, `feat/jc-orchestrator-v1.1.0` 브랜치 추가 커밋). 잔여는 icejc 머신 설치만.
+
+## 2026-07-12 — CP3 인테이크: 5종 업그레이드 + 2종 신규 (Drive 정본 동기화)
+
+- **소스**: Google Drive `Skills/library/`(정본). 브랜치 `claude/drive-sync-cp3-20260712`(베이스: 현행 `main` = PR #14·#16 머지 후). 결정 정본: `docs/CP3-decision-matrix.md`. 외부 소스 판정 — ECC(everything-claude-code 2.0.0, 278종)에서 후보 20건→채택 7건, superpowers/skills-main/doc-coauthoring/image-enhancer는 델타 0 또는 SKIP.
+- **업그레이드 5종**:
+  - mice-market-intel v1.0.3→**v1.0.4** — T7 렌즈(타깃 주체 심층 프로파일)+진입점 4종 + `references/competitive-analysis-method.md` 신규(경쟁분석 3종: 티어링→9차원 가중 스코어링→의사결정형 리포트). CP1 잔여 GO(company-intel 역참조) 완결.
+  - jc-doc-coauthor v1.0.0→**v1.0.1** — 아티팩트 링크 제공 규칙·공유문서 alt-text 체크.
+  - jc-skill-forge v1.0.2→**v1.0.3** — 점검 2모드(Quick Scan/Full Stocktake)·NEW 판정 전 중복 탐색 게이트.
+  - jc-orchestrator v1.1.1→**v1.1.2** — 병렬 스텝 탐지·안티패턴 카탈로그 3종(컨텍스트 브리프 패턴은 jc-prompt-builder 중복으로 불채택). §6 Windows 적응 절(v1.1.1) 보존 확인.
+  - jc-redteam v1.2.1→**v1.2.2** — opt-in 강도 티어 2종(이중 독립 감수 수렴·결정 카운슬), 기본 2모드 불변.
+- **신규 2종**(각 LICENSE.txt 포함):
+  - **jc-brand-discovery v1.0.0** — 8모듈 브랜드 정체성 인터뷰(대상 모드 3종: event/personal/client, state.json 다중세션).
+  - **jc-workspace-ops v1.0.0** — MICE Drive 운영 층(폴더 위계·문서 배치·권한 위생 P1~P6·트래커 규약).
+- **레거시 보존**: `mice-run-of-show`·`mice-aftermath` 유지(삭제 없음). 카탈로그 26→**28종**(자사 기준).
+- **적용 방식**: 기존 스킬 폴더 위 덮어쓰기+신규 파일 추가(폴더 단위 삭제 없음). 라인엔딩 정규화(autocrlf)로 실질 변경 파일만 diff 반영 — 커밋 변경분 = SKILL.md 5종 + 신규 9파일.
+- **후속**: registry/routing-map 재생성(신규 2종 description 편입) · claude.ai zip 재업로드(갱신 7종) · PROGRESS.md는 본 git 인테이크 로그로 유지(Drive `Skills/PROGRESS.md`는 별도 워킹 체크포인트 문서).

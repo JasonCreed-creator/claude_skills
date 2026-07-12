@@ -1,7 +1,7 @@
 ---
 name: jc-skill-forge
 description: 기획자님의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
-version: "v1.0.2"
+version: "v1.0.3"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -25,6 +25,7 @@ license: Complete terms in LICENSE.txt
 ## 1. 인벤토리 — 현재 자산
 - skills 디렉토리를 Glob(`**/SKILL.md`)으로 스캔, 각 스킬의 name·description·핵심 역할을 표로 정리.
 - CLAUDE.md / PROGRESS.md를 읽어 현재 로드맵·확정사항·금지사항을 컨텍스트로 반영.
+- **점검 2모드**: 인벤토리 점검은 규모에 따라 나눈다 — Quick Scan(변경분만: 트리거 정확도·version·변경이력 표층 확인, 저비용 정기용) / Full Stocktake(전체: 중복·최신성·활용도·범위적합 4축 전수 감사, 분기 점검·대형 인테이크용). 소규모·정기면 Quick, 광범위·구조 변경 동반이면 Full을 택한다.
 
 ## 2. 외부 소스 스캔 — 화이트리스트만
 WebFetch로 최신 상태 확인(범위 한정):
@@ -47,6 +48,7 @@ WebFetch로 최신 상태 확인(범위 한정):
 - NEW: 부재 구간 신규 보강
 - SKIP: 불채택
 각 결정에 근거·영향범위·심각도(Critical/Major/Minor)·예상 작업량 명시.
+- **NEW 판정 전 중복 탐색 순서**: 신규 보강(NEW)을 확정하기 전, 로컬(jc-*·mice-*·프리셋·설치된 MCP 도구) → §2 화이트리스트 소스 → GitHub → 웹 순으로 동일 기능 자산의 존재를 먼저 배제한다. 로컬·근접 자산이 나오면 NEW 대신 UPGRADE/MERGE로 강등 검토.
 
 ## 5. 승인 게이트 — 필수 정지점
 1~4를 "스킬 인테이크 제안 리포트"로 출력하고 정지한다.
@@ -70,3 +72,4 @@ WebFetch로 최신 상태 확인(범위 한정):
 ## 변경이력
 
 - v1.0.2 (2026-07-03): CP1 GO-4 외부 패턴 흡수 — §3 적합도 필터에 '저작 품질 보조 기준'(RED→GREEN·REFACTOR 관점, obra/superpowers writing-skills 벤치마크 재구성, 상세는 jc-skill-creator 위임) 추가.
+- v1.0.3 (2026-07-12): CP3 인테이크 — ECC skill-scout(중복 탐색 순서 게이트)·skill-stocktake(Quick Scan/Full Stocktake 2모드) 패턴 흡수.
