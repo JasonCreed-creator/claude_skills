@@ -112,3 +112,17 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **레거시 보존**: `mice-run-of-show`·`mice-aftermath` 유지(삭제 없음). 카탈로그 26→**28종**(자사 기준).
 - **적용 방식**: 기존 스킬 폴더 위 덮어쓰기+신규 파일 추가(폴더 단위 삭제 없음). 라인엔딩 정규화(autocrlf)로 실질 변경 파일만 diff 반영 — 커밋 변경분 = SKILL.md 5종 + 신규 9파일.
 - **후속**: registry/routing-map 재생성(신규 2종 description 편입) · claude.ai zip 재업로드(갱신 7종) · PROGRESS.md는 본 git 인테이크 로그로 유지(Drive `Skills/PROGRESS.md`는 별도 워킹 체크포인트 문서).
+
+## [CP3 후속] Minor 백로그 동기화 — 2026-07-12
+
+- **소스**: Google Drive `Skills/library/`(정본). 브랜치 `claude/drive-sync-backlog-20260712`(베이스: 현행 `main` = PR #17 머지 후). CP3 인테이크(PR #17) 이후 Drive 정본에 쌓인 Minor 백로그 3건을 동기화.
+- **백로그 3건**:
+  - ① jc-orchestrator SKILL.md v1.1.1 이력 행 **실명 일반화** — 레포 사본에 이미 반영됨(PR #17 세션 자체 정리), 실질 diff 0.
+  - ② jc-brand-discovery **ECC 용어 정리**(70_owner-tension.md·participants/·participant-a 치환) — 레포 사본에 이미 반영됨, 실질 diff 0.
+  - ③ jc-prompt-builder **registry 재생성(22→25종)** + routing-map 갱신 + SKILL.md §9 헤더 증분 — 본 동기화로 반영(레포 미반영분).
+- **실반영 = ③ (jc-prompt-builder 3파일)**:
+  - `references/description-registry.md` — 22→**25종** 재생성: `jc-orchestrator` 스냅숏 최초 편입 + 신규 2종 `jc-brand-discovery`·`jc-workspace-ops` 추가. 헤더 생성일 2026-07-12·소스 25종. 버전 범프 반영(jc-doc-coauthor v1.0.1·jc-redteam v1.2.2·jc-skill-forge v1.0.3·mice-market-intel v1.0.4·jc-orchestrator v1.1.2).
+  - `references/routing-map.md` — 2026-07-12 증분 노트 + §2 행 **2건 추가**(brand-discovery·workspace-ops) + §3 판별 **2건**(§3-3 브랜드 정체성 발굴 분기·§3-8 "정리·파일" 신설).
+  - `SKILL.md` — §9 파일 트리 주석 "현행 22종" → "현행 25종".
+- **적용 방식**: 자사 26종 폴더 위 파일 단위 덮어쓰기(폴더 삭제 없음·레거시 2종·_README.txt 보존). 라인엔딩 정규화(autocrlf)로 실질 변경 파일만 diff 반영 — 커밋 변경분 = jc-prompt-builder 3파일. 나머지 25종은 정본=레포 내용 동일(diff 0) 확인.
+- **후속**: claude.ai zip 재업로드(갱신분)는 별도 진행 중 · Drive `Skills/PROGRESS.md`는 별도 워킹 체크포인트 문서로 유지.
