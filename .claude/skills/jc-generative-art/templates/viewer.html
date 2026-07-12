@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<!--
+    jc-generative-art — VIEWER TEMPLATE (jc 리브랜딩)
+    이 파일은 매번 시작점으로 사용하고 수정한다 (jc-generative-art/SKILL.md STEP 0).
+
+    ✓ 그대로 유지(FIXED):
+      - 레이아웃(헤더·사이드바·캔버스), jc 브랜딩(Pretendard/JetBrains Mono·Deep Navy·Electric Blue·라이트 기본)
+      - Seed 섹션(표시 + Prev/Next/Random + Jump 입력/Go)
+      - Actions 섹션(Regenerate / Reset / Download PNG) — 셋 다 동작해야 함
+      - 단일 자가완결 아티팩트(p5.js만 CDN, 나머지 전부 인라인)
+
+    ✗ 창의적으로 교체(VARIABLE):
+      - p5.js 알고리즘(setup/draw/클래스) — 당신의 철학을 구현
+      - params 객체(아트에 필요한 파라미터 정의)
+      - Parameters 섹션 UI(파라미터에 맞는 슬라이더)
+      - Colors 섹션(필요 시. 기본 팔레트 = jc data 시리즈)
+
+    토큰 값 출처(주석으로 명시):
+      - UI 컬러·폰트: jc-design-system/references/signature-tokens.md §1·§2
+      - 아트 팔레트(data 시리즈): signature-tokens.md §1.4 / 다크 보정 mode-mapping.md §3.2
+      금지: 원본 프리셋의 비-jc 색(테라코타·세이지·웜그레이 계열)·세리프 디스플레이 폰트쌍.
+      (구체 금지 색값·폰트명은 SKILL.md FORBIDDEN 목록·references/jc-art-palette.md 참조)
+-->
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JC Generative Art Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <!-- jc UI 폰트: Pretendard(한글·UI), JetBrains Mono(숫자·시드) — signature-tokens.md §2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══ jc 시그니처 토큰 (UI 크롬) — 출처: signature-tokens.md §1 라이트, mode-mapping.md §3 다크 ═══ */
+        :root {
+            --jc-primary: #0A2540;        /* Deep Navy — 헤더·로고 */
+            --jc-primary-soft: #1A3556;
+            --jc-accent: #2962FF;         /* Electric Blue — 액센트·CTA·슬라이더 */
+            --jc-accent-strong: #1E4DCC;  /* hover/press */
+            --jc-accent-soft: #E8EFFF;
+            --jc-bg: #F8F9FB;             /* 페이지 배경 (라이트 기본) */
+            --jc-surface: #FFFFFF;        /* 카드·사이드바 */
+            --jc-surface-alt: #F1F3F7;
+            --jc-text: #1A1D24;           /* 본문 */
+            --jc-text-muted: #5A6270;     /* 보조 */
+            --jc-border: #E5E8ED;
+            --jc-border-strong: #C9CFD8;
+            /* 보조 액션 색(시그니처 포인트 — signature-tokens.md §1.3/§1.5) */
+            --jc-secondary: #5A6270;      /* Neutral — Prev/Next */
+            --jc-magenta: #E91E63;        /* Random 강조(브랜드 포인트) */
+            --jc-radius-md: 8px;
+            --jc-radius-lg: 12px;
+            --jc-shadow-md: 0 2px 8px rgba(10, 37, 64, 0.08);
+            --jc-shadow-lg: 0 10px 30px rgba(10, 37, 64, 0.10);
+            --jc-font-ui: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+                          'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            --jc-font-mono: 'JetBrains Mono', 'D2Coding', Consolas, Monaco, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--jc-font-ui);
+            background: var(--jc-bg);
+            min-height: 100vh;
+            color: var(--jc-text);
+        }
+
+        /* 상단 네이비 헤더 (jc 시그니처) */
+        .topbar {
+            background: var(--jc-primary);
+            color: var(--jc-surface);
+            padding: 18px 28px;
+        }
+        .topbar h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .topbar p {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 64px);
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: var(--jc-surface);
+            padding: 24px;
+            border: 0.5px solid var(--jc-border);
+            border-radius: var(--jc-radius-lg);
+            box-shadow: var(--jc-shadow-lg);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--jc-text);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar .subtitle {
+            color: var(--jc-text-muted);
+            font-size: 13px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        /* Control Sections */
+        .control-section { margin-bottom: 28px; }
+
+        .control-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--jc-text);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .control-section h3::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: var(--jc-accent);   /* 좌측 액센트 라인 — signature-tokens.md §5.2 */
+            border-radius: 2px;
+        }
+
+        /* Seed Controls */
+        .seed-input {
+            width: 100%;
+            background: var(--jc-surface-alt);
+            padding: 12px;
+            border-radius: var(--jc-radius-md);
+            font-family: var(--jc-font-mono);
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 0.5px solid var(--jc-border);
+            color: var(--jc-text);
+            text-align: center;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--jc-accent);
+            box-shadow: 0 0 0 2px var(--jc-accent-soft);
+            background: var(--jc-surface);
+        }
+
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Jump-to-seed row */
+        .seed-jump {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .seed-jump input {
+            background: var(--jc-surface-alt);
+            border: 0.5px solid var(--jc-border);
+            border-radius: var(--jc-radius-md);
+            padding: 10px 12px;
+            font-family: var(--jc-font-mono);
+            font-size: 13px;
+            color: var(--jc-text);
+            min-width: 0;
+        }
+        .seed-jump input:focus {
+            outline: none;
+            border-color: var(--jc-accent);
+            box-shadow: 0 0 0 2px var(--jc-accent-soft);
+        }
+        .seed-jump .button { width: auto; padding: 10px 16px; }
+
+        .regen-button { margin-bottom: 0; }
+
+        /* Parameter Controls */
+        .control-group { margin-bottom: 18px; }
+
+        .control-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--jc-text);
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--jc-border);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--jc-accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: var(--jc-accent-strong);
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--jc-accent);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-display {
+            font-family: var(--jc-font-mono);
+            font-size: 12px;
+            color: var(--jc-text-muted);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* Color Pickers */
+        .color-group { margin-bottom: 14px; }
+
+        .color-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--jc-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker-container input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: 0.5px solid var(--jc-border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .color-value {
+            font-family: var(--jc-font-mono);
+            font-size: 12px;
+            color: var(--jc-text-muted);
+        }
+
+        /* Buttons */
+        .button {
+            background: var(--jc-accent);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--jc-radius-md);
+            font-family: var(--jc-font-ui);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: var(--jc-accent-strong);
+            transform: translateY(-1px);
+        }
+
+        .button:active { transform: translateY(0); }
+
+        /* Prev/Next — 중립 보조 버튼 */
+        .button.secondary { background: var(--jc-secondary); }
+        .button.secondary:hover { background: #474D58; }
+
+        /* Random — 마젠타 포인트(브랜드 포인트, signature-tokens.md §1.3) */
+        .button.tertiary { background: var(--jc-magenta); }
+        .button.tertiary:hover { background: #C2185B; }
+
+        /* Reset — 아웃라인(파괴적이지 않은 보조 액션) */
+        .button.ghost {
+            background: transparent;
+            color: var(--jc-text);
+            border: 0.5px solid var(--jc-border-strong);
+        }
+        .button.ghost:hover {
+            background: var(--jc-surface-alt);
+            transform: translateY(-1px);
+        }
+
+        .button-row { display: flex; gap: 8px; }
+        .button-row .button { flex: 1; }
+        .button-stack > .button { margin-bottom: 8px; }
+        .button-stack > .button:last-child { margin-bottom: 0; }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: var(--jc-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--jc-shadow-lg);
+            background: var(--jc-surface);
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 360px;
+            font-size: 15px;
+            color: var(--jc-text-muted);
+        }
+
+        /* Responsive — Stack on mobile */
+        @media (max-width: 600px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .canvas-area { padding: 20px 0 0; }
+        }
+
+        /* 인쇄 시 라이트 강제 (RULE-PRINT-LIGHT) — 배경 토너 절약 */
+        @media print {
+            body { background: #FFFFFF; }
+            .sidebar { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 네이비 헤더 (FIXED — jc 시그니처 크롬) -->
+    <header class="topbar">
+        <h1>JC Generative Art</h1>
+        <p>시드 재현 가능한 p5.js 제너러티브 아트 · MICE 모션 배경 / 데이터 아트 / 컨퍼런스 비주얼</p>
+    </header>
+
+    <div class="container">
+        <!-- Control Sidebar -->
+        <div class="sidebar">
+            <!-- 작품 제목 (아트에 맞게 수정) -->
+            <h2>TITLE — 수정</h2>
+            <div class="subtitle">SUBTITLE — 수정 (예: 알고리즘 철학 한 줄)</div>
+
+            <!-- Seed Section (ALWAYS KEEP THIS) -->
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="12345" onchange="updateSeed()" aria-label="현재 시드">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">← Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next →</button>
+                </div>
+                <!-- Jump to seed -->
+                <div class="seed-jump">
+                    <input type="number" id="seed-jump-input" placeholder="시드로 점프…" aria-label="점프할 시드">
+                    <button class="button" onclick="jumpToSeed()">Go</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">↻ Random</button>
+            </div>
+
+            <!-- Parameters Section (CUSTOMIZE THIS FOR YOUR ART) -->
+            <div class="control-section">
+                <h3>Parameters</h3>
+
+                <!-- Particle Count -->
+                <div class="control-group">
+                    <label>입자 수 (Particle Count)</label>
+                    <div class="slider-container">
+                        <input type="range" id="particleCount" min="1000" max="10000" step="500" value="5000" oninput="updateParam('particleCount', this.value)">
+                        <span class="value-display" id="particleCount-value">5000</span>
+                    </div>
+                </div>
+
+                <!-- Flow Speed -->
+                <div class="control-group">
+                    <label>흐름 속도 (Flow Speed)</label>
+                    <div class="slider-container">
+                        <input type="range" id="flowSpeed" min="0.1" max="2.0" step="0.1" value="0.5" oninput="updateParam('flowSpeed', this.value)">
+                        <span class="value-display" id="flowSpeed-value">0.5</span>
+                    </div>
+                </div>
+
+                <!-- Noise Scale -->
+                <div class="control-group">
+                    <label>노이즈 스케일 (Noise Scale)</label>
+                    <div class="slider-container">
+                        <input type="range" id="noiseScale" min="0.001" max="0.02" step="0.001" value="0.005" oninput="updateParam('noiseScale', this.value)">
+                        <span class="value-display" id="noiseScale-value">0.005</span>
+                    </div>
+                </div>
+
+                <!-- Trail Alpha -->
+                <div class="control-group">
+                    <label>잔상 농도 (Trail Alpha)</label>
+                    <div class="slider-container">
+                        <input type="range" id="trailAlpha" min="2" max="40" step="1" value="12" oninput="updateParam('trailAlpha', this.value)">
+                        <span class="value-display" id="trailAlpha-value">12</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors Section (OPTIONAL — 기본 팔레트 = jc data 시리즈) -->
+            <div class="control-section">
+                <h3>Colors</h3>
+
+                <!-- Color 1 — jc data-1 Electric Blue -->
+                <div class="color-group">
+                    <label>data-1 (Electric Blue)</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color1" value="#2962FF" onchange="updateColor(0, this.value)">
+                        <span class="color-value" id="color1-value">#2962FF</span>
+                    </div>
+                </div>
+
+                <!-- Color 2 — jc data-2 Magenta -->
+                <div class="color-group">
+                    <label>data-2 (Magenta)</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color2" value="#E91E63" onchange="updateColor(1, this.value)">
+                        <span class="color-value" id="color2-value">#E91E63</span>
+                    </div>
+                </div>
+
+                <!-- Color 3 — jc data-3 Vivid Orange -->
+                <div class="color-group">
+                    <label>data-3 (Vivid Orange)</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color3" value="#FF5722" onchange="updateColor(2, this.value)">
+                        <span class="color-value" id="color3-value">#FF5722</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section (ALWAYS KEEP THIS — 셋 다 동작) -->
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-stack">
+                    <button class="button" onclick="regenerate()">Regenerate</button>
+                    <button class="button ghost" onclick="resetParameters()">Reset</button>
+                    <button class="button" onclick="downloadPNG()">Download PNG</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Canvas Area -->
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">제너러티브 아트 초기화 중…</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════
+        // PARAMETERS — 아트에 맞게 정의 (VARIABLE)
+        // colorPalette 기본값 = jc data 시리즈 5색 (출처: signature-tokens.md §1.4)
+        //   data-1 #2962FF / data-2 #E91E63 / data-3 #FF5722 / data-4 #00E676 / data-5 #0A2540
+        //   다크 배경 보정이 필요하면 mode-mapping.md §3.2 값으로 교체.
+        // '자유 팔레트 모드'는 사용자가 명시할 때만 — 기본은 jc 팔레트.
+        // ═══════════════════════════════════════════════════════════════════════
+
+        let params = {
+            seed: 12345,
+            particleCount: 5000,
+            flowSpeed: 0.5,
+            noiseScale: 0.005,
+            trailAlpha: 12,
+            // jc data 시리즈 (signature-tokens.md §1.4) — 캔버스 배경은 Deep Navy(data-5)
+            colorPalette: ['#2962FF', '#E91E63', '#FF5722', '#00E676'],
+            bgColor: '#0A2540'  // Deep Navy 배경 (signature-tokens.md §1.1 --jc-primary)
+        };
+
+        let defaultParams = JSON.parse(JSON.stringify(params)); // 깊은 복사(reset용)
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // P5.JS 알고리즘 — 당신의 철학으로 교체 (VARIABLE)
+        // 아래는 동작하는 "흐름 필드(flow field)" 참조 구현이다.
+        // 철학이 요구하는 것을 만들고, 이 예시를 그대로 베끼지 말 것.
+        // 시드 재현성·jc 팔레트·매끄러운 실행은 유지한다.
+        // ═══════════════════════════════════════════════════════════════════════
+
+        let particles = [];
+        let scl = 12;             // 흐름 필드 해상도
+        let cols, rows;
+
+        function setup() {
+            const canvas = createCanvas(1200, 1200);
+            canvas.parent('canvas-container');
+            const ld = document.querySelector('.loading');
+            if (ld) ld.style.display = 'none';
+            initializeSystem();
+        }
+
+        function initializeSystem() {
+            // 시드 고정 → 같은 시드는 항상 같은 결과 (Art Blocks 패턴)
+            randomSeed(params.seed);
+            noiseSeed(params.seed);
+
+            cols = floor(width / scl);
+            rows = floor(height / scl);
+
+            particles = [];
+            for (let i = 0; i < params.particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            // jc Deep Navy 배경으로 클리어
+            background(params.bgColor);
+            loop();
+        }
+
+        function draw() {
+            // 잔상(trail)을 위한 반투명 배경 덮기
+            const bg = color(params.bgColor);
+            bg.setAlpha(params.trailAlpha);
+            noStroke();
+            fill(bg);
+            rect(0, 0, width, height);
+
+            for (const p of particles) {
+                p.follow();
+                p.update();
+                p.show();
+                p.edges();
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // PARTICLE — 아트에 맞게 교체 (VARIABLE)
+        // ═══════════════════════════════════════════════════════════════════════
+
+        class Particle {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.vel = createVector(0, 0);
+                this.acc = createVector(0, 0);
+                this.maxSpeed = 2 + params.flowSpeed * 2;
+                // 입자별 색을 jc 팔레트에서 시드 기반으로 선택
+                const c = params.colorPalette[floor(random(params.colorPalette.length))];
+                this.col = color(c);
+                this.col.setAlpha(90);
+            }
+
+            follow() {
+                // Perlin 노이즈로 흐름 각도 결정
+                const angle = noise(
+                    this.pos.x * params.noiseScale,
+                    this.pos.y * params.noiseScale,
+                    frameCount * 0.0015
+                ) * TWO_PI * 2;
+                const force = p5.Vector.fromAngle(angle);
+                force.setMag(0.3 * params.flowSpeed + 0.1);
+                this.acc.add(force);
+            }
+
+            update() {
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
+                this.acc.mult(0);
+            }
+
+            show() {
+                stroke(this.col);
+                strokeWeight(1.2);
+                point(this.pos.x, this.pos.y);
+            }
+
+            edges() {
+                // 화면을 벗어나면 반대편에서 재등장(wrap)
+                if (this.pos.x > width) this.pos.x = 0;
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0;
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // UI 핸들러 — 파라미터에 맞게 교체 (VARIABLE)
+        // ═══════════════════════════════════════════════════════════════════════
+
+        function updateParam(name, value) {
+            params[name] = (typeof params[name] === 'number') ? parseFloat(value) : value;
+            const disp = document.getElementById(name + '-value');
+            if (disp) disp.textContent = value;
+            // 입자 수·노이즈·배경 등 구조 파라미터는 재초기화 필요
+            if (name === 'particleCount') {
+                initializeSystem();
+            }
+            // 그 외(속도·잔상)는 다음 프레임에 자연 반영
+        }
+
+        function updateColor(index, value) {
+            params.colorPalette[index] = value;
+            const disp = document.getElementById('color' + (index + 1) + '-value');
+            if (disp) disp.textContent = value;
+            initializeSystem(); // 입자 색 재배정
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // SEED CONTROLS — 항상 유지 (FIXED)
+        // ═══════════════════════════════════════════════════════════════════════
+
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            const input = document.getElementById('seed-input');
+            const newSeed = parseInt(input.value, 10);
+            if (Number.isFinite(newSeed) && newSeed > 0) {
+                params.seed = newSeed;
+                initializeSystem();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = Math.max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function nextSeed() {
+            params.seed = params.seed + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function jumpToSeed() {
+            const input = document.getElementById('seed-jump-input');
+            const target = parseInt(input.value, 10);
+            if (Number.isFinite(target) && target > 0) {
+                params.seed = target;
+                updateSeedDisplay();
+                input.value = '';
+                initializeSystem();
+            }
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = Math.floor(Math.random() * 999999) + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // ACTIONS — 항상 유지 (FIXED)
+        // ═══════════════════════════════════════════════════════════════════════
+
+        function regenerate() {
+            // 같은 시드·파라미터로 시스템 재생성(애니메이션 처음부터)
+            initializeSystem();
+        }
+
+        function resetParameters() {
+            params = JSON.parse(JSON.stringify(defaultParams));
+
+            // 슬라이더·표시 동기화
+            for (const key of ['particleCount', 'flowSpeed', 'noiseScale', 'trailAlpha']) {
+                const el = document.getElementById(key);
+                const disp = document.getElementById(key + '-value');
+                if (el) el.value = params[key];
+                if (disp) disp.textContent = params[key];
+            }
+            // 컬러 피커 동기화
+            for (let i = 0; i < 3; i++) {
+                const el = document.getElementById('color' + (i + 1));
+                const disp = document.getElementById('color' + (i + 1) + '-value');
+                if (el) el.value = params.colorPalette[i];
+                if (disp) disp.textContent = params.colorPalette[i];
+            }
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function downloadPNG() {
+            // 현재 캔버스를 PNG로 저장 (파일명에 시드 포함 → 재현 추적)
+            saveCanvas('jc-generative-art-seed-' + params.seed, 'png');
+        }
+
+        // 로드 시 UI 초기화
+        window.addEventListener('load', updateSeedDisplay);
+    </script>
+</body>
+</html>

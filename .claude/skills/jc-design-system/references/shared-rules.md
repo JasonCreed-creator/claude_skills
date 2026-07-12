@@ -19,6 +19,7 @@
 | `RULE-PRINT-LIGHT` | 다크 산출물도 인쇄 시 라이트 강제 | HTML (dashboard·sponsor-deck) | `mode-mapping.md §4.2` |
 | `RULE-NO-COMPANY` | 회사·개인 식별정보 하드코딩 금지 | 전 산출물 | 구현 예: pt-script·sponsor-deck 스크립트 |
 | `RULE-VISUAL-ROUTING` | 시각 에셋 라우팅 (사진·영상=Higgsfield / 표·차트·SVG·HTML=Claude) | 이미지·영상 포함 산출물 | — |
+| `RULE-VERSION-FACTS` | 제품·버전 팩트는 기록 직전 실검증 + 검증일 병기 | 전 산출물·스킬 문서 | — |
 
 ---
 
@@ -139,7 +140,26 @@
 
 ---
 
+## RULE-VERSION-FACTS — 제품·버전 팩트 실검증
+
+**정의**: 산출물·스킬 문서·스크립트에 **제품명·모델명·버전·가격 등 시점 종속 팩트**를 기록할 때는, 기록 직전에 공식 소스(공식 문서·레퍼런스 스킬·웹 검증)로 실검증하고 **검증일을 병기**한다. 기억·추정에 의한 기록 금지.
+
+**표기 규칙**:
+- **계열명 우선**: 특정 스냅숏 ID보다 계열명(예: Claude Sonnet 계열 최신)을 우선 표기하고, 코드에 ID가 필요한 경우에만 정확한 현행 ID를 사용한다.
+- 검증일 병기 형식: `(YYYY-MM-DD 검증 기준)` — 예: `claude-sonnet-5  # 2026-07-03 검증 기준 — 각 계열 최신 버전 사용 (RULE-VERSION-FACTS)`
+
+**근거**: 폐기 모델 ID가 스킬 스크립트에 잔존하면 실행 시 404로 즉시 파손된다(2026-07 jc-mcp-builder에서 실사례 — 폐기된 claude-3-7-sonnet·claude-3-5-sonnet ID 4곳 교체). 시점 종속 팩트는 부패하는 자산이므로, "언제 검증했는가"가 팩트의 일부다.
+
+**구현 예**: `jc-mcp-builder/scripts/evaluation.py` L223 — 기본 모델 상수에 검증일 주석 병기.
+
+**체크 항목**: jc-redteam `verification-checklist.md` §1-8 (제품·버전 팩트 실검증) — 검증일 누락·폐기 버전 잔존 여부를 감수 단계에서 재확인.
+
+---
+
 ## 변경 이력
+
+### v1.2.0 (2026-07-03) — 제품·버전 팩트 룰 추가
+- `RULE-VERSION-FACTS` 신설(기록 직전 실검증 + 검증일 병기 + 계열명 우선). jc-mcp-builder 폐기 모델 ID 사고의 재발 방지책. jc-redteam 체크리스트 §1-8과 상호 참조.
 
 ### v1.1.0 (2026-06-04) — 시각 에셋 라우팅 추가
 - `RULE-VISUAL-ROUTING` 신설(사진/래스터·영상=Higgsfield, 표·차트·SVG/HTML=Claude). mice-proposal·mice-sponsor-deck·jc-landing-page·jc-artifact-builder 참조.

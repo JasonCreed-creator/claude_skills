@@ -1,10 +1,10 @@
 ---
 name: mice-meeting-minutes
-description: MICE 행사 기획·운영 과정의 미팅 메모·텍스트 transcript·구술 정리를 입력받아 8축 프레임(안건·발언요지·결정사항·Action Items·리스크·미결사항·후속일정·전략메모)으로 구조화한 인터랙티브 HTML 대시보드를 생성하는 스킬. 대시보드는 KPI 카드·Action 칸반·시리즈 누적 차트·전략 메모 5W1H 카드를 단일 파일로 통합하며, Slack 페이스트·PDF 저장·JSON 백업 옵션을 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '회의록', '미팅록', '미팅 노트', '회의 정리', '회의 요약', '미팅 정리', 'Action Items', '액션 아이템', '후속 조치', '팔로업', 'follow-up', 'Discovery Meeting 정리', '킥오프 미팅 정리', '정기 미팅 정리', '발주처 협의 기록', '사전답사 기록', '협력사 미팅 정리'를 언급할 때. 클로바노트·Otter·Whisper·Zoom·Google Meet·Microsoft Teams 등에서 추출한 transcript 텍스트를 업로드하며 '정리해줘', '구조화해줘', '회의록으로 만들어줘', 'Action 뽑아줘', '대시보드로 만들어줘'를 요청할 때. 외부 클라이언트 송부용/내부 보관용 톤 분기 지원. 정기 미팅 시리즈 모드로 회차 누적 추적 가능 (window.storage 영속화). 본 스킬의 산출물은 mice-proposal 스킬의 입력으로 체이닝 가능 (Discovery 회의록에서 고객 니즈·예산·일정 자동 추출). 단, '발표 스크립트', '발표 대본', 'PT 멘트', 'MC 멘트'는 pt-script 영역이므로 사용하지 말 것. '제안서'는 mice-proposal, '견적서'는 mice-estimate, '행사 결과 KPI 대시보드'는 mice-dashboard 영역. 음성 파일 자체 STT는 본 스킬 범위 밖 — 클로바노트·Otter·Whisper 등 외부 도구로 텍스트 변환 후 입력.
-version: "v2.1.0"
+description: MICE 행사 기획·운영 과정의 미팅 메모·텍스트 transcript·구술 정리를 입력받아 8축 프레임(안건·발언요지·결정사항·Action Items·리스크·미결사항·후속일정·전략메모)으로 구조화한 인터랙티브 HTML 대시보드를 생성하는 스킬. 대시보드는 KPI 카드·Action 칸반·시리즈 누적 차트·전략 메모 5W1H 카드를 단일 파일로 통합하며, Slack 페이스트·PDF 저장·JSON 백업 옵션을 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '회의록', '미팅록', '미팅 노트', '회의 정리', '회의 요약', '미팅 정리', 'Action Items', '액션 아이템', '후속 조치', '팔로업', 'follow-up', 'Discovery Meeting 정리', '킥오프 미팅 정리', '정기 미팅 정리', '발주처 협의 기록', '사전답사 기록', '협력사 미팅 정리'를 언급할 때. 클로바노트·Otter·Whisper·Zoom·Google Meet·Microsoft Teams 등에서 추출한 transcript 텍스트를 업로드하며 '정리해줘', '구조화해줘', '회의록으로 만들어줘', 'Action 뽑아줘', '대시보드로 만들어줘'를 요청할 때. 외부 클라이언트 송부용/내부 보관용 톤 분기 지원. 정기 미팅 시리즈 모드로 회차 누적 추적 가능 (window.storage 영속화). 본 스킬의 산출물은 mice-proposal 스킬의 입력으로 체이닝 가능 (Discovery 회의록에서 고객 니즈·예산·일정 자동 추출). 단, '발표 스크립트', '발표 대본', 'PT 멘트', 'MC 멘트'는 pt-script 영역이므로 사용하지 말 것. '제안서'는 mice-proposal, '견적서'는 mice-estimate, '행사 결과 KPI 대시보드'는 mice-dashboard 영역. 음성 파일 자체 STT는 본 스킬 범위 밖 — 클로바노트·Otter·Whisper 등 외부 도구로 텍스트 변환 후 입력. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
+version: "v2.1.2"
 ---
 
-# mice-meeting-minutes (v2.1.0)
+# mice-meeting-minutes (v2.1.2)
 
 MICE 행사 기획·운영 미팅을 18년 경력 전략가 시각의 8축 프레임으로 구조화하여 **인터랙티브 HTML 대시보드**로 즉시 시각화·추적·공유하는 스킬.
 
@@ -14,7 +14,9 @@ MICE 행사 기획·운영 미팅을 18년 경력 전략가 시각의 8축 프�
 |------|------|----------|
 | v1 | ~2026-04 | .docx 회의록 + .xlsx Action 트래커 (정적 산출물) |
 | v2 | 2026-05 | HTML 단일 파일 대시보드 (인터랙티브) + External/Internal 토글 + window.storage 시리즈 영속화 |
-| **v2.1.0** | **2026-05-27** | **라이트/다크 모드 토글 추가** + **JSON 자동 백업 옵션 강화** + jc-design-system DARK_* 토큰 매핑 (mice-proposal v2.1.1 / mice-sponsor-deck v2.1.0 / mice-dashboard v2.0 일관) |
+| v2.1.0 | 2026-05-27 | 라이트/다크 모드 토글 추가 + JSON 자동 백업 옵션 강화 + jc-design-system DARK_* 토큰 매핑 (mice-proposal v2.1.1 / mice-sponsor-deck v2.1.0 / mice-dashboard v2.0 일관) |
+| **v2.1.2** | **2026-07-04** | **CP2 Deep Audit 조치 — 크기 검증 게이트 50KB로 정합(100KB→50KB), RULE-NO-COMPANY 예시 전량 변수/가명화, 레거시 .docx 산출 참조 .html 정정.** |
+| v2.1.1 | 2026-07-03 | 레거시 v1 산출물 서술 잔재 정정 (.docx·.xlsx → HTML 대시보드·.series-data JSON) + 파일 크기 검증 기준 100KB 통일 (CP1 GO-1) |
 
 ### v2 → v2.1.0 변경 요약 (5줄)
 1. 대시보드 우상단에 **테마 토글** (라이트/다크) 추가. External/Internal 토글과 독립 동시 작동
@@ -117,7 +119,7 @@ dashboard_[프로젝트]_[YYYYMMDD].html
 ```
 
 예시:
-- `dashboard_darktrace-discovery_20260509.html`
+- `dashboard_clientA-discovery_20260509.html`
 - `dashboard_rmb-rebuild26_20260509.html`
 - `dashboard_internal-weekly_20260509.html`
 
@@ -205,7 +207,7 @@ dashboard_[프로젝트]_[YYYYMMDD].html
 ## 7. 시리즈 모드 (`--series`)
 
 ```
---series=darktrace-discovery
+--series=clientA-discovery
 ```
 
 → 이전 회차 미해결 Action 자동 carry-over + 차회 빌드 시 누적 시트 갱신. 상세는 `references/series-tracking.md`.
@@ -241,8 +243,8 @@ dashboard_[프로젝트]_[YYYYMMDD].html
   "_meta": {
     "backup_date": "2026-05-27T10:30:00+09:00",
     "skill_version": "v2.1.0",
-    "project_name": "TOBESOFT TECH FORUM 2026 Discovery",
-    "series_id": "ttf2026-discovery"
+    "project_name": "고객사B 세미나 2026 Discovery",
+    "series_id": "clientB-seminar26-discovery"
   },
   "current_session": {
     "meeting_date": "2026-05-09",
@@ -337,7 +339,7 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)에서 추출한 
 3. PDF 발주처 송부 (워드 대체)
 
 ### 패턴 3: 시리즈 누적 추적
-1. 1차 미팅: `--series=darktrace-discovery` 빌드 → "시리즈 저장" 클릭
+1. 1차 미팅: `--series=clientA-discovery` 빌드 → "시리즈 저장" 클릭
 2. **"JSON 백업 다운로드"** 클릭 → 외부 폴더(Google Drive)에 영구 보관 (v2.1.0)
 3. 2차 미팅: 동일 series_id로 빌드 → carry-over 자동 적용
 4. N차 미팅: 회차별 완료율 차트로 진척 시각화
@@ -354,6 +356,6 @@ Type A 외부 클라이언트 미팅(Discovery / 정기 협의)에서 추출한 
 
 ## 13. 검증 자산 (v2.1.0)
 
-- `_samples/sample_transcript.txt` — TOBESOFT TECH FORUM 2026 Discovery 미팅 가상 transcript (Sprint 3·4 시나리오 연속성)
+- `_samples/sample_transcript.txt` — 고객사B 세미나 2026 Discovery 미팅 가상 transcript (Sprint 3·4 시나리오 연속성)
 - v2.1.0 강화 후 본 transcript로 샘플 HTML 대시보드 생성·검수
 - 회사 종속 표현 0건 (발주처는 "T社"로 일반화) — 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`

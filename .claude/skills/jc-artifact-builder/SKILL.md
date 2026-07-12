@@ -1,6 +1,6 @@
 ---
 name: jc-artifact-builder
-description: jc-design-system 시그니처 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React + TypeScript + Tailwind + shadcn/ui) 빌더. 상태관리·라우팅·다중 컴포넌트가 필요한 복합 아티팩트를 단일 HTML로 번들한다. 폰트(Pretendard)·컬러(accent #2962FF·navy #0A2540)·라이트/다크·차트 시리즈·인포그래픽 스케일이 jc-design-system 정본에서 자동 매핑된다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '아티팩트', 'artifact', 'React 아티팩트', '인터랙티브 앱', '웹앱', 'claude.ai 아티팩트', 'shadcn', '컴포넌트 앱', '상태관리 UI', '라우팅 있는 화면', '인터랙티브 대시보드 앱'을 언급할 때. MICE 데이터(견적·회의록·실적)를 입력하며 '클릭 가능한 앱으로', '필터 되는 대시보드로', '탭/모달 있는 화면으로 만들어줘'를 요청할 때. 단, 단순 단일 HTML/JSX 한 장은 본 스킬을 쓰지 말 것(과함). 정적 결과보고 KPI 대시보드 1장은 mice-dashboard, 회의록 대시보드는 mice-meeting-minutes, 발주처 제안서(PPTX)는 mice-proposal, 스폰서 데크(HTML)는 mice-sponsor-deck 영역. 본 스킬은 그 산출물의 ChainPayload/v1 JSON을 입력으로 받아 인터랙티브 React 아티팩트로 확장할 수 있다.
+description: jc-design-system 시그니처 테마가 기본 적용된 claude.ai 인터랙티브 아티팩트(React + TypeScript + Tailwind + shadcn/ui) 빌더. 상태관리·라우팅·다중 컴포넌트가 필요한 복합 아티팩트를 단일 HTML로 번들한다. 폰트(Pretendard)·컬러(accent #2962FF·navy #0A2540)·라이트/다크·차트 시리즈·인포그래픽 스케일이 jc-design-system 정본에서 자동 매핑된다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '아티팩트', 'artifact', 'React 아티팩트', '인터랙티브 앱', '웹앱', 'claude.ai 아티팩트', 'shadcn', '컴포넌트 앱', '상태관리 UI', '라우팅 있는 화면', '인터랙티브 대시보드 앱'을 언급할 때. MICE 데이터(견적·회의록·실적)를 입력하며 '클릭 가능한 앱으로', '필터 되는 대시보드로', '탭/모달 있는 화면으로 만들어줘'를 요청할 때. 단, 단순 단일 HTML/JSX 한 장은 본 스킬을 쓰지 말 것(과함). 정적 결과보고 KPI 대시보드 1장은 mice-dashboard, 회의록 대시보드는 mice-meeting-minutes, 발주처 제안서(PPTX)는 mice-proposal, 스폰서 데크(HTML)는 mice-sponsor-deck 영역. 본 스킬은 그 산출물의 ChainPayload/v1 JSON을 입력으로 받아 인터랙티브 React 아티팩트로 확장할 수 있다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -18,6 +18,7 @@ license: Complete terms in LICENSE.txt
 5. (선택) 아티팩트 테스트
 
 **Stack**: React 18 + TypeScript + Vite + Parcel(번들) + Tailwind CSS + shadcn/ui + **jc-design-system 테마**
+<!-- Tailwind 3.4.1 핀: 2026-07-03 검증 기준 — 핀 사유: 재현성 (RULE-VERSION-FACTS) -->
 
 ## Design & Style Guidelines (jc-design-system)
 
@@ -44,6 +45,7 @@ bash scripts/init-artifact.sh <project-name>
 cd <project-name>
 ```
 생성물: React+TS(Vite), Tailwind 3.4.1 + shadcn 테마, `@/` 별칭, 40+ shadcn 컴포넌트, Radix 의존성, Parcel 번들 설정, **jc-design-system 테마(`tailwind.config.js`·`src/index.css`)와 Pretendard 폰트 링크가 사전 주입됨**.
+<!-- Tailwind 3.4.1 핀: 2026-07-03 검증 기준 — 핀 사유: 재현성 (RULE-VERSION-FACTS) -->
 
 ### Step 2: Develop Your Artifact
 생성된 파일을 편집한다. jc 토큰은 일반 Tailwind 클래스처럼 쓴다:

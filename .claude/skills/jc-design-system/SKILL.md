@@ -1,7 +1,7 @@
 ---
 name: jc-design-system
 description: 개인 MICE 전략가용 디자인 토큰 시스템. 다른 스킬이 산출물 생성 시 참조하는 reference 자산이다. 컬러·타이포·사이즈·간격·컴포넌트 패턴을 통합 정의하며 클라이언트별 오버레이를 토글로 지원한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '디자인 토큰', '디자인 시스템', '스타일 가이드', '비주얼 시스템', 'JC 디자인', '개인 디자인 토큰'을 언급할 때. 또한 mice-proposal / mice-estimate / pt-script / mice-dashboard 등 다른 스킬이 산출물 디자인 일관성을 위해 자동 호출할 때. 컬러 팔레트 정의·수정·확장, 클라이언트별 컬러 오버레이 적용, 라이트/다크 모드 매핑 조회, KPI 카드·차트 컨테이너·섹션 구분 등 컴포넌트 패턴 적용 시에도 사용한다.
-version: "v1.2.0"
+version: "v1.3.1"
 ---
 
 # JC Design System
@@ -28,21 +28,12 @@ MICE 전략가의 개인 디자인 토큰 시스템이다. 회사 종속이 아�
 - `pt-script` 발표 대본 생성 시 → 문서 헤더·강조 스타일 적용
 - `mice-dashboard` 대시보드 생성 시 → KPI 카드·차트 시리즈 적용
 
+> 본 스킬은 ChainPayload/v1 8종 체이닝 대상(mice-rfp-analyzer·mice-proposal·mice-estimate·pt-script·mice-dashboard·mice-meeting-minutes·mice-sponsor-deck·jc-redteam)에 속하지 않으며, 봉투를 직접 생산·수신하지 않는다. 다만 봉투의 clientId 필드를 통해 client-overlays.md 오버레이와 연결되는 '보조 소비자'로 8종 체이닝 생태계에 간접 참여한다.
+
 ## 호출 흐름
 
-```
-1. references/signature-tokens.md 로드 (개인 고정 자산)
-       ↓
-2. references/client-overlays.md 에서 클라이언트 오버레이 적용
-       (client_id 미지정 시 시그니처 그대로 사용)
-       ↓
-3. references/mode-mapping.md 로 라이트/다크 결정
-       (산출물 유형별 기본값 따름)
-       ↓
-4. references/component-patterns.md 로 컴포넌트 적용
-       ↓
-5. 산출물 생성 (다른 스킬이 결과물 빌드)
-```
+토큰 로드 → 클라이언트 오버레이 → 라이트/다크 모드 결정 → 컴포넌트 패턴 적용, 4단계로 진행 후 다른 스킬이 산출물을 빌드한다.
+상세 절차는 `references/usage-guide.md` 참조.
 
 ## 파일 구조
 
@@ -91,6 +82,10 @@ jc-design-system/
 - 컴포넌트 패턴 확장: 기존 패턴과 충돌하지 않는 범위에서 추가
 
 ## 변경 이력
+
+### v1.3.1 (2026-07-03) — 정합 감사 후속
+
+호출 흐름 중복 서술 축약(상세는 usage-guide.md 일원화), 8종 체이닝 '보조 소비자' 역할 명문화, chaining-protocol.md §8 마이그레이션 표 실측 반영(mice-estimate generatedAt 보강 + 자율 채택 2종 등재).
 
 ### v1.1.0 (2026-05-27) — Sprint 7 보강
 

@@ -22,8 +22,13 @@ Thumbs.db
 output/
 dist/
 build/
+# jc-theme-factory 쇼케이스는 build_showcase.py가 매번 재생성 (정본은 SoT)
+**/theme-showcase.html
 
 # Office lock/temp files
 ~$*.xlsx
 ~$*.docx
 ~$*.pptx
+
+# forge/skillupgrade 롤백 백업 (git 히스토리가 정본 — 로컬 백업은 추적 안 함)
+_archive/

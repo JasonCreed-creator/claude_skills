@@ -57,7 +57,7 @@ async function addIcon(slide, opts) {
 
     slide.addShape(shapeType, {
       x: bgX, y: bgY, w: bgSize, h: bgSize,
-      fill: { color: bgColor },
+      fill: { color: bgColor.replace("#", "") },
       line: { type: "none" },
       ...(bgShape === "rect" ? { rectRadius: 0.06 } : {})
     });
@@ -124,6 +124,7 @@ const {
 ```javascript
 async function addBigNumberCalloutWithIcon(slide, opts) {
   const { x, y, w, h, value, unit, label, IconComponent, iconColor = "#2962FF" } = opts;
+  const iconColorHex = iconColor.replace("#", "");  // pptxgenjs 호출용 (# 없는 6자리)
 
   // 아이콘 (상단 중앙, 원형 배경)
   const iconSize = 0.7;
@@ -138,7 +139,7 @@ async function addBigNumberCalloutWithIcon(slide, opts) {
   // 큰 숫자
   slide.addText(String(value), {
     x, y: y + 1.2, w, h: h * 0.4,
-    fontSize: 56, bold: true, color: iconColor,
+    fontSize: 56, bold: true, color: iconColorHex,
     fontFace: "Arial Black",
     align: "center", valign: "bottom", margin: 0
   });
@@ -190,6 +191,7 @@ for (let i = 0; i < items.length; i++) {
 ```javascript
 async function addIconCard(slide, opts) {
   const { x, y, w, h, IconComponent, title, desc, accentColor = "#2962FF" } = opts;
+  const accentColorHex = accentColor.replace("#", "");  // pptxgenjs 호출용 (# 없는 6자리)
 
   // 카드 배경
   slide.addShape(pres.shapes.RECTANGLE, {
@@ -202,7 +204,7 @@ async function addIconCard(slide, opts) {
   // 좌측 Accent 보더
   slide.addShape(pres.shapes.RECTANGLE, {
     x, y, w: 0.08, h,
-    fill: { color: accentColor },
+    fill: { color: accentColorHex },
     line: { type: "none" }
   });
 
@@ -217,7 +219,7 @@ async function addIconCard(slide, opts) {
   // 제목
   slide.addText(title, {
     x: x + 1.5, y: y + 0.3, w: w - 1.8, h: 0.7,
-    fontSize: 18, bold: true, color: accentColor,
+    fontSize: 18, bold: true, color: accentColorHex,
     align: "left", valign: "middle", margin: 0
   });
 
@@ -237,7 +239,7 @@ const cards = [
   { icon: HiOutlineLightBulb, title: "기획력", desc: "18년 MICE 경력 기반\n핵심 컨셉 설계" },
   { icon: HiOutlineCog, title: "운영력", desc: "연간 25건+ 행사\n위기 대응 매뉴얼" },
   { icon: FaHandshake, title: "네트워크", desc: "베뉴·연사·F&B\n협력사 200+" },
-  { icon: HiOutlineSparkles, title: "기술력", desc: "리멤버 DB 활용\n타겟 모객 시스템" }
+  { icon: HiOutlineSparkles, title: "기술력", desc: "명함 DB 활용\n타겟 모객 시스템" }
 ];
 
 const cardW = 5.5, cardH = 2.5;
@@ -287,7 +289,7 @@ for (let i = 0; i < steps.length; i++) {
   slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
     x, y: stepY, w: stepW, h: stepH,
     fill: { color: "FFFFFF" },
-    line: { color: "#2962FF", width: 1 },
+    line: { color: "2962FF", width: 1 },
     rectRadius: 0.08
   });
 
@@ -305,7 +307,7 @@ for (let i = 0; i < steps.length; i++) {
     { text: steps[i].desc, options: { fontSize: 10, color: "5A6270" } }
   ], {
     x, y: stepY + 0.9, w: stepW, h: 0.6,
-    color: "#1A1D24",
+    color: "1A1D24",
     align: "center", valign: "middle", margin: 0
   });
 
@@ -334,12 +336,12 @@ async function safeAddIcon(slide, opts) {
     const { x, y, size = 0.5, color = "#FFFFFF", bgColor = "#2962FF", fallbackChar = "•" } = opts;
     slide.addShape(pres.shapes.OVAL, {
       x, y, w: size, h: size,
-      fill: { color: bgColor },
+      fill: { color: bgColor.replace("#", "") },
       line: { type: "none" }
     });
     slide.addText(fallbackChar, {
       x, y, w: size, h: size,
-      fontSize: size * 36, bold: true, color,
+      fontSize: size * 36, bold: true, color: color.replace("#", ""),
       align: "center", valign: "middle", margin: 0
     });
   }

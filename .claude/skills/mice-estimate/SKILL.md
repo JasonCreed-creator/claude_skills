@@ -1,7 +1,7 @@
 ---
 name: mice-estimate
-version: v2.0
-description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 두 가지 양식을 지원한다: (1) M&C 견적서 — 국가계약법 기반 산출내역서 양식 + calcEstimate 자동 산출 엔진, (2) 리멤버 견적서 — 패키지 할인 구조의 견적서 양식. 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서'를 언급할 때. 특히 'M&C 견적서', '리멤버 견적서' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. mice-proposal·mice-rfp-analyzer 체이닝 입력을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다."
+version: "v2.2.1"
+description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 두 가지 양식을 지원한다: (1) M&C 견적서 — 국가계약법 기반 산출내역서 양식 + calcEstimate 자동 산출 엔진, (2) 리멤버 견적서 — 패키지 할인 구조의 견적서 양식. 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서'를 언급할 때. 특히 'M&C 견적서', '리멤버 견적서' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. mice-proposal·mice-rfp-analyzer 체이닝 입력을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다."
 dependencies:
   - openpyxl
 ---
@@ -9,6 +9,29 @@ dependencies:
 # MICE 견적서 생성 스킬
 
 ## 버전 히스토리
+
+### v2.2.1 — 2026-07-03
+
+CP1 GO-1 후속 조치 — ChainPayload 출력 봉투에 필수 필드 `generatedAt` 추가(chaining-schema.md §4·§7), 참조 링크 무결성 2건 정정(venue-db-realdata.md §6 파일명, venue-db.md §5 외부 문서 링크 평문화).
+
+### v2.2.0 — 2026-07-03
+
+**Fable 5 재설계 패스 + Sprint 8 반영.**
+
+#### 신규 추가
+- Step 6.5 **완료 게이트** — 증거주의 6항(엔진 자가검증·3중 금액 일치·재오픈 무결성·입력 전수성·식별정보·가격 산식 연동). 통과 전 전달 금지.
+- `references/venue-db-realdata.{json,md}` — 베뉴파인더 견적이력 100건→25개 베뉴×홀 실데이터 (대관료 단독가 없음, 수용인원 검증·후보 제시용 — §0 경고 필독).
+
+#### 수리
+- calc 엔진 `target` 키 누락 시 KeyError → 명시적 한국어 ValueError (BL-S8-01). 회귀: golden 33케이스 + 신규 회귀 3케이스 PASS (개발 워크스페이스 `mice-skills-work/sprint-08/golden-tests/` 스위트 — 스킬 패키지 외부 자산).
+
+### v2.1.0 — 2026-06-04
+
+**전략 프라이싱 레이어 추가** (forge 인테이크). 원가 산출(pricing-engine)을 넘어 *제안가·할인·패키지 가격*을 전략적으로 정하는 가격 결정 논리.
+
+#### 신규 추가
+- `references/pricing-strategy.md` — 4대 가격 레버(가치기반·Van Westendorp PSM·티어/패키지·앵커링) + MICE 입찰/스폰서 맥락. 출처 패턴 maigentic/stratarts(MIT), 방법만 흡수.
+- SKILL.md "전략 프라이싱(선택)" 절 — 원가↔제안가 경계 + 체이닝(`mice-market-intel`·`jc-strategy-canvas`) 명시.
 
 ### v2.0 — 2026-05-25
 
@@ -284,7 +307,28 @@ wb.save(output)
 
 체이닝 후속 스킬에 전달할 ChainPayload JSON이 필요하면 [chaining-schema.md §7](references/chaining-schema.md) 의 `to_chain_payload()` 헬퍼 사용.
 
+### Step 6.5: 완료 게이트 (증거주의 — 통과 전 전달 금지)
+
+견적서는 숫자가 곧 신뢰다. 전달 직전 아래를 실제로 실행·확인하고, 미통과면 수정 후 재검증한다:
+
+1. **엔진 자가검증** (방식 A): `python scripts/calc_estimate.py` 실행 → "SSOT §9 검증 통과 (PASS)" 확인. 실패 시 엔진·입력을 의심하고 임의 보정 금지.
+2. **3중 금액 일치**: 엔진 결과(`pkVat`) ↔ 시트 합계 셀 ↔ 한글 금액(B8)이 동일한가 — 셀 값을 다시 읽어 대조한다(눈대중 금지).
+3. **재오픈 무결성**: 산출 .xlsx를 openpyxl로 재로드해 깨짐·수식 오류(#REF! 등)가 없는가.
+4. **입력 반영 전수성**: 요청·체이닝 입력의 인원·기간·옵션·특이 요구가 각각 어느 행에 반영됐는지 대응을 확인한다 — 누락 항목 0건.
+5. **식별정보**: 슬롯 주입값 외 회사·개인 식별정보 하드코딩 0건 (RULE-NO-COMPANY).
+6. **가격 산식 연동** (rfp-analyzer 체이닝 + RFP 가격 점수 산식 존재 시): 제안가가 최적 입찰가 구간 대비 어디에 있는지 한 줄 명시해 전달한다.
+
+확인 불가 항목(예: 발주가 미공개)은 "미확인"으로 표기하고 완료 주장하지 않는다.
+
 ---
+
+## 전략 프라이싱 (선택 — 원가→제안가)
+
+`calc_estimate`/`pricing-engine.md`가 *원가·마진*을 산출한다면, 견적의 **제안가·할인폭·패키지 가격을 전략적으로** 정해야 할 때는 [pricing-strategy.md](references/pricing-strategy.md)를 참조한다. 4대 레버(가치기반·Van Westendorp 가격민감도·티어/패키지 구조·앵커링)로 "얼마에 제안할까"를 설계한다.
+
+- 기계적 원가 산출만 필요하면 이 절을 건너뛴다(과함).
+- 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션 *판단*은 `jc-strategy-canvas`, *원가*는 `pricing-engine`. 본 절은 그 사이 가격 *결정 논리*.
+- 데이터 없는 지불의향·경쟁가는 `[가설]` — 추정 금지. 저가수주 리스크·낙관 마진은 `jc-redteam`으로 점검.
 
 ## M&C 견적서 상세 규칙
 
@@ -446,9 +490,14 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 
 ## References
 
-- [pricing-engine.md](references/pricing-engine.md) — calc_estimate 엔진 사용법·공식
+- [pricing-engine.md](references/pricing-engine.md) — calc_estimate 엔진 사용법·공식 (원가 산출)
+- [pricing-strategy.md](references/pricing-strategy.md) — 전략 프라이싱(가치기반·Van Westendorp·티어·앵커링), 원가→제안가 결정 논리
 - [option-catalog.md](references/option-catalog.md) — 9종 옵션·상호배제 규칙
 - [venue-db.md](references/venue-db.md) — 베뉴 DB 스키마 + 슬롯 (데이터 보류)
+- [venue-db-realdata.md](references/venue-db-realdata.md) — 베뉴파인더 견적이력 기반 실데이터 25건 (2026-04~05 스냅샷, Sprint 8 입수). 사용 전 주의:
+  - `per_pax_rate`·대관료 단독가는 소스에 없어 **여전히 미채움** — calcEstimate 자동 산출 경로는 변경 없이 유지되며 기존 `VENUE_PER_PAX_5STAR` 폴백이 계속 적용된다.
+  - 실데이터의 금액 필드(`min_rental`/`max_rental_observed`)는 **견적 총액(F&B 등 포함)이지 대관료 단독이 아니다** — 대관료 라인아이템(s1) 참고 시 반드시 [venue-db-realdata.md](references/venue-db-realdata.md) §0을 먼저 읽을 것.
+  - `lookup_venue()`는 아직 실데이터 기준으로 구현되지 않음 — 현재 실질 가치는 수용인원 검증(capacity sanity check)과 지역별 베뉴 후보 제시다.
 - [jc-design-mapping.md](references/jc-design-mapping.md) — Excel 색상 → JC 시맨틱 토큰
 - [chaining-schema.md](references/chaining-schema.md) — 입출력 JSON 스키마·풀 워크플로우
 - [mnc_template.md](references/mnc_template.md) — M&C 양식 상세 사양 (v1 유지)

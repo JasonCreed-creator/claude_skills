@@ -405,7 +405,7 @@ def parse_mapping_string(mapping_str: str) -> dict[str, str]:
     사용자 매핑 문자열 파싱.
 
     예시:
-        '참석자 1 = 호스트, 참석자 2 = 김부장 (Darktrace)'
+        '참석자 1 = 호스트, 참석자 2 = 김부장 (고객사A)'
         '참석자 1 = 호스트\n참석자 2 = 김부장'
     """
     mapping = {}

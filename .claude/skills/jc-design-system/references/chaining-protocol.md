@@ -234,12 +234,14 @@ def detect_input_source(input_payload) -> str:
 
 | 스킬 | 기존 봉투 관례 | 정본 대비 차이 | 호환 처리 |
 |------|---------------|---------------|----------|
-| mice-estimate | `$schema: ChainPayload/v1` + `source` + `version` | ✅ 정본과 일치 | 그대로 |
+| mice-estimate | `$schema: ChainPayload/v1` + `source` + `version` | generatedAt 필드 보강 완료(2026-07-03) — 정본과 일치 | 그대로 |
 | mice-dashboard | `$schema: ChainPayload/v1` + `source` + `version` + `generatedAt` | ✅ 정본과 일치 | 그대로 |
 | mice-rfp-analyzer | `source` 만 (`$schema`·`version` 없음) | 봉투 헤더 미흡 | 신규 출력 시 `$schema`/`version`/`generatedAt` 추가 권장 |
 | mice-meeting-minutes | `source_skill` + `generated_at` (snake) | 필드명 변형 | `source`/`generatedAt` 로 수렴 권장. 기존 페이로드는 유지 |
 | mice-sponsor-deck | `$schema: mice-sponsor-deck/v2.0` + `extracted_from` | 봉투에 스킬 전용 스키마 사용 | 입력 검증은 기존 유지. 봉투 식별은 `source`로 수렴 권장 |
 | pt-script | `$schema: pt-script/v2.0` + `extracted_from` | 봉투에 스킬 전용 스키마 사용 | 입력 검증은 기존 유지. 봉투 식별은 `source`로 수렴 권장 |
 | jc-redteam | 봉투 없음 (임의 입력) | 해당 없음 | 변경 없음 — 모든 입력 수용 유지 |
+| jc-strategy-canvas | `$schema: ChainPayload/v1` 준수 | 8종 적용대상 외 — 자율 채택 | 그대로 (자율 채택. §0 적용 대상 8종에는 미포함) |
+| mice-market-intel | `$schema: ChainPayload/v1` 준수 | 8종 적용대상 외 — 자율 채택 | 그대로 (자율 채택. §0 적용 대상 8종에는 미포함) |
 
 > **호환성 원칙**: `detect_input_source()`(§7)는 `ChainPayload/v1` 과 레거시 스킬 전용 스키마(`pt-script/v2.0` 등)를 **모두** 받아낸다. 따라서 기존 페이로드를 깨지 않고 점진 수렴이 가능하다. 각 스킬의 enum·필드 검증 룰은 해당 스킬 문서가 계속 권위를 가진다.

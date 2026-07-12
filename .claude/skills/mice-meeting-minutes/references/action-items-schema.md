@@ -29,10 +29,10 @@
 ```
 
 예시:
-- `DT-DISC-001` (Darktrace Discovery 1차 미팅 1번 액션)
-- `DT-DISC-002`
+- `CA-DISC-001` (고객사A 디스커버리 1차 미팅 1번 액션)
+- `CA-DISC-002`
 - `RMB-26-001` (RMB REBUILD26 1번 액션)
-- `TBS-SEM-001` (TOBESOFT Seminar 1번 액션)
+- `CB-SEM-001` (고객사B 세미나 1번 액션)
 - `CFX-BID-001` (ConfEx Bidding 1번 액션)
 
 프로젝트 코드는 `--series` ID 또는 사용자 지정 우선. 미지정 시 프로젝트명에서 자동 약어화.
@@ -46,7 +46,7 @@
 "제가 ~하겠습니다"      → 발화자
 "[이름] 실장님이 ~"     → [이름]
 "우리 팀이 ~"           → 호스트 측 팀
-"Darktrace가 ~"         → Darktrace 측 (구체 인물 미정)
+"고객사A가 ~"           → 고객사A 측 (구체 인물 미정)
 ```
 
 ### 추정 우선순위
@@ -140,13 +140,13 @@
 
 | 연결 유형 | 표기 예시 |
 |-----------|----------|
-| 다른 Action | `DT-DISC-001` |
+| 다른 Action | `CA-DISC-001` |
 | 결정사항 번호 | `Decision-3` |
 | 미결 사항 번호 | `Pending-1` |
-| 외부 문서 | `RFP-Darktrace-V2.docx` |
-| 이슈 트래커 ID | `JIRA-DT-101` |
+| 외부 문서 | `RFP-{{client_company}}-V2.docx` |
+| 이슈 트래커 ID | `JIRA-CA-101` |
 | 슬랙 메시지 링크 | `slack:T123/C456/p789` |
-| 이메일 제목 | `Email: [Darktrace] 동시통역 결재` |
+| 이메일 제목 | `Email: [고객사A] 동시통역 결재` |
 
 ### 자동 매핑 시도
 - 본 회의록 내 결정사항·미결 사항 번호와 Action 본문 매칭하여 자동 연결

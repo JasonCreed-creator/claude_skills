@@ -127,47 +127,49 @@
 
 ## 컬러 팔레트
 
-> **정본 출처**: 모든 hex 는 jc-design-system 정본을 미러한다.
-> - 라이트 모드: `signature-tokens.md` §1(베이스)·§1.4(차트 data-1..6)·§1.5(시맨틱)·§6(JSON)
-> - 다크 모드: `mode-mapping.md` §3(다크 패밀리)·§3.2(차트 다크 data-1..6)
-> 차트 시리즈 순서는 `data-1..6` 와 1:1 대응한다. 아래 값은 SoT 미러이며, 신규 색을 만들지 말 것.
-
-### 다크 모드 (프리미엄) — SoT 미러: mode-mapping.md §3·§3.2
+### 다크 모드 (프리미엄)
 ```javascript
 const DARK_COLORS = {
-  bg: '#0A1220',          // SoT 미러: 다크 페이지 배경
-  card: '#152134',        // SoT 미러: 다크 카드 서피스
-  cardBorder: '#2A3650',  // SoT 미러: 다크 보더
-  text: '#E8ECF2',        // SoT 미러: 다크 본문 텍스트
-  textSecondary: '#A0A8B4', // SoT 미러: 다크 보조 텍스트
-  accent: '#5B8DEF',      // SoT 미러: 다크 액센트
-  positive: '#00C853',    // SoT 미러: --jc-success
-  negative: '#D32F2F',    // SoT 미러: --jc-danger
-  chart: ['#5B8DEF', '#F04D85', '#FF7649', '#33EE92', '#C9CFD8', '#A78BFA'] // SoT 미러: 다크 data-1..6
+  bg: '#0A2540',
+  card: '#1A1D24',
+  cardBorder: '#5A6270',
+  text: '#F1F3F7',
+  textSecondary: '#A0A6B0',
+  accent: '#2962FF',
+  positive: '#00E676',
+  negative: '#D32F2F',
+  chart: ['#2962FF', '#E91E63', '#2962FF', '#FFA000', '#E91E63', '#00C853']
 };
 ```
 
-### 라이트 모드 (비즈니스) — SoT 미러: signature-tokens.md §1·§1.4·§6
+### 라이트 모드 (비즈니스)
 ```javascript
 const LIGHT_COLORS = {
-  bg: '#F8F9FB',          // SoT 미러: --jc-bg
-  card: '#FFFFFF',        // SoT 미러: --jc-surface
-  cardBorder: '#E5E8ED',  // SoT 미러: --jc-border
-  text: '#1A1D24',        // SoT 미러: --jc-text
-  textSecondary: '#5A6270', // SoT 미러: --jc-text-muted
-  accent: '#2962FF',      // SoT 미러: --jc-accent
-  positive: '#00C853',    // SoT 미러: --jc-success
-  negative: '#D32F2F',    // SoT 미러: --jc-danger
-  chart: ['#2962FF', '#E91E63', '#FF5722', '#00E676', '#0A2540', '#7C3AED'] // SoT 미러: --jc-data-1..6
+  bg: '#F8F9FB',
+  card: '#ffffff',
+  cardBorder: '#E5E8ED',
+  text: '#1A1D24',
+  textSecondary: '#5A6270',
+  accent: '#2962FF',
+  positive: '#00C853',
+  negative: '#D32F2F',
+  chart: ['#2962FF', '#E91E63', '#1E4DCC', '#FF5722', '#E91E63', '#00C853']
 };
 ```
 
-### 컬러풀 모드 (이벤트/마케팅) — SoT 미러
-> 별도 "이벤트 팔레트"는 정본화 이후 폐기. 이벤트·마케팅 톤도 동일 SoT 차트 시퀀스를 사용하되, 강조는 Point 풀(Magenta `--jc-data-2`·Orange `--jc-data-3`·Violet `--jc-data-6`)을 우선 배치한다. 값은 라이트=signature-tokens §1.4 / 다크=mode-mapping §3.2 정본을 그대로 사용.
+### 컬러풀 모드 (이벤트/마케팅)
 ```javascript
-// 이벤트 톤은 LIGHT_COLORS / DARK_COLORS 의 chart 시퀀스를 재사용한다.
-// (자체 hex 팔레트 없음 — SoT data-1..6 단일 출처)
-const EVENT_COLORS = LIGHT_COLORS; // 라이트 기준. 다크 토글 시 DARK_COLORS 사용
+const EVENT_COLORS = {
+  bg: '#F8F9FB',
+  card: '#ffffff',
+  cardBorder: '#E5E8ED',
+  text: '#0A2540',
+  textSecondary: '#5A6270',
+  accent: '#E91E63',
+  positive: '#00C853',
+  negative: '#D32F2F',
+  chart: ['#E91E63', '#FFA000', '#E91E63', '#00E676', '#FF5722', '#E91E63']
+};
 ```
 
 ## 디자인 톤 자동 결정 로직
