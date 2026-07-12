@@ -1,6 +1,6 @@
 ---
 name: mice-market-intel
-version: "v1.0.3"
+version: "v1.0.4"
 description: MICE 도메인 특화 시장·경쟁 인텔리전스 스킬. 2단계 구조화 리서치(아웃라인 설계 → 항목별 병렬 웹 조사 → 근거 종합 리포트)로 시장 규모·경쟁 구도·산업 동향·발주처/정책·스폰서 풀·벤치마크 행사를 출처 표기와 함께 조사하고, jc 스타일 리서치 리포트 + ChainPayload(→jc-strategy-canvas/mice-rfp-analyzer/mice-proposal)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '시장 조사', '시장 리서치', '마켓 리서치', '시장 규모', '시장 동향', '산업 동향', '경쟁사 조사', '경쟁사 분석', '경쟁 조사', '경쟁사 찾아줘', '벤치마크 행사', '벤치마킹', '레퍼런스 행사', '스폰서 후보 조사', '발주처 조사', '업계 트렌드', '시장 인텔', '마켓 인텔리전스', '데스크 리서치', 'desk research', '사전 조사', '환경 분석'을 언급할 때. 신사업·신규 행사·비딩을 앞두고 '이 시장 좀 조사해줘', '경쟁사 누구 있는지 찾아줘', '비슷한 행사 사례 모아줘', '시장 규모 자료 찾아줘', '스폰서 될 만한 기업 리스트업'을 요청할 때. 2단계 사이에 사용자 확인(human-in-the-loop)을 둔다. 단, 모은 데이터를 전략 프레임워크로 *판단·구조화*하는 것은 jc-strategy-canvas(본 스킬은 데이터를 *수집*하는 상류), 주어진 RFP·공고 자체를 7축 분석하는 것은 mice-rfp-analyzer(입력 종속), 이미 가진 데이터를 차트·KPI로 시각화하는 것은 mice-dashboard, 범용(비-MICE) 주제의 심층 리서치는 built-in deep-research 영역이므로 그쪽을 쓸 것. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
 license: Complete terms in LICENSE.txt
 ---
@@ -75,6 +75,7 @@ Phase 4  산출          jc 리포트(HTML/md) + ChainPayload(→strategy-canvas
 - 각 사실에 **출처(URL·발행처·일자) + 티어**(`source-tiering.md`). 1차 통계·협회 > 전문지 > 일반기사 > 블로그.
 - **추정 금지** — 데이터 없으면 빈칸 + `[미확인]`. 숫자를 지어내지 않는다.
 - 대량 항목은 병렬 처리(필요 시 서브에이전트/배치). 진행 상황을 사용자에게 짧게 보고.
+- **경쟁 조사가 주축이면** `competitive-analysis-method.md`의 3단 방법론(포지셔닝 브리프 우선 티어링 → 9차원 가중 스코어링(긴장축 분리) → 의사결정형 리포트)으로 벼린다. 단일 상대 정면 분석은 `research-outline-templates.md` T7(타깃 주체 심층 프로파일).
 
 ### Phase 3 — 종합·검증
 - **교차 모순 해소**: 출처 간 상충 수치는 범위로 제시 + 더 높은 티어 우선, 차이 명시.
@@ -126,7 +127,8 @@ mice-market-intel/
 ├── SKILL.md                       # 본 파일 — 진입점
 ├── LICENSE.txt
 └── references/
-    ├── research-outline-templates.md  # MICE 조사 유형별 항목×필드 템플릿
+    ├── research-outline-templates.md  # MICE 조사 유형별 항목×필드 템플릿(T1~T7 + 진입점)
+    ├── competitive-analysis-method.md # 경쟁 조사 3단 방법론(티어링→9차원 스코어링→의사결정 리포트)
     ├── source-tiering.md              # 출처 신뢰도 등급 + MICE 화이트리스트
     ├── report-spec.md                 # 리서치 리포트 레이아웃·인용·SoT 토큰
     └── chaining-schema.md             # ChainPayload out(→strategy-canvas/rfp/proposal/sponsor)
@@ -149,3 +151,4 @@ mice-market-intel/
 | v1.0.1 | (미상) | 중간 버전 — 세부 변경 기록 부재(frontmatter만 존재). CP2에서 이력 계보 완결 위해 행 백필. |
 | v1.0.2 | 2026-07-03 | Fable-정합 감사 후속 조치 — `chaining-schema.md` ChainPayload 예시 버전 표기를 SKILL.md와 정합화(v1.0.0→v1.0.2). T2 경쟁 구도 템플릿에 "미방어 세그먼트 탐지" 분석 렌즈 보강(경쟁사 포지셔닝 벤치마크 패턴 흡수). + description 말미 jc-prompt-builder 브리프 게이트 역참조 삽입(CP-N5). |
 | v1.0.3 | 2026-07-04 | CP2 조치 — v1.0.1 이력 행 백필(계보 완결), v1.0.2 변경 서술에 back-ref 반영 명시. |
+| v1.0.4 | 2026-07-12 | CP3 인테이크 — CP1 GO-4 잔여(company-intel 7렌즈+4진입점) 흡수 + ECC 경쟁분석 3종 패턴(티어링·9차원 스코어링·의사결정 리포트) 보강. `research-outline-templates.md`에 T7 타깃 주체 심층 프로파일 + 진입점 4종(단일주체/산업·세그먼트/지정경쟁셋/경쟁사발굴) 신설, `competitive-analysis-method.md` 신규 reference 추가. |
