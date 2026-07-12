@@ -152,7 +152,7 @@ jc-prompt-builder/
 │   ├── briefing-examples.md          # 브리프 전/후 실사례 + 유형별 긍정·부정 예시 쌍(체크리스트 ⑥용)
 │   ├── model-guide.md                # 권장 모델 병기 기준 (RULE-VERSION-FACTS 적용)
 │   ├── routing-map.md                # 산출물→매핑 스킬 라우팅 맵 (실측 description 기반, 수동 큐레이션)
-│   └── description-registry.md       # 라우팅 대상 스킬 description 실측 스냅숏 (스크립트 생성, 현행 22종)
+│   └── description-registry.md       # 라우팅 대상 스킬 description 실측 스냅숏 (스크립트 생성, 현행 25종)
 └── scripts/
     └── build_routing_map.py          # description 실측 수집 → description-registry.md 재생성 (stdlib only)
 ```
