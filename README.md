@@ -9,6 +9,8 @@
 
 > **➕ 2026-07-10 — 신규: `jc-orchestrator` v1.1.0** — 운영지침 §8 에이전트 팩토리의 실행체(멀티 에이전트 팀 설계·구성안/PI 발행 + 프리셋 2종: html-pt 8에이전트·code-conductor 비용 라우팅+강제 게이트). 카탈로그 **25 → 26종**. 배포 지시서: [`docs/DEPLOY-jc-orchestrator-v1.1.0.md`](docs/DEPLOY-jc-orchestrator-v1.1.0.md)
 
+> **➕ 2026-08-18 — CP4 동기화 + [리멤버 전환]** — ① Drive 병합대기분(2026-07-25) 반영: `jc-cinematic-html` v1.0.0 신규(시네마틱 캠페인 룩 HTML 엔진, jc-design-system 측은 포인터로 축약) + `jc-workspace-ops` v1.1.0(세션 층 흡수) + registry(26종)·routing-map 07-25본. ② 소속 전환(M&C→리멤버, 명세서 v1.0·D1·D2 확정): `mice-estimate` 기본 양식 리멤버 전환 + M&C 양식→"산출내역서(공공·국가계약법형)" 리네임 보존, `remember` 오버레이 Track A 승격 + `mc`·`darktrace` 아카이브. 상세: [`docs/CHANGELOG-2026-08-18.md`](docs/CHANGELOG-2026-08-18.md)
+
 개인 MICE 전략가용 Claude 스킬의 **단일 진실 공급원(Source of Truth)** 레포입니다.
 claude.ai 웹 설치본에서 추출한 9종 + 파생 2종(jc-artifact-builder·jc-landing-page) + **기본 프리셋 개조 8종** + 라이브러리 관리 1종 + 외부 인테이크 신규 2종 + 운영 신규 2종(mice-run-of-show·mice-aftermath) + **선행 게이트 1종(jc-prompt-builder)** + **오케스트레이션 1종(jc-orchestrator)**, 총 **26종**을 git으로 버전 관리하며, 앞으로 이 레포에서
 스킬을 **업그레이드 · 통합 · 폐합**합니다. 기본 프리셋 개조 프로그램은 `docs/preset-optimization-roadmap.md`(진행) · `docs/preset-adaptation-playbook.md`(방법) 참조.

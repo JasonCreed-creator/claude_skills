@@ -126,3 +126,22 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
   - `SKILL.md` — §9 파일 트리 주석 "현행 22종" → "현행 25종".
 - **적용 방식**: 자사 26종 폴더 위 파일 단위 덮어쓰기(폴더 삭제 없음·레거시 2종·_README.txt 보존). 라인엔딩 정규화(autocrlf)로 실질 변경 파일만 diff 반영 — 커밋 변경분 = jc-prompt-builder 3파일. 나머지 25종은 정본=레포 내용 동일(diff 0) 확인.
 - **후속**: claude.ai zip 재업로드(갱신분)는 별도 진행 중 · Drive `Skills/PROGRESS.md`는 별도 워킹 체크포인트 문서로 유지.
+
+---
+
+## 2026-08-18 — CP4 동기화: Drive 병합대기분(2026-07-25) git 반영
+
+- **소스**: Drive `PROGRESS-병합대기_20260725_cinematic_v2.md` + library 실측(07-25 수정분). 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`.
+- **결정**: [리멤버 전환] Phase 0 3자 대조에서 Drive>git 병합대기 1건 발견 → 전환 착수 전 선반영(A안, 2026-08-18 기획자님 승인). registry 역행 덮어쓰기(cinematic 항목 소실) 방지 목적.
+
+### 산출
+- `jc-cinematic-html` v1.0.0 신규 — SKILL.md + references/build-kit.md (시네마틱 캠페인 룩 정본. 웜 블랙 스테이지·단일 오렌지 광원·디오라마 히어로·필름 크롬·모션 1회재생 표준)
+- `jc-workspace-ops` v1.0.0 → **v1.1.0** — 세션 층 흡수('체크인/체크아웃/PROGRESS/세션 이어서' 트리거 6종, 세션 2파일 템플릿 전개, session-protocol.md 포인터)
+- `jc-prompt-builder` registry(25→26종, 07-25본)·routing-map(07-25 증분 노트 포함) 동기
+- `jc-design-system/references/cinematic-campaign-html.md` — 포인터로 신설(값 미보유, 드리프트 방지). SKILL.md 무범프 이력 한 줄 + 파일 구조 갱신
+- 바이트 검증: cinematic SKILL.md 5,489B · build-kit.md 8,587B · wsops SKILL.md 12,178B · registry 39,713B · routing-map 16,733B — Drive 실측 크기와 전량 일치
+
+### 잔여(병합대기 v2 기준)
+- routing-map §2 cinematic 행 추가 + §3 키워드 경계 → [리멤버 전환] Phase 2에서 함께 처리
+- Drive 병합대기 v1·v2 파일 삭제 → Phase 4 Drive 반영 시 처리
+- CLAUDE.md·MASTER-CONTEXT 카운트(26→27) → Drive 챗 문서, 수동 이월

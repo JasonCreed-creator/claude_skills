@@ -45,6 +45,7 @@ jc-design-system/
     ├── client-overlays.md          # 클라이언트 주입 스키마 + 샘플
     ├── mode-mapping.md             # 라이트/다크 모드 매핑
     ├── component-patterns.md       # KPI 카드·차트·섹션·테이블 패턴
+    ├── cinematic-campaign-html.md  # 포인터 — 정본은 jc-cinematic-html/references/build-kit.md
     └── usage-guide.md              # 다른 스킬에서 호출하는 방법
 ```
 
@@ -82,6 +83,10 @@ jc-design-system/
 - 컴포넌트 패턴 확장: 기존 패턴과 충돌하지 않는 범위에서 추가
 
 ## 변경 이력
+
+### (무범프, 2026-07-25 결정 반영) — cinematic 룩 분리
+
+cinematic 룩은 `jc-cinematic-html` 스킬로 분리 — `references/cinematic-campaign-html.md`는 포인터로 축약(드리프트 방지, PROGRESS 병합노트 v2).
 
 ### v1.3.1 (2026-07-03) — 정합 감사 후속
 
