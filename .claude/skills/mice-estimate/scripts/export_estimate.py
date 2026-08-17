@@ -1,6 +1,10 @@
-"""M&C 견적서 자동 본문 작성기.
+"""산출내역서(공공·국가계약법형) 자동 본문 작성기.
 
-calc_estimate 결과 + M&C 템플릿 → 세부산출내역 7개 섹션 자동 작성된 xlsx.
+구 "M&C 견적서 작성기". 리멤버 전환(D1)으로 양식 명칭을 일반화 리네임했으나,
+함수명 `export_mnc_estimate`·파일 `mnc_template.xlsx`·format 값 `mnc`는 하위호환을
+위해 그대로 유지한다 — `mnc`는 산출내역서(공공형) 양식을 가리키는 레거시 코드 키다.
+
+calc_estimate 결과 + 산출내역서(공공형) 템플릿 → 세부산출내역 7개 섹션 자동 작성된 xlsx.
 
 방식 A (자동 산출) 전용 진입점:
     export_mnc_estimate(template_path, output_path, result, meta)
@@ -98,10 +102,10 @@ def export_mnc_estimate(
     meta: dict,
     verify: bool = True,
 ) -> str:
-    """calc_estimate 결과를 M&C 양식 xlsx로 출력.
+    """calc_estimate 결과를 산출내역서(공공형) 양식 xlsx로 출력 (레거시 함수명 mnc 유지).
 
     Args:
-        template_path: assets/mnc_template.xlsx 절대경로
+        template_path: assets/mnc_template.xlsx 절대경로 (산출내역서 공공형 템플릿)
         output_path: 생성할 출력 xlsx 절대경로
         result: calc_estimate() 반환 dict
         meta: 외부 주입 변수 dict (project_title, customer_name, event_period, event_venue,
@@ -458,7 +462,7 @@ def export_remember_estimate(
 ) -> str:
     """리멤버 양식 — v1 방식 (헤더만 외부 주입 변수로 채움).
 
-    SSOT는 M&C 양식만 다룸. 리멤버 calcEstimate 적용은 별도 사이클.
+    SSOT는 산출내역서(공공형) 양식만 다룸. 리멤버 calcEstimate 적용은 별도 사이클(Sprint 1.6).
     본 함수는 v1 동작 유지 (회귀 없음) 만 보장.
     """
     shutil.copy(template_path, output_path)

@@ -1,7 +1,7 @@
 ---
 name: jc-design-system
 description: 개인 MICE 전략가용 디자인 토큰 시스템. 다른 스킬이 산출물 생성 시 참조하는 reference 자산이다. 컬러·타이포·사이즈·간격·컴포넌트 패턴을 통합 정의하며 클라이언트별 오버레이를 토글로 지원한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '디자인 토큰', '디자인 시스템', '스타일 가이드', '비주얼 시스템', 'JC 디자인', '개인 디자인 토큰'을 언급할 때. 또한 mice-proposal / mice-estimate / pt-script / mice-dashboard 등 다른 스킬이 산출물 디자인 일관성을 위해 자동 호출할 때. 컬러 팔레트 정의·수정·확장, 클라이언트별 컬러 오버레이 적용, 라이트/다크 모드 매핑 조회, KPI 카드·차트 컨테이너·섹션 구분 등 컴포넌트 패턴 적용 시에도 사용한다.
-version: "v1.3.1"
+version: "v1.4.0"
 ---
 
 # JC Design System
@@ -83,6 +83,13 @@ jc-design-system/
 - 컴포넌트 패턴 확장: 기존 패턴과 충돌하지 않는 범위에서 추가
 
 ## 변경 이력
+
+### v1.4.0 (2026-08-18) — 리멤버 전환 (D2): 오버레이 소속사 지위 교체
+
+`client-overlays.md` 개정 (변경명세서 v1.0 §2.2, D2 확정):
+- `remember` 오버레이 **Track B → A 승격** — 소속사 산출물 기본 오버레이로 지정. 컬러(Deep Navy `#0A2540` / Electric Blue `#2962FF`)는 jc 시그니처와 동일하므로 유지.
+- `mc`(구 소속사 M&C)·`darktrace`(구 소속사 시절 클라이언트) **아카이브(deprecated)** — §3.4로 이관, 신규 산출물 사용 금지. `mc.png` 로고 자산 사용 중단.
+- `personal`·`confex` 무변경. 스키마 예시의 client_id 예시를 `remember, confex`로 갱신.
 
 ### (무범프, 2026-07-25 결정 반영) — cinematic 룩 분리
 

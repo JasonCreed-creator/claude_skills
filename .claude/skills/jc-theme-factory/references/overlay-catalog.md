@@ -19,12 +19,17 @@
 | client_id | 정체성 한 줄 | primary | accent | track | 비고 |
 |-----------|-------------|---------|--------|-------|------|
 | `personal` | 개인 브랜드 기본값 — 시그니처 그대로 | (시그니처) | (시그니처) | personal | 미지정 시 폴백 |
-| `mc` | 소속사 트랙 — 컬러는 시그니처, 로고만 적용 | (시그니처) | (시그니처) | A | 외부 제출 표지에 클라이언트 로고 |
-| `remember` | 협업 컨퍼런스 — 시그니처 유지 + 파트너 로고 병기 | Deep Navy | Electric Blue | B | 시그니처 컬러 그대로 |
-| `darktrace` | 보안·테크 톤 — Magenta 액센트로 차별화 | Deep Navy | Magenta `#E91E63` | B | Discovery 단계, 행사 확정 시 재검토 |
+| `remember` ★ | 소속사 기본 오버레이 — 시그니처 유지 + 소속사 로고 병기 | Deep Navy | Electric Blue | A | 소속사(Track A) 산출물 기본. 리멤버 전환 승격(2026-08-18) |
 | `confex` | 박람회 활성도 강조 — Vivid Orange 액센트 | (시그니처 navy) | Orange `#FF5722` | B | 핵심 매출 프로젝트 |
 
 > 위 accent 값(Magenta/Orange 등)은 전부 jc Point Pool 정본 색이다 — 임의색이 아니다. 그래서 오버레이를 써도 전체 룩이 한 가족으로 묶인다.
+
+### 아카이브 (deprecated — 신규 사용 금지, 리멤버 전환 D2 2026-08-18)
+
+| client_id | 정체성 한 줄 | 상태 | 비고 |
+|-----------|-------------|------|------|
+| `mc` | 구 소속사(M&C) 트랙 | deprecated | 소속사 지위는 `remember`로 이관. 로고 자산 `mc.png` 사용 중단 |
+| `darktrace` | 구 소속사 시절 보안·테크 클라이언트 | deprecated | 종결·아카이브. 재개 시 CI 재확인 후 신규 등록 |
 
 ## 정체성 → 톤 매핑 가이드
 

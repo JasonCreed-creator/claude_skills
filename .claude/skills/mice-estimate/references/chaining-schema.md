@@ -69,9 +69,11 @@ mice-proposal이 제안서 PPTX 작성 후, 견적 단계로 전환할 때 생�
     "aving": false
   },
   "boothCount": 0,
-  "format": "mnc"
+  "format": "remember"
 }
 ```
+
+> `format` 기본값은 `remember`(리멤버 전환 D1). 공공·관 발주(국가계약법 산출내역서)면 `"mnc"`로 지정한다.
 
 ### 필드 매핑 (input JSON → calc_estimate input)
 
@@ -83,8 +85,8 @@ mice-proposal이 제안서 PPTX 작성 후, 견적 단계로 전환할 때 생�
 | `venue.name` | `venueName` | 그대로 |
 | `options` | `options` | 그대로 (9개 옵션 키) |
 | `boothCount` | `boothCount` | 그대로 |
-| `format` | (양식 선택) | `mnc` / `remember` 분기 |
-| `projectTitle`, `client`, `eventDate` | (Excel 헤더 채우기) | M&C: A3·B3 등에 사용 |
+| `format` | (양식 선택) | `mnc`(산출내역서 공공형) / `remember` 분기. **기본값 `remember`**(리멤버 전환 D1). 공공·관 발주면 `mnc` 명시 |
+| `projectTitle`, `client`, `eventDate` | (Excel 헤더 채우기) | 산출내역서(공공형): A3·B3 등에 사용 |
 
 ---
 
@@ -139,10 +141,10 @@ mice-estimate가 견적 산출 + Excel 생성 후, 후속 스킬에 전달하는
 {
   "$schema": "ChainPayload/v1",
   "source": "mice-estimate",
-  "version": "v2.0",
+  "version": "v3.0",
   "generatedAt": "2026-07-03T10:00:00+09:00",
   "projectTitle": "행사명",
-  "format": "mnc",
+  "format": "remember",
   "isCustom": false,
   "totalAmount": 83750000,
   "totalAmountVat": 92125000,
@@ -229,10 +231,10 @@ def to_chain_payload(result: dict, meta: dict) -> dict:
     return {
         '$schema': 'ChainPayload/v1',
         'source': 'mice-estimate',
-        'version': 'v2.0',
+        'version': 'v3.0',
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'projectTitle': meta.get('projectTitle', ''),
-        'format': meta.get('format', 'mnc'),
+        'format': meta.get('format', 'remember'),   # 기본 양식: 리멤버 (D1). mnc=산출내역서(공공형)
         'isCustom': result['isCustom'],
         'totalAmount': result['pk'],
         'totalAmountVat': result['pkVat'],

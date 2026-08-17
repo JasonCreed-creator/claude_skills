@@ -1,7 +1,7 @@
 ---
 name: jc-theme-factory
 description: jc-design-system 정본을 사람이 쓰는 인터페이스로 감싼 테마 프론트엔드. 시그니처+등록된 클라이언트 오버레이를 시각 쇼케이스로 보여주고, 적용할 오버레이를 고르거나(미지정=개인 시그니처), 맞는 게 없으면 신규 오버레이를 발행(primary/accent/logo 3토큰 한정·색충돌·WCAG 자동 검증)해 client-overlays.md에 등록한 뒤, 산출물(HTML/PPTX/DOCX)에 적용한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '테마', 'theme', '테마 적용', '테마 입혀줘', '팔레트', '컬러 입혀줘', '스타일 입히기', '오버레이', '클라이언트 컬러', '브랜드 컬러 적용', '쇼케이스', '시그니처 보여줘', '어떤 테마 있어', '이 산출물에 우리 톤 적용', '신규 클라이언트 컬러 만들어줘'를 언급할 때. 특정 산출물을 가리키며 '여기에 OO 테마/컬러로 입혀줘'라고 할 때. 단, 토큰 값 자체의 정의·수정·확장(시그니처 변경)은 jc-design-system 직접 영역이고, 임의 팔레트·임의 폰트쌍 생성은 하지 않는다(시그니처 고정). 미학 무드의 캔버스 아트는 jc-visual-philosophy, 제너러티브 아트는 jc-generative-art, 실제 PPTX 후처리 적용 엔진은 jc-brand-styling 영역. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
-version: "v1.0.2"
+version: "v1.1.0"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -100,4 +100,5 @@ jc-theme-factory/
 
 ## 변경이력
 
+- v1.1.0 (2026-08-18): 리멤버 전환(D2) — `overlay-catalog.md` 동기. `remember` 오버레이 소속사(Track A) 승격, `mc`·`darktrace` 아카이브(deprecated) 섹션 이관. 값 정본은 `jc-design-system/references/client-overlays.md`(v1.4.0).
 - v1.0.2 (2026-07-03): CP1 GO-4 외부 패턴 흡수 — §4 적용에 '2-pass 비평 루프'(설계→브리프 대조 비평→구현→적용 후 재비평) 품질 게이트 신설(anthropics/skills frontend-design 벤치마크 재구성, apply-guide.md 위임 관계 무변경).
