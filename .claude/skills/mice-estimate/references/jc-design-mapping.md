@@ -13,14 +13,14 @@ mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접
 ## 1. 매핑 원칙
 
 1. **시맨틱(역할) 우선**: hex 코드를 직접 외우지 않고 "이 셀의 *역할*은 무엇인가"로 식별한 뒤 SoT 토큰에 매핑.
-2. **클라이언트 오버레이**: 동일 역할이라도 클라이언트(`mc`, `remember`)별 브랜드 색이 다를 수 있다. 기본(시그니처)은 SoT 정본, 오버레이는 `jc-design-system/client-overlays.md` 책임.
+2. **클라이언트 오버레이**: 소속사 기본 오버레이는 `remember`(Track A). 기본(시그니처)은 SoT 정본, 오버레이는 `jc-design-system/client-overlays.md` 책임.
 3. **유니버설 vs 클라이언트별**:
    - 시맨틱(danger·success 등)·중립(텍스트·보더·서피스) 역할 → 유니버설 (SoT 시그니처 그대로)
    - 브랜드(primary·accent) 역할 → 시그니처는 SoT, 클라이언트별 차별화는 오버레이
 
 ---
 
-## 2. M&C 양식 매핑 (Excel 셀 역할 → SoT 토큰)
+## 2. 산출내역서(공공형) 양식 매핑 (Excel 셀 역할 → SoT 토큰)
 
 값은 모두 jc-design-system `signature-tokens.md §6 JSON 정본` 기준. 아래 hex는 "SoT 정본값"으로, Excel 렌더링 시 미러링되는 참고치다.
 
@@ -35,7 +35,7 @@ mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접
 | Row 17 (총견적) 배경 | 헤더·강조 | `--jc-primary` | `#0A2540` | 유니버설(시그니처) |
 | 데이터 행 hair 테두리 | 구분선 | `--jc-border` | `#E5E8ED` | 유니버설 (hair/thin 두께는 렌더 로직) |
 | 데이터 행 thin 외곽 | 강조 보더 | `--jc-border-strong` | `#C9CFD8` | 유니버설 |
-| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base`(16px) | Pretendard | M&C 표준 (xlsx 실제 12pt 매체값) |
+| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base`(16px) | Pretendard | 산출내역서(공공형) 표준 (xlsx 실제 12pt 매체값) |
 | 타이틀 폰트 | 페이지 타이틀 | `--jc-font-heading` + `--jc-text-4xl`(44px) | Pretendard | Row 1 (xlsx 실제 30pt 매체값) |
 | 헤더 폰트 | H4·소제목 | `--jc-font-heading` + `--jc-text-xl`(22px) + `--jc-weight-bold` | Pretendard | 행사명·고객명 등 (xlsx 실제 14pt 매체값) |
 
@@ -65,10 +65,9 @@ mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접
 # 개념 모식 — 실제 토큰 값은 jc-design-system SoT가 반환
 from jc_design_system import get_token, set_overlay
 
-set_overlay('mc')                         # M&C 견적서 생성 시
-primary = get_token('--jc-primary')       # 시그니처 정본 → '#0A2540' (오버레이 시 mc 브랜드값)
+set_overlay('remember')                   # 산출내역서(공공형)·리멤버 견적서 생성 시 (소속사 기본 오버레이 Track A)
+primary = get_token('--jc-primary')       # 시그니처 정본 → '#0A2540'
 
-set_overlay('remember')                   # 리멤버 견적서 생성 시
 point = get_token('--jc-point-orange')    # → '#FF5722' (리멤버 포인트 역할)
 ```
 
@@ -93,7 +92,7 @@ xlsx는 매체 특성상 hex를 직접 기입하되, 의미는 본 문서의 SoT
 본 매핑의 정합성 보장 조건:
 
 1. 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON 정본` — 본 문서는 토큰명 참조만 하고 값을 재정의하지 않는다.
-2. `client-overlays.md`에 `mc`·`remember` 오버레이 정의(브랜드 색 차별화)를 둔다.
+2. `client-overlays.md`에 `remember`(소속사 Track A) 오버레이 정의(브랜드 색 차별화)를 둔다. 구 `mc`는 아카이브(deprecated).
 3. 견적서(xlsx)는 라이트 모드 전용 — `mode-mapping.md §1`상 xlsx 기본 모드 Light, 다크는 N/A(인쇄·이메일 첨부 표준).
 4. mice-estimate 렌더 코드는 SoT 정본값을 미러링하고 `SoT 미러: --jc-xxx` 주석으로 추적성을 유지한다.
 
@@ -105,4 +104,4 @@ xlsx는 매체 특성상 hex를 직접 기입하되, 의미는 본 문서의 SoT
 
 - ✅ **색상 정본은 jc-design-system SoT(`signature-tokens.md §6`)로 단일화**. 본 문서는 역할→토큰 참조표 역할만 한다.
 - ✅ **Excel 생성 코드의 hex는 SoT 정본값으로 정합**(드리프트 교정). 매체 제약상 리터럴은 유지하되 `SoT 미러` 주석 필수.
-- ✅ **클라이언트 오버레이는 mc / remember 만 정의**. 그 외는 미사용.
+- ✅ **소속사 오버레이는 `remember`(Track A)로 단일화** (리멤버 전환 D2). 구 `mc`는 아카이브(deprecated), 그 외는 미사용.

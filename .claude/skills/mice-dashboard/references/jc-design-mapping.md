@@ -104,11 +104,9 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(`#0A2540`, `#2962FF`, `#E91E6
 ```javascript
 // 향후 구현 (Sprint 7)
 import { setOverlay, getToken } from 'jc-design-system';
-setOverlay('mc');                                  // M&C 클라이언트 행사
-const primary = getToken('COLOR_BRAND_PRIMARY');   // → '#0A2540'
-
-setOverlay('remember');                            // 리멤버 클라이언트
-const primary = getToken('COLOR_BRAND_PRIMARY');   // → '#FF5722'
+setOverlay('remember');                            // 소속사 기본 오버레이 (Track A) — 리멤버 전환(D2)
+const primary = getToken('COLOR_BRAND_PRIMARY');   // → '#0A2540' (시그니처 유지)
+const point   = getToken('COLOR_POINT_ORANGE');    // → '#FF5722' (리멤버 포인트 역할)
 ```
 
 Sprint 2 현재: HTML 템플릿에 hex 직접 명시, 단 본 문서의 토큰명과 1:1 매핑 보장.

@@ -25,7 +25,7 @@
 | RFP·공고·입찰 안내서 분석, GO/NO-GO | mice-rfp-analyzer | 'RFP 분석'·'비딩 분석'·'요건/평가 기준 분석' — *입력 문서* 해체 | .docx 보고서 + .xlsx 매트릭스 |
 | 발주처 제출 제안서 | mice-proposal | '제안서'·'비딩'·'PT 자료' — 청중=발주처 | PPTX |
 | 스폰서·협찬·후원 유치 데크 | mice-sponsor-deck | '스폰서/협찬/후원/파트너십' 키워드 **결합 필수** — 청중=잠재 스폰서 | HTML 데크(1차)→PPTX·XLSX |
-| 견적서 | mice-estimate | '견적'·'산출내역서' (양식 2종: M&C/리멤버 — 양식 식별자) | XLSX |
+| 견적서 | mice-estimate | '견적'·'산출내역서' (양식 2종: 리멤버(기본)/산출내역서(공공형) — 양식 식별자; 레거시 'M&C'→산출내역서(공공형) 리네임, 코드 키 `mnc` 유지) | XLSX |
 | 발표 대본·MC 멘트 | pt-script | '대본'·'스크립트'·'발표 멘트'·'MC 멘트' | DOCX |
 | 행사 결과·KPI 대시보드 | mice-dashboard | '대시보드'·'실적/성과 시각화' — MICE 데이터 전제. 비-MICE 범용은 description 자체가 data 계열로 배제(2026-07-03 실측 반영) | 단일 HTML (+PDF) |
 | 회의록 구조화 | mice-meeting-minutes | '회의록'·'Action Items'·transcript 업로드 — 8축 프레임 | 단일 HTML 대시보드 |
