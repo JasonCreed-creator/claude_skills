@@ -145,3 +145,23 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - routing-map §2 cinematic 행 추가 + §3 키워드 경계 → [리멤버 전환] Phase 2에서 함께 처리
 - Drive 병합대기 v1·v2 파일 삭제 → Phase 4 Drive 반영 시 처리
 - CLAUDE.md·MASTER-CONTEXT 카운트(26→27) → Drive 챗 문서, 수동 이월
+
+---
+
+## 2026-08-18 — [리멤버 전환] 변경명세서 v1.0 집행 (D1·D2) · Phase 4 채널 상태
+
+명세서 §5 절차 집행 완료. 변경 스킬·검증은 PR #21 본문 참조.
+
+### 채널 4종 반영 상태 ('소스 반영 ≠ 배포')
+
+| 채널 | 상태 | 비고 |
+|---|---|---|
+| ② git 정본 | **반영 완료** | 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`, 드래프트 PR #21(base: `claude/relaxed-fermat-M5h5C`), CI drift-guard green |
+| ③ claude.ai .skill | **패키징 완료 · 업로드 대기(수동)** | 변경 6종 .skill ZIP 세션 전달(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html). 기획자님이 Settings→Capabilities→Skills 업로드 |
+| ① Drive `library/` | **미반영(수동 권장)** | Drive MCP는 콘텐츠 업데이트 도구 부재(create+trash만 가능 — 파일 ID·공유링크 변경 위험) + 다중 미러 구조 모호. D1/D2 변경분(오버레이 2파일·mice-estimate 9파일·registry/routing-map 등 약 20파일)은 PR 머지 후 Drive UI에서 반영 권장. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본) |
+| ④ 전역 설치 2머신(icejc·Jason) | **미반영(수동)** | 사용자 머신 로컬 설치 — 원격 세션에서 불가. PR 머지 후 각 머신에서 pull·설치 |
+
+### 미결 이월
+- registry 전체 재생성(run-of-show·aftermath·cinematic §2 행 편입, 26→28종) — 두 미러 정합 백로그
+- Drive `library/`의 jc-design-system `cinematic-campaign-html.md` 포인터 축약(병합대기 v2 잔여 task#1) — Drive 반영 시 동시 처리
+- calcEstimate 리멤버 양식 연결(Sprint 1.6) · 입사 후 과제 §6(jc-comms 리멤버 양식·슬랙 채널 ID·리멤버 CI 실측)
