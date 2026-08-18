@@ -4,7 +4,7 @@
 **구현 파일**: `scripts/calc_estimate.py`
 **검증**: SSOT §9 100명 표준견적 = 83,750,000원 (자가검증 PASS)
 
-`calcEstimate.js` (MiceConfigurator SaaS의 견적 엔진) 의 Python 포팅. M&C 양식의 자동 산출에 사용. 리멤버 양식은 본 엔진 미사용 (별도 단가 — Sprint 1.6 분리).
+`calcEstimate.js` (MiceConfigurator SaaS의 견적 엔진) 의 Python 포팅. 산출내역서(공공형) 양식의 자동 산출에 사용. 리멤버 양식(기본)은 본 엔진 미사용 (별도 단가 — Sprint 1.6 분리).
 
 ---
 

@@ -3,7 +3,7 @@
 **SSOT**: 견적Configurator_로직명세서_v1_0.md §4
 **구현**: `scripts/calc_estimate.py` 의 `OPTS` 딕셔너리 + `apply_option_constraints()`
 
-`ot` (추가옵션) 섹션에 들어가는 9종 옵션의 단가·그룹·상호배제 규칙. M&C 양식의 자동 산출에서 사용.
+`ot` (추가옵션) 섹션에 들어가는 9종 옵션의 단가·그룹·상호배제 규칙. 산출내역서(공공형) 양식의 자동 산출에서 사용.
 
 ---
 

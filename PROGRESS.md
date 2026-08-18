@@ -126,3 +126,42 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
   - `SKILL.md` — §9 파일 트리 주석 "현행 22종" → "현행 25종".
 - **적용 방식**: 자사 26종 폴더 위 파일 단위 덮어쓰기(폴더 삭제 없음·레거시 2종·_README.txt 보존). 라인엔딩 정규화(autocrlf)로 실질 변경 파일만 diff 반영 — 커밋 변경분 = jc-prompt-builder 3파일. 나머지 25종은 정본=레포 내용 동일(diff 0) 확인.
 - **후속**: claude.ai zip 재업로드(갱신분)는 별도 진행 중 · Drive `Skills/PROGRESS.md`는 별도 워킹 체크포인트 문서로 유지.
+
+---
+
+## 2026-08-18 — CP4 동기화: Drive 병합대기분(2026-07-25) git 반영
+
+- **소스**: Drive `PROGRESS-병합대기_20260725_cinematic_v2.md` + library 실측(07-25 수정분). 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`.
+- **결정**: [리멤버 전환] Phase 0 3자 대조에서 Drive>git 병합대기 1건 발견 → 전환 착수 전 선반영(A안, 2026-08-18 기획자님 승인). registry 역행 덮어쓰기(cinematic 항목 소실) 방지 목적.
+
+### 산출
+- `jc-cinematic-html` v1.0.0 신규 — SKILL.md + references/build-kit.md (시네마틱 캠페인 룩 정본. 웜 블랙 스테이지·단일 오렌지 광원·디오라마 히어로·필름 크롬·모션 1회재생 표준)
+- `jc-workspace-ops` v1.0.0 → **v1.1.0** — 세션 층 흡수('체크인/체크아웃/PROGRESS/세션 이어서' 트리거 6종, 세션 2파일 템플릿 전개, session-protocol.md 포인터)
+- `jc-prompt-builder` registry(25→26종, 07-25본)·routing-map(07-25 증분 노트 포함) 동기
+- `jc-design-system/references/cinematic-campaign-html.md` — 포인터로 신설(값 미보유, 드리프트 방지). SKILL.md 무범프 이력 한 줄 + 파일 구조 갱신
+- 바이트 검증: cinematic SKILL.md 5,489B · build-kit.md 8,587B · wsops SKILL.md 12,178B · registry 39,713B · routing-map 16,733B — Drive 실측 크기와 전량 일치
+
+### 잔여(병합대기 v2 기준)
+- routing-map §2 cinematic 행 추가 + §3 키워드 경계 → [리멤버 전환] Phase 2에서 함께 처리
+- Drive 병합대기 v1·v2 파일 삭제 → Phase 4 Drive 반영 시 처리
+- CLAUDE.md·MASTER-CONTEXT 카운트(26→27) → Drive 챗 문서, 수동 이월
+
+---
+
+## 2026-08-18 — [리멤버 전환] 변경명세서 v1.0 집행 (D1·D2) · Phase 4 채널 상태
+
+명세서 §5 절차 집행 완료. 변경 스킬·검증은 PR #21 본문 참조.
+
+### 채널 4종 반영 상태 ('소스 반영 ≠ 배포')
+
+| 채널 | 상태 | 비고 |
+|---|---|---|
+| ② git 정본 | **반영 완료** | 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`, 드래프트 PR #21(base: `claude/relaxed-fermat-M5h5C`), CI drift-guard green |
+| ③ claude.ai .skill | **반영 완료** (2026-08-18) | 변경 6종 .skill ZIP(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html) 기획자님 업로드 완료 확인 |
+| ① Drive `library/` | **미반영(수동 권장)** | Drive MCP는 콘텐츠 업데이트 도구 부재(create+trash만 가능 — 파일 ID·공유링크 변경 위험) + 다중 미러 구조 모호. D1/D2 변경분(오버레이 2파일·mice-estimate 9파일·registry/routing-map 등 약 20파일)은 PR 머지 후 Drive UI에서 반영 권장. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본) |
+| ④ 전역 설치 2머신(icejc·Jason) | **미반영(수동)** | 사용자 머신 로컬 설치 — 원격 세션에서 불가. PR 머지 후 각 머신에서 pull·설치 |
+
+### 미결 이월
+- registry 전체 재생성(run-of-show·aftermath·cinematic §2 행 편입, 26→28종) — 두 미러 정합 백로그
+- Drive `library/`의 jc-design-system `cinematic-campaign-html.md` 포인터 축약(병합대기 v2 잔여 task#1) — Drive 반영 시 동시 처리
+- calcEstimate 리멤버 양식 연결(Sprint 1.6) · 입사 후 과제 §6(jc-comms 리멤버 양식·슬랙 채널 ID·리멤버 CI 실측)

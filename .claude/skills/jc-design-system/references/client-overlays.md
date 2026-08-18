@@ -30,7 +30,7 @@
 
 ```json
 {
-  "client_id": "string — 영문 소문자·하이픈 (예: mc, remember, darktrace)",
+  "client_id": "string — 영문 소문자·하이픈 (예: remember, confex)",
   "client_name": "string — 산출물 표기용 정식 명칭 (외부 주입: {{client_company}})",
   "track": "A | B | personal — A=Track A(소속사 트랙), B=Track B(독립), personal=개인 브랜드",
   "overrides": {
@@ -62,55 +62,23 @@
 }
 ```
 
-### 3.2 소속사 (Track A — 한국 PCO 일반)
-
-```json
-{
-  "client_id": "mc",
-  "client_name": "{{company_name}}",
-  "track": "A",
-  "overrides": {
-    "primary": null,
-    "accent": null,
-    "logo_path": "assets/clients/mc.png"
-  },
-  "notes": "Track A 행사 기획 전략 역할 산출물. 컬러는 시그니처 유지, 로고만 적용. 외부 제출용 표지에 클라이언트 로고 사용. client_name은 외부 주입 변수."
-}
-```
-
-### 3.3 데이터 파트너사 (협업 사업 예시)
+### 3.2 소속사 (Track A — 리멤버) ★기본
 
 ```json
 {
   "client_id": "remember",
   "client_name": "{{client_company}}",
-  "track": "B",
+  "track": "A",
   "overrides": {
     "primary": "#0A2540",
     "accent": "#2962FF",
     "logo_path": "assets/clients/remember.png"
   },
-  "notes": "연례 컨퍼런스 예시 등 협업 행사 산출물. 시그니처 컬러를 그대로 유지하되 파트너사 로고 병기. client_name은 외부 주입 변수."
+  "notes": "소속사 산출물 기본 오버레이 (Track A). 리멤버 전환(D2, 2026-08-18)으로 B→A 승격. 컬러(Deep Navy / Electric Blue)는 jc 시그니처와 동일하므로 유지 — 시그니처 컬러 그대로 + 소속사 로고 병기. client_name은 외부 주입 변수."
 }
 ```
 
-### 3.4 Darktrace Korea (개별 행사 클라이언트)
-
-```json
-{
-  "client_id": "darktrace",
-  "client_name": "Darktrace Korea",
-  "track": "B",
-  "overrides": {
-    "primary": "#0A2540",
-    "accent": "#E91E63",
-    "logo_path": "assets/clients/darktrace.png"
-  },
-  "notes": "Discovery Meeting 단계. 보안·테크 톤이라 Magenta 액센트로 차별화. 6월 행사 확정 시 재검토."
-}
-```
-
-### 3.5 ConfEx 박람회 (수주 목표)
+### 3.3 ConfEx 박람회 (수주 목표)
 
 ```json
 {
@@ -123,6 +91,32 @@
     "logo_path": "assets/clients/confex.png"
   },
   "notes": "2026년 핵심 매출 프로젝트. 박람회 활성도 강조 위해 Vivid Orange 액센트."
+}
+```
+
+### 3.4 아카이브 (deprecated — 리멤버 전환 D2, 2026-08-18)
+
+이전 소속(M&C) 시절 오버레이. 신규 산출물에 사용 금지 — 이력 보존용으로만 남긴다.
+
+```json
+{
+  "client_id": "mc",
+  "client_name": "{{company_name}}",
+  "track": "A",
+  "status": "deprecated",
+  "overrides": { "primary": null, "accent": null, "logo_path": null },
+  "notes": "[DEPRECATED 2026-08-18] 구 소속사(Track A) 오버레이. 리멤버 전환으로 소속사 지위는 `remember`로 이관. 로고 자산 assets/clients/mc.png 사용 중단. 신규 산출물 사용 금지."
+}
+```
+
+```json
+{
+  "client_id": "darktrace",
+  "client_name": "Darktrace Korea",
+  "track": "B",
+  "status": "deprecated",
+  "overrides": { "primary": "#0A2540", "accent": "#E91E63", "logo_path": null },
+  "notes": "[DEPRECATED 2026-08-18] 구 소속사 시절 개별 행사 클라이언트. 종결·아카이브. 신규 산출물 사용 금지 — 재개 시 클라이언트 CI 재확인 후 신규 등록."
 }
 ```
 
