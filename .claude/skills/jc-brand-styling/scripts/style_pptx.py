@@ -36,7 +36,7 @@ python-pptx 미설치 시: 친절한 안내(설치법)를 출력하고 비-0으�
 사용:
     python3 style_pptx.py 입력.pptx                         # 제자리 옆에 *_jc.pptx 생성
     python3 style_pptx.py 입력.pptx -o 출력.pptx
-    python3 style_pptx.py 입력.pptx --client darktrace      # 오버레이 적용
+    python3 style_pptx.py 입력.pptx --client remember       # 오버레이 적용
     python3 style_pptx.py 입력.pptx --heading-min 28        # 헤딩 임계치 조정
     python3 style_pptx.py --self-test                       # 샘플 생성→적용 자가검증
 종료코드: 0 성공 / 1 python-pptx 미설치 / 2 입력 오류.

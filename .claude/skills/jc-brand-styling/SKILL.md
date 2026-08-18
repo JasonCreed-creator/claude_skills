@@ -1,7 +1,7 @@
 ---
 name: jc-brand-styling
 description: 이미 존재하는 산출물(PPTX 슬라이드·HTML 아티팩트)에 jc 시그니처(Deep Navy·Electric Blue·Pretendard) + 선택적 클라이언트 오버레이를 입히는 후처리 적용 엔진. 헤딩/본문 폰트 교체·배경 대비 자동 텍스트색·비텍스트 도형 accent 순환 채움을 python-pptx로 찍는다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '브랜드 입혀줘', '스타일 적용', '리테마', '우리 톤으로 바꿔줘'(산출물 파일을 이미 갖고 있고 여기에 적용만 하면 되면 이 스킬, 아직 어떤 오버레이/톤을 쓸지 정하지 않았다면 jc-theme-factory), 'PPTX에 색 입혀줘', '이 슬라이드 브랜딩 입혀줘', '폰트 우리 걸로 바꿔줘', '기존 파일에 시그니처 적용', '아티팩트 색 바꿔줘'를 언급할 때. 완성된 .pptx나 HTML 파일을 주며 '여기에 우리 브랜드로 입혀줘', '리테마해줘'라고 할 때. 단, 형제 경계 — 어떤 테마/오버레이를 쓸지 결정·쇼케이스·신규 오버레이 발행은 jc-theme-factory, 토큰 값 자체의 정의·수정은 jc-design-system, 새 제안서/데크/대시보드를 *생성*하는 것은 mice-proposal·mice-sponsor-deck·mice-dashboard 영역이다. 이 스킬은 그 결과로 *이미 만들어진 파일에 색·폰트를 입히는* 후처리 엔진이며, 임의 팔레트·임의 폰트쌍은 만들지 않는다(시그니처 고정). 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
-version: "v1.0.1"
+version: "v1.0.2"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -38,7 +38,7 @@ python3 scripts/style_pptx.py 제안서.pptx                  # → 제안서_jc
 python3 scripts/style_pptx.py 제안서.pptx -o 최종.pptx
 
 # 클라이언트 오버레이 적용 (primary/accent를 client-overlays.md에서 로드)
-python3 scripts/style_pptx.py 제안서.pptx --client darktrace
+python3 scripts/style_pptx.py 제안서.pptx --client remember
 
 # 헤딩 임계치 조정 (기본 24pt 이상을 헤딩으로 간주)
 python3 scripts/style_pptx.py 제안서.pptx --heading-min 28
@@ -118,4 +118,5 @@ jc-brand-styling/
 
 ## 변경이력
 
+- v1.0.2 (2026-08-18): 리멤버 전환 잔여 드리프트 정리 — CLI 사용 예시의 `--client darktrace`(아카이브 오버레이) → `--client remember`(소속사 기본)로 교체. `scripts/style_pptx.py` docstring 동일 적용. 엔진 로직·토큰 값 무변경.
 - v1.0.1 (2026-07-03): CP1 GO-2 후속 조치 — description '우리 톤으로 바꿔줘' 트리거 직후에 jc-theme-factory 판별 힌트 추가 (트리거 미세 중첩 해소, Minor).

@@ -11,7 +11,7 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(`#0A2540`, `#2962FF`, `#E91E6
 ## 1. 매핑 원칙
 
 1. **시맨틱 우선**: hex 대신 의미 토큰. 어떤 카드·차트도 토큰명으로 식별.
-2. **클라이언트 오버레이**: 동일 시맨틱이라도 클라이언트(`mc`, `remember`, `darktrace`, `confex`)별로 다른 hex.
+2. **클라이언트 오버레이**: 동일 시맨틱이라도 클라이언트(`remember`, `confex`, `personal`)별로 다른 hex. 구 `mc`·`darktrace`는 아카이브(deprecated) — 신규 산출물 사용 금지.
 3. **모드 분리**: 라이트·다크는 동일 시맨틱 토큰의 모드 변형.
 
 ---
@@ -20,7 +20,7 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(`#0A2540`, `#2962FF`, `#E91E6
 
 ### 2.1 v1 "기업/공식" 톤 (다크) → JC 다크 모드
 
-| 영역 | v1 hex | JC 시맨틱 토큰 | mc 오버레이 hex (라이트) | mc 오버레이 hex (다크) |
+| 영역 | v1 hex | JC 시맨틱 토큰 | remember 오버레이 hex (라이트) | remember 오버레이 hex (다크) |
 |---|---|---|---|---|
 | 페이지 배경 | `#0A2540` | `COLOR_BG_PAGE` | `#ffffff` | `#0A2540` |
 | 카드 배경 | `#1A3556` | `COLOR_BG_CARD` | `#F8F9FB` | `#1A1D24` |
@@ -76,7 +76,7 @@ mice-dashboard v1 은 4종 자체 컬러 팔레트(`#0A2540`, `#2962FF`, `#E91E6
 
 | v1 톤 | JC 시맨틱 묶음 | 호출 |
 |---|---|---|
-| 기업/공식 (다크) | `COLOR_BG_PAGE` (다크) + `COLOR_BRAND_PRIMARY` (mc) | `applyTone('corporate-dark')` |
+| 기업/공식 (다크) | `COLOR_BG_PAGE` (다크) + `COLOR_BRAND_PRIMARY` (remember) | `applyTone('corporate-dark')` |
 | 성과/실적 (라이트) | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY_BIZ` | `applyTone('business-light')` |
 | 마케팅/이벤트 | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY` (confex) | `applyTone('event-light')` |
 | 재무/회계 | `COLOR_BG_PAGE` (라이트) + `COLOR_BRAND_PRIMARY_FINANCE` | `applyTone('finance-light')` |

@@ -158,10 +158,100 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 |---|---|---|
 | ② git 정본 | **반영 완료** | 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`, 드래프트 PR #21(base: `claude/relaxed-fermat-M5h5C`), CI drift-guard green |
 | ③ claude.ai .skill | **반영 완료** (2026-08-18) | 변경 6종 .skill ZIP(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html) 기획자님 업로드 완료 확인 |
-| ① Drive `library/` | **미반영(수동 권장)** | Drive MCP는 콘텐츠 업데이트 도구 부재(create+trash만 가능 — 파일 ID·공유링크 변경 위험) + 다중 미러 구조 모호. D1/D2 변경분(오버레이 2파일·mice-estimate 9파일·registry/routing-map 등 약 20파일)은 PR 머지 후 Drive UI에서 반영 권장. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본) |
+| ① Drive `library/` | **반영 완료** (2026-08-18) | 정본 트리(root `13hBTL3MBT40AIL7elq6qA6hiT8w5wx-q`) 19파일 교체 — 아래 별도 절 참조. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본)이라 대상 외 |
 | ④ 전역 설치 2머신(icejc·Jason) | **미반영(수동)** | 사용자 머신 로컬 설치 — 원격 세션에서 불가. PR 머지 후 각 머신에서 pull·설치 |
 
 ### 미결 이월
 - registry 전체 재생성(run-of-show·aftermath·cinematic §2 행 편입, 26→28종) — 두 미러 정합 백로그
 - Drive `library/`의 jc-design-system `cinematic-campaign-html.md` 포인터 축약(병합대기 v2 잔여 task#1) — Drive 반영 시 동시 처리
 - calcEstimate 리멤버 양식 연결(Sprint 1.6) · 입사 후 과제 §6(jc-comms 리멤버 양식·슬랙 채널 ID·리멤버 CI 실측)
+
+---
+
+## 2026-08-18 — [리멤버 전환] 후속조치: 잔여 드리프트 정리 + 템플릿 자산 정화
+
+PR #21 머지 후 Drive `library/` 반영(채널 ①) 작업 중 발견한 잔여분 처리. 명세서 §2 D1/D2의
+*의도*는 반영됐으나 실제 자산·활성 사양부에 남아 있던 누락분이다.
+
+### A. 템플릿 자산 정화 (`mice-estimate/assets/mnc_template.xlsx`) — **중대**
+
+Phase 1에서 교체했다고 기록한 직인 치환이 **커밋되지 않아 정본에 반영되지 않은 상태**였다. 실측 재확인 결과:
+
+| 항목 | 발견 | 조치 |
+|---|---|---|
+| `xl/media/image1.png` (86,636B) | 구 소속사 **법인 직인** 원본 그대로 잔존 | 동일 픽셀 크기(162×200) 중립 placeholder(1,382B)로 치환 — 시트 레이아웃·drawing 앵커 불변 |
+| `sheet1.xml.rels` 하이퍼링크 | 셀 K7 표시값은 `(외부 주입 - 이메일)`로 치환됐으나 **하이퍼링크 타깃에 구 소속사 도메인 개인 메일이 그대로 살아 있음** (클릭 시 실주소로 연결) | `<hyperlinks>` 블록 + hyperlink Relationship 제거 |
+
+- 결과: 105,072B → **19,756B**. openpyxl 로드 정상(`A1:K121`, 이미지 1), zip 무결성 OK, 회사/PII 토큰 **0건**.
+- 최초 스캔이 이를 놓친 이유: 한글 상호·`M&C` 철자만 훑고 **도메인 문자열과 rels 내부 링크 타깃을 보지 않았다.** 이후 자산 점검은 `.rels`·`media/`까지 포함한다.
+
+### B. 활성 사양부의 아카이브 오버레이 참조 제거
+
+D2로 `mc`·`darktrace`를 아카이브했으나, **선택지를 제시하는 활성 사양부**가 여전히 두 값을 유효한 것처럼 열거하고 있었다.
+
+| 스킬 | 위치 | 조치 |
+|---|---|---|
+| `mice-dashboard` v2.0.4 | Step 4 톤 매핑표 · 오버레이 슬롯 표 · 코드 작성 원칙 | `mc` → `remember`, 슬롯 열거에서 아카이브분 제외 |
+| `mice-dashboard` | `references/jc-design-mapping.md` §1·§2·§6, `references/chaining-schema.md` 출력 예시 | 동일 기준 동기 (hex 값 불변 — `remember`와 시그니처 컬러가 동일) |
+| `jc-theme-factory` v1.1.1 | §1 쇼케이스 본문 등록 오버레이 예시 | 아카이브분 제거 + 쇼케이스 제외 원칙 명문화 |
+| `jc-brand-styling` v1.0.2 | CLI 사용 예시 `--client darktrace` (SKILL.md + `style_pptx.py` docstring) | `--client remember`로 교체 |
+
+**버전 히스토리(과거 이력) 기술은 원문 보존** — `mice-dashboard` v2.0 항목의 당시 오버레이 열거는 이력이므로 수정하지 않았다.
+
+### C. registry 정비
+- 버전 헤딩 동기: jc-theme-factory v1.1.1 · mice-dashboard v2.0.4 · jc-brand-styling v1.0.2
+- 줄바꿈 **LF 정규화** (구 CRLF 혼재 116행) — 라이브러리 내 유일한 예외였고, Drive 왕복 시 바이트 대조를 불가능하게 만들던 원인
+
+### 검증
+- `check_drift.py` ✅ 통과 (비-canon 토큰 0건)
+- 전 라이브러리 회사 도메인·이메일 스윕: 잔존 `엠앤씨`/`M&C` 히트는 **전량 RULE-NO-COMPANY 금지어 필터 목록**(명세서 §4 존치 대상) + 변경 이력 기술. 실 하드코딩 0건
+- OOXML 자산 2종 전수 스캔: `mnc_template.xlsx` ✅ / `remember_template.xlsx` — 아래 결정 대기
+
+### 기획자님 결정 필요 (미조치)
+- `remember_template.xlsx`에 **리멤버 워드마크 로고 이미지 2개(각 59,001B)가 하드코딩**되어 있다. 구 소속사 직인과 *구조적으로 동일한 사안*이지만, 신 소속사 자사 양식에 자사 로고가 들어가는 것은 통상적이기도 하다. RULE-NO-COMPANY(공급자 로고=외부 주입 슬롯) 원칙을 그대로 적용할지 여부는 기획자님 판단 사항이라 **임의 변경하지 않았다.**
+- `pt-script`·`mice-proposal`의 `darktrace_korea` 예시는 명세서 §4 무변경 대상(pt-script)·단순 이력 예시(mice-proposal)라 존치.
+
+---
+
+## 2026-08-18 — [리멤버 전환] 채널 ① Drive `library/` 반영 완료
+
+정본 트리(루트 `13hBTL3MBT40AIL7elq6qA6hiT8w5wx-q`) 기준 **19파일 교체 + 병합대기 노트 2건 정리**.
+Drive MCP에 콘텐츠 업데이트 도구가 없어 **create(신규) → trash(구본)** 방식으로 처리했다.
+
+### 반영 파일 (전건 바이트 일치 검증 — 업로드 응답 `fileSize` ↔ 로컬 `wc -c`)
+
+| # | 파일 | bytes |
+|---|---|---|
+| 1 | `jc-theme-factory/references/overlay-catalog.md` | 3,823 |
+| 2 | `jc-design-system/references/client-overlays.md` | 4,975 |
+| 3 | `mice-estimate/references/remember_template.md` | 6,528 |
+| 4 | `mice-estimate/references/mnc_template.md` | 4,953 |
+| 5 | `mice-estimate/references/jc-design-mapping.md` | 7,271 |
+| 6 | `mice-estimate/references/option-catalog.md` | 4,858 |
+| 7 | `mice-estimate/references/pricing-engine.md` | 6,048 |
+| 8 | `mice-estimate/references/chaining-schema.md` | 9,183 |
+| 9 | `jc-design-system/references/shared-rules.md` | 12,261 |
+| 10 | `jc-design-system/references/cinematic-campaign-html.md` (포인터 축약) | 991 |
+| 11 | `jc-design-system/SKILL.md` v1.4.0 | 7,674 |
+| 12 | `mice-dashboard/references/jc-design-mapping.md` | 5,764 |
+| 13 | `mice-dashboard/references/chaining-schema.md` | 6,442 |
+| 14 | `jc-theme-factory/SKILL.md` v1.1.1 | 9,760 |
+| 15 | `jc-brand-styling/SKILL.md` v1.0.2 | 10,473 |
+| 16 | `mice-estimate/assets/mnc_template.xlsx` (직인·메일링크 정화) | 19,756 |
+| 17 | `jc-prompt-builder/references/routing-map.md` | 16,845 |
+| 18 | `mice-dashboard/SKILL.md` v2.0.4 | 17,690 |
+| 19 | `mice-estimate/SKILL.md` v3.0.0 | 31,211 |
+| 20 | `mice-estimate/scripts/export_estimate.py` | 19,920 |
+| 21 | `jc-brand-styling/scripts/style_pptx.py` | 19,545 |
+| 22 | `jc-prompt-builder/references/description-registry.md` | 40,319 |
+
+(9·12번은 잔여 드리프트 정리 반영으로 2회 업로드 — 최종본 기준 기재)
+
+### 병합대기 노트 정리 (휴지통 이동)
+- `PROGRESS-병합대기_20260725_cinematic.md` · `..._v2.md` — 노트 본문의 지시("PROGRESS.md에 append 후 본 파일을 삭제할 것")대로 처리. 내용은 CP4 동기 커밋 `ef85597`에 흡수 완료.
+
+### 방식 주의 (다음 세션 인수인계)
+- **create+trash 방식이라 파일 ID가 전부 바뀐다.** 라이브러리 상호참조는 경로 기반이라 무해하지만, Drive 공유 링크를 외부에 박아둔 곳이 있으면 갱신 필요.
+- 휴지통은 30일 복구 가능 — 이상 발견 시 그 기간 내 되돌릴 수 있다.
+- Drive에는 동일 파일명의 **다른 미러 트리**가 다수 존재한다. 이번 작업은 위 정본 루트 하위만 건드렸다.
+- `mnc_template.xlsx`는 유일한 바이너리라 base64로 올렸다. 길이 일치(19,756B)는 확인했으나, 첫 사용 전 Drive에서 한 번 열어 이미지·서식이 정상인지 눈으로 확인할 것을 권한다.
