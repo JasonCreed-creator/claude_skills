@@ -157,7 +157,7 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 | 채널 | 상태 | 비고 |
 |---|---|---|
 | ② git 정본 | **반영 완료** | 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`, 드래프트 PR #21(base: `claude/relaxed-fermat-M5h5C`), CI drift-guard green |
-| ③ claude.ai .skill | **패키징 완료 · 업로드 대기(수동)** | 변경 6종 .skill ZIP 세션 전달(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html). 기획자님이 Settings→Capabilities→Skills 업로드 |
+| ③ claude.ai .skill | **반영 완료** (2026-08-18) | 변경 6종 .skill ZIP(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html) 기획자님 업로드 완료 확인 |
 | ① Drive `library/` | **미반영(수동 권장)** | Drive MCP는 콘텐츠 업데이트 도구 부재(create+trash만 가능 — 파일 ID·공유링크 변경 위험) + 다중 미러 구조 모호. D1/D2 변경분(오버레이 2파일·mice-estimate 9파일·registry/routing-map 등 약 20파일)은 PR 머지 후 Drive UI에서 반영 권장. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본) |
 | ④ 전역 설치 2머신(icejc·Jason) | **미반영(수동)** | 사용자 머신 로컬 설치 — 원격 세션에서 불가. PR 머지 후 각 머신에서 pull·설치 |
 
