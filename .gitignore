@@ -32,3 +32,6 @@ build/
 
 # forge/skillupgrade 롤백 백업 (git 히스토리가 정본 — 로컬 백업은 추적 안 함)
 _archive/
+
+# Claude Code 개인 설정 (로컬 전용)
+.claude/settings.local.json

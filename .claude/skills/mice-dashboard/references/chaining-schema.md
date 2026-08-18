@@ -150,7 +150,7 @@ mice-dashboard 는 풀 워크플로우의 **종착점**이지만, 외부 시스�
   "theme": {
     "mode": "light",
     "tone": "business",
-    "overlay": "mc"
+    "overlay": "remember"
   },
   "chartCount": 5,
   "infographicCount": 2

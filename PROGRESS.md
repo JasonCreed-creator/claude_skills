@@ -165,3 +165,48 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - registry 전체 재생성(run-of-show·aftermath·cinematic §2 행 편입, 26→28종) — 두 미러 정합 백로그
 - Drive `library/`의 jc-design-system `cinematic-campaign-html.md` 포인터 축약(병합대기 v2 잔여 task#1) — Drive 반영 시 동시 처리
 - calcEstimate 리멤버 양식 연결(Sprint 1.6) · 입사 후 과제 §6(jc-comms 리멤버 양식·슬랙 채널 ID·리멤버 CI 실측)
+
+---
+
+## 2026-08-18 — [리멤버 전환] 후속조치: 잔여 드리프트 정리 + 템플릿 자산 정화
+
+PR #21 머지 후 Drive `library/` 반영(채널 ①) 작업 중 발견한 잔여분 처리. 명세서 §2 D1/D2의
+*의도*는 반영됐으나 실제 자산·활성 사양부에 남아 있던 누락분이다.
+
+### A. 템플릿 자산 정화 (`mice-estimate/assets/mnc_template.xlsx`) — **중대**
+
+Phase 1에서 교체했다고 기록한 직인 치환이 **커밋되지 않아 정본에 반영되지 않은 상태**였다. 실측 재확인 결과:
+
+| 항목 | 발견 | 조치 |
+|---|---|---|
+| `xl/media/image1.png` (86,636B) | 구 소속사 **법인 직인** 원본 그대로 잔존 | 동일 픽셀 크기(162×200) 중립 placeholder(1,382B)로 치환 — 시트 레이아웃·drawing 앵커 불변 |
+| `sheet1.xml.rels` 하이퍼링크 | 셀 K7 표시값은 `(외부 주입 - 이메일)`로 치환됐으나 **하이퍼링크 타깃에 구 소속사 도메인 개인 메일이 그대로 살아 있음** (클릭 시 실주소로 연결) | `<hyperlinks>` 블록 + hyperlink Relationship 제거 |
+
+- 결과: 105,072B → **19,756B**. openpyxl 로드 정상(`A1:K121`, 이미지 1), zip 무결성 OK, 회사/PII 토큰 **0건**.
+- 최초 스캔이 이를 놓친 이유: 한글 상호·`M&C` 철자만 훑고 **도메인 문자열과 rels 내부 링크 타깃을 보지 않았다.** 이후 자산 점검은 `.rels`·`media/`까지 포함한다.
+
+### B. 활성 사양부의 아카이브 오버레이 참조 제거
+
+D2로 `mc`·`darktrace`를 아카이브했으나, **선택지를 제시하는 활성 사양부**가 여전히 두 값을 유효한 것처럼 열거하고 있었다.
+
+| 스킬 | 위치 | 조치 |
+|---|---|---|
+| `mice-dashboard` v2.0.4 | Step 4 톤 매핑표 · 오버레이 슬롯 표 · 코드 작성 원칙 | `mc` → `remember`, 슬롯 열거에서 아카이브분 제외 |
+| `mice-dashboard` | `references/jc-design-mapping.md` §1·§2·§6, `references/chaining-schema.md` 출력 예시 | 동일 기준 동기 (hex 값 불변 — `remember`와 시그니처 컬러가 동일) |
+| `jc-theme-factory` v1.1.1 | §1 쇼케이스 본문 등록 오버레이 예시 | 아카이브분 제거 + 쇼케이스 제외 원칙 명문화 |
+| `jc-brand-styling` v1.0.2 | CLI 사용 예시 `--client darktrace` (SKILL.md + `style_pptx.py` docstring) | `--client remember`로 교체 |
+
+**버전 히스토리(과거 이력) 기술은 원문 보존** — `mice-dashboard` v2.0 항목의 당시 오버레이 열거는 이력이므로 수정하지 않았다.
+
+### C. registry 정비
+- 버전 헤딩 동기: jc-theme-factory v1.1.1 · mice-dashboard v2.0.4 · jc-brand-styling v1.0.2
+- 줄바꿈 **LF 정규화** (구 CRLF 혼재 116행) — 라이브러리 내 유일한 예외였고, Drive 왕복 시 바이트 대조를 불가능하게 만들던 원인
+
+### 검증
+- `check_drift.py` ✅ 통과 (비-canon 토큰 0건)
+- 전 라이브러리 회사 도메인·이메일 스윕: 잔존 `엠앤씨`/`M&C` 히트는 **전량 RULE-NO-COMPANY 금지어 필터 목록**(명세서 §4 존치 대상) + 변경 이력 기술. 실 하드코딩 0건
+- OOXML 자산 2종 전수 스캔: `mnc_template.xlsx` ✅ / `remember_template.xlsx` — 아래 결정 대기
+
+### 기획자님 결정 필요 (미조치)
+- `remember_template.xlsx`에 **리멤버 워드마크 로고 이미지 2개(각 59,001B)가 하드코딩**되어 있다. 구 소속사 직인과 *구조적으로 동일한 사안*이지만, 신 소속사 자사 양식에 자사 로고가 들어가는 것은 통상적이기도 하다. RULE-NO-COMPANY(공급자 로고=외부 주입 슬롯) 원칙을 그대로 적용할지 여부는 기획자님 판단 사항이라 **임의 변경하지 않았다.**
+- `pt-script`·`mice-proposal`의 `darktrace_korea` 예시는 명세서 §4 무변경 대상(pt-script)·단순 이력 예시(mice-proposal)라 존치.

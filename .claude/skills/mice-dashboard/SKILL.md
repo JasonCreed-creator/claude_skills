@@ -1,6 +1,6 @@
 ---
 name: mice-dashboard
-version: v2.0.3
+version: v2.0.4
 description: "분석 보고서용 인터랙티브 대시보드를 생성하는 스킬. Excel/CSV 파일, 대화 입력, 또는 다른 MICE 스킬(mice-meeting-minutes 시리즈·mice-estimate 예산실적)의 체이닝 JSON 입력을 받아 KPI 카드·차트·인포그래픽이 포함된 단일 HTML 대시보드 + PDF 보고서를 자동 생성한다. v2부터 jc-design-system 시맨틱 토큰 매핑, 라이트/다크 모드 5종 변형, 인포그래픽 3종(퍼널·매트릭스·레이더)을 지원한다. 반드시 이 스킬을 사용해야 하는 상황: '대시보드', 'dashboard', 'KPI 대시보드', '분석 대시보드', '실적 대시보드', '데이터 시각화 보고서', '인터랙티브 보고서', '성과 분석 리포트'를 언급할 때. 데이터를 업로드하며 '시각화해줘', '차트로 만들어줘', '대시보드로 보여줘'라고 요청할 때. 행사 실적·매출·KPI·참가자 통계를 대시보드로 정리해달라는 요청. MICE 행사 결과보고서를 대시보드로 만들어달라는 요청. 다크 모드 토글·클라이언트 오버레이는 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 단, MICE 맥락 없는 범용 데이터 대시보드·차트 생성은 data:build-dashboard·data:create-viz 영역이므로 사용하지 말 것. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다."
 dependencies:
   - pandas
@@ -11,6 +11,10 @@ dependencies:
 # 분석 대시보드 생성 스킬
 
 ## 버전 히스토리
+
+### v2.0.4 — 2026-08-18 (리멤버 전환 잔여 드리프트 정리)
+
+D2 이후에도 **활성 사양부**가 아카이브 오버레이를 선택지로 제시하던 잔여분 정리 — Step 4 톤 매핑표·오버레이 슬롯 표·코드 작성 원칙의 `mc` → `remember` 갱신, 슬롯 열거에서 `mc`·`darktrace` 제외(아카이브 명시). `references/jc-design-mapping.md` §1·§2·§6, `references/chaining-schema.md` 출력 예시도 동일 기준 동기. **버전 히스토리(v2.0 이하)의 과거 기술은 이력이므로 원문 보존.** 토큰 hex 값·생성 로직 무변경.
 
 ### v2.0.3 — 2026-08-18 (리멤버 전환 P2 동기)
 
@@ -159,7 +163,7 @@ ChainPayload 스키마 상세는 [chaining-schema.md](references/chaining-schema
 
 | 데이터 키워드 | 톤 | JC 토큰 매핑 |
 |---|---|---|
-| 보고·결과·실적·report | 기업/공식 (다크) | `COLOR_BG_PAGE_DARK` + `COLOR_BRAND_PRIMARY` (mc) |
+| 보고·결과·실적·report | 기업/공식 (다크) | `COLOR_BG_PAGE_DARK` + `COLOR_BRAND_PRIMARY` (remember) |
 | 매출·비용·예산·수익 | 재무/회계 (라이트) | `COLOR_BG_PAGE` + `COLOR_BRAND_PRIMARY_FINANCE` |
 | 이벤트·페스티벌·캠페인 | 마케팅 (컬러풀) | `COLOR_BG_PAGE` + `COLOR_BRAND_PRIMARY` (confex) |
 | 기본 | 성과/실적 (라이트) | `COLOR_BG_PAGE` + `COLOR_BRAND_PRIMARY_BIZ` |
@@ -172,7 +176,7 @@ ChainPayload 스키마 상세는 [chaining-schema.md](references/chaining-schema
 
 | 슬롯 | 설명 |
 |---|---|
-| `overlay` | `mc` / `remember` / `darktrace` / `confex` / null (외부 주입) |
+| `overlay` | `remember`(소속사 기본) / `confex` / `personal` / null (외부 주입). 구 `mc`·`darktrace`는 아카이브 — 신규 대시보드 사용 금지 |
 
 → Sprint 7 통합 시 jc-design-system 의 토큰 fetch + hex 자동 적용.
 
@@ -277,7 +281,7 @@ with sync_playwright() as p:
 
 1. **단일 HTML 파일**: 외부 의존 CDN만
 2. **한국어 표시**: 모든 사용자 직면 텍스트
-3. **시맨틱 토큰 우선**: hex 직접 사용 시 토큰명 주석 필수 (`/* COLOR_BRAND_PRIMARY (mc) */`)
+3. **시맨틱 토큰 우선**: hex 직접 사용 시 토큰명 주석 필수 (`/* COLOR_BRAND_PRIMARY (remember) */`)
 4. **다크 모드 기본 지원**: 5 컴포넌트 변형 모두 적용
 5. **인포그래픽 자동 감지**: 데이터 키워드 기반 (`INFOGRAPHIC_TRIGGERS`)
 6. **체이닝 입력 우선**: ChainPayload 감지 시 자동 진행 (별도 정보 수집 없음)
