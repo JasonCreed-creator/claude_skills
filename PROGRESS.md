@@ -158,7 +158,7 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 |---|---|---|
 | ② git 정본 | **반영 완료** | 브랜치 `claude/skill-library-phase-0-validation-ef0jsa`, 드래프트 PR #21(base: `claude/relaxed-fermat-M5h5C`), CI drift-guard green |
 | ③ claude.ai .skill | **반영 완료** (2026-08-18) | 변경 6종 .skill ZIP(mice-estimate·jc-design-system·jc-theme-factory·mice-dashboard·jc-workspace-ops·jc-cinematic-html) 기획자님 업로드 완료 확인 |
-| ① Drive `library/` | **미반영(수동 권장)** | Drive MCP는 콘텐츠 업데이트 도구 부재(create+trash만 가능 — 파일 ID·공유링크 변경 위험) + 다중 미러 구조 모호. D1/D2 변경분(오버레이 2파일·mice-estimate 9파일·registry/routing-map 등 약 20파일)은 PR 머지 후 Drive UI에서 반영 권장. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본) |
+| ① Drive `library/` | **반영 완료** (2026-08-18) | 정본 트리(root `13hBTL3MBT40AIL7elq6qA6hiT8w5wx-q`) 19파일 교체 — 아래 별도 절 참조. cinematic·workspace-ops는 Drive가 이미 정본(병합대기 원본)이라 대상 외 |
 | ④ 전역 설치 2머신(icejc·Jason) | **미반영(수동)** | 사용자 머신 로컬 설치 — 원격 세션에서 불가. PR 머지 후 각 머신에서 pull·설치 |
 
 ### 미결 이월
@@ -210,3 +210,48 @@ D2로 `mc`·`darktrace`를 아카이브했으나, **선택지를 제시하는 �
 ### 기획자님 결정 필요 (미조치)
 - `remember_template.xlsx`에 **리멤버 워드마크 로고 이미지 2개(각 59,001B)가 하드코딩**되어 있다. 구 소속사 직인과 *구조적으로 동일한 사안*이지만, 신 소속사 자사 양식에 자사 로고가 들어가는 것은 통상적이기도 하다. RULE-NO-COMPANY(공급자 로고=외부 주입 슬롯) 원칙을 그대로 적용할지 여부는 기획자님 판단 사항이라 **임의 변경하지 않았다.**
 - `pt-script`·`mice-proposal`의 `darktrace_korea` 예시는 명세서 §4 무변경 대상(pt-script)·단순 이력 예시(mice-proposal)라 존치.
+
+---
+
+## 2026-08-18 — [리멤버 전환] 채널 ① Drive `library/` 반영 완료
+
+정본 트리(루트 `13hBTL3MBT40AIL7elq6qA6hiT8w5wx-q`) 기준 **19파일 교체 + 병합대기 노트 2건 정리**.
+Drive MCP에 콘텐츠 업데이트 도구가 없어 **create(신규) → trash(구본)** 방식으로 처리했다.
+
+### 반영 파일 (전건 바이트 일치 검증 — 업로드 응답 `fileSize` ↔ 로컬 `wc -c`)
+
+| # | 파일 | bytes |
+|---|---|---|
+| 1 | `jc-theme-factory/references/overlay-catalog.md` | 3,823 |
+| 2 | `jc-design-system/references/client-overlays.md` | 4,975 |
+| 3 | `mice-estimate/references/remember_template.md` | 6,528 |
+| 4 | `mice-estimate/references/mnc_template.md` | 4,953 |
+| 5 | `mice-estimate/references/jc-design-mapping.md` | 7,271 |
+| 6 | `mice-estimate/references/option-catalog.md` | 4,858 |
+| 7 | `mice-estimate/references/pricing-engine.md` | 6,048 |
+| 8 | `mice-estimate/references/chaining-schema.md` | 9,183 |
+| 9 | `jc-design-system/references/shared-rules.md` | 12,261 |
+| 10 | `jc-design-system/references/cinematic-campaign-html.md` (포인터 축약) | 991 |
+| 11 | `jc-design-system/SKILL.md` v1.4.0 | 7,674 |
+| 12 | `mice-dashboard/references/jc-design-mapping.md` | 5,764 |
+| 13 | `mice-dashboard/references/chaining-schema.md` | 6,442 |
+| 14 | `jc-theme-factory/SKILL.md` v1.1.1 | 9,760 |
+| 15 | `jc-brand-styling/SKILL.md` v1.0.2 | 10,473 |
+| 16 | `mice-estimate/assets/mnc_template.xlsx` (직인·메일링크 정화) | 19,756 |
+| 17 | `jc-prompt-builder/references/routing-map.md` | 16,845 |
+| 18 | `mice-dashboard/SKILL.md` v2.0.4 | 17,690 |
+| 19 | `mice-estimate/SKILL.md` v3.0.0 | 31,211 |
+| 20 | `mice-estimate/scripts/export_estimate.py` | 19,920 |
+| 21 | `jc-brand-styling/scripts/style_pptx.py` | 19,545 |
+| 22 | `jc-prompt-builder/references/description-registry.md` | 40,319 |
+
+(9·12번은 잔여 드리프트 정리 반영으로 2회 업로드 — 최종본 기준 기재)
+
+### 병합대기 노트 정리 (휴지통 이동)
+- `PROGRESS-병합대기_20260725_cinematic.md` · `..._v2.md` — 노트 본문의 지시("PROGRESS.md에 append 후 본 파일을 삭제할 것")대로 처리. 내용은 CP4 동기 커밋 `ef85597`에 흡수 완료.
+
+### 방식 주의 (다음 세션 인수인계)
+- **create+trash 방식이라 파일 ID가 전부 바뀐다.** 라이브러리 상호참조는 경로 기반이라 무해하지만, Drive 공유 링크를 외부에 박아둔 곳이 있으면 갱신 필요.
+- 휴지통은 30일 복구 가능 — 이상 발견 시 그 기간 내 되돌릴 수 있다.
+- Drive에는 동일 파일명의 **다른 미러 트리**가 다수 존재한다. 이번 작업은 위 정본 루트 하위만 건드렸다.
+- `mnc_template.xlsx`는 유일한 바이너리라 base64로 올렸다. 길이 일치(19,756B)는 확인했으나, 첫 사용 전 Drive에서 한 번 열어 이미지·서식이 정상인지 눈으로 확인할 것을 권한다.
