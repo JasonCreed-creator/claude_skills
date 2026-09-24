@@ -165,3 +165,11 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - registry 전체 재생성(run-of-show·aftermath·cinematic §2 행 편입, 26→28종) — 두 미러 정합 백로그
 - Drive `library/`의 jc-design-system `cinematic-campaign-html.md` 포인터 축약(병합대기 v2 잔여 task#1) — Drive 반영 시 동시 처리
 - calcEstimate 리멤버 양식 연결(Sprint 1.6) · 입사 후 과제 §6(jc-comms 리멤버 양식·슬랙 채널 ID·리멤버 CI 실측)
+
+---
+
+## 2026-09-25 — mice-proposal v3.0.1 → v3.1.0 (코퍼스 증류 `proposal-voice.md` 신설)
+
+- **소스**: Drive `Skills/library/mice-proposal/`(정본 ① 반영 2026-09-25, 백업 `_archive/20260925-proposal-voice/`) → 단방향 Drive→git. 근거: `JC_main_claude/corpus/proposals/cards/_SYNTHESIS.md` v1.1.1(수주 제안서 10건 카드 교차 종합, jc-redteam 독립 검증 반영) + 기획자님 결정 3건.
+- **변경**: `references/proposal-voice.md` v1.0.0 신설(불변 3·준불변 7, 계보 분기, 한국어 어투 기본형 5 + 번역투 금칙 8, 정례 헤드라인 21, 표기·리스크 화법·금칙 27·게이트 7~10·홀드아웃 체크리스트) / `SKILL.md` §3-6 포인터·§5 회사소개 ③ 앞배치·§6 문체·§8 게이트 7~10·§9·§10. description 무변경.
+- **채널**: ① 정본 완료 · ④ git 본 커밋(기본 브랜치 직커밋 — 2026-07-25 결정, redteam 게이트 통과 배치) · ②③ 미반영(각 머신 sync_deploy · zip 재업로드 대기).
