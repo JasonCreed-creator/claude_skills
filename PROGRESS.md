@@ -173,3 +173,10 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **소스**: Drive `Skills/library/mice-proposal/`(정본 ① 반영 2026-09-25, 백업 `_archive/20260925-proposal-voice/`) → 단방향 Drive→git. 근거: `JC_main_claude/corpus/proposals/cards/_SYNTHESIS.md` v1.1.1(수주 제안서 10건 카드 교차 종합, jc-redteam 독립 검증 반영) + 기획자님 결정 3건.
 - **변경**: `references/proposal-voice.md` v1.0.0 신설(불변 3·준불변 7, 계보 분기, 한국어 어투 기본형 5 + 번역투 금칙 8, 정례 헤드라인 21, 표기·리스크 화법·금칙 27·게이트 7~10·홀드아웃 체크리스트) / `SKILL.md` §3-6 포인터·§5 회사소개 ③ 앞배치·§6 문체·§8 게이트 7~10·§9·§10. description 무변경.
 - **채널**: ① 정본 완료 · ④ git 본 커밋(기본 브랜치 직커밋 — 2026-07-25 결정, redteam 게이트 통과 배치) · ②③ 미반영(각 머신 sync_deploy · zip 재업로드 대기).
+
+## [코퍼스 증류] mice-proposal v3.1.0 → v3.1.1 · proposal-voice v1.0.0 → v1.0.1 — 2026-09-25 (Drive→git 단방향 반영)
+
+- 1차 홀드아웃 검증(P05 공공 입찰 · won, 리포트 `JC_main_claude/corpus/validation/2026-09-25_P05-holdout.md` v1.1.0, 레드팀 Opus 1회): **부분 통과 · 우선권 승격 보류**(승격 조건 = 블라인드 재채점 또는 2차 홀드아웃/PPTX 빌드 재판정).
+- proposal-voice v1.0.1: A-1 순서 = 발주처 권고 목차 우선(P05 반례) · A-3 범위 한정 · B-6 · 결정 ② 부연 정정("앞단") · §3-4 하이픈 예외 · §4 기준일 · §5 "협의 확정, 결정 시점 D-N" · §6 조건부 금칙(RFP 계량화 지침) · §9 결과.
+- SKILL v3.1.1: §3-6 결과 병기(우선권 유지) · §5 순서 우선 · §8 게이트 2 증빙 · 게이트 10 하이픈 예외. description 무변경.
+- 채널: ① Drive 정본 완료(백업 `_archive/20260925-holdout/`) · ④ 본 커밋 · ② sync_deploy · ③ zip 재업로드는 기획자님.
