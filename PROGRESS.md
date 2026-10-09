@@ -209,3 +209,11 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **검증**: lint(제외 없음) ERROR 0·WARN 3(오탐) · check_drift PASS · test_jc_tokens PASS · mice-estimate self-test 3종 PASS · CI `--exclude mice-estimate` 제거 · `build_skills.py --include-estimate` 19종.
 - **채널**: ① git 반영 완료 · ② Code 설치 없음 · ③ claude.ai **미반영** — 삭제·끄기는 확장프로그램(런북 §1), 업로드 19종은 기획자님 수동(런북 §2, 번들 `dist/jc-skills-live19-2026-10-09.zip`). 업로드 후 deploy-pipeline.md §1 "37종" 팩트 갱신 예정.
 - **남은 결정**: C-2(템플릿 xlsx 샘플 실문구·구 PCO 2단 구조 자산 정정) · E(브랜치) · H(보조 드라이브 폴더).
+
+## 2026-10-09 — ③ claude.ai 배포 완료(기획자님) · 배포 팩트 현행화
+
+- **집행(기획자님, 14:05Z)**: 폐합 19종 삭제(Claude in Chrome 지시문) · 라이브 19종 재업로드(mice-meeting-minutes 신규·mice-estimate v3.3.1) · 프리셋 doc-coauthoring OFF. 확인: claude.ai 화면 "내가 만듦 19"(폐합 0, mice-weekly-performance 포함 전부 삭제). Code 동기화본은 다음 주기 반영.
+- **문서**: deploy-pipeline §1 "37종" → 30종(자작 19 + 프리셋 11) 현행화 → jc-skill-forge v2.2.1. stocktake §5 ③ 반영 완료·카드 A·B·D 완료·§7 해소, CHANGELOG §4 완료.
+- **채널**: ① git 반영 완료 · ② Code 설치 없음(synced만) · ③ claude.ai **반영 완료** — 단 jc-skill-forge는 ③ v2.2.0(① v2.2.1과 배포 팩트 1줄 차이, 다음 배치에 재업로드).
+- **남은 결정**: C-2(견적 템플릿 xlsx 자산 정정) · E(브랜치) · H(보조 드라이브 폴더).
+

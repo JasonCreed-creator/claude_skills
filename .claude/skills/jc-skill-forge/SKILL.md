@@ -1,7 +1,7 @@
 ---
 name: jc-skill-forge
 description: 기획자님의 Claude 스킬 라이브러리(jc-*·mice-*)를 만들고·고치고·점검하고·배포하는 단일 메타 스킬. 신규 스킬 제작, 기존 스킬 개선·버전업, 외부 스킬 생태계 대조 인테이크(업그레이드·대체·통폐합), 정기 라이브러리 점검(Quick Scan / Full Stocktake), 정본 레포 → claude.ai 업로드·Claude Code 로컬 설치 배포 파이프라인, 하우스 규약(명명·description·리멤버 SoT 앵커·공통 룰·Windows 경로)을 담는다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 만들어줘', '새 스킬', '스킬 제작', '스킬 개선', '스킬 수정', '버전 올려', '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 정리', '스킬 점검', '스킬 라이브러리', '외부 스킬 찾아줘', '쓸만한 스킬', '스킬 업로드', '스킬 배포', '스킬 빌드', '.skill 파일', '스킬 동기화', '스킬셋 개정'을 언급할 때. 기본 제공 스킬을 우리 것으로 바꿔달라고 할 때. 기본 skill-creator 대신 본 스킬을 우선 사용한다(skill-creator는 평가 기계로만). 소스 수정은 `_archive` 백업 후 바로 진행하고, 배포(Code 설치·claude.ai 업로드 안내)·삭제는 승인 후, claude.ai 업로드와 git 커밋·푸시는 사용자 몫이다. 형제 경계 — 산출물 자체 생성은 각 전용 스킬, 완성 스킬의 적대 검증은 jc-redteam, 세션·턴 규약은 jc-session-protocol, 디자인 토큰 값은 jc-design-system.
-version: "v2.2.0"
+version: "v2.2.1"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -81,6 +81,7 @@ jc-skill-forge/
 
 ## 변경 이력
 
+- v2.2.1 (2026-10-09): deploy-pipeline §1 업로드 상태 팩트 현행화(폐합 19종 삭제·라이브 19종 재업로드·doc-coauthoring OFF → 30종) + 삭제·끄기 확장프로그램 대행·수동 업로드 경로 명시. 스크립트·규약 무변경.
 - v2.2.0 (2026-10-09): ARCHIVE를 레포 실제(`archive/skills/` git 보관소 + LIVE/ARCHIVED + archive README + 체이닝 별칭)로 정의, `_archive/`는 로컬 롤백 백업으로만. 진행 규약·모델은 jc-session-protocol 정본 포인터, 호칭 구분 명시, description에 skill-creator 대비 우선 1문. lint에 description 인용 트리거 중복 WARN(스킬 간 같은 트리거 = 재중복 신호) 추가.
   마감에 체이닝 enum 동시 갱신 항목, 린트에 'LIVE ⊆ chaining-protocol §3' WARN·`CURRENT_MODELS` 상수, upstream 탐색 순서(synced 확인), deploy §6 구 `/skillupgrade` 잔존 삭제 안내.
 - v2.1.0 (2026-10-05): 린트 강화(경로 인자·`--self-test`, 폐합·없는 스킬 참조·"N턴"·구 모델 ID·"리더"·구 시그니처 HEX·깨진 상대경로), build·install 자가 테스트 추가.

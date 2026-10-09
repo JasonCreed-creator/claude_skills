@@ -196,7 +196,7 @@
 |---|---|
 | ① git 정본 | **반영 완료**(본 브랜치, PR #23 드래프트) |
 | ② Code 로컬 설치(`~/.claude/skills`) | 미반영 — 현재 0종 설치 상태 유지(synced만 사용) |
-| ③ claude.ai 업로드 | **미반영** — §6 카드 A·B(사용자) |
+| ③ claude.ai 업로드 | **반영 완료(2026-10-09 14:05Z, 기획자님)** — 폐합 19종 삭제·라이브 19종 재업로드(mice-meeting-minutes 신규·mice-estimate v3.3.1)·프리셋 doc-coauthoring OFF. 확인: claude.ai 화면 "내가 만듦 19". jc-skill-forge만 ① v2.2.1(배포 팩트 갱신) / ③ v2.2.0 — 1줄 차이, 다음 배치에 재업로드 |
 
 ## 6. 남은 결정·사용자 작업 — 한 단어로 답하실 수 있게
 
@@ -204,11 +204,11 @@
 
 | 카드 | 내용 | 누가 | 추천 |
 |---|---|---|---|
-| **A** | claude.ai Settings → Capabilities에서 **폐합 19종 삭제**: jc-artifact-builder · jc-asana-html · jc-brand-discovery · jc-brand-styling · jc-cinematic-html · jc-comms · jc-generative-art · jc-landing-page · jc-mcp-builder · jc-orchestrator · jc-prompt-builder · jc-remember-html · jc-skill-creator · jc-theme-factory · jc-visual-philosophy · jc-workspace-ops · mice-dashboard · mice-proposal · mice-weekly-performance | 기획자님 | ★ 즉시 — 층 A와 키워드 충돌 18개가 한 번에 사라짐(약 10분 후 synced 반영) |
-| **B** | 같은 화면에서 **동명 구스킬 삭제 → `.skill` 업로드 18종**(`dist/skills/`, 이 세션이 파일로 첨부). mice-meeting-minutes는 **신규 업로드**(현재 claude.ai에 없음) | 기획자님 | ★ A 직후 |
+| **A** | ✅ **완료(2026-10-09, 기획자님)** — claude.ai Settings → Capabilities에서 **폐합 19종 삭제**: jc-artifact-builder · jc-asana-html · jc-brand-discovery · jc-brand-styling · jc-cinematic-html · jc-comms · jc-generative-art · jc-landing-page · jc-mcp-builder · jc-orchestrator · jc-prompt-builder · jc-remember-html · jc-skill-creator · jc-theme-factory · jc-visual-philosophy · jc-workspace-ops · mice-dashboard · mice-proposal · mice-weekly-performance | 기획자님 | ★ 즉시 — 층 A와 키워드 충돌 18개가 한 번에 사라짐(약 10분 후 synced 반영) |
+| **B** | ✅ **완료(2026-10-09, 기획자님)** — 같은 화면에서 **동명 구스킬 삭제 → `.skill` 업로드 18종**(`dist/skills/`, 이 세션이 파일로 첨부). mice-meeting-minutes는 **신규 업로드**(현재 claude.ai에 없음) | 기획자님 | ★ A 직후 |
 | **C** | ✅ **적용 완료(v3.3.1, 사용자 GO)** — 원 패치 목록: `mice-estimate` 패치(사용자 관리 스킬 — 1차 마감까지 내용 무수정). ① description: `mice-proposal·mice-rfp-analyzer 체이닝 입력` → `jc-pptx·mice-rfp-analyzer 체이닝 입력`, 말미 "실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다." 삭제, 형제 경계 추가(제안서·견적 슬라이드=jc-pptx / 입찰가 권고=mice-rfp-analyzer / 가격 포지션=jc-strategy-canvas / 경쟁가 조사=mice-market-intel / 검산=jc-redteam) ② Step 2.5 체이닝 감지에 `source: "jc-pptx"`(mice-proposal은 별칭) + rfp 견적 전용 봉투(§3-1 키) 수용 ③ `chaining-schema.md` §1 도식·§2 제목·§4·§5 수신 목록(jc-pptx ⑦예산 추가·pt-script 삭제·mice-dashboard→mice-ops-docs/aftermath), 예시 version 플레이스홀더·generatedAt·clientId ④ `pricing-strategy.md:32` → `jc-pptx/references/sponsor-deck.md §3` ⑤ `/mnt/skills`·`/mnt/user-data` 3곳 → xlsx 스킬 recalc 상대 탐색 또는 soffice, 출력 `outputs/` ⑥ `jc-design-mapping.md`·SKILL 스타일 표의 구 토큰 → §6 키, `export_estimate_remember.py` 색을 jc_tokens 런타임 로드 ⑦ 완료 후 v3.3.1 범프·lint 통과·재업로드 | Claude Code(적용됨) → 업로드는 기획자님(카드 B에 포함) | 완료 — 남은 자산 건은 C-2 |
 | **C-2** | `mice-estimate/assets/remember_template.xlsx` 자산 정정(검증에서 발견, 자산은 이번 미수정): ① 두 시트 B11·B13·B24·G24에 샘플 행사명·베뉴명 실문구 잔존 → `{{event_name}}`·`{{venue}}`·일반 문구(RULE-NO-COMPANY, 레포 public) ② 59~64행이 구 v2 PCO 2단(인건비·기업이윤) 구조 → 61행 단일 PCO 기획료 25%(SKILL.md 산식)로 정정. 로고·직인 앵커 보존 게이트 적용 후 v3.3.2 범프·재업로드. 그 전까지 SKILL.md가 복사 직후 수동 교체(B11·B13·B24·G24, PCO 행 치환)를 필수로 지시 | 기획자님 승인 → Code | ★ GO 권고 |
-| **D** | 프리셋 `doc-coauthoring` 비활성화(§4). `pptx`는 유지 | 기획자님 | ★ GO |
+| **D** | ✅ **완료(2026-10-09, 기획자님)** — 프리셋 `doc-coauthoring` 비활성화(§4). `pptx`는 유지 | 기획자님 | ★ GO |
 | **E** | 브랜치 — `main`(7/25 정지)을 `claude/relaxed-fermat-M5h5C`까지 fast-forward 후 본 PR base=main으로 변경(E-1) / 또는 relaxed-fermat을 기본 브랜치로 지정(E-2) | 기획자님 승인 → Code | ★ E-1 |
 | **F** | 백로그(이번 미적용): ⓐ mice-ops-docs에 구 대시보드 역량(xlsx/csv 입력·Chart.js 자동 선택·레이더/매트릭스·PDF) 선택 계승 ⓑ jc-pptx 봉투 `program[]`(run-of-show 자동 흡수)·`deck_kit.cover()` "PROPOSAL" 라벨 인자화·레이더/2×2 타입 ⓒ jc-kv-guide 템플릿 토큰 런타임 로드 ⓓ jc-design-system §6에 `--line-soft`·`--charcoal` 키 ⓔ jc-session-protocol '브리프' 어휘 → '기획안 카드' ⓕ lint 허용 목록(채널명 오탐) ⓖ 폐합 jc-prompt-builder의 effort 등급표 | — | 다음 점검 사이클 |
 | **H** | 행사 드라이브 표준(mice-ops-docs v1.2.0 `drive-standards.md`)이 공표 프로토콜 매뉴얼(구글독 정본)의 01~06 폴더에 **보조 폴더 3개**(`07_발주처공유`·`99_archive`·`00_공통`)를 덧붙였다 — 팀 표준으로 쓸지, 쓴다면 매뉴얼 정본에 반영할지 | 기획자님 | 결정 필요(기본값: 보조 폴더 유지, 매뉴얼은 다음 개정 때 반영) |
@@ -216,7 +216,7 @@
 
 ## 7. 리스크 · 주의
 
-- **배포 전까지 claude.ai는 구 상태**다. 특히 (a) 폐합 jc-prompt-builder가 남아 있어 mice-estimate 등 구 description을 가진 스킬에서 브리프 게이트가 발동하고 (b) 회의록 요청은 Cowork·채팅에서 받을 스킬이 없다(mice-meeting-minutes 미업로드). 카드 A·B가 해소한다.
+- **(해소) claude.ai 구 상태**: 2026-10-09 14:05Z 카드 A·B·D 완료로 해소 — 폐합 19종 삭제(브리프 게이트 발동 원인 제거), 라이브 19종 재업로드(mice-meeting-minutes 신규). Code 동기화본(synced)은 다음 주기(약 10분)에 따라온다.
 - **업로드 순서**: 폐합 삭제(A) → 라이브 업로드(B). 반대로 하면 synced에 구·신 두 벌이 잠시 공존한다.
 - **mice-estimate**: 카드 C 적용 완료(v3.3.1) — lint ERROR 14 → 0, CI `--exclude mice-estimate` 제거. 견적 xlsx의 색이 컨피규레이터 실측 리터럴(순오렌지·검정)에서 리멤버 웜 페이퍼 토큰(accent·ink 계열)으로 바뀐다(레이아웃·수식·금액 무변경). 템플릿 자산의 샘플 실문구·구 PCO 2단 구조는 카드 C-2(승인 필요).
 - **개정 스킬의 동작 변화**: mice-meeting-minutes는 시스템 다크 자동 감지를 없앴고(첫 렌더 라이트, mode-mapping §4.1) JSON 버튼을 하단 툴바로 옮겼다. mice-rfp-analyzer xlsx 0_종합 시트는 셀 배치가 바뀌었다(B9~B15 판정, B25~ 참고 점수). mice-team-board 갱신 TSV는 상태 열이 기본 빈칸(유지)이다.

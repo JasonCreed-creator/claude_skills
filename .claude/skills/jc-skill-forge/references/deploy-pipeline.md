@@ -1,6 +1,6 @@
 # 배포 파이프라인 — 정본 레포 → claude.ai → Claude Code
 
-검증일 2026-10-05 (Claude Code 공식 문서 + 이 PC 실측 + 2026-10-03 전수 점검).
+검증일 2026-10-05 (Claude Code 공식 문서 + 이 PC 실측 + 2026-10-03 전수 점검) · 업로드 상태 2026-10-09 갱신.
 
 ---
 
@@ -24,7 +24,7 @@
 | `~/.claude/skills/synced/<bucket>/`는 claude.ai에서 **약 10분마다 자동 갱신** | 그 폴더 편집은 덮어써짐. 읽기 전용 |
 | `~/.claude/skills/<이름>/` 개인 스킬은 동명 synced보다 **우선** (`/이름` = 로컬, `/anthropic-skills:이름` = synced) | Code 즉시 반영은 여기에 설치. 단 목록에 둘 다 노출 |
 | **Cowork는 claude.ai에 등록된 스킬만 로드** | claude.ai 업로드가 필수. `~/.claude/skills`는 Cowork에 안 보임 |
-| claude.ai에 폐합 스킬이 남아 있으면 계속 발동한다 | 2026-10-03 기준 37종 업로드(라이브 + 폐합 19종 + 공용). 폐합 스킬은 사용자가 삭제해야 사라진다 |
+| claude.ai에 폐합 스킬이 남아 있으면 계속 발동한다 | 2026-10-09 기준 30종 = 자작 라이브 19종(교통정리 재업로드본) + Anthropic 프리셋 11종(doc-coauthoring은 OFF). 폐합 19종은 2026-10-09 삭제 완료. 폐합 스킬은 사용자가 삭제해야 사라진다 — 화면 조작은 Claude in Chrome 지시문으로 대행 가능(레포 `docs/claude-ai-sync-runbook-2026-10-09.md` §1), 업로드는 파일 선택창 때문에 수동 |
 | 업로드 형식은 **ZIP(.skill) 하나** | 내부 구조 `<name>/SKILL.md`. **tar.gz·7z·폴더째 업로드 금지** — 받지 않거나 구조가 깨진다 |
 | 업로드 프론트매터 허용 필드 제한 | `house-conventions.md §1` |
 | `mice-estimate`는 사용자가 직접 업로드 관리 | 빌드·설치 대상에서 기본 제외(`--include-estimate`로만 포함) |
