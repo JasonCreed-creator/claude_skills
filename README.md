@@ -22,7 +22,7 @@
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
 | `jc-pptx` | v2.3.0 | 제안서(proposal-voice 문체 정본 우선)·스폰서/협찬 제안 덱·소개서·발표덱·결과보고 덱 — 16종 타입·설득 설계·deck_kit 빌드·check_deck 검수 | PPTX (+PDF) |
-| `mice-estimate` | v3.3.1 | 리멤버 견적서(패키지 할인 + 기획료) — 컨피규레이터 가격 엔진, jc-pptx·rfp-analyzer 봉투 수신, 토큰 런타임 로드. **업로드는 사용자 직접 관리**(빌드 `--include-estimate`) | XLSX |
+| `mice-estimate` | v3.3.2 | 리멤버 견적서(패키지 할인 + 기획료) — 컨피규레이터 가격 엔진, jc-pptx·rfp-analyzer 봉투 수신, 토큰 런타임 로드. **업로드는 사용자 직접 관리**(빌드 `--include-estimate`) | XLSX |
 | `pt-script` | v2.3.0 | 슬라이드·speaker notes → 발표 대본·전환 멘트·Q&A | DOCX |
 
 ### 운영 · 현장 · 사후

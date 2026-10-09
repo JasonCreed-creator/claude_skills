@@ -1,6 +1,6 @@
 ---
 name: mice-estimate
-version: "v3.3.1"
+version: "v3.3.2"
 description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 양식은 리멤버 견적서 하나 — 패키지 할인 구조 + PCO 기획료(운영비 25%) 별도 계상, 컨피규레이터 가격 엔진(데이터셋 JSON) 기반 자동 산출 지원. 공공·관 발주의 산출내역서 요청도 같은 양식으로 작성한다. 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서', '빠른견적', '견적 뽑아줘', '견적 계산해줘'를 언급할 때. 특히 '리멤버 견적서' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. jc-pptx·mice-rfp-analyzer 체이닝 입력(ChainPayload/v1)을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 형제 경계 — 제안서·견적 요약 슬라이드는 jc-pptx, RFP 분석·입찰가 권고는 mice-rfp-analyzer, 가격 포지션 판단은 jc-strategy-canvas, 경쟁가·지불의향 조사는 mice-market-intel, 견적 숫자 검산·저가수주 리스크는 jc-redteam."
 dependencies: openpyxl
 ---
@@ -9,6 +9,8 @@ dependencies: openpyxl
 
 ## 변경 이력
 
+- v3.3.2 (2026-10-09): 템플릿 자산 정정(`assets/remember_template.xlsx`) — 실명·샘플 헤더(B11·B13·B14·B15·B24·C24, Opt2 G24) → `(외부 주입 - …)` 자리표시자, 섹션 6을 25% 단일 라인 수식(D61·E61·F61·F64·F59)으로, 요약 B17·B19 수식화, 패키지 메타(docProps creator·lastModifiedBy) 인명 제거.
+  문서 동기: 셀 위치 맵·방식 B/C 코드 주석·Assets 설명·remember_template.md §2·§3·§5.
 - v3.3.1 (2026-10-09): 폐합 스킬 라우팅을 jc-pptx(구 mice-proposal 별칭)·mice-ops-docs·mice-aftermath로 교체, 폐지된 브리프 게이트 문구 삭제, 형제 경계 추가. mice-rfp-analyzer §3-1 전용 봉투(`estimate_hint`) 수용 → 완료 게이트 6 연동.
   샌드박스 고정 경로 → `recalc()` 헬퍼·`outputs/`, 색상은 jc-design-system v2 토큰 런타임 로드(`scripts/estimate_tokens.py`), 긴 버전 히스토리는 `references/changelog.md`로 이관.
 - 이전 이력(v3.3.0 ~ v1.0): [references/changelog.md](references/changelog.md)
@@ -177,17 +179,17 @@ template = SKILL / 'assets' / 'remember_template.xlsx'
 output = Path('outputs') / '리멤버견적서_{{event_name}}_{{YYMMDD}}.xlsx'; output.parent.mkdir(exist_ok=True)
 shutil.copy(template, output)
 wb = load_workbook(output)
-ws = wb.active
+# 단일 옵션 견적이면 미사용 시트는 삭제(남는 시트의 로고는 보존 — 이미지는 시트별 앵커): del wb['Opt2_350명']
+for ws in wb.worksheets:   # 두 시트 모두 `(외부 주입 - …)` 자리표시자·샘플 리터럴을 갖는다 — 남기는 시트는 전부 채운다
+    # 헤더·베뉴 셀(B11·B13·B14·B15·B24·C24)은 `(외부 주입 - …)` 자리표시자 — 주입값으로 교체
+    ws['B11'] = '{{event_name}}'; ws['B13'] = ws['B24'] = '{{venue}}'; ws['B14'] = '{{remark}}'; ws['C24'] = '{{venue_spec}}'
+    ws['B15'] = '{{quote_date}}'  # 날짜 서식 셀(yyyy"년" m"월" d"일" 유지) — 문자열·datetime 모두 주입 가능
+    ws['G13'] = meta['supplier_company']  # Step 3.5 슬롯(G11~G16) — 절대 하드코딩 금지
+    # ...
+    # 세부 항목 행 작성
+    # ...
 
-# 외부 주입 변수로 헤더 채움 — 템플릿에 남은 샘플 행사명·베뉴명(B11·B13·B24·G24)은 반드시 덮어쓴다(RULE-NO-COMPANY)
-ws['B11'] = '{{event_name}}'; ws['B13'] = ws['B24'] = '{{venue}}'; ws['G24'] = '(베뉴 비고 — 일반 문구)'
-ws['G13'] = meta['supplier_company']  # Step 3.5 슬롯(G11~G16) — 절대 하드코딩 금지
-# ...
-# 섹션 6: 템플릿 61~62행(구 v2 인건비·기업이윤 2단)은 61행 단일 PCO 기획료로 치환 — '셀 위치 맵' 아래 단락 참조
-
-# 세부 항목 행 작성
-# ...
-
+wb.properties.creator = 'mice-estimate'; wb.properties.lastModifiedBy = None   # 파일 메타(docProps)에도 인명 미기재 — RULE-NO-COMPANY
 wb.save(output)
 ```
 
@@ -320,12 +322,13 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 | 3. 디자인 | 37 | 38 | 39~42 | 43 |
 | 4. 운영인력 | 45 | 46 | 47~49 | 50 |
 | 5. 기타운영비 | 52 | 53 | 54~56 | 57 |
-| 6. PCO이윤 | 59 | 60 | 61~62 | 64 |
+| 6. PCO 기획료 | 59 | 60 | 61 (62~63 예비) | 64 |
 | 7. 모객솔루션 | 66 | 67 | 68~69 | 70 |
 
 **주의**: `insert_rows()` / `delete_rows()` 사용 시 수식 범위가 자동 조정되지 않으므로 소계 수식을 반드시 재설정한다.
 
-**PCO 기획료 행 치환(방식 B 템플릿 복사 시 필수)**: 템플릿 `assets/remember_template.xlsx`의 59~64행은 아직 구 v2 2단 구조다 — 61행 '인건비 / 운영비의 15%'(D61 리터럴 금액, E61=0.15), 62행 '기업이윤+관리비 / (운영비+인건비)의 10%'. 신규 생성은 25% 단일 라인이므로 복사 직후 ① 61행을 `PCO 기획료 / 직접비의 25%`로 바꾸고 E61=0.25, D61은 '금액 계산' 절의 opCost 수식(섹션 1~5 total 행 F열 합 `F25+F35+F43+F50+F57` + 사전신청 관리 F + 참관객 관리 F(있으면), 쇼업 보장 제외), F61=`FLOOR(D61*E61,10000)` ② 62행은 비우거나 삭제 ③ 64행 total 수식 범위를 재설정한다. 템플릿 자산 자체의 정정(assets 무변경)은 별도 승인 건.
+**섹션 6(방식 B 템플릿 복사 시)**: 템플릿 `assets/remember_template.xlsx`의 59~64행은 25% 단일 라인 — D61 `=F25+F35+F43+F50+F57+F68`(섹션 1~5 total + F68 = 섹션 7 68행 모집리드·사전모집 = `rsvpPkg`, 쇼업 F69 제외) · E61 0.25 · F61 `=FLOOR(D61*E61,10000)` · F64 `=F61` · F59 `=F64`, 요약 B17 `=F25+F35+F43+F50+F57+F64+F70` · B19 `=B17+B18`. **값 교체만 하면 되고 행 치환은 불필요**하다.
+62~63행은 섹션 6 예비(빈 행, 스타일·병합 유지). 섹션 6에 라인을 추가해 62·63행을 쓰면 F64를 `=SUM(F61:F63)`로 바꾼다. 참관객 관리 등 직접비 항목은 섹션 7(68~69행 아래 insert — 위 주의대로 F70·B17 참조 재설정)에 넣고, 그 F셀을 D61 수식에 더한다(쇼업 보장 F69는 계속 제외).
 
 ---
 
@@ -428,7 +431,7 @@ unzip -l assets/<템플릿>.xlsx | grep -E 'media|drawing'
   - `lookup_venue()`는 아직 실데이터 기준으로 구현되지 않음 — 현재 실질 가치는 수용인원 검증(capacity sanity check)과 지역별 베뉴 후보 제시다.
 - [jc-design-mapping.md](references/jc-design-mapping.md) — Excel 셀 역할 → jc-design-system §6 키 매핑(값 없음 — `estimate_tokens.py` 런타임 로드)
 - [chaining-schema.md](references/chaining-schema.md) — 입출력 JSON 스키마(입력 jc-pptx·mice-rfp-analyzer / 출력 jc-pptx·mice-ops-docs·mice-aftermath)·직렬화 헬퍼
-- [remember_template.md](references/remember_template.md) — 리멤버 양식 상세 사양 (v1 유지)
+- [remember_template.md](references/remember_template.md) — 리멤버 양식 상세 사양(템플릿 v3.3.2 실측 셀·수식·스타일)
 
 ## Scripts
 
@@ -439,5 +442,5 @@ unzip -l assets/<템플릿>.xlsx | grep -E 'media|drawing'
 
 ## Assets
 
-- [remember_template.xlsx](assets/remember_template.xlsx) — 리멤버 견적서 템플릿(방식 B/C 수동 입력용 — 방식 A는 export_estimate_remember가 레이아웃 자체 생성). **샘플 행사명·베뉴명 문구가 남아 있다**(두 시트 B11 행사명, B13·B24 베뉴명, Opt2 G24 비고) — 복사 직후 B11→`{{event_name}}`, B13·B24→`{{venue}}`, G24→일반 문구로 반드시 주입값 교체(RULE-NO-COMPANY, Step 6.5 게이트 5). 자산 자체의 자리표시자 치환은 별도 승인 건. 섹션 6(59~64행)은 구 v2 2단 구조 — '셀 위치 맵' 아래 치환 단락 참조
+- [remember_template.xlsx](assets/remember_template.xlsx) — 리멤버 견적서 템플릿(방식 B/C 수동 입력용 — 방식 A는 export_estimate_remember가 레이아웃 자체 생성). 자리표시자만(실명 0 — 셀·docProps 메타 모두; 두 시트 B11·B13·B14·B15·B24·C24 `(외부 주입 - …)`)·섹션 6 25% 단일 라인(D61·E61·F61·F64·F59 수식)·요약 수식(B17·B19), 그 외 금액은 샘플 리터럴(방식 B가 덮어씀). 복사 직후 자리표시자를 주입값으로 교체(RULE-NO-COMPANY, Step 6.5 게이트 5)
 - [remember_pricing_dataset_v1.json](assets/remember_pricing_dataset_v1.json) — 컨피규레이터 단가·산식·골든 벡터 SSOT 스냅샷 (v3.1.0)
