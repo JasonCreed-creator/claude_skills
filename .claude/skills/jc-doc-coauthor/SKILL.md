@@ -1,7 +1,7 @@
 ---
 name: jc-doc-coauthor
-description: MICE 산문형 문서를 사용자와 함께 써 나가는 공동 작성 프로세스 스킬. 컨텍스트 수집 → 구조·정제 → 레드팀 검증(jc-redteam 적대 검증)의 3단계로, 행사 기획서·운영계획서·전략 메모·의사결정 문서(Decision Doc)·사후 결과보고 개요·RFC 같은 산문 문서를 섹션별로 쌓아 완성한다. 단계마다 묻지 않고 합리적 기본값으로 진행하며, 기본 산출은 Claude Docs 문서(커넥터가 없으면 .md, .docx는 요청 시). 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '문서 같이 쓰자', '문서 공동작성', '같이 써줘', '초안 잡아줘', '기획서 초안', '운영계획서', '전략 메모', '의사결정 문서', 'Decision Doc', '디자인 문서', 'design doc', 'RFC', '스펙 작성', '문서 구조 잡아줘', '섹션 나눠줘'를 언급할 때. 머릿속 맥락이 많아 '어디서부터 써야 할지 모르겠다'며 긴 글쓰기를 시작하려 할 때. 형제 경계 — 발주처용 제안서·소개서 슬라이드(PPTX)는 jc-pptx, 회의 transcript 정리는 mice-meeting-minutes, 이미 완성된 문서의 검증만 원하면 jc-redteam, 디자인 토큰·룩 적용은 jc-design-system, RFP·공고 분석은 mice-rfp-analyzer, 견적은 mice-estimate, 정형 결과보고서는 mice-aftermath, 발표 대본은 pt-script 영역이므로 그쪽을 쓸 것.
-version: "v1.1.0"
+description: MICE 산문형 문서를 사용자와 함께 써 나가는 공동 작성 프로세스 스킬. 컨텍스트 수집 → 구조·정제 → 레드팀 검증(jc-redteam 적대 검증)의 3단계로, 행사 기획서·전략 메모·의사결정 문서(Decision Doc)·RFC·메시지 기획 문서(행사명·슬로건 후보 → ★추천 + 근거 + 버린 안) 같은 산문 문서를 섹션별로 쌓아 완성한다. 단계마다 묻지 않고 합리적 기본값으로 진행하며, 기본 산출은 Claude Docs 문서(커넥터가 없으면 .md, .docx는 요청 시). 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '문서 같이 쓰자', '문서 공동작성', '같이 써줘', '같이 초안 잡아줘', '섹션별로 초안', '기획서 초안', '전략 메모', '의사결정 문서', 'Decision Doc', '디자인 문서', 'design doc', 'RFC', '스펙 작성', '문서 구조 잡아줘', '섹션 나눠줘', '행사명', '네이밍', '슬로건', '태그라인', '핵심 메시지'를 언급할 때. 머릿속 맥락이 많아 '어디서부터 써야 할지 모르겠다'며 긴 글쓰기를 시작하려 할 때. 형제 경계 — 운영계획서·팀 지침·그라운드룰·KPI 대시보드 완성본은 mice-ops-docs(본 스킬은 '같이 쓰자'·'섹션별로 묻고 가자' 신호가 있을 때만), 결과보고서는 작성 방식 불문 mice-aftermath, 발주처용 제안서·소개서 슬라이드(PPTX)는 jc-pptx, 회의 transcript 정리는 mice-meeting-minutes, 이미 완성된 문서의 검증만 원하면 jc-redteam, 디자인 토큰 값·룰 조회는 jc-design-system(적용은 본 스킬이 런타임 참조), KV 제작 가이드는 jc-kv-guide, 경쟁 포지셔닝 분석은 jc-strategy-canvas, RFP·공고 분석은 mice-rfp-analyzer, 견적은 mice-estimate, 발표 대본은 pt-script 영역이므로 그쪽을 쓸 것.
+version: "v1.2.0"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -12,7 +12,7 @@ MICE 산문형 문서를 사용자와 **함께 써 나가는** 3단계 공동 �
 원본 프리셋(`doc-coauthoring`)의 3단계 골격을 유지하되 세 가지를 바꿨다:
 1. **③ Reader Testing → 레드팀 검증(`jc-redteam`)** — 원본은 "맥락 없는 fresh Claude"에게 문서를 던져 가독성을 봤다. 본 스킬은 그 자리에 jc-redteam(외부 감사관 시각의 적대적 레드팀)을 끼운다. 맹점·모순·가독성을 *우호적 독해*가 아니라 *적대적 공격*으로 검증한다.
 2. **기본값 진행** — 단계·섹션마다 "다음으로 갈까요?"를 묻지 않는다. 합리적 기본값으로 진행하고 고른 기본값을 한 줄로 밝힌다. 사용자 확인은 **기획안(구조·핵심 메시지) 1회**뿐이다.
-3. **MICE 문서 6종 특화** — 행사 기획서·운영계획서·전략 메모·의사결정 문서·사후 결과보고 개요·RFC. 유형별 섹션 골격은 `references/mice-doc-types.md`.
+3. **MICE 문서 6종 특화** — 행사 기획서·운영계획서(공동 집필 시만, 골격 정본은 `mice-ops-docs`)·전략 메모·의사결정 문서·RFC·메시지 기획 문서(행사명·슬로건). 유형별 섹션 골격은 `references/mice-doc-types.md`, 메시지 기획 절차는 `references/message-planning.md`.
 
 ## 1. 다루는 것 / 다루지 않는 것
 
@@ -21,14 +21,18 @@ MICE 산문형 문서를 사용자와 **함께 써 나가는** 3단계 공동 �
 - 사용자 머릿속 맥락을 구조화된 질문으로 끌어내기(컨텍스트 수집)
 - 섹션별 브레인스토밍(5~20개 옵션) → 추천안 큐레이션 → 초안 → 외과적 편집
 - 완성 직전 `jc-redteam` 레드팀 검증(짧은 결론=Quick Strike, 장문=Deep Audit)
+- 행사명·슬로건·태그라인·핵심 메시지 후보를 펼쳐 ★추천 + 근거 + 버린 안으로 확정하는 **메시지 기획 문서**(`references/message-planning.md`)
 - 문서에 들어갈 도식·표지가 필요하면 `jc-design-system` 토큰 적용
 
 ### 다루지 않는 것 (DON'T)
 - 발주처용 **제안서·소개서 슬라이드(PPTX)** → `jc-pptx`
 - 회의 transcript/메모 정리 → `mice-meeting-minutes`
 - 이미 완성된 결론·문서의 **검증만** 단독 요청 → `jc-redteam` 직접
-- 디자인 토큰 정의·룩 적용 → `jc-design-system`
-- RFP·공고 분석 → `mice-rfp-analyzer` · 견적서 → `mice-estimate` · 정형 결과보고서 → `mice-aftermath` · 발표 대본 → `pt-script`
+- 운영계획서·팀 지침·그라운드룰·KPI 대시보드 **완성본**("바로 내줘") → `mice-ops-docs`. 본 스킬은 "같이 쓰자"·"섹션별로 묻고 가자" 신호가 있을 때만, 그쪽 골격(`mice-ops-docs/references/ops-plan.md`)으로 함께 쓴다
+- 결과보고서("같이 써 나가자" 포함, 작성 방식 불문) → `mice-aftermath`
+- 디자인 토큰 값 정의·수정 → `jc-design-system` (토큰 값·룰 조회도 그쪽, 적용은 본 스킬이 런타임 참조)
+- KV 제작 가이드 → `jc-kv-guide`(메시지 기획 문서가 그 입력) · 경쟁 포지셔닝 분석 → `jc-strategy-canvas`
+- RFP·공고 분석 → `mice-rfp-analyzer` · 견적서 → `mice-estimate` · 발표 대본 → `pt-script`
 
 > **jc-pptx와의 경계**: jc-pptx는 *발주처에게 보여줄 완성 슬라이드 덱*을 만든다. 본 스킬은 *사고를 정리하며 산문 문서를 함께 써 나가는 과정*이다. 단, 본 스킬로 정리한 기획 산문은 jc-pptx의 좋은 입력이 된다(§7).
 
@@ -81,7 +85,7 @@ MICE 산문형 문서를 사용자와 **함께 써 나가는** 3단계 공동 �
 
 ### 메타 컨텍스트 (5W1H)
 이미 받은 자료로 답할 수 있으면 묻지 않고 채운 뒤 '가정'으로 표기한다. 빈칸만 한 번에 묶어 묻는다.
-1. 어떤 문서인가? (기획서/운영계획서/전략 메모/의사결정 문서/결과보고 개요/RFC)
+1. 어떤 문서인가? (기획서/운영계획서/전략 메모/의사결정 문서/RFC/메시지 기획) — 결과보고면 `mice-aftermath`로 넘긴다
 2. 1차 독자는? (발주처 의사결정자 / 내부 경영진 / 협력사 / 팀)
 3. 읽고 난 뒤 **어떤 행동·판단**이 일어나길 원하는가?
 4. 따라야 할 템플릿·양식이 있는가?
@@ -108,7 +112,7 @@ MICE 산문형 문서를 사용자와 **함께 써 나가는** 3단계 공동 �
 ### 기획안 — 1회 확인
 - 문서 유형에 맞는 **섹션 구조**(`references/mice-doc-types.md` 골격)와 **핵심 메시지 1문장**을 제시하고 한 번만 확인받는다. 사용자가 구조를 이미 줬거나 "바로 써"라고 했으면 확인 없이 진행한다.
 - 확정되면 §3 형식으로 **스캐폴드**(모든 섹션 헤더 + `[작성 예정]`)를 만든다.
-- 작성 순서 기본값: **미지의 것이 가장 많은 섹션부터**(의사결정 문서=핵심 제안, RFC=설계안, 기획서=콘셉트), 요약·개요는 맨 마지막.
+- 작성 순서 기본값: **미지의 것이 가장 많은 섹션부터**(의사결정 문서=핵심 제안, RFC=설계안, 기획서=콘셉트, 메시지 기획=포지셔닝 한 문장), 요약·개요는 맨 마지막.
 
 ### 섹션별 5스텝 (각 섹션 반복, 기본값 진행)
 1. **명료화** — 섹션에 담을 것 중 자료로 답이 안 되는 빈칸만 묻는다(없으면 생략).
@@ -142,13 +146,13 @@ jc-redteam은 입력 길이·형태로 모드를 자동 판정한다(jc-redteam 
 
 | 문서 성격 | jc-redteam 모드 | 산출 |
 |----------|----------------|------|
-| 짧은 결론형(1~2p 전략 메모·의사결정 한 줄 결론·요약) | **Quick Strike** | 인라인 비평 (결론 정의→핵심 결함→Steelman→종합 판정) |
-| 장문 문서(기획서·운영계획서·RFC·결과보고 개요) | **Deep Audit** | 구조화 감수 리포트(.md, 요청 시 .docx) |
+| 짧은 결론형(1~2p 전략 메모·의사결정 한 줄 결론·요약·메시지 기획 ★추천안) | **Quick Strike** | 인라인 비평 (결론 정의→핵심 결함→Steelman→종합 판정) |
+| 장문 문서(기획서·운영계획서·RFC) | **Deep Audit** | 구조화 감수 리포트(.md, 요청 시 .docx) |
 
 모호하면 장문 기준(Deep Audit)으로 진행하고 그 선택을 한 줄로 밝힌다. 두 모드 모두 **3축(내용 검증·오탈자 감수·대안 제시)**으로 분석하고 결함마다 **심각도(🔴Critical/🟡Major/🟢Minor)**를 부여한다(jc-redteam SKILL §5·§6).
 
 ### 호출 절차
-1. **검증 대상 전달**: 완성 문서(또는 직전 결론)를 jc-redteam에 넘긴다. 문서 유형을 함께 알려 jc-redteam의 *유형별 집중 공격 포인트*가 걸리게 한다 — 매핑은 `jc-redteam/references/chaining-guide.md`. (예: 의사결정 문서 ≈ "GO/NO-GO 판정"의 숨은 가정·낙관편향 공격 포인트를 차용, RFC/기획서는 "논리 비약·누락 관점·내부 모순" 중심.)
+1. **검증 대상 전달**: 완성 문서(또는 직전 결론)를 jc-redteam에 넘긴다. 문서 유형을 함께 알려 jc-redteam의 *유형별 집중 공격 포인트*가 걸리게 한다 — 정본은 `jc-redteam/references/chaining-guide.md` §jc-doc-coauthor(본 스킬은 공격 포인트를 따로 적지 않는다).
 2. **3축 결과 수령**: Critical→Major→Minor 순으로 결함과 종합 판정(✅결론 유지 / ⚠️조건부 보완 / 🔴결론 재검토)을 받는다.
 3. **리팩터 루프**: 발견된 결함이 걸린 섹션으로 **Stage 2 정제 루프로 되돌아간다.** Critical·Major부터 고친다.
 4. **재검증**: 수정 후 jc-redteam을 다시 돌려 *결론 유지* 판정이 나올 때까지 반복.
@@ -191,11 +195,12 @@ Stage 3 레드팀 검증    ── jc-redteam (짧음=Quick Strike / 장문=Deep
 
 ## 7. 생태계 연결
 
-- **검증**: `jc-redteam` — Stage 3 전체. 유형별 공격 포인트는 `jc-redteam/references/chaining-guide.md`.
+- **검증**: `jc-redteam` — Stage 3 전체. 유형별 공격 포인트 정본은 `jc-redteam/references/chaining-guide.md` §jc-doc-coauthor.
 - **세션·서브에이전트**: 장문 문서를 나눠 쓰거나 병렬 조사가 필요하면 `jc-session-protocol`.
 - **입력 체이닝**: `mice-meeting-minutes` 회의록·`mice-rfp-analyzer` 분석을 Stage 1 컨텍스트로 받는다. 봉투는 `ChainPayload/v1`(`jc-design-system/references/chaining-protocol.md`).
-- **출력 체이닝**: 기획 산문 → `jc-pptx`(제안서·소개서 슬라이드)·`mice-estimate`(견적) 입력.
-- **디자인**: `jc-design-system` SoT 런타임 참조.
+- **출력 체이닝**: 기획 산문 → `jc-pptx`(제안서·소개서 슬라이드)·`mice-estimate`(견적) 입력. 메시지 기획 문서 → `jc-kv-guide`(`source: jc-doc-coauthor` — `doc_meta`·`key_message`·`sections`, 예시 `references/message-planning.md` §5). 본 source의 봉투 enum 등록은 `jc-design-system` 측 요청 사항이다.
+- **이웃 산출 스킬**: 운영계획서 골격 정본 `mice-ops-docs/references/ops-plan.md` §2 · 결과보고 `mice-aftermath`.
+- **디자인**: 토큰 값·룰 조회는 `jc-design-system`(적용은 본 스킬이 런타임 참조).
 
 ## 8. 파일 구조
 
@@ -205,7 +210,8 @@ jc-doc-coauthor/
 ├── LICENSE.txt
 └── references/
     ├── stage-questions.md      # Stage 1·2 질문 템플릿 (유형별 핵심 질문 세트)
-    └── mice-doc-types.md       # MICE 문서 6종 섹션 골격 + jc-redteam 집중 공격 포인트
+    ├── mice-doc-types.md       # MICE 문서 6종 섹션 골격 (운영계획서는 mice-ops-docs 링크, 공격 포인트는 jc-redteam 포인터)
+    └── message-planning.md     # 메시지 기획 문서 — 포지셔닝·보이스·네이밍·슬로건 질문 세트 + 산출 양식
 ```
 
 ## 9. 운영 원칙 / 한계
@@ -214,10 +220,12 @@ jc-doc-coauthor/
 - **외과적 편집 고정**: 수정은 해당 부분만. 전체 재출력 금지.
 - **브레인스토밍은 대화로**: 옵션 목록을 문서에 쓰지 않는다. 확정 본문만 문서에 들어간다.
 - **검증은 위임**: 가독성·논리 검증은 `jc-redteam`에 넘긴다.
-- **본령은 산문**: 슬라이드가 주가 되면 `jc-pptx`, 정형 결과보고는 `mice-aftermath`로 보낸다.
+- **본령은 산문**: 슬라이드가 주가 되면 `jc-pptx`, 결과보고는 작성 방식 불문 `mice-aftermath`, 운영계획서·팀 지침·그라운드룰·KPI 대시보드 완성본은 `mice-ops-docs`로 보낸다(운영계획서는 "같이 쓰자"·"섹션별로 묻고 가자" 신호가 있을 때만 본 스킬).
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): 운영계획서 트리거 삭제·'초안 잡아줘' 한정('같이'·'섹션별로') + mice-ops-docs 경계(골격 정본 ops-plan.md 링크), 결과보고 개요 유형 삭제(→ mice-aftermath).
+  메시지 기획 문서 유형·`message-planning.md` 신설(구 브랜드 발굴 스킬의 네이밍·슬로건·포지셔닝·보이스 질문 세트 응축 이관), 출력 체이닝에 jc-kv-guide, 공격 포인트 차용 표 → jc-redteam 포인터.
 - v1.1.0 (2026-10-05): '리더 테스트' → '레드팀 검증', 단계·섹션마다 묻던 진행 → 기본값 진행(기획안 1회 확인), 문서 기본 산출 = Claude Docs.
   폐합 스킬 경계(mice-proposal·mice-dashboard·jc-theme-factory·jc-artifact-builder)를 jc-pptx·mice-aftermath·jc-design-system으로, 도식 룩을 구 네이비 → 리멤버 웜 페이퍼로, 브리프 게이트 문구 삭제.
 - v1.0.1 (2026-07-12): 원본 doc-coauthoring 대조 누락 2건 흡수(아티팩트 링크 제공·공유문서 이미지 alt-text 점검).
