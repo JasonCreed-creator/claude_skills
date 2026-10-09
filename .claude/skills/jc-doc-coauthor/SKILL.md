@@ -198,7 +198,7 @@ Stage 3 레드팀 검증    ── jc-redteam (짧음=Quick Strike / 장문=Deep
 - **검증**: `jc-redteam` — Stage 3 전체. 유형별 공격 포인트 정본은 `jc-redteam/references/chaining-guide.md` §jc-doc-coauthor.
 - **세션·서브에이전트**: 장문 문서를 나눠 쓰거나 병렬 조사가 필요하면 `jc-session-protocol`.
 - **입력 체이닝**: `mice-meeting-minutes` 회의록·`mice-rfp-analyzer` 분석을 Stage 1 컨텍스트로 받는다. 봉투는 `ChainPayload/v1`(`jc-design-system/references/chaining-protocol.md`).
-- **출력 체이닝**: 기획 산문 → `jc-pptx`(제안서·소개서 슬라이드)·`mice-estimate`(견적) 입력. 메시지 기획 문서 → `jc-kv-guide`(`source: jc-doc-coauthor` — `doc_meta`·`key_message`·`sections`, 예시 `references/message-planning.md` §5). 본 source의 봉투 enum 등록은 `jc-design-system` 측 요청 사항이다.
+- **출력 체이닝**: 기획 산문 → `jc-pptx`(제안서·소개서 슬라이드)·`mice-estimate`(견적) 입력. 메시지 기획 문서 → `jc-kv-guide`(`source: jc-doc-coauthor` — `doc_meta`·`key_message`·`sections`, 예시 `references/message-planning.md` §5). 본 source는 `jc-design-system` chaining-protocol §3 enum에 '메시지 기획 문서 봉투만 산출(선택)'로 등록돼 있다(v2.2.0).
 - **이웃 산출 스킬**: 운영계획서 골격 정본 `mice-ops-docs/references/ops-plan.md` §2 · 결과보고 `mice-aftermath`.
 - **디자인**: 토큰 값·룰 조회는 `jc-design-system`(적용은 본 스킬이 런타임 참조).
 

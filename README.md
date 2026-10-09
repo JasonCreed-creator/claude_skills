@@ -12,45 +12,45 @@
 
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
-| `mice-market-intel` | v1.1.0 | 시장·경쟁·동향·스폰서 풀·벤치마크 데스크 리서치(출처 티어링) | 리서치 리포트 + ChainPayload |
-| `jc-strategy-canvas` | v1.1.0 | 6대 프레임워크(BMC·5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 전략 구조화·권고 | 전략 캔버스 HTML + ChainPayload |
-| `mice-rfp-analyzer` | v2.1.0 | RFP·공고 7축 해체, GO/HOLD/NO-GO | .docx 보고서 + .xlsx 매트릭스 |
+| `mice-market-intel` | v1.2.0 | 시장·경쟁·동향·스폰서 풀·벤치마크 데스크 리서치(출처 티어링) | 리서치 리포트 + ChainPayload |
+| `jc-strategy-canvas` | v1.2.0 | 6대 프레임워크(BMC·5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 전략 구조화·권고 | 전략 캔버스 HTML + ChainPayload |
+| `mice-rfp-analyzer` | v2.2.0 | RFP·공고 7축 해체, GO/HOLD/NO-GO(강제 조건 우선 판정) · 견적 전용 봉투 | .docx 보고서 + .xlsx 매트릭스 |
 | `mice-meeting-minutes` | v2.2.0 | 회의 transcript를 8축으로 구조화, Action 칸반·시리즈 추적 | 인터랙티브 HTML 대시보드 |
 
 ### 제안 · 견적 · 발표
 
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
-| `jc-pptx` | v2.1.0 | 제안서·소개서·발표덱·결과보고 덱 — 16종 타입·설득 설계·deck_kit 빌드·check_deck 검수 | PPTX (+PDF) |
+| `jc-pptx` | v2.2.0 | 제안서·스폰서/협찬 제안 덱·소개서·발표덱·결과보고 덱 — 16종 타입·설득 설계·deck_kit 빌드·check_deck 검수 | PPTX (+PDF) |
 | `mice-estimate` | v3.3.0 | 리멤버 견적서(패키지 할인 + 기획료) — 컨피규레이터 가격 엔진. **사용자 직접 관리** | XLSX |
-| `pt-script` | v2.2.0 | 슬라이드·speaker notes → 발표 대본·전환 멘트·Q&A | DOCX |
+| `pt-script` | v2.3.0 | 슬라이드·speaker notes → 발표 대본·전환 멘트·Q&A | DOCX |
 
 ### 운영 · 현장 · 사후
 
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
-| `mice-run-of-show` | v1.1.0 | 큐시트(10컬럼 버전드) + 시간 무결성 검증 | XLSX |
-| `mice-ops-docs` | v1.0.0 | 운영계획서·팀 지침/그라운드룰·KPI 대시보드·계획 대비 실적 | Claude Docs / HTML |
-| `mice-aftermath` | v1.1.0 | 사후 종합 결과보고서 + 재사용 레퍼런스 케이스 | 결과보고서 + ChainPayload |
-| `jc-kv-guide` | v1.1.0 | 디자이너 전달용 키비주얼 제작 가이드(규칙·제약만, 디자인 제안 0) | HTML + MD |
+| `mice-run-of-show` | v1.2.0 | 큐시트(10컬럼 버전드) + 시간 무결성 검증 | XLSX |
+| `mice-ops-docs` | v1.1.0 | 운영계획서·팀 지침/그라운드룰·KPI 대시보드·계획 대비 실적 · 기존 HTML 리멤버 룩 리스킨 | Claude Docs / HTML |
+| `mice-aftermath` | v1.2.0 | 사후 종합 결과보고서 + 재사용 레퍼런스 케이스 | 결과보고서 + ChainPayload |
+| `jc-kv-guide` | v1.2.0 | 디자이너 전달용 키비주얼 제작 가이드(규칙·제약만, 디자인 제안 0) | HTML + MD |
 
 ### 팀 운영 · 커뮤니케이션
 
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
-| `mice-slack-ops` | v1.1.0 | 단일 채널·1행사=1스레드 프로토콜, 봇·상태 보드, 월요일/위클리 브리프, 공지·3P·발주처 메일·FAQ 양식 | 복사용 초안 |
-| `mice-team-board` | v1.0.0 | 팀 프로젝트 보드(구글시트 + Apps Script) 행 등록·상태 전이·배정·정산 | 행 값 표 / TSV |
-| `jc-slack-relay` | v1.0.0 | Code가 읽은 Slack을 md로 저장 → Cowork·채팅이 읽는 중계 경로 | md 파일 |
-| `jc-doc-coauthor` | v1.1.0 | 산문형 문서(기획서·전략 메모·Decision Doc·RFC) 단계별 공동 작성 | Claude Docs / .md |
+| `mice-slack-ops` | v1.2.0 | 단일 채널·1행사=1스레드 프로토콜, 봇·상태 보드, 월요일/위클리 브리프, 공지·3P·발주처 메일·FAQ 양식 | 복사용 초안 |
+| `mice-team-board` | v1.1.0 | 팀 프로젝트 보드(구글시트 + Apps Script) 행 등록·상태 전이·배정·정산 | 행 값 표 / TSV |
+| `jc-slack-relay` | v1.1.0 | Code가 읽은 Slack을 md로 저장 → Cowork·채팅이 읽는 중계 경로 | md 파일 |
+| `jc-doc-coauthor` | v1.2.0 | 산문형 문서(기획서·전략 메모·Decision Doc·RFC·메시지 기획=행사명·슬로건) 단계별 공동 작성 | Claude Docs / .md |
 
 ### 정본 · 메타 · 검증
 
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
-| `jc-design-system` | v2.1.0 | 디자인 토큰 정본(리멤버 웜 페이퍼) + 공통 룰 + ChainPayload/v1 봉투 규약 | reference 자산 (`scripts/jc_tokens.py` 런타임 로드) |
-| `jc-session-protocol` | v1.1.0 | 폴더=세션 · 요청 하나=스레드 하나 규약, 체크인/체크아웃, 서브에이전트 병렬·모델 라우팅 | 규약·템플릿 |
-| `jc-skill-forge` | v2.1.0 | 스킬 제작·개선·인테이크·점검·배포(린트·빌드·설치 스크립트) | 스킬·.skill |
-| `jc-redteam` | v1.3.0 | 완성 산출물 적대적 재검증(Quick Strike / Deep Audit) — 최하류 품질 게이트 | 비평 / 감수 리포트 |
+| `jc-design-system` | v2.2.0 | 디자인 토큰 정본(리멤버 웜 페이퍼) + 공통 룰 + ChainPayload/v1 봉투 규약 | reference 자산 (`scripts/jc_tokens.py` 런타임 로드) |
+| `jc-session-protocol` | v1.2.0 | 폴더=세션 · 요청 하나=스레드 하나 규약, 체크인/체크아웃, 서브에이전트 병렬·모델 라우팅 | 규약·템플릿 |
+| `jc-skill-forge` | v2.2.0 | 스킬 제작·개선·인테이크·점검·배포(린트·빌드·설치 스크립트) | 스킬·.skill |
+| `jc-redteam` | v1.4.0 | 완성 산출물 적대적 재검증(Quick Strike / Deep Audit) — 최하류 품질 게이트 | 비평 / 감수 리포트 |
 
 ### 체이닝 흐름 (ChainPayload/v1 — 정본 `jc-design-system/references/chaining-protocol.md` §3)
 

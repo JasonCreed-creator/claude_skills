@@ -59,14 +59,14 @@
 
 | source | 정본 | 핵심 키 |
 |--------|------|---------|
-| mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size` `competitors` `trends` `sponsor_candidates` `gaps` `sources` |
+| mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size` `competitors`(`competitor_tier`·`scores`·`tension_axes`·`source_tier`(구 `tier`)) `whitespace_candidates` `trends` `policy_demand` `benchmarks` `sponsor_candidates` `gaps` `sources` |
 | jc-strategy-canvas | `jc-strategy-canvas/references/chaining-schema.md` | `recommendation` `differentiation_axes` `key_messages` `evidence_flags` `open_questions` |
-| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `analysis_result` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` `risk_notes_for_negotiation` · `estimate_hint`(→ mice-estimate 전용) · `open_questions`(→ mice-market-intel 재조사 의뢰) |
+| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `analysis_result` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` `risk_notes_for_negotiation` · `estimate_hint`(→ mice-estimate 전용) · `open_questions`(→ mice-market-intel 재조사 의뢰). `target: mice-estimate` 전용 봉투(`client`·`budgetRange`·`evaluationCriteria`·`eventScale{target,guarantee}`·`venue`·`options` + `estimate_hint`)는 chaining-guide §3-1 |
 | mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client` `project_context` `discovery_data` `strategic_notes` `actions` `risks` `pending` |
-| jc-pptx | `jc-pptx/references/proposal-playbook.md §체이닝` | `deck_meta` `sections` `coverage_map` `estimate_hint` `presentation` |
+| jc-pptx | `jc-pptx/references/proposal-playbook.md §체이닝` | `deck_meta` `sections` `coverage_map` `presentation` · 견적 입력 키(`eventScale`·`venue`·`options`·`displayType`·`boothCount`·`eventDate`·`client`, 봉투 최상위에 평탄 — 중첩 `estimate_hint` 객체 아님) |
 | mice-estimate | `mice-estimate/references/chaining-schema.md` | `eventScale` `venue` `options` `sections` `totalAmount` |
 | pt-script | `pt-script/references/chaining-schema.md` | 수신 전용 — jc-pptx `presentation` 키를 읽는다(산출 봉투 없음, `proposal_meta`는 구 입력 컨테이너) |
-| jc-kv-guide | `jc-kv-guide/SKILL.md` 체이닝 절 | `guide_meta` `tbd_questions` |
+| jc-kv-guide | `jc-kv-guide/assets/guide.schema.json` | `guide`(eventName·docVersion·issuer·mode·inputDocs·sections·sourceCorrections) |
 | jc-doc-coauthor | `jc-doc-coauthor/references/message-planning.md` §5 | `doc_meta` `key_message` `sections` (메시지 기획 문서 → jc-kv-guide·jc-pptx). 그 밖의 산문은 봉투 없이 Docs 링크 |
 | mice-run-of-show | `mice-run-of-show/references/chaining-schema.md` | `plan` (`startTime` `endTime` `cues`) |
 | mice-ops-docs | `mice-ops-docs/references/chaining-schema.md` | `kpis` `insights` `actualSpending` `rounds` |

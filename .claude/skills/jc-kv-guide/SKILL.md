@@ -98,7 +98,7 @@ jc-kv-guide/
 - `RULE-WCAG` — HTML 크롬 텍스트는 리멤버 룩 ink/paper 조합 기준. 오렌지(`#EB6F2A`)는 큰 글자 전용, 18px 미만 작은 오렌지 글자(키커·섹션 번호·링크)는 accent-deep(`#B8431A`, `--orange-deep`). 정본: `…#RULE-WCAG`
 - `RULE-PRINT-LIGHT` — 라이트 단일 모드라 해당 없음. `@media print`는 내비 숨김·카드 페이지 나눔만. 정본: `…#RULE-PRINT-LIGHT`
 - 토큰 값 — `jc-design-system/references/signature-tokens.md` §1(컬러)·§2(타이포)·§3(간격·라운드·그림자)이 정본(기계 파싱은 §6 JSON). 템플릿 CSS 변수는 그 미러이며 주석에 출처를 적는다
-- 검증 — `jc-redteam` / 데이터 — ChainPayload/v1(`jc-design-system/references/chaining-protocol.md`): 입력 `source: jc-doc-coauthor`·`mice-rfp-analyzer`(선택), 출력 `source: jc-kv-guide`. `jc-doc-coauthor`·`jc-kv-guide` 두 source의 봉투 enum 등록은 jc-design-system 측 요청 사항이며, 등록 전에는 수신 측이 범용 입력으로 처리한다
+- 검증 — `jc-redteam` / 데이터 — ChainPayload/v1(`jc-design-system/references/chaining-protocol.md`): 입력 `source: jc-doc-coauthor`·`mice-rfp-analyzer`(선택), 출력 `source: jc-kv-guide`. 두 source는 `chaining-protocol.md` §3 enum에 등록돼 있고(jc-design-system v2.2.0), 본 스킬 출력 봉투의 정본은 `assets/guide.schema.json`(키 `guide`)이다
 
 ## 변경 이력
 

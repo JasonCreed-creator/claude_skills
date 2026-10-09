@@ -17,7 +17,7 @@
 
 | 폐합 | 후속(라이브) | 흡수 범위 |
 |------|-------------|----------|
-| mice-proposal · mice-sponsor-deck | jc-pptx | 설득 설계·7섹션 골격·게이트 → `proposal-playbook.md`; 체이닝 source는 별칭 자동 치환 |
+| mice-proposal · mice-sponsor-deck | jc-pptx | 설득 설계·7섹션 골격·게이트 → `proposal-playbook.md`; 스폰서 덱(청중 프로파일·Tier·혜택·ROI 케이스·골격) → `jc-pptx/references/sponsor-deck.md`(v2.2.0 계승); 체이닝 source는 별칭 자동 치환 |
 | mice-dashboard | mice-ops-docs | KPI 대시보드·차트 가이드(리멤버 토큰 재작성) |
 | mice-weekly-performance | mice-slack-ops | 위클리 브리프(§2-1 + `weekly-brief.md`) |
 | jc-comms | mice-slack-ops | 양식 4종(3P·뉴스레터·FAQ·일반) → `comms-templates.md` |

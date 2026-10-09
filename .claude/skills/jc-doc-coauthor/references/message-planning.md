@@ -115,7 +115,7 @@ Stage 3  jc-redteam Quick Strike (공격 포인트 정본: jc-redteam chaining-g
 
 - **jc-kv-guide** — KV 가이드 §5 무드·톤 키워드는 원문 인용만 허용하므로, 이 문서의 *확정 본문*(보이스 문장·핵심 메시지)이 인용 출처(D-번호)가 된다. 확정 전 후보 목록은 넘기지 않는다.
 - **jc-pptx** — 표지 카피·원 메시지. **jc-redteam** — 오탈자·네이밍 리스크·포지셔닝과의 정합.
-- 봉투(선택): `ChainPayload/v1`, `source: jc-doc-coauthor`. 봉투 enum 등록은 `jc-design-system` 측 요청 사항이며, 등록 전에는 수신 측이 범용 입력으로 처리한다.
+- 봉투(선택): `ChainPayload/v1`, `source: jc-doc-coauthor`. `jc-design-system` chaining-protocol §3 enum에 등록돼 있다(v2.2.0, 메시지 기획 문서 봉투만).
 
 ```json
 {
