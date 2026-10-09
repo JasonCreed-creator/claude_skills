@@ -22,7 +22,7 @@
 | 스킬 | 버전 | 역할 | 산출물 |
 |------|------|------|--------|
 | `jc-pptx` | v2.3.0 | 제안서(proposal-voice 문체 정본 우선)·스폰서/협찬 제안 덱·소개서·발표덱·결과보고 덱 — 16종 타입·설득 설계·deck_kit 빌드·check_deck 검수 | PPTX (+PDF) |
-| `mice-estimate` | v3.3.0 | 리멤버 견적서(패키지 할인 + 기획료) — 컨피규레이터 가격 엔진. **사용자 직접 관리** | XLSX |
+| `mice-estimate` | v3.3.1 | 리멤버 견적서(패키지 할인 + 기획료) — 컨피규레이터 가격 엔진, jc-pptx·rfp-analyzer 봉투 수신, 토큰 런타임 로드. **업로드는 사용자 직접 관리**(빌드 `--include-estimate`) | XLSX |
 | `pt-script` | v2.3.0 | 슬라이드·speaker notes → 발표 대본·전환 멘트·Q&A | DOCX |
 
 ### 운영 · 현장 · 사후
@@ -90,7 +90,7 @@ PROGRESS.md                  # 인테이크·점검 로그
 - **편집 → 검증 → 빌드 → 배포** 순서와 채널 구분(①소스 반영 ②Code 설치 ③claude.ai 업로드)은 `jc-skill-forge/references/deploy-pipeline.md`가 정본. "소스 반영 ≠ 배포".
 - **검증(마감 조건)**: 아래 넷이 모두 통과해야 한다. CI(`.github/workflows/drift-guard.yml`)가 PR마다 같은 검사를 돌린다.
   ```bash
-  python3 .claude/skills/jc-skill-forge/scripts/lint_skills.py --exclude mice-estimate   # 하우스 규약 · 폐합 참조 · 구 룩
+  python3 .claude/skills/jc-skill-forge/scripts/lint_skills.py                            # 하우스 규약 · 폐합 참조 · 구 룩 (라이브 19종 전부)
   python3 scripts/check_drift.py                                                         # 디자인 토큰 드리프트
   python3 .claude/skills/jc-design-system/scripts/test_jc_tokens.py
   python3 .claude/skills/jc-skill-forge/scripts/build_skills.py --self-test

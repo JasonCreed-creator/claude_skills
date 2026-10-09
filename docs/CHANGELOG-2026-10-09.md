@@ -1,12 +1,12 @@
 # CHANGELOG — 스킬 라이브러리 교통정리 (2026-10-09)
 
 > 브랜치 `claude/lucid-franklin-37n8cu` · 드래프트 PR #23 · 복구 지점 커밋 `8e47432`(로컬 태그 `pre-reorg-2026-10-09`) · 점검 리포트 `docs/stocktake-2026-10-09.md`
-> 원칙: 2026-09-21 재편(라이브 19종 / 폐합 20종, 10-05 lint 목록) 결정은 유지. 집행 + 경계 수정 + 역량 계승 + 업그레이드. mice-estimate는 사용자 관리 스킬이라 내용 무수정(업로드본 동기만).
+> 원칙: 2026-09-21 재편(라이브 19종 / 폐합 20종, 10-05 lint 목록) 결정은 유지. 집행 + 경계 수정 + 역량 계승 + 업그레이드. mice-estimate는 1차 마감까지 내용 무수정(업로드본 동기만)이었으나 사용자 GO로 §6 카드 C 패치(v3.3.1)를 같은 PR에서 적용.
 
 ## 1. 구조 변경
 
 - 폐합 3종(jc-asana-html·jc-remember-html·mice-weekly-performance) 히스토리 보존 → 라이브 18종 업로드본 동기 → 폐합 20종 `archive/skills/` 이동(git mv) + 레거시 3파일 `archive/legacy/` + `archive/README.md`
-- `scripts/check_drift.py` 동적 탐색(SoT·메타 스킬 제외) · `.github/workflows/drift-guard.yml`에 forge 린트(`--exclude mice-estimate`)·`test_jc_tokens.py`
+- `scripts/check_drift.py` 동적 탐색(SoT·메타 스킬 제외) · `.github/workflows/drift-guard.yml`에 forge 린트·`test_jc_tokens.py` (처음엔 `--exclude mice-estimate`, v3.3.1 패치 후 제외 해제 — 라이브 19종 전부 lint 대상)
 - README 재작성(라이브 19종 카탈로그·체이닝·아카이브·작업 규칙) · `docs/skill-intake-log.md` 머리말(forge 모드 A 단일 트래커)
 
 ## 2. 스킬 버전 대조표 (git 이전 → 현행)
@@ -31,7 +31,7 @@
 | mice-slack-ops | (없음) | **v1.3.0** | 신규 편입 v1.1.0 → v1.2.0 team-board 경계 대칭('계약완료 보드 등록'), relay 트리거 분리, contract status_hint·notes 의미, 시트 열·문체·경로 정본 포인터화 → v1.3.0 커뮤니케이션 양식 계승(뉴스레터·프로젝트/리더십 업데이트·3P 세부) (comms-templates 94→210줄, description 1,002자) |
 | mice-team-board | (없음) | **v1.1.0** | 신규 편입 v1.0.0 → 갱신 시 상태 역행 버그 수정(status_hint), notes 이중 기재 제거, 시트 열 정의 정본(sheet-schema §2), slack-ops 상태 보드와 경계 |
 | jc-slack-relay | (없음) | **v1.1.0** | 신규 편입 v1.0.0 → relay 전용 트리거, 경로 정본 선언, 요약 절 위임 |
-| mice-estimate | v3.0.0 | v3.3.0 | 업로드본 동기만(사용자 관리). 패치 목록은 리포트 §6 카드 C |
+| mice-estimate | v3.0.0 | **v3.3.1** | 업로드본 v3.3.0 동기 → 카드 C 패치: description 폐합명·브리프 게이트 삭제·형제 경계, Step 2.5 `source: jc-pptx`(구 mice-proposal 별칭)·rfp §3-1 전용 봉투(`estimate_hint` → 완료 게이트 6), `/mnt` 경로 3곳 → `recalc()` 헬퍼(xlsx recalc.py 탐색 → LibreOffice headless → Excel 저장 안내)·`outputs/`, 색상 리터럴 → jc-design-system v2 토큰 런타임 로드(`estimate_tokens.py`), chaining-schema 전면 현행화(jc-pptx 봉투·하류 3종·실명 자리표시자·§7 헬퍼 KeyError 수정), 방식 A meta 키를 exporter 실제 키로 정정, remember_template PCO 산식 일치·구 토큰 제거, 긴 버전 히스토리 `references/changelog.md` 이관(SKILL.md 521→443줄), `--self-test` 2종. 산출 엔진·데이터셋·템플릿 자산 무변경 |
 
 ## 3. 폐합 20종 → `archive/skills/`
 

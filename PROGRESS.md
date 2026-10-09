@@ -200,3 +200,12 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **검증**: lint ERROR 0(WARN 3 = 채널명·멘션 오탐) · check_drift PASS · test_jc_tokens PASS · 스크립트 self-test PASS(meeting-minutes 2·rfp-analyzer 3·team-board·run-of-show·pt-script·kv-guide·ops-docs·check_deck·lint·build) · README 버전 = frontmatter · CI drift-guard 녹색.
 - **채널**: ① git 반영 완료 · ② Code 로컬 설치 미반영(0종 유지) · ③ claude.ai **미반영** — 폐합 19종 삭제 + `.skill` 18종 업로드는 기획자님(리포트 §6 카드 A·B). `mice-estimate`는 사용자 관리 — 내용 무수정, 패치 목록 §6 카드 C.
 - **리포트**: `docs/stocktake-2026-10-09.md`(세 집합 대조표·발견 90건 처리·흡수감사·프리셋 판정·결정 카드 A~H).
+
+## 2026-10-09 — mice-estimate v3.3.1(카드 C 적용) · claude.ai 동기화 런북(확장프로그램 삭제·끄기 지시문)
+
+- **지시**: "모든 스킬 삭제 수정 등등 확장프로그램으로 진행" / "업로드는 못하더라도 삭제 및 끄기는 가능하잖아" → 이 클라우드 세션은 브라우저 확장을 조작할 수 없어 **지시문·런북으로 대체**(`docs/claude-ai-sync-runbook-2026-10-09.md`: 폐합 19종 삭제 + 프리셋 doc-coauthoring 끄기 지시문, 수동 업로드 절차, manifest 확인표). 카드 C는 사용자 GO로 해석해 적용(되돌릴 수 있는 git 작업).
+- **mice-estimate v3.3.0 → v3.3.1**(워크플로우: 문서·스크립트 적용 2 → 적대 검증 3렌즈 → 수정 1): description 폐합명·브리프 게이트 삭제·형제 경계 / Step 2.5 `source: jc-pptx`(구 mice-proposal 별칭)·rfp §3-1 `estimate_hint` → 완료 게이트 6 / `/mnt` 3곳 → `recalc()`(xlsx recalc.py 탐색 → LibreOffice headless → Excel 저장 안내)·`outputs/` / 색 리터럴 → `estimate_tokens.py` 런타임 로드(§6 폴백) / chaining-schema 전면 현행화(§7 헬퍼 `optionsApplied` KeyError 수정, 실명 → 자리표시자) / 방식 A meta 키를 exporter 실제 키로 / remember_template PCO 산식 일치·구 토큰 제거 / 히스토리 `references/changelog.md` 이관. 산출 엔진·데이터셋·템플릿 자산 무변경(ALL PASS 유지).
+- **정합 보정(범프 없음, 미배포)**: jc-pptx proposal-playbook §6 "아직 자동 감지하지 못하면" 문장 → 자동 감지 서술 / jc-design-system chaining-protocol §4 mice-estimate 행 입력·출력 구분(`displayType`·`totalAmountVat`)·§5 역방향.
+- **검증**: lint(제외 없음) ERROR 0·WARN 3(오탐) · check_drift PASS · test_jc_tokens PASS · mice-estimate self-test 3종 PASS · CI `--exclude mice-estimate` 제거 · `build_skills.py --include-estimate` 19종.
+- **채널**: ① git 반영 완료 · ② Code 설치 없음 · ③ claude.ai **미반영** — 삭제·끄기는 확장프로그램(런북 §1), 업로드 19종은 기획자님 수동(런북 §2, 번들 `dist/jc-skills-live19-2026-10-09.zip`). 업로드 후 deploy-pipeline.md §1 "37종" 팩트 갱신 예정.
+- **남은 결정**: C-2(템플릿 xlsx 샘플 실문구·구 PCO 2단 구조 자산 정정) · E(브랜치) · H(보조 드라이브 폴더).
