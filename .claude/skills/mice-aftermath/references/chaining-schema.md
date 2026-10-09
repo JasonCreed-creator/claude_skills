@@ -29,7 +29,7 @@ run-of-show.plan.cues       → 5축 계획 대비 실제(정시성·전환)
 rfp.analysis_result.judgment/estimated_winrate vs 실제 수주 → 8축 '분석 정확도 회고'
 rfp.estimate_hint.recommended_bid vs 실제 계약가           → 4축 비고 · 8축 가격 전략 검증
 ```
-> `recommended_bid`는 rfp-analyzer 페이로드에서 `analysis_result`가 아니라 `estimate_hint` 아래에 있다(`mice-rfp-analyzer/references/chaining-guide.md` §2·§5). 실제 수주 여부·계약가는 페이로드가 아니라 사용자 입력으로 받고, 없으면 회고 블록을 `[미확보]`로 둔다.
+> `recommended_bid`는 rfp-analyzer 페이로드에서 `analysis_result`가 아니라 `estimate_hint` 아래에 있다(`mice-rfp-analyzer/references/chaining-guide.md` §3-1 mice-estimate 전용 봉투·§5). 실제 수주 여부·계약가는 페이로드가 아니라 사용자 입력으로 받고, 없으면 회고 블록을 `[미확보]`로 둔다.
 > **목표 대비 원칙 + 비어도 진행**: 성과는 목표 대비로만 "성과"라 부른다. mice-ops-docs가 실적만 주면 묻고 멈추지 않는다 — 실적만 표기하고 `[목표 미설정]`을 달아 보고서를 완성한 뒤, 끝에 "보완하면 좋은 입력" 목록으로 목표(KPI 타깃·예산 계획)를 요청한다(SKILL.md Phase 1).
 
 ---
@@ -79,7 +79,7 @@ rfp.estimate_hint.recommended_bid vs 실제 계약가           → 4축 비고 
 | `jc-strategy-canvas` | `cases`(R3)·`performance` | 자사 수행실적 근거 — SWOT 강점·차별화 축의 `[검증]` 표식(선택) |
 
 - `reuse_tier`가 `target`과 용도를 결정한다(R1→jc-pptx 제안서 실적, R2→jc-pptx 스폰서 데크 ROI, R3→jc-strategy-canvas). mice-market-intel은 외부 데이터 수집 상류라 케이스를 받지 않는다.
-- jc-strategy-canvas 입력 표의 `mice-aftermath` 행 등록은 그쪽 요청 사항이다. 등록 전에는 수신 측이 범용 입력으로 처리한다.
+- jc-strategy-canvas는 chaining-schema §1-3에서 `mice-aftermath`(cases R3·performance)를 입력으로 등록했다(v1.2.0).
 - `anonymize` 플래그를 다운스트림이 존중한다(외부 자료 생성 시 익명화 적용).
 
 ---
