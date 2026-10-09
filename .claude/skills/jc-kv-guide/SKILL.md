@@ -1,7 +1,7 @@
 ---
 name: jc-kv-guide
-description: 행사 주제·개요·브랜드 자산·제작요청서를 입력받아 디자이너에게 전달할 키비주얼(KV) 제작 가이드를 HTML 가이드 페이지 + MD 문서로 동시 산출하는 스킬. 가이드는 규칙·제약·필수요소·규격·검수 기준만 담고, 무드·톤 키워드는 클라이언트 원문에서 인용해 출처를 표기하며, 컨셉 안·추천 디자인·시안·레이아웃 제안·컬러 조합 제안·무드보드·레퍼런스 이미지는 절대 만들지 않는다(디자인 결정은 디자이너 몫). 원문에 없는 항목은 추측 대신 [확인 필요]로 표기하고 발주처 확인 질문 리스트를 함께 산출한다. 발행 주체 기본은 리멤버 MICE비즈팀. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'KV 가이드', '키비주얼 가이드', '키비주얼 제작 가이드', 'KV 브리프', '디자인 브리프', '디자인 가이드', '제작 가이드', '디자이너 전달용', '디자이너한테 줄 문서', '제작요청서 정리', '키비주얼 요청서', 'KV 초안 가이드', '메인 비주얼 가이드', '행사 비주얼 규칙'을 언급할 때. 행사 개요나 제작요청서를 주며 '디자이너에게 넘길 가이드 만들어줘', '키비주얼 규칙 정리해줘', '이걸로 제작 가이드 뽑아줘'라고 할 때. 형제 경계 — 키비주얼·포스터 이미지나 영상 자체를 만드는 것은 Higgsfield(RULE-VISUAL-ROUTING, 본 스킬은 그리지 않는다), 디자인 토큰 정의·조회·룩 적용은 jc-design-system, 행사명·슬로건 같은 메시지 기획 문서는 jc-doc-coauthor, 완성 가이드의 최종 검수는 jc-redteam 영역이므로 그 작업에는 사용하지 말 것.
-version: "v1.1.0"
+description: 행사 주제·개요·브랜드 자산·제작요청서를 입력받아 디자이너에게 전달할 키비주얼(KV) 제작 가이드를 HTML 가이드 페이지 + MD 문서로 동시 산출하는 스킬. 가이드는 규칙·제약·필수요소·규격·검수 기준만 담고, 무드·톤 키워드는 클라이언트 원문에서 인용해 출처를 표기하며, 컨셉 안·추천 디자인·시안·레이아웃 제안·컬러 조합 제안·무드보드·레퍼런스 이미지는 절대 만들지 않는다(디자인 결정은 디자이너 몫). 원문에 없는 항목은 추측 대신 [확인 필요]로 표기하고 발주처 확인 질문 리스트를 함께 산출한다. 발행 주체 기본은 리멤버 MICE비즈팀. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'KV 가이드', '키비주얼 가이드', '키비주얼 제작 가이드', 'KV 브리프', '디자인 브리프', 'KV 디자인 가이드', '제작 가이드', '디자이너 전달용', '디자이너한테 줄 문서', '제작요청서 정리', '키비주얼 요청서', 'KV 초안 가이드', '메인 비주얼 가이드', '행사 비주얼 규칙'을 언급할 때. 행사 개요나 제작요청서를 주며 '디자이너에게 넘길 가이드 만들어줘', '키비주얼 규칙 정리해줘', '이걸로 제작 가이드 뽑아줘'라고 할 때. 형제 경계 — 키비주얼·포스터 이미지나 영상 자체를 만드는 것은 Higgsfield(RULE-VISUAL-ROUTING, 본 스킬은 그리지 않는다), 디자인 토큰 값 정의·룰 조회는 jc-design-system(적용은 본 스킬 템플릿이 그 값을 참조), 행사명·슬로건 같은 메시지 기획 문서는 jc-doc-coauthor, 완성 가이드의 최종 검수는 jc-redteam 영역이므로 그 작업에는 사용하지 말 것.
+version: "v1.2.0"
 ---
 
 # jc-kv-guide
@@ -31,7 +31,7 @@ version: "v1.1.0"
 
 ### 1. 인테이크 — 입력 3층과 경로 판정
 - 필수: 행사 주제·개요 텍스트
-- 선택: 제작요청서 원문 / 브랜드 가이드·로고 파일 / 랜딩페이지 히어로 규격 / 상류 기획 문서(ChainPayload/v1 — 예: `source: jc-doc-coauthor`·`mice-rfp-analyzer`)
+- 선택: 제작요청서 원문 / 브랜드 가이드·로고 파일 / 랜딩페이지 히어로 규격 / 상류 기획 문서(ChainPayload/v1 — 예: `source: jc-doc-coauthor` 메시지 기획 문서의 `key_message`·`mice-rfp-analyzer`). 메시지 기획 문서는 확정 본문만 `quote` 원문으로 인용한다(후보 목록은 인용하지 않는다)
 - 입력 문서마다 ID를 부여한다(D1, D2, …). 모든 인용의 출처 표기(`D1 §2`, `D2 p.4`)에 쓴다
 - 경로 판정: 제작요청서 **있음** → **원문 매핑 모드**(원문 문장을 8섹션에 배치, 재해석 금지) / **없음** → **개요 추출 모드**(개요에서 사실 항목만 추출, 나머지는 전부 [확인 필요])
 
@@ -98,10 +98,12 @@ jc-kv-guide/
 - `RULE-WCAG` — HTML 크롬 텍스트는 리멤버 룩 ink/paper 조합 기준. 오렌지(`#EB6F2A`)는 큰 글자 전용, 18px 미만 작은 오렌지 글자(키커·섹션 번호·링크)는 accent-deep(`#B8431A`, `--orange-deep`). 정본: `…#RULE-WCAG`
 - `RULE-PRINT-LIGHT` — 라이트 단일 모드라 해당 없음. `@media print`는 내비 숨김·카드 페이지 나눔만. 정본: `…#RULE-PRINT-LIGHT`
 - 토큰 값 — `jc-design-system/references/signature-tokens.md` §1(컬러)·§2(타이포)·§3(간격·라운드·그림자)이 정본(기계 파싱은 §6 JSON). 템플릿 CSS 변수는 그 미러이며 주석에 출처를 적는다
-- 검증 — `jc-redteam` / 데이터 — ChainPayload/v1(`jc-design-system/references/chaining-protocol.md`): 입력 `source: jc-doc-coauthor`·`mice-rfp-analyzer`(선택), 출력 `source: jc-kv-guide`
+- 검증 — `jc-redteam` / 데이터 — ChainPayload/v1(`jc-design-system/references/chaining-protocol.md`): 입력 `source: jc-doc-coauthor`·`mice-rfp-analyzer`(선택), 출력 `source: jc-kv-guide`. `jc-doc-coauthor`·`jc-kv-guide` 두 source의 봉투 enum 등록은 jc-design-system 측 요청 사항이며, 등록 전에는 수신 측이 범용 입력으로 처리한다
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): 트리거 '디자인 가이드' → 'KV 디자인 가이드' 한정, 디자인 경계 문구를 '토큰 값·룰 조회는 jc-design-system(적용은 본 스킬)'으로 정리.
+  무드·톤 원문 출처를 jc-doc-coauthor 메시지 기획 문서로(구 브랜드 정체성 브리프 표기 교체), 체이닝 source 2종의 봉투 enum 등록은 jc-design-system 요청 사항으로 표기.
 - v1.1.0 (2026-10-05): 없는 `tokens.md` 참조 3곳 → `jc-design-system/references/signature-tokens.md`. 발행 주체 기본 = 리멤버 MICE비즈팀(`issuer` 미입력 시 자동). 작은 오렌지 글자(키커·섹션 번호) → accent-deep `#B8431A`(RULE-WCAG).
   description·본문의 폐합 스킬 경계를 Higgsfield·jc-design-system·jc-doc-coauthor로 정리, 브리프 게이트 문구·LICENSE 참조 삭제, `python3` → `python`.
 
