@@ -226,3 +226,13 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - **채널**: ① git 반영 완료 · ② 없음 · ③ claude.ai — mice-estimate **v3.3.2 재업로드 필요**(기획자님, 구버전 삭제 → `.skill` 업로드). 나머지 18종은 ①=③.
 - **남은 결정**: E(브랜치 — `main` fast-forward 후 PR base 변경, ★ E-1). H는 기본값 채택.
 
+## 2026-10-09 — 세션 체크아웃 (교통정리 세션 종료)
+
+1. **완료**: 라이브 19종 git 정본화·폐합 20종 아카이브·계승/업그레이드 18종·mice-estimate v3.3.1→v3.3.2·jc-skill-forge v2.2.1 / claude.ai 폐합 19종 삭제·19종 재업로드·doc-coauthoring OFF / Code 동기화본 일치 / 런북·체크리스트·점검 리포트·CHANGELOG.
+2. **채널(최종)**: ① git — 브랜치 `claude/lucid-franklin-37n8cu`, PR #23 드래프트(base `claude/relaxed-fermat-M5h5C`), CI 녹색 · ② Code 로컬 설치 없음(synced만, 운영 원칙 G) · ③ claude.ai — 라이브 19종 ①=③ 일치, 프리셋 10 ON·doc-coauthoring OFF.
+3. **미결**: E(브랜치 — `main` fast-forward 후 PR base 변경, ★ E-1 / 또는 relaxed-fermat을 기본 브랜치로) → PR 머지는 기획자님.
+4. **백로그(F)**: ops-docs 구 대시보드 역량 선택 계승 · jc-pptx `program[]`·표지 라벨 인자화 · kv-guide 템플릿 토큰 런타임 로드 · design-system `--line-soft`·`--charcoal` 키 · session-protocol '브리프' 어휘 · lint 채널명 허용 목록 · effort 등급표 · deploy-pipeline §1에 "끈 프리셋은 synced에서 제외" 사실 추가(다음 forge 개정).
+5. **복구 지점**: 커밋 `8e47432`(재편 직전) · 로컬 `_archive/20261009-template/`(템플릿 원본).
+6. **다음 세션 착수점**: E 결정 → PR 머지 → `docs/stocktake-2026-10-09.md` §6 전 카드 종결 확인. 신규 작업은 행사 프로젝트 폴더에서(운영 원칙 G).
+7. **주의**: 견적 xlsx 색은 v3.3.1부터 리멤버 웜 페이퍼 토큰(순오렌지·검정 → accent·ink 계열). 회의록은 첫 렌더 라이트 모드. mice-estimate 템플릿 헤더는 자리표시자라 방식 B/C에서 반드시 주입값으로 교체.
+
