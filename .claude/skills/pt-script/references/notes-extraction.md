@@ -157,17 +157,12 @@ def classify_notes(notes_text):
     if not notes_text or not notes_text.strip():
         return "empty"
 
-    # 메타 패턴 매칭
-    for pattern in META_NOTE_PATTERNS:
-        if re.search(pattern, notes_text, re.MULTILINE):
-            # 패턴이 노트 첫 줄에 있으면 메타로 분류
-            return "meta"
-
-    # 메타 + 발표 노트 혼합인 경우 — 메타 부분만 제거
+    # 구현(extract_notes.py)과 같은 순서: 메타 블록을 먼저 지우고 남는 텍스트로 판정한다.
+    # 메타 패턴이 하나라도 있다고 바로 meta로 분류하지 않는다 — 혼합 노트(메타 + 발표 멘트)의 멘트를 보존하기 위해.
     cleaned = remove_meta_blocks(notes_text)
     if cleaned.strip():
-        return "speaker"  # 메타 제거 후 남은 텍스트가 있으면 speaker
-    return "meta"
+        return "speaker"  # 메타 제거 후 발표 텍스트가 남으면 speaker
+    return "meta"         # 전부 메타 블록이면 meta
 
 def remove_meta_blocks(notes_text):
     """

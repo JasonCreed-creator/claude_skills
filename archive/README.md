@@ -20,7 +20,7 @@
 | mice-proposal · mice-sponsor-deck | jc-pptx | 설득 설계·7섹션 골격·게이트 → `proposal-playbook.md`; 스폰서 덱(청중 프로파일·Tier·혜택·ROI 케이스·골격) → `jc-pptx/references/sponsor-deck.md`(v2.2.0 계승); 체이닝 source는 별칭 자동 치환 |
 | mice-dashboard | mice-ops-docs | KPI 대시보드·차트 가이드(리멤버 토큰 재작성) |
 | mice-weekly-performance | mice-slack-ops | 위클리 브리프(§2-1 + `weekly-brief.md`) |
-| jc-comms | mice-slack-ops | 양식 4종(3P·뉴스레터·FAQ·일반) → `comms-templates.md` |
+| jc-comms | mice-slack-ops | 공지·3P·상태/인시던트 보고·발주처 메일·FAQ(v1.0.0 흡수) + 뉴스레터·프로젝트/리더십 업데이트·3P 세부 규칙(v1.3.0 계승, 2026-10-09) → `comms-templates.md` |
 | jc-prompt-builder · jc-orchestrator · jc-workspace-ops | jc-session-protocol | 기획안 카드·킥오프·핸드오프·code-conductor·세션 2파일 리추얼 |
 | jc-skill-creator | jc-skill-forge | 하우스 규약·저작 검증 루프·상위 기계 포인터 |
 | jc-remember-html | jc-design-system · jc-pptx | 토큰·컴포넌트·로고·오브제 / 덱 템플릿 T1~T12 |

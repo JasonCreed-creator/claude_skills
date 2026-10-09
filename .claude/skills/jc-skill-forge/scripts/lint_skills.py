@@ -13,6 +13,7 @@
   구 시그니처: #0A2540 · #2962FF 하드코딩 (legacy 문맥 제외 ERROR)
   깨진 경로  : md 링크·백틱 경로(references/·scripts/·assets/·<스킬>/…)가 실재하지 않음 (WARN)
   체이닝 분류: LIVE ⊆ jc-design-system chaining-protocol.md §3(enum + 봉투 비대상 줄), §3에 라이브 아닌 ID (WARN)
+  트리거 중복: 둘 이상 스킬의 description에 같은 인용 트리거('…')가 있으면 (WARN) — 한정어를 붙이거나 한쪽에서 뺀다
                jc-design-system·jc-skill-forge를 검사할 때만, 파일을 못 찾으면 건너뜀
   스크립트   : .py 컴파일 · SKILL.md 500줄 상한
 이력 문맥: '변경 이력'·'legacy'·'아카이브' 제목 아래, 또는 줄에 이력 표지(흡수·구 ·폐지·금지·legacy·→ 등)가 있으면 면제.
@@ -48,7 +49,7 @@ LIVE = {
     "mice-ops-docs", "mice-team-board", "jc-slack-relay",
 }
 # 자가 테스트 픽스처 이름 (없는 스킬 경고에서 제외)
-FIXTURES = {"jc-demo", "jc-good", "jc-bad"}
+FIXTURES = {"jc-demo", "jc-good", "jc-bad", "jc-dup"}
 # 폐합 스킬 — git 보관소 `archive/skills/` (로컬 롤백 백업 `_archive/`와 다름)
 ARCHIVED = {
     "mice-sponsor-deck", "mice-proposal", "jc-prompt-builder", "jc-orchestrator", "jc-workspace-ops",
@@ -224,6 +225,32 @@ def check_chaining(root: Path, issues: list) -> None:
         issues.append(("WARN", "jc-design-system", f"chaining-protocol.md §3에 라이브가 아닌 '{s}' → §3-1 별칭으로 옮기거나 삭제"))
 
 
+TRIGGER_RE = re.compile(r"'([^'\n]{2,40})'")
+
+
+def description_triggers(d: Path) -> set:
+    """SKILL.md description의 인용 트리거('…') 집합. 공백 정규화."""
+    md = d / "SKILL.md"
+    if not md.is_file():
+        return set()
+    fm, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="replace"))
+    return {re.sub(r"\s+", " ", m).strip() for m in TRIGGER_RE.findall(fm.get("description", ""))}
+
+
+def check_trigger_collisions(dirs: list, issues: list) -> None:
+    """둘 이상 스킬 description에 같은 인용 트리거가 있으면 WARN (중복 스킬 재발 방지)."""
+    if len(dirs) < 2:
+        return
+    owners: dict = {}
+    for d in dirs:
+        for trig in description_triggers(d):
+            owners.setdefault(trig, []).append(d.name)
+    for trig, names in sorted(owners.items()):
+        if len(names) >= 2:
+            names = sorted(names)
+            issues.append(("WARN", names[0], f"description 트리거 '{trig}' 중복 — {', '.join(names[1:])}에도 있음 → 한정어를 붙이거나 한쪽에서 뺄 것"))
+
+
 def collect(paths: list, only: set | None, excl: set) -> list:
     dirs: list = []
     if paths:
@@ -246,6 +273,7 @@ def run(dirs: list, strict: bool, quiet: bool = False) -> tuple:
     owners = [d for d in dirs if d.name in ("jc-design-system", "jc-skill-forge")]
     if owners:
         check_chaining(owners[0].parent, issues)
+    check_trigger_collisions(dirs, issues)
     errs = [i for i in issues if i[0] == "ERROR"]; warns = [i for i in issues if i[0] == "WARN"]
     bad = bool(errs) or (strict and bool(warns))
     if not quiet:
@@ -274,6 +302,12 @@ def self_test() -> int:
             "헤더 색 #0A2540, 강조 2962FF.\n대시보드는 jc-asana-html.\n보조는 jc-nonexistent-skill.\n상세 `references/missing.md`.\n",
             encoding="utf-8")
         (bad / "x.py").write_text("def broken(:\n", encoding="utf-8")
+        dup = root / "jc-dup"; dup.mkdir()
+        (dup / "SKILL.md").write_text(
+            '---\nname: jc-dup\ndescription: 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 \'테스트\', \'고유 트리거\'를 말할 때. 검증은 jc-redteam.\nversion: "v1.0.0"\n---\n# 중복 트리거 스킬\n본문.\n',
+            encoding="utf-8")
+        (good / "SKILL.md").write_text(
+            (good / "SKILL.md").read_text(encoding="utf-8").replace("테스트. 검증은", "사용자가 \'테스트\'를 말할 때. 검증은"), encoding="utf-8")
         cp = root / CHAINING_DOC; cp.parent.mkdir(parents=True)
         cp.write_text("# x\n## 3. enum\n| 단계 | `jc-pptx` · `mice-gone` |\n\n### 3-1. 별칭\n| `mice-proposal` | `jc-pptx` |\n", encoding="utf-8")
         iss_ch: list = []
@@ -282,6 +316,8 @@ def self_test() -> int:
         iss_none: list = []
         check_chaining(root / "nowhere", iss_none)
         rc_good, iss_good = run([good], strict=True, quiet=True)
+        _, iss_dup = run([good, dup], strict=False, quiet=True)
+        dup_msgs = " | ".join(m for _, _, m in iss_dup)
         rc_bad, iss_bad = run([bad], strict=False, quiet=True)
         msgs = " | ".join(m for _, _, m in iss_bad)
         cases = [
@@ -301,6 +337,9 @@ def self_test() -> int:
             ("체이닝 §3 분류 누락", "'jc-redteam' 분류 없음" in ch_msgs and "'jc-pptx' 분류 없음" not in ch_msgs),
             ("체이닝 §3 비라이브 ID", "'mice-gone'" in ch_msgs and "'mice-proposal'" not in ch_msgs),
             ("체이닝 문서 없음 → 건너뜀", not iss_none),
+            ("트리거 중복 WARN", "트리거 '테스트' 중복 — jc-good에도 있음" in dup_msgs or "트리거 '테스트' 중복 — jc-dup에도 있음" in dup_msgs),
+            ("고유 트리거는 무경고", "'고유 트리거' 중복" not in dup_msgs),
+            ("단일 스킬은 중복 검사 생략", "트리거" not in " | ".join(m for _, _, m in iss_good)),
         ]
         for label, passed in cases:
             print(f"  {'OK ' if passed else 'FAIL'} {label}")

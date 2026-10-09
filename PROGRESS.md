@@ -187,3 +187,16 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - proposal-voice v1.1.0: §0 "SKILL §3·§5·§6과 충돌 시 본 문서 우선"(배점 역설계·발주처 목차 우선은 상위) · §3-1 5 한 주장 정의 · §3-4 6항목(피동 T-2형·"통해" 2회·한 주장) · A-2 범위·분모 · §9 H-1 열 갱신·운용 메모·블라인드 결과.
 - SKILL v3.1.2: §3-6 우선권 승격 · §8 게이트 10 6항목. description 무변경.
 - 채널: ① Drive 정본 완료(백업 `_archive/20260925-blind/`) · ④ 본 커밋 · ② sync_deploy · ③ zip 재업로드는 기획자님.
+
+---
+
+## 2026-10-09 — 교통정리(Full Stocktake → 집행): 라이브 19종 정본화 · 폐합 20종 아카이브 · 계승·업그레이드 17종
+
+- **모드**: jc-skill-forge D 점검(Full Stocktake) → 사용자 지시로 집행. 브랜치 `claude/lucid-franklin-37n8cu`, 드래프트 PR #23(base `claude/relaxed-fermat-M5h5C`). 복구 지점 커밋 `8e47432`.
+- **대조**: 의도 상태(lint `LIVE` 19 / `ARCHIVED` 20, 2026-10-05) × claude.ai 업로드본(synced 48종, manifest 10-09) × git 정본(29종).
+- **핵심 발견**: ① claude.ai에 폐합 19종 잔존(10-02 일괄 재업로드분, 10-05 라이브 갱신 때 삭제 누락) ② git 정본이 9/21 재편 이전(라이브 7종 없음·11종 구버전·폐합 17종 잔존, mice-meeting-minutes는 claude.ai에 없음) ③ Code 목록 이중 노출은 구조(레포 루트 + synced).
+- **집행**: 라이브 18종 업로드본 동기 → 폐합 20종 `archive/skills/` 이동(git mv) + 레거시 3파일 `archive/legacy/` → CI에 forge 린트·토큰 테스트 → 워크플로우(경계검증 6클러스터 90건·흡수감사 20종·비평가 2명) → 적용 에이전트 4개 + 계승 에이전트 2개 + mice-meeting-minutes 개정 → 17종 개정(버전 대조표 `docs/CHANGELOG-2026-10-09.md` §2).
+- **계승**(폐합 → 라이브): 스폰서 덱(sponsor-deck.md)·proposal-voice v1.1.0(우선권) → jc-pptx / 행사명·슬로건 메시지 기획 → jc-doc-coauthor / HTML 리스킨·드라이브 운영 표준 → mice-ops-docs / 커뮤니케이션 양식 → mice-slack-ops.
+- **검증**: lint ERROR 0(WARN 3 = 채널명·멘션 오탐) · check_drift PASS · test_jc_tokens PASS · 스크립트 self-test PASS(meeting-minutes 2·rfp-analyzer 3·team-board·run-of-show·pt-script·kv-guide·ops-docs·check_deck·lint·build) · README 버전 = frontmatter · CI drift-guard 녹색.
+- **채널**: ① git 반영 완료 · ② Code 로컬 설치 미반영(0종 유지) · ③ claude.ai **미반영** — 폐합 19종 삭제 + `.skill` 18종 업로드는 기획자님(리포트 §6 카드 A·B). `mice-estimate`는 사용자 관리 — 내용 무수정, 패치 목록 §6 카드 C.
+- **리포트**: `docs/stocktake-2026-10-09.md`(세 집합 대조표·발견 90건 처리·흡수감사·프리셋 판정·결정 카드 A~H).

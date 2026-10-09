@@ -81,7 +81,7 @@ jc-skill-forge/
 
 ## 변경 이력
 
-- v2.2.0 (2026-10-09): ARCHIVE를 레포 실제(`archive/skills/` git 보관소 + LIVE/ARCHIVED + archive README + 체이닝 별칭)로 정의, `_archive/`는 로컬 롤백 백업으로만. 진행 규약·모델은 jc-session-protocol 정본 포인터, 호칭 구분 명시, description에 skill-creator 대비 우선 1문.
+- v2.2.0 (2026-10-09): ARCHIVE를 레포 실제(`archive/skills/` git 보관소 + LIVE/ARCHIVED + archive README + 체이닝 별칭)로 정의, `_archive/`는 로컬 롤백 백업으로만. 진행 규약·모델은 jc-session-protocol 정본 포인터, 호칭 구분 명시, description에 skill-creator 대비 우선 1문. lint에 description 인용 트리거 중복 WARN(스킬 간 같은 트리거 = 재중복 신호) 추가.
   마감에 체이닝 enum 동시 갱신 항목, 린트에 'LIVE ⊆ chaining-protocol §3' WARN·`CURRENT_MODELS` 상수, upstream 탐색 순서(synced 확인), deploy §6 구 `/skillupgrade` 잔존 삭제 안내.
 - v2.1.0 (2026-10-05): 린트 강화(경로 인자·`--self-test`, 폐합·없는 스킬 참조·"N턴"·구 모델 ID·"리더"·구 시그니처 HEX·깨진 상대경로), build·install 자가 테스트 추가.
   배포 문서를 현재 실태로 — 소스 반영≠배포(3채널 보고), claude.ai 업로드는 사용자 몫, ZIP(.skill)만·tar.gz 금지. 소스 수정은 백업 후 진행·배포만 승인, "리더"→"팀장".

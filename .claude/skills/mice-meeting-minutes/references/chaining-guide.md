@@ -24,7 +24,7 @@ Discovery·킥오프·운영 협의·사후 회고 회의록에서 뽑은 데이
 | 수주 후 킥오프·운영 협의 (Type A·C) | `mice-ops-docs` | 운영계획서 1·2·7섹션 (`mice-ops-docs/references/chaining-schema.md §1`) |
 | 행사 후 회고·정산 미팅 | `mice-aftermath` | 6축 교훈 · 8축 차기 권고 (`mice-aftermath/references/chaining-schema.md §1`) |
 
-조건 미충족이면 만들지 않고, 응답 끝에 "체이닝 데이터 부족 — 추가 미팅 권장" 한 줄만 남긴다. 견적은 jc-pptx 덱의 `estimate_hint`를 거쳐 mice-estimate로 가므로 본 스킬이 직접 보내지 않는다.
+조건 미충족이면 만들지 않고, 응답 끝에 "체이닝 데이터 부족 — 추가 미팅 권장" 한 줄만 남긴다. 견적 입력 키(`eventScale`·`venue`·`options` 등, jc-pptx 봉투 최상위 평탄 키)는 jc-pptx가 mice-estimate로 보내므로 본 스킬이 직접 보내지 않는다.
 
 ---
 
