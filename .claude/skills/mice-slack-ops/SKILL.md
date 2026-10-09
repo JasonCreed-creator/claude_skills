@@ -1,7 +1,7 @@
 ---
 name: mice-slack-ops
-description: "리멤버 MICE비즈팀의 Slack 운영 스킬. mice_운영요청 단일 채널·1행사=1스레드(S1~S7) 프로토콜, 봇 3종(견적문의·타깃논의·계약완료)·상태 보드, 캔버스 규칙, 계약완료 메시지→팀 보드 행 변환, 월요일 브리프·위클리 회의 준비, 금요일 주간 퍼포먼스 리포트(위클리 브리프·집계표), 공지·3P·발주처 메일·FAQ 양식을 담는다. 기본 산출은 복사용 초안. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '슬랙', 'Slack', '채널', '스레드', '캔버스', '상태 보드', '견적문의', '타깃논의', '계약완료', '보드에 등록', '운영요청', '오픈 건 현황', '월요일 처리할 것', '오늘 할 일 정리', '이번 주 뭐 있어', '위클리', '위클리 브리프', '주간 실적', '주간 성과', '주간 퍼포먼스', '퍼포먼스 리포트', '수주 up', '주간 업데이트', '3P', '공지 써줘', '안내문', '발주처 메일', 'FAQ', '슬랙 요약', '슬랙에 올려줘', 'DM 보내줘'를 말할 때. 경계 — 운영계획서·결과보고서 등 긴 문서 본문은 mice-ops-docs·mice-aftermath, 회의 transcript 구조화는 mice-meeting-minutes, 팀 보드 실제 조작은 mice-team-board, 견적 산출은 mice-estimate, Slack 내보내기는 jc-slack-relay, 완성 글 검증은 jc-redteam. 메시지 발송·캔버스 게시·DM은 하지 않고 초안까지 — 사용자 명시 승인 시에만 실행."
-version: "v1.1.0"
+description: "리멤버 MICE비즈팀의 Slack 운영 스킬. mice_운영요청 단일 채널·1행사=1스레드(S1~S7) 프로토콜, 봇 3종(견적문의·타깃논의·계약완료)·상태 보드·단계 전환 댓글, 슬랙 캔버스 규칙, 계약완료 메시지 파싱·신규/갱신 판단(→팀 보드용 contract 페이로드), 월요일 브리프·위클리 회의 준비, 금요일 주간 퍼포먼스 리포트(위클리 브리프·집계표), 공지·3P·발주처 메일·FAQ 양식을 담는다. 기본 산출은 복사용 초안. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '슬랙', 'Slack'(내보내기 파일·Cowork 파일 읽기는 jc-slack-relay), '채널', '스레드', '슬랙 캔버스', '캔버스 갱신', '상태 보드', '견적문의', '타깃논의', '계약완료', '계약완료 보드 등록', '운영요청', '킥오프 요청', '킥오프 공유', '단계 전환 댓글', '오픈 건 현황', '월요일 처리할 것', '오늘 할 일 정리', '이번 주 뭐 있어', '위클리', '위클리 브리프', '주간 실적', '주간 성과', '주간 퍼포먼스', '퍼포먼스 리포트', '수주 up', '주간 업데이트', '3P', '공지 써줘', '안내문', '발주처 메일', 'FAQ', '슬랙 요약', '슬랙에 올려줘', 'DM 보내줘'를 말할 때. 경계 — 운영계획서·결과보고서 등 긴 문서 본문은 mice-ops-docs·mice-aftermath, 회의 transcript 구조화는 mice-meeting-minutes, 구글시트 팀 보드 행·M/D 배정·상태 7단계는 mice-team-board, 견적 산출은 mice-estimate, Slack 내보내기는 jc-slack-relay, 완성 글 검증은 jc-redteam. 메시지 발송·캔버스 게시·DM은 하지 않고 초안까지 — 사용자 명시 승인 시에만 실행."
+version: "v1.2.0"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -13,7 +13,7 @@ license: Complete terms in LICENSE.txt
 
 - **기본 동작 = 복사용 초안.** 메시지·댓글·공지·캔버스 본문·DM·위클리 브리프는 붙여넣을 수 있는 초안(본문 코드블록)으로 낸다. Slack에 직접 발송·게시하지 않는다.
 - **발송·게시는 승인 필수.** `slack_send_message`·`slack_create_canvas`·`slack_update_canvas`·DM은 사용자가 그 초안에 대해 명시적으로 "올려"라고 한 뒤에만. 캔버스 갱신은 `slack_read_canvas`로 현재 본문을 읽고 필요한 부분만 바꾼다.
-- **읽기 경로.** 회사 정책상 Slack은 Claude Code(PC) 플러그인으로만 읽히고, Cowork·웹은 `jc-slack-relay`가 내보낸 `C:\.Claude\Slack-내보내기\` md 파일을 읽는다.
+- **읽기 경로.** 회사 정책상 Slack은 Claude Code(PC) 플러그인으로만 읽히고, Cowork·웹은 `jc-slack-relay`가 내보낸 md 파일을 읽는다(폴더 경로는 jc-slack-relay §1이 정본).
 - **읽기·정리는 묻지 않고 진행.** 범위가 없으면 기본(지난 금요일 09:00 이후·`#mice_운영요청`)으로 읽고 고른 범위를 한 줄로 밝힌다.
 - **다른 팀 업무를 규정하지 않는다.** 문서·공지·프로세스 범위는 ① 소통 구조 ② MICE비즈팀이 하는 일과 기한 ③ 인터페이스(스레드에서 받는 것/넘기는 것)까지. 영업·운영 Cell·매관시·브랜드디자인의 SLA·양식·순서는 "각 팀 기준을 따른다"로 끝낸다.
 - **Slack에는 최종본만.** 근거·진단·재설계 스펙·결정 사유·레드팀 메모·변경 이력은 캔버스에 섞지 않고 로컬 md나 내부 작업문서로 분리.
@@ -25,13 +25,13 @@ license: Complete terms in LICENSE.txt
 
 | 요청 | 절차 | 참조 |
 |------|------|------|
-| 계약완료 메시지 → 보드 등록 | 메시지 파싱 → 기존 행 대조(신규/갱신 판단) → 행 값 표 + ChainPayload → `mice-team-board`로 넘기거나 사용자가 시트 입력 | `contract-message.md` |
+| 계약완료 메시지 → 보드 등록 | 메시지 파싱 → 기존 행 대조(신규/갱신·`status_hint` 판단) → ChainPayload(`contract`)까지. 행 값 표·시트 입력은 `mice-team-board`(`board_rows.py`) | `contract-message.md` |
 | 월요일 / 오늘 할 일 정리 | 채널·스레드·멘션 스캔(지난 금요일 이후) → 4분류(오늘·이번 주·대기·정보) → 브리프 | `briefs.md` |
 | 위클리 회의 준비 (월 10:00) | 오픈 건 현황 캔버스 갱신 초안 + 상태 보드 최신화 목록 + 결정 필요 항목 | `briefs.md §2` |
 | 위클리 브리프 — 주간 실적·퍼포먼스 리포트 (금) | 지난주 리포트·집계표 + 이번 주 스레드 변화 → 집계표(코드 계산) → 채널 공통 뼈대 본문 초안 | `weekly-brief.md` · §2-1 |
-| 상태 보드·단계 전환·현장 리포트·종료 요약 | 프로토콜 템플릿 채우기 | `protocol.md §4~6` |
+| 상태 보드·단계 전환 댓글·킥오프 요청/공유·현장 리포트·종료 요약 | 프로토콜 템플릿 채우기 | `protocol.md §2·§4~6` |
 | 공지·안내·3P·발주처 메일·FAQ | 양식 선택 → 톤 분기(내부 해요체 / 대외 합니다체) → 복사용 초안 | `comms-templates.md` |
-| 캔버스 작성·갱신 | 구조 규칙(표 3~5열, 콜아웃, 체크리스트, 채널 멘션) | `canvas-rules.md` |
+| 슬랙 캔버스 작성·갱신 | 구조 규칙(표 3~5열, 콜아웃, 체크리스트, 채널 멘션) | `canvas-rules.md` |
 | 슬랙 요약 | `slack_search_public_and_private`·`slack_read_channel`·`slack_read_thread`로 기간·채널 한정 수집 → 결정·액션·대기 3분류 | `briefs.md §3` |
 | 채널·봇·사람 확인 | ID·그룹·담당 레퍼런스 | `channels.md` |
 
@@ -59,7 +59,7 @@ license: Complete terms in LICENSE.txt
 ## 3. 문체
 
 - Slack 메시지·댓글·DM: 해요체·"~" 허용, 첫 줄에 결론, 3문단 이내, 3개 이상은 불릿, 날짜·기한·담당은 굵게.
-- 공표 캔버스·매뉴얼·지침: 마데실 Ground Rule 문체(개조식 중첩 불릿 + 원칙만 합니다체, ~요 금지). 긴 본문은 `mice-ops-docs`.
+- 공표 캔버스·매뉴얼·지침: 문체 정본은 `mice-ops-docs/references/ground-rule-style.md` §2(마데실 Ground Rule). 캔버스 방언(헤딩 번호·콜아웃·멘션)만 `canvas-rules.md`. 긴 본문은 `mice-ops-docs`.
 - 발주처·외부: 정중·사실 위주·완결 문장, 금액·마진·내부 일정 비노출, 모호하면 보수적으로.
 
 ## 4. 파일 구조
@@ -71,7 +71,7 @@ mice-slack-ops/
     ├── channels.md            # 채널 ID · 봇 · 그룹 · 조직·담당 · 용어 · MCP 도구 메모
     ├── protocol.md            # 프로토콜 v1.0 요약: 채널 규칙 · S1~S7 · 약속 기한 · 스레드 규칙 · 템플릿 · FAQ · 정본 링크
     ├── canvas-rules.md        # 캔버스 마크다운 방언 · 구조 규칙 · 함정 · 메시지 서식 요약
-    ├── contract-message.md    # 계약완료 메시지 스키마 · 파싱 · 팀 보드 행 매핑 · 신규/갱신 판단 · ChainPayload
+    ├── contract-message.md    # 계약완료 메시지 스키마 · 파싱 · 메시지 필드→payload 키 · 신규/갱신·status_hint 판단 · ChainPayload
     ├── briefs.md              # 월요일·오늘 브리프 · 위클리 회의 준비 · 슬랙 요약 절차와 출력 형식
     ├── weekly-brief.md        # 금요일 주간 퍼포먼스 리포트(위클리 브리프) — 입력·집계표·형식·규칙
     └── comms-templates.md     # 공지 · 3P · 상태/인시던트/경영진 보고 · 발주처 메일 · FAQ 양식 + 톤 분기
@@ -79,16 +79,17 @@ mice-slack-ops/
 
 ## 5. 생태계 연결
 
-- 보드 실제 조작: `mice-team-board` (Chrome 확장·Apps Script). 본 스킬은 행 값과 판단까지.
+- 팀 보드: `mice-team-board` — 시트 열(A~P) 정의 정본 `mice-team-board/references/sheet-schema.md`, 행 값 표 `mice-team-board/scripts/board_rows.py`, M/D 배정·상태 7단계·시트 쓰기. 본 스킬은 파싱·신규/갱신 판단·`contract` 페이로드까지.
 - 긴 문서: `mice-ops-docs`(프로토콜 매뉴얼·그라운드룰·운영계획서·결과보고서). 회의록: `mice-meeting-minutes`.
 - 견적 회신 댓글의 금액·유형은 `mice-estimate` 산출을 인용한다.
 - 데이터 봉투: `jc-design-system/references/chaining-protocol.md` (source `mice-slack-ops`, payload `contract`).
 - 검증: 공표문·발주처 메일은 발송 전 `jc-redteam` Quick Strike.
-- Slack 내보내기(Cowork·웹용 md): `jc-slack-relay`.
-- 흡수: `jc-comms` v1.0.0 양식 4종(3P·뉴스레터·FAQ·일반), mice-weekly-performance(주간 퍼포먼스 리포트 → §2-1 위클리 브리프).
+- Slack 내보내기(Cowork·웹용 md): `jc-slack-relay` — 폴더 경로 상수의 정본은 그 스킬 §1.
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): 경계 정리 — '보드에 등록'→'계약완료 보드 등록', 행 값 표·열 정의는 mice-team-board로 위임(`contract`에 `status_hint` 추가, `notes`=O열 완성 문자열), 트리거 '슬랙 캔버스'·'킥오프 요청/공유'·'단계 전환 댓글' 추가.
+  내보내기 경로는 jc-slack-relay §1 포인터, Ground Rule 문체는 mice-ops-docs 정본 포인터. §5의 흡수 줄(구 커뮤니케이션 양식 스킬 v1.0.0·구 주간 퍼포먼스 스킬)을 이력으로 이동, 미수록 '뉴스레터' 표기 삭제.
 - v1.1.0 (2026-10-05): 흡수: mice-weekly-performance — 금요일 주간 퍼포먼스 리포트를 '위클리 브리프'(§2-1 + `references/weekly-brief.md`)로, 트리거에 주간 실적·위클리·주간 성과 추가. 기본 동작을 복사용 초안으로(발송·게시는 명시 승인 시만), Slack 읽기 경로(Code 플러그인 / Cowork·웹은 jc-slack-relay 내보내기 md) 명시.
 - v1.1.0 (2026-10-05): '팀리드'·'리더' → '팀장', 전 직장 상호·고객사 실명·계약금액 예시 가명화.
 - v1.0.0 (2026-09-21): 신규. 프로토콜 v1.0·Slack MCP·계약완료 등록·월요일 브리프 정본화, jc-comms 흡수.

@@ -45,7 +45,7 @@
 | 제작요청서 | 랜딩 제작 요청 시트 (타팀 제작) |
 | 결과보고서 | 행사 후 5영업일 내 MICE PM 작성 |
 | 근공 스레드 | 근무 공유 스레드(재택·휴가·외근 댓글) |
-| 트래커 [성사] | 팀 보드 프로젝트 등록 알림 |
+| 트래커 [성사] | 트래커 = 팀 보드 프로젝트 탭(`mice-team-board`). 프로젝트 등록 시 [성사] 알림이 §1 팀 내부 채널에 자동 게시된다 |
 | DMS | 자사 주최형·판매형 행사(스폰서십). 플레이북 본문에서는 '주최형·판매형'으로 표기 |
 
 ## 5. Slack MCP 도구 메모
@@ -53,5 +53,5 @@
 - 도구 접두 `mcp__plugin_productivity_slack__` 27종. 검색은 `slack_search_public_and_private`(비공개 포함, 동의 필요) → `in:#채널 after:YYYY-MM-DD from:@user` 수정자. 스레드는 `slack_read_thread`, 채널 최근 글은 `slack_read_channel`.
 - 캔버스: `slack_create_canvas` / `slack_read_canvas` / `slack_update_canvas`. 읽기 결과는 채널·유저 멘션을 `<#C…>` `<@U…>`로 보여준다(정상).
 - 파일: 공유된 스프레드시트는 `slack_read_file`로 메타만; 내용은 Drive MCP `read_file_content`(1회 약 15K 토큰 — 반복 금지).
-- 읽기 경로: 회사 정책상 Slack은 Claude Code(PC) 플러그인으로만 읽힌다. Cowork·웹 세션은 `jc-slack-relay`가 내보낸 `C:\.Claude\Slack-내보내기\` md 파일을 읽는다.
+- 읽기 경로: 회사 정책상 Slack은 Claude Code(PC) 플러그인으로만 읽힌다. Cowork·웹 세션은 `jc-slack-relay`가 내보낸 md 파일을 읽는다(경로는 jc-slack-relay §1).
 - Code 세션에 Slack 도구가 없으면 `/mcp`에서 productivity slack 재인증 안내(세션 재시작 불필요). 상세: `jc-session-protocol/references/windows-env.md §4`.
