@@ -1,7 +1,7 @@
 ---
 name: jc-design-system
-description: 리멤버 MICE비즈팀 산출물(제안서·소개서 PPTX, 문서·대시보드·캔버스 HTML, 견적·큐시트 xlsx, 대본 docx)의 디자인 토큰 정본이자 스킬 간 데이터 봉투(ChainPayload/v1) 정본. 룩은 '리멤버 웜 페이퍼'(웜 아이보리 캔버스 · 잉크 블랙 · 리멤버 오렌지 액센트 · Pretendard 단일 서체) 하나이며, 다른 스킬(jc-pptx·mice-ops-docs·pt-script·mice-meeting-minutes·mice-run-of-show·mice-aftermath 등)이 런타임으로 읽는 reference 자산이다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '디자인 토큰', '디자인 시스템', '리멤버 룩', '리멤버 디자인', '웜 페이퍼', '스타일 가이드', '컬러 팔레트', '오렌지 액센트', '다크 슬라이드', '발주처 로고 오버레이', '대비비', 'WCAG', 'ChainPayload', '체이닝 봉투'를 언급할 때. HTML·PPTX·XLSX·DOCX 산출물의 색·서체·간격·컴포넌트 패턴을 정할 때(다른 스킬이 자동 참조). 발주처별 로고·표지·푸터 슬롯을 바꿀 때. 형제 경계 — PPTX 빌드는 jc-pptx, 문서·대시보드 HTML 생성은 각 산출 스킬, 산출물 검증은 jc-redteam이며 본 스킬은 값·규칙·봉투 규약만 제공한다. 구 jc 시그니처(네이비·일렉트릭블루)는 legacy-jc 오버레이로만 남아 있으며 명시 요청 시에만 쓴다.
-version: "v2.1.0"
+description: 리멤버 MICE비즈팀 산출물(제안서·소개서 PPTX, 문서·대시보드·캔버스 HTML, 견적·큐시트 xlsx, 대본 docx)의 디자인 토큰 정본이자 스킬 간 데이터 봉투(ChainPayload/v1) 정본. 룩은 '리멤버 웜 페이퍼'(웜 아이보리 캔버스 · 잉크 블랙 · 리멤버 오렌지 액센트 · Pretendard 단일 서체) 하나이며, 다른 스킬(jc-pptx·mice-ops-docs·pt-script·mice-meeting-minutes·mice-run-of-show·mice-aftermath 등)이 런타임으로 읽는 reference 자산이다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '디자인 토큰', '디자인 시스템', '리멤버 룩', '리멤버 디자인', '웜 페이퍼', '스타일 가이드', '컬러 팔레트', '오렌지 액센트', '다크 슬라이드', '발주처 로고 오버레이', '대비비', 'WCAG', 'ChainPayload', '체이닝 봉투'를 언급할 때. HTML·PPTX·XLSX·DOCX 산출물의 색·서체·간격·컴포넌트 패턴을 정할 때(다른 스킬이 자동 참조). 발주처별 로고·표지·푸터 슬롯을 바꿀 때. 형제 경계 — PPTX 빌드는 jc-pptx, 문서·대시보드 HTML 생성은 각 산출 스킬, 디자이너 전달용 KV 제작 가이드 문서는 jc-kv-guide, 산출물 검증은 jc-redteam이며 본 스킬은 값·규칙·봉투 규약만 제공한다. 구 jc 시그니처(네이비·일렉트릭블루)는 legacy-jc 오버레이로만 남아 있으며 명시 요청 시에만 쓴다.
+version: "v2.2.0"
 ---
 
 # JC Design System v2 — 리멤버 웜 페이퍼
@@ -20,6 +20,7 @@ version: "v2.1.0"
 ## 호출 흐름
 
 ```
+0. 입력이 봉투면 chaining-protocol.md §7 판별 (detect_input_source)
 1. signature-tokens.md §6 JSON 로드 (jc_tokens.load_tokens)
 2. 발주처 지정 시 client-overlays.md 슬롯 적용 (로고·표지·푸터만)
 3. 모드 결정 — 기본 라이트. 다크는 표지·섹션 구분·클로징 3종 + 대시보드 토글 (mode-mapping.md)
@@ -28,6 +29,12 @@ version: "v2.1.0"
 ```
 
 상세 절차와 코드 예시는 `references/usage-guide.md`.
+
+## 체이닝 봉투 (ChainPayload/v1)
+
+- 정본은 `references/chaining-protocol.md` — §1 봉투 구조 · §3 source/target enum(+봉투 비대상) · §4 페이로드 정본 위치 · §6 수신 규칙 · §7 판별 함수. 본 스킬은 봉투(헤더)만 정의하고 페이로드 내용은 각 생산 스킬 문서가 정본이다.
+- 봉투를 받으면 §7 `detect_input_source`로 source를 정규화(폐합 별칭 치환) → §4에서 페이로드 정본을 찾아 무변경 승계(§6-2). enum에 없으면 경고 후 범용 입력.
+- enum·별칭(§3·§3-1·§7 ALIASES) 갱신 책임은 `jc-skill-forge` 마감 절차 — 신규·폐합과 같은 커밋. 라이브 스킬의 §3 분류 누락은 forge 린트가 WARN.
 
 ## 빠른 참조
 
@@ -90,6 +97,8 @@ jc-design-system/
 
 ## 변경 이력
 
+- v2.2.0 (2026-10-09): '체이닝 봉투' 절 신설(정본 포인터·§7 판별·enum 갱신 책임 forge), 호출 흐름 0단계(봉투 판별), 경계에 jc-kv-guide. chaining-protocol §3 '가이드·문서' 행·봉투 비대상 줄, §4 jc-kv-guide·jc-doc-coauthor 행·rfp-analyzer 키 보강·pt-script 수신 전용 정정,
+  §5 흐름 현행화(mice-estimate → jc-pptx 역방향 등). shared-rules 소비 목록에 mice-estimate, 양식명 '산출내역서'로 정정.
 - v2.1.0 (2026-10-05): 체이닝 정본 enum을 라이브 스킬 기준으로 재작성(run-of-show·aftermath 라이브 복구, strategy-canvas·market-intel·mice-ops-docs·mice-team-board 등록, 폐합 source는 별칭), §6 절 번호·§7 판별 함수 명시.
   구 소속사 오버레이(`mc`·`darktrace`) 행 삭제, 예시 고객사 실명 → A사, 흡수된 구 HTML 스킬 참조 정리, §6 JSON version 2.1.0, 없는 LICENSE.txt 참조 삭제.
 

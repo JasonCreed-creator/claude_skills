@@ -33,16 +33,19 @@
 | `clientId` | string \| null | 선택 | `client-overlays.md`의 발주처 슬롯 ID. null = 리멤버 기본 |
 | `projectTitle` | string | 권장 | 행사·프로젝트명 |
 
-## 3. source / target enum (라이브 스킬 기준, 2026-10-05)
+## 3. source / target enum (라이브 스킬 기준, 2026-10-09)
 
 | 단계 | 스킬 ID |
 |------|---------|
 | 리서치·전략 | `mice-market-intel` · `jc-strategy-canvas` · `mice-rfp-analyzer` · `mice-meeting-minutes` |
 | 제안·견적·발표 | `jc-pptx` · `mice-estimate` · `pt-script` |
+| 가이드·문서 | `jc-doc-coauthor`(메시지 기획 문서 봉투만 산출, 선택) · `jc-kv-guide` |
 | 운영·현장 | `mice-run-of-show` · `mice-ops-docs` |
 | 사후 | `mice-aftermath` |
 | 팀 운영 | `mice-slack-ops` · `mice-team-board` |
 | 검증 | `jc-redteam` (수신 전용, 임의 산출물 수용) |
+
+봉투 비대상(인프라·메타 — 봉투를 내지도 받지도 않음): `jc-design-system`(본 규약 정본) · `jc-skill-forge` · `jc-session-protocol` · `jc-slack-relay`. 라이브 스킬은 위 표 또는 이 줄 중 한 곳에 반드시 분류한다 — 갱신 책임은 `jc-skill-forge` 마감 절차(신규·폐합과 같은 커밋), 누락은 `lint_skills.py`가 WARN.
 
 ### 3-1. 하위호환 별칭 (수신 측이 자동 치환, 새로 생산하지 않는다)
 
@@ -58,11 +61,13 @@
 |--------|------|---------|
 | mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size` `competitors` `trends` `sponsor_candidates` `gaps` `sources` |
 | jc-strategy-canvas | `jc-strategy-canvas/references/chaining-schema.md` | `recommendation` `differentiation_axes` `key_messages` `evidence_flags` `open_questions` |
-| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` |
-| mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client` `project_context` `discovery_data` `strategic_notes` |
+| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `analysis_result` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` `risk_notes_for_negotiation` · `estimate_hint`(→ mice-estimate 전용) · `open_questions`(→ mice-market-intel 재조사 의뢰) |
+| mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client` `project_context` `discovery_data` `strategic_notes` `actions` `risks` `pending` |
 | jc-pptx | `jc-pptx/references/proposal-playbook.md §체이닝` | `deck_meta` `sections` `coverage_map` `estimate_hint` `presentation` |
 | mice-estimate | `mice-estimate/references/chaining-schema.md` | `eventScale` `venue` `options` `sections` `totalAmount` |
-| pt-script | `pt-script/references/chaining-schema.md` | `proposal_meta` (발표 세그먼트 시간) |
+| pt-script | `pt-script/references/chaining-schema.md` | 수신 전용 — jc-pptx `presentation` 키를 읽는다(산출 봉투 없음, `proposal_meta`는 구 입력 컨테이너) |
+| jc-kv-guide | `jc-kv-guide/SKILL.md` 체이닝 절 | `guide_meta` `tbd_questions` |
+| jc-doc-coauthor | `jc-doc-coauthor/references/message-planning.md` §5 | `doc_meta` `key_message` `sections` (메시지 기획 문서 → jc-kv-guide·jc-pptx). 그 밖의 산문은 봉투 없이 Docs 링크 |
 | mice-run-of-show | `mice-run-of-show/references/chaining-schema.md` | `plan` (`startTime` `endTime` `cues`) |
 | mice-ops-docs | `mice-ops-docs/references/chaining-schema.md` | `kpis` `insights` `actualSpending` `rounds` |
 | mice-aftermath | `mice-aftermath/references/chaining-schema.md` | `event` `performance` `cases` `lessons` `next` |
@@ -73,11 +78,14 @@
 ## 5. 체이닝 흐름 (실사용 경로)
 
 ```
-[주제·시장 질문] → mice-market-intel ──→ jc-strategy-canvas ──→ jc-pptx / mice-rfp-analyzer
-[RFP·추진계획] → mice-rfp-analyzer ──→ jc-pptx(제안서) ──→ mice-estimate(견적) ──→ pt-script(PT 대본)
-[회의 메모]   → mice-meeting-minutes ──→ jc-strategy-canvas / jc-pptx / mice-ops-docs(운영계획서)
-[수주 후]     → jc-pptx·pt-script ──→ mice-run-of-show(큐시트) ──→ mice-ops-docs(계획 대비 실제)
-[행사 종료]   → mice-ops-docs·mice-estimate·mice-run-of-show ──→ mice-aftermath(결과보고) ──→ jc-pptx(레퍼런스 슬라이드)
+[주제·시장 질문] → mice-market-intel ──→ jc-strategy-canvas ──→ jc-pptx / mice-rfp-analyzer   (market-intel ──→ jc-pptx 시장 논거도 가능)
+[RFP·추진계획] → mice-rfp-analyzer ──→ jc-pptx(제안서) / mice-estimate(`estimate_hint`) / mice-market-intel(`open_questions` 재조사)
+[덱 확정]     → jc-pptx ──→ mice-estimate(견적) · pt-script(PT 대본 — `presentation`, 수신 전용)
+[견적 확정]   → mice-estimate ──→ jc-pptx(⑦예산 견적 요약 슬라이드 — `totalAmount`·`sections` 역방향)
+[행사명·슬로건] → jc-doc-coauthor(메시지 기획 문서) ──→ jc-kv-guide(KV 제작 가이드) / jc-pptx(표지 카피)
+[회의 메모]   → mice-meeting-minutes ──→ jc-strategy-canvas / jc-pptx / mice-ops-docs(운영계획서) / mice-aftermath(교훈)
+[수주 후]     → jc-pptx(`presentation`·`sections`) ──→ mice-run-of-show(큐시트) ──→ mice-ops-docs(계획 대비 실제)
+[행사 종료]   → mice-ops-docs·mice-estimate·mice-run-of-show·mice-rfp-analyzer ──→ mice-aftermath(결과보고) ──→ jc-pptx(R1·R2 레퍼런스) / jc-strategy-canvas(R3 실적 근거)
 [Slack 계약완료 메시지] → mice-slack-ops ──→ mice-team-board(행 등록, 시트 쓰기는 승인 후)
 모든 산출물 ──→ jc-redteam
 ```
@@ -112,6 +120,7 @@ def detect_input_source(payload: dict) -> str | None:
 
 ## 8. 변경 이력
 
+- **v2.2.0 (2026-10-09)** — §3에 '가이드·문서' 단계(`jc-doc-coauthor` 메시지 기획 봉투 · `jc-kv-guide`)와 봉투 비대상 줄 추가(라이브 19종 전부 분류, forge 린트 대조). §4에 jc-kv-guide·jc-doc-coauthor 행, §5에 메시지 기획 → KV 가이드 흐름, rfp-analyzer 핵심 키에 `analysis_result`·`risk_notes_for_negotiation`·`estimate_hint`·`open_questions` 병기. §5에 `mice-estimate → jc-pptx(⑦예산)` 역방향 화살표, 흐름을 현행 봉투에 맞춤(pt-script는 수신 전용·run-of-show 상류는 jc-pptx, aftermath R3 → jc-strategy-canvas, rfp-analyzer `open_questions` → mice-market-intel, 회의록 → mice-aftermath)·§4 pt-script·meeting-minutes 행 정정.
 - **v2.1.0 (2026-10-05)** — enum을 라이브 스킬 기준으로 재작성: `mice-run-of-show`·`mice-aftermath`를 라이브로 복구(v2.0.0의 "폐지" 표기 오류 정정), `jc-strategy-canvas`·`mice-market-intel`·`mice-ops-docs`·`mice-team-board` 등록. 폐합 source는 별칭 표로. §6 절 번호(6-1~6-4)·§7 판별 함수 명시(소비 스킬 참조 정합). 예시 버전 하드코딩·고객사 실명 제거.
 - v2.0.0 (2026-09-21) — 라이브 스킬 8종으로 enum 정리, `projectTitle` 권장 필드.
 - v1.x (2026-05~07) — 봉투 규약 신설, camelCase 정본화(이력은 git).
