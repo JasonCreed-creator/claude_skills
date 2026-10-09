@@ -37,4 +37,4 @@
 ## 표식 규약 (리포트·페이로드 공통)
 
 - `[T1]`~`[T4]` 티어 · `[단일출처]` · `[미확인]` · `[접근불가]` · `[추정금지→공백]`.
-- 페이로드 `sources[]`에 `{url, publisher, date, tier}` 구조로 보존(`chaining-schema.md`).
+- 페이로드 `sources[]`에 `{url, publisher, date, accessed, source_tier}` 구조로 보존(`chaining-schema.md`). 키 이름이 `source_tier`인 것은 경쟁사 티어(`competitor_tier`: direct/adjacent/aspirational)와 구분하기 위해서다 — v1.1.0 이하 페이로드의 `tier`와 같은 뜻.
