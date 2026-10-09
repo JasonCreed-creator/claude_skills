@@ -39,4 +39,4 @@ mice-proposal · mice-sponsor-deck · mice-dashboard · mice-weekly-performance 
 
 ## 4. 배포 (③ claude.ai — 사용자)
 
-**완료(2026-10-09 14:05Z, 기획자님)** — `build_skills.py --include-estimate` → `dist/skills/*.skill` 19종(ZIP, 번들 `jc-skills-live19-2026-10-09.zip`). claude.ai Settings → Capabilities에서 폐합 19종 삭제(확장프로그램 지시문) → 동명 구스킬 삭제 → 19종 업로드(mice-meeting-minutes 신규, mice-estimate v3.3.1) → 프리셋 doc-coauthoring OFF. 화면 목록 "내가 만듦 19" 확인. 절차 기록: `docs/claude-ai-sync-runbook-2026-10-09.md` · `docs/claude-ai-delete-list-2026-10-09.md`. 잔여: jc-skill-forge ① v2.2.1(배포 팩트 갱신) vs ③ v2.2.0 — 다음 배치에 재업로드.
+**완료(2026-10-09 14:05Z, 기획자님)** — `build_skills.py --include-estimate` → `dist/skills/*.skill` 19종(ZIP, 번들 `jc-skills-live19-2026-10-09.zip`). claude.ai Settings → Capabilities에서 폐합 19종 삭제(확장프로그램 지시문) → 동명 구스킬 삭제 → 19종 업로드(mice-meeting-minutes 신규, mice-estimate v3.3.1) → 프리셋 doc-coauthoring OFF. 화면 목록 "내가 만듦 19" 확인. 절차 기록: `docs/claude-ai-sync-runbook-2026-10-09.md` · `docs/claude-ai-delete-list-2026-10-09.md`. jc-skill-forge v2.2.1(배포 팩트 갱신)도 재업로드 완료 — ①=③ 전 스킬 일치.

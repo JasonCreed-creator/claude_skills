@@ -196,7 +196,7 @@
 |---|---|
 | ① git 정본 | **반영 완료**(본 브랜치, PR #23 드래프트) |
 | ② Code 로컬 설치(`~/.claude/skills`) | 미반영 — 현재 0종 설치 상태 유지(synced만 사용) |
-| ③ claude.ai 업로드 | **반영 완료(2026-10-09 14:05Z, 기획자님)** — 폐합 19종 삭제·라이브 19종 재업로드(mice-meeting-minutes 신규·mice-estimate v3.3.1)·프리셋 doc-coauthoring OFF. 확인: claude.ai 화면 "내가 만듦 19". jc-skill-forge만 ① v2.2.1(배포 팩트 갱신) / ③ v2.2.0 — 1줄 차이, 다음 배치에 재업로드 |
+| ③ claude.ai 업로드 | **반영 완료(2026-10-09 14:05Z, 기획자님)** — 폐합 19종 삭제·라이브 19종 재업로드(mice-meeting-minutes 신규·mice-estimate v3.3.1)·프리셋 doc-coauthoring OFF. 확인: claude.ai 화면 "내가 만듦 19". jc-skill-forge v2.2.1(배포 팩트 갱신)도 14:1xZ 재업로드 완료 — ①=③ 전 스킬 일치 |
 
 ## 6. 남은 결정·사용자 작업 — 한 단어로 답하실 수 있게
 
@@ -211,12 +211,12 @@
 | **D** | ✅ **완료(2026-10-09, 기획자님)** — 프리셋 `doc-coauthoring` 비활성화(§4). `pptx`는 유지 | 기획자님 | ★ GO |
 | **E** | 브랜치 — `main`(7/25 정지)을 `claude/relaxed-fermat-M5h5C`까지 fast-forward 후 본 PR base=main으로 변경(E-1) / 또는 relaxed-fermat을 기본 브랜치로 지정(E-2) | 기획자님 승인 → Code | ★ E-1 |
 | **F** | 백로그(이번 미적용): ⓐ mice-ops-docs에 구 대시보드 역량(xlsx/csv 입력·Chart.js 자동 선택·레이더/매트릭스·PDF) 선택 계승 ⓑ jc-pptx 봉투 `program[]`(run-of-show 자동 흡수)·`deck_kit.cover()` "PROPOSAL" 라벨 인자화·레이더/2×2 타입 ⓒ jc-kv-guide 템플릿 토큰 런타임 로드 ⓓ jc-design-system §6에 `--line-soft`·`--charcoal` 키 ⓔ jc-session-protocol '브리프' 어휘 → '기획안 카드' ⓕ lint 허용 목록(채널명 오탐) ⓖ 폐합 jc-prompt-builder의 effort 등급표 | — | 다음 점검 사이클 |
-| **H** | 행사 드라이브 표준(mice-ops-docs v1.2.0 `drive-standards.md`)이 공표 프로토콜 매뉴얼(구글독 정본)의 01~06 폴더에 **보조 폴더 3개**(`07_발주처공유`·`99_archive`·`00_공통`)를 덧붙였다 — 팀 표준으로 쓸지, 쓴다면 매뉴얼 정본에 반영할지 | 기획자님 | 결정 필요(기본값: 보조 폴더 유지, 매뉴얼은 다음 개정 때 반영) |
+| **H** | 행사 드라이브 표준(mice-ops-docs v1.2.0 `drive-standards.md`)이 공표 프로토콜 매뉴얼(구글독 정본)의 01~06 폴더에 **보조 폴더 3개**(`07_발주처공유`·`99_archive`·`00_공통`)를 덧붙였다 — 팀 표준으로 쓸지, 쓴다면 매뉴얼 정본에 반영할지 | 기획자님 | **기본값 채택 — 보조 폴더 유지**(2026-10-09 회신 "C드라이브 외 드라이브 없음"은 PC 디스크로 이해하신 것으로 보여 구글 드라이브 폴더 구조 건임을 재안내. 이의 없으면 유지, 매뉴얼 정본 반영은 다음 개정 때) |
 | **G** | 층 B 완화 — 실무 세션은 행사 프로젝트 폴더에서 Code를 열고(synced 19종만 노출), 레포 루트는 스킬 편집 세션 전용. `~/.claude/skills` 개인 설치는 하지 않음(세 번째 사본 방지) | 기획자님 | 운영 원칙 |
 
 ## 7. 리스크 · 주의
 
-- **(해소) claude.ai 구 상태**: 2026-10-09 14:05Z 카드 A·B·D 완료로 해소 — 폐합 19종 삭제(브리프 게이트 발동 원인 제거), 라이브 19종 재업로드(mice-meeting-minutes 신규). Code 동기화본(synced)은 다음 주기(약 10분)에 따라온다.
+- **(해소) claude.ai 구 상태**: 2026-10-09 14:05Z 카드 A·B·D 완료로 해소 — 폐합 19종 삭제(브리프 게이트 발동 원인 제거), 라이브 19종 재업로드(mice-meeting-minutes 신규). Code 동기화본(synced)도 14:12Z 스냅숏에서 19종 새 버전·폐합 0으로 일치 확인(29종 = 자작 19 + 프리셋 10 — **끈 프리셋(doc-coauthoring)은 synced에서 빠진다**, 다음 forge 개정 때 deploy-pipeline §1 사실 표에 추가).
 - **업로드 순서**: 폐합 삭제(A) → 라이브 업로드(B). 반대로 하면 synced에 구·신 두 벌이 잠시 공존한다.
 - **mice-estimate**: 카드 C 적용 완료(v3.3.1) — lint ERROR 14 → 0, CI `--exclude mice-estimate` 제거. 견적 xlsx의 색이 컨피규레이터 실측 리터럴(순오렌지·검정)에서 리멤버 웜 페이퍼 토큰(accent·ink 계열)으로 바뀐다(레이아웃·수식·금액 무변경). 템플릿 자산의 샘플 실문구·구 PCO 2단 구조는 카드 C-2(승인 필요).
 - **개정 스킬의 동작 변화**: mice-meeting-minutes는 시스템 다크 자동 감지를 없앴고(첫 렌더 라이트, mode-mapping §4.1) JSON 버튼을 하단 툴바로 옮겼다. mice-rfp-analyzer xlsx 0_종합 시트는 셀 배치가 바뀌었다(B9~B15 판정, B25~ 참고 점수). mice-team-board 갱신 TSV는 상태 열이 기본 빈칸(유지)이다.
