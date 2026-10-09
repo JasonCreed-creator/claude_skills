@@ -24,7 +24,7 @@ SoT 경로 탐색 순서(소비 스크립트 공통):
 |------|--------|-----------|
 | jc-pptx | PPTX | `themes.md`의 `remember` 프리셋이 §6 JSON을 매핑. 다크는 표지·섹션·클로징만. 발주처 슬롯 3종 |
 | mice-ops-docs | HTML·md·xlsx | 문서 헤더·섹션 넘버링·카드·표 패턴. 탭형 문서는 플레이북 컴포넌트 |
-| mice-meeting-minutes | 구글독·캔버스·HTML | 플랫폼 서식 우선. HTML 옵션만 KPI·액션 카드 패턴 |
+| mice-meeting-minutes | 단일 HTML 대시보드 | §3 KPI 카드·§4 칸반·§6 차트 S1~S5, 로고 슬롯, 인쇄 라이트 강제(v2.2.0 jc_tokens 런타임 로드) |
 | pt-script | DOCX | 헤더 잉크 밴드 + 오렌지 룰, 본문 Pretendard 11pt, 강조 `#B8431A` |
 | mice-rfp-analyzer | DOCX·XLSX | 헤더 잉크 배경 + 오렌지 라벨, 평가 매트릭스 셀 배지색(§2 배지) |
 | mice-run-of-show | XLSX 큐시트 | 헤더 잉크 밴드 + 웜 서피스 행, 큐 유형 배지색(§2 배지). 인쇄 라이트 |
@@ -32,7 +32,7 @@ SoT 경로 탐색 순서(소비 스크립트 공통):
 | jc-strategy-canvas | HTML 캔버스 | 잉크 헤더 + 웜 카드 그리드, `[검증]/[가설]/[추정]` 배지 |
 | mice-market-intel | HTML·md 리포트 | 문서 헤더·출처 티어 배지·표 패턴, 차트 시리즈 S1~S5 |
 | jc-redteam | md·HTML 감수 리포트 | 심각도 배지(부정·앰버 배지·캡션), 헤더 잉크 + 오렌지 룰 |
-| jc-kv-guide | HTML·PPTX 가이드 | 발행 명의 리멤버 MICE비즈팀, 오렌지 큰 글자 전용 |
+| jc-kv-guide | HTML + MD 가이드 | 발행 명의 리멤버 MICE비즈팀, 오렌지 큰 글자 전용(작은 강조는 딥 오렌지), 템플릿 CSS는 §6 미러(출처 주석) |
 | mice-team-board | Apps Script HTML | 팀 보드 `styles.css`가 곧 구현체 — 토큰 변경 시 그 파일도 동기화 |
 | mice-slack-ops | 캔버스·메시지 | 색 없음. 구조 규칙만(`mice-slack-ops/references/canvas-rules.md`) |
 
