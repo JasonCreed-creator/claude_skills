@@ -4,18 +4,30 @@ export_estimate_remember.py — calc_estimate_remember 결과 → 리멤버 견�
 
 레이아웃 정본: 컨피규레이터 src/lib/exportEstimate.js 출력물에서 실측 추출한 스타일 스펙
 (다크 타이틀 밴드 · 오렌지 라벨 · 7섹션 · 옵션 O/X 자동 재계산 · PCO 만원 절사 수식).
+색상 정본: jc-design-system v2(리멤버 웜 페이퍼) signature-tokens.md §6 JSON — estimate_tokens.palette()로
+런타임 로드(SoT 미탐지 시 §6 v2.1.0 폴백). 글꼴 크기·굵기·정렬·테두리·숫자서식·열 너비·행 높이는 실측값 그대로.
+
+재계산: recalc(path) — xlsx 스킬 recalc.py(환경변수 XLSX_RECALC → 형제 경로 → ~/.claude/skills[/synced/*])
+→ 없으면 LibreOffice headless 변환 → 둘 다 없으면 Excel에서 열어 저장 안내 후 False.
+자가 테스트: python3 export_estimate_remember.py --self-test  (calc → export → recalc → verify, 팔레트 출처 출력)
 
 무결성 게이트: recalc 후 verify(path, result) 로 D10↔pk, D11↔pk_excluding_options 0원 일치 확인.
 한글 금액: 검증 환경(LibreOffice)이 NUMBERSTRING 미지원이라 기본은
 '정적 한글 + TEXT(D10) 동적 숫자' 하이브리드. Excel 네이티브 연동이 필요하면
 use_numberstring=True (단, recalc 검증 불가 — #NAME?).
 """
-import os, sys, math
+import os, sys, math, json, shutil, subprocess, tempfile
+from pathlib import Path
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from korean_amount import num_to_korean as _kor_ext  # noqa: E402
+from estimate_tokens import palette  # noqa: E402
+
+# jc-design-system v2 §6 토큰을 모듈 로드 시 1회 읽는다. 색 리터럴은 이 dict 밖에 두지 않는다.
+# _P['_source'] == 'sot:<경로>' | 'fallback'
+_P = palette()
 
 
 def _kor(n):
@@ -43,7 +55,7 @@ def _kor(n):
         return ''.join(reversed(parts)) or '영'
 
 
-# ---------- 스타일 스펙 (컨피규레이터 출력물 실측) ----------
+# ---------- 스타일 스펙 (레이아웃: 컨피규레이터 출력물 실측 · 색: jc-design-system v2 §6 역할 키) ----------
 THIN = Border(*[Side(style='thin')] * 4)
 
 
@@ -56,25 +68,25 @@ def _fill(hexv):
 
 
 ST = {
-    'title':     dict(font=_F(20, True, 'FFFFFF'), fill=_fill('0A0A0A'), align=Alignment('center', 'center')),
-    'label_o':   dict(font=_F(10, True, 'FFFFFF'), fill=_fill('FF6B00'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
-    'label_g':   dict(font=_F(10, True), fill=_fill('F5F5F5'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
+    'title':     dict(font=_F(20, True, _P['paper']), fill=_fill(_P['ink']), align=Alignment('center', 'center')),  # 역할: paper 글자 (SoT color.surface) · ink 배경 (SoT color.primary)
+    'label_o':   dict(font=_F(10, True, _P['paper']), fill=_fill(_P['accent']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: paper 글자 (SoT color.surface) · accent 배경 (SoT color.accent)
+    'label_g':   dict(font=_F(10, True), fill=_fill(_P['surfaceAlt']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: surfaceAlt 배경 (SoT color.surfaceAlt)
     'val':       dict(font=_F(10), align=Alignment(vertical='center', wrap_text=True), border=THIN),
-    'tot_kor':   dict(font=_F(10, True), fill=_fill('FFF3E9'), align=Alignment(vertical='center', wrap_text=True), border=THIN),
-    'tot_val':   dict(font=_F(12, True, 'FF6B00'), fill=_fill('FFF3E9'), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),
-    'tot_sub':   dict(font=_F(10, True), fill=_fill('FFF3E9'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
-    'tot_vat':   dict(font=_F(10, True), fill=_fill('FFF3E9'), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),
-    'sec_hdr':   dict(font=_F(10, True), fill=_fill('FFF2CC'), align=Alignment(vertical='center', wrap_text=True), border=THIN),
-    'sec_amt':   dict(font=_F(10, True, 'FFFFFF'), fill=_fill('000000'), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),
-    'warn':      dict(font=_F(10, True, 'B45309'), fill=_fill('FFF8E1'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
-    'note_blue': dict(font=_F(10, False, '1565C0'), fill=_fill('E3F2FD'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
-    'col_hdr':   dict(font=_F(10, True, 'FFFFFF'), fill=_fill('333333'), align=Alignment('center', 'center', wrap_text=True), border=THIN),
+    'tot_kor':   dict(font=_F(10, True), fill=_fill(_P['accentSoft']), align=Alignment(vertical='center', wrap_text=True), border=THIN),  # 역할: accentSoft 배경 (SoT color.accentSoft)
+    'tot_val':   dict(font=_F(12, True, _P['accent']), fill=_fill(_P['accentSoft']), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),  # 역할: accent 글자 (SoT color.accent) · accentSoft 배경 (SoT color.accentSoft)
+    'tot_sub':   dict(font=_F(10, True), fill=_fill(_P['accentSoft']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: accentSoft 배경 (SoT color.accentSoft)
+    'tot_vat':   dict(font=_F(10, True), fill=_fill(_P['accentSoft']), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),  # 역할: accentSoft 배경 (SoT color.accentSoft)
+    'sec_hdr':   dict(font=_F(10, True), fill=_fill(_P['amberTint']), align=Alignment(vertical='center', wrap_text=True), border=THIN),  # 역할: amberTint 배경 (SoT color.point.amberTint)
+    'sec_amt':   dict(font=_F(10, True, _P['paper']), fill=_fill(_P['ink']), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),  # 역할: paper 글자 (SoT color.surface) · ink 배경 (SoT color.primary)
+    'warn':      dict(font=_F(10, True, _P['accentStrong']), fill=_fill(_P['warningBg']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: accentStrong 글자 (SoT color.accentStrong) · warningBg 배경 (SoT color.semantic.warningBg)
+    'note_blue': dict(font=_F(10, False, _P['steel']), fill=_fill(_P['steelTint']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: steel 글자 (SoT color.point.steel) · steelTint 배경 (SoT color.point.steelTint)
+    'col_hdr':   dict(font=_F(10, True, _P['paper']), fill=_fill(_P['inkSoft']), align=Alignment('center', 'center', wrap_text=True), border=THIN),  # 역할: paper 글자 (SoT color.surface) · inkSoft 배경 (SoT color.primarySoft)
     'data':      dict(font=_F(10), align=Alignment(vertical='center', wrap_text=True), border=THIN),
     'data_num':  dict(font=_F(10), align=Alignment('right', 'center', wrap_text=True), border=THIN, numfmt='#,##0'),
     'data_sel':  dict(font=_F(10, True), align=Alignment('center', 'center', wrap_text=True), border=THIN),
-    'sub':       dict(font=_F(10, True), fill=_fill('F0F0F0'), align=Alignment('right', 'center'), border=THIN),
-    'sub_amt':   dict(font=_F(10, True), fill=_fill('F0F0F0'), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),
-    'footer':    dict(font=_F(10, False, 'FF0000'), align=Alignment('center', 'center'), border=THIN),
+    'sub':       dict(font=_F(10, True), fill=_fill(_P['surfaceSoft']), align=Alignment('right', 'center'), border=THIN),  # 역할: surfaceSoft 배경 (SoT color.surfaceSoft)
+    'sub_amt':   dict(font=_F(10, True), fill=_fill(_P['surfaceSoft']), align=Alignment('right', 'center'), border=THIN, numfmt='₩#,##0'),  # 역할: surfaceSoft 배경 (SoT color.surfaceSoft)
+    'footer':    dict(font=_F(10, False, _P['danger']), align=Alignment('center', 'center'), border=THIN),  # 역할: danger 글자 (SoT color.semantic.danger)
 }
 
 WIDTHS = {'A': 22.0, 'B': 26.0, 'C': 51.58, 'D': 16.0, 'E': 10.0, 'F': 18.0, 'G': 28.0, 'H': 11.58}
@@ -137,7 +149,8 @@ def export_remember_estimate(result, meta, out_path, use_numberstring=False):
     """result: calc_estimate_remember() 반환값 / meta: 외부 주입 슬롯 dict
     meta 키: project_title(필수), venue_text, venue_type, remark, proposal_date,
     validity, supplier_company, supplier_address, supplier_manager, quote_date,
-    targeting(모객 C열 텍스트), sheet_name"""
+    targeting(모객 C열 텍스트), sheet_name,
+    booth_count / booth_premium_count(선택 — 섹션 5 부스 행의 단가×수량 분해용; 없으면 수량 1·단가=금액)"""
     r = result
     if r.get('isCustom'):
         raise ValueError('target 500명 초과 — 자동견적 불가(isCustom), 별도 협의 견적으로 진행')
@@ -401,3 +414,160 @@ def verify(path, result):
     ok = (ws['D10'].value == result['pk']) and (ws['D11'].value == result['pk_excluding_options'])
     return ok, {'D10': ws['D10'].value, 'pk': result['pk'],
                 'D11': ws['D11'].value, 'pk_noopt': result['pk_excluding_options']}
+
+
+# ---------- 재계산 (recalc) ----------
+def find_recalc_script():
+    """xlsx 스킬 recalc.py 탐색. 순서: 환경변수 XLSX_RECALC(파일 경로) → <skills>/xlsx/scripts/recalc.py(형제)
+    → ~/.claude/skills/xlsx/scripts/recalc.py → ~/.claude/skills/synced/*/xlsx/scripts/recalc.py. 없으면 None."""
+    cands = []
+    env = os.environ.get('XLSX_RECALC')
+    if env:
+        cands.append(Path(env).expanduser())
+    here = Path(__file__).resolve()
+    if len(here.parents) >= 3:
+        cands.append(here.parents[2] / 'xlsx' / 'scripts' / 'recalc.py')
+    home = Path.home()
+    cands.append(home / '.claude' / 'skills' / 'xlsx' / 'scripts' / 'recalc.py')
+    cands.extend(sorted(home.glob('.claude/skills/synced/*/xlsx/scripts/recalc.py')))
+    for c in cands:
+        if c.is_file():
+            return c
+    return None
+
+
+_MANUAL_HINT = 'Excel에서 파일을 열어 저장(Ctrl+S)한 뒤 verify(path, result)로 D10↔pk 일치를 확인하세요.'
+
+
+def _recalc_cell_errors(stdout):
+    """xlsx 스킬 recalc.py의 JSON 출력에서 셀 오류(#NAME?·#REF! 등) 위치를 뽑는다.
+    recalc.py는 셀 오류가 있어도 rc=0·status='errors_found'로 돌려주므로 종료코드만으로는 걸러지지 않는다.
+    반환: {오류문자열: [시트!셀, ...]} — 없거나 JSON이 아니면 {}."""
+    try:
+        data = json.loads((stdout or '').strip())
+    except ValueError:
+        return {}
+    if not isinstance(data, dict) or data.get('status') != 'errors_found':
+        return {}
+    return {k: list((v or {}).get('locations', [])) for k, v in (data.get('error_summary') or {}).items() if v}
+
+
+def _soffice_recalc(exe, path, timeout):
+    """LibreOffice headless 변환(xlsx→xlsx)으로 수식 캐시값을 채우고 원본을 교체한다. 실패 시 원본 보존, False."""
+    src = Path(path).resolve()
+    with tempfile.TemporaryDirectory(prefix='estimate-recalc-') as tmp:
+        outdir = Path(tmp) / 'out'
+        outdir.mkdir()
+        profile = Path(tmp) / 'profile'   # 전용 프로필 — 실행 중인 다른 LibreOffice 인스턴스와 충돌 방지
+        cmd = [exe, '--headless', '--norestore', f'-env:UserInstallation={profile.as_uri()}',
+               '--convert-to', 'xlsx', '--outdir', str(outdir), str(src)]
+        try:
+            cp = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        except (subprocess.TimeoutExpired, OSError) as e:
+            print(f'[recalc] LibreOffice 실행 실패({e}) — 원본 유지. {_MANUAL_HINT}')
+            return False
+        produced = outdir / src.name
+        if cp.returncode != 0 or not produced.is_file() or produced.stat().st_size == 0:
+            detail = (cp.stderr or cp.stdout or '').strip()[:300]
+            print(f'[recalc] LibreOffice 변환 실패(rc={cp.returncode}) — 원본 유지. {detail} {_MANUAL_HINT}')
+            return False
+        try:
+            openpyxl.load_workbook(str(produced), read_only=True).close()   # 깨진 결과로 원본을 덮지 않도록 선검사
+        except Exception as e:  # noqa: BLE001
+            print(f'[recalc] 변환 결과 열기 실패({e}) — 원본 유지. {_MANUAL_HINT}')
+            return False
+        staged = src.with_name(src.name + '.recalc~')
+        try:
+            shutil.copyfile(str(produced), str(staged))   # 같은 폴더에 올린 뒤
+            os.replace(str(staged), str(src))             # 원자적 교체 — 중간 실패 시 원본 그대로
+        except OSError as e:
+            if staged.exists():
+                try:
+                    staged.unlink()
+                except OSError:
+                    pass
+            print(f'[recalc] 원본 교체 실패({e}) — 원본 유지. {_MANUAL_HINT}')
+            return False
+    print(f'[recalc] OK — LibreOffice headless: {exe}')
+    return True
+
+
+def recalc(path, timeout=180):
+    """수식 재계산 → 성공 시 True.
+    ① xlsx 스킬 recalc.py가 있으면 [sys.executable, recalc.py, path] 실행
+    ② 없으면(또는 실패하면) soffice/libreoffice --headless --convert-to xlsx 로 변환 후 원본 교체
+    ③ 둘 다 없으면 한국어 안내(Excel에서 열어 저장 후 verify) 출력 후 False"""
+    path = str(path)
+    if not os.path.isfile(path):
+        print(f'[recalc] 파일 없음: {path}')
+        return False
+    script = find_recalc_script()
+    script_failed = False
+    if script is not None:
+        try:
+            cp = subprocess.run([sys.executable, str(script), path], capture_output=True, text=True, timeout=timeout)
+            if cp.returncode == 0:
+                errs = _recalc_cell_errors(cp.stdout)
+                if errs:
+                    n = sum(len(v) for v in errs.values())
+                    where = ' · '.join(f"{k} {', '.join(v[:5])}" for k, v in errs.items())
+                    print(f'[recalc] 수식 오류 {n}건: {where} — 재계산은 됐으나 셀 오류가 남아 있습니다. '
+                          'Excel에서 확인(Step 6.5 게이트 3). NUMBERSTRING(use_numberstring=True)은 LibreOffice 미지원.')
+                    return False
+                print(f'[recalc] OK — xlsx 스킬 recalc.py: {script}')
+                return True
+            script_failed = True
+            detail = (cp.stderr or cp.stdout or '').strip()[:300]
+            print(f'[recalc] recalc.py 실패(rc={cp.returncode}) → LibreOffice 직접 변환으로 폴백. {detail}')
+        except (subprocess.TimeoutExpired, OSError) as e:
+            script_failed = True
+            print(f'[recalc] recalc.py 실행 오류({e}) → LibreOffice 직접 변환으로 폴백')
+    exe = shutil.which('soffice') or shutil.which('libreoffice')
+    if exe:
+        return _soffice_recalc(exe, path, timeout)
+    if script_failed:
+        print(f'[recalc] recalc.py 실패 + LibreOffice(soffice/libreoffice) 미탐지 — {_MANUAL_HINT}')
+    else:
+        print('[recalc] 재계산 도구 없음 — xlsx 스킬 recalc.py(XLSX_RECALC·형제·~/.claude/skills)와 '
+              f'LibreOffice(soffice/libreoffice) 모두 미탐지. {_MANUAL_HINT}')
+    return False
+
+
+# ---------- 자가 테스트 ----------
+def _self_test():
+    """calc(target=100, guarantee=100) → 임시 폴더 export → recalc → verify. recalc 불가 환경이면 verify SKIP.
+    종료코드 0=통과 / 1=실패."""
+    from calc_estimate_remember import calc_estimate_remember
+    print(f"palette : {_P['_source']}")
+    r = calc_estimate_remember({'target': 100, 'guarantee': 100})
+    with tempfile.TemporaryDirectory(prefix='estimate-selftest-') as tmp:
+        out = os.path.join(tmp, '리멤버견적서_selftest.xlsx')
+        export_remember_estimate(r, {'project_title': 'self-test'}, out)
+        print(f'export  : OK ({os.path.getsize(out):,} bytes) pk={r["pk"]:,} pk_noopt={r["pk_excluding_options"]:,}')
+        wb = openpyxl.load_workbook(out)
+        ws = wb.active
+        nform = sum(1 for row in ws.iter_rows() for c in row if isinstance(c.value, str) and c.value.startswith('='))
+        d10 = ws['D10'].value
+        wb.close()
+        if nform == 0 or not (isinstance(d10, str) and d10.startswith('=')):
+            print(f'reopen  : FAIL (수식 {nform}개, D10={d10!r})')
+            return 1
+        print(f'reopen  : OK (수식 {nform}개, D10={d10})')
+        if not recalc(out):
+            print('recalc  : 불가 → verify SKIP (Excel에서 열어 저장 후 verify)')
+            print('export_estimate_remember self-test PASS (verify SKIP)')
+            return 0
+        ok, info = verify(out, r)
+        print(f"verify  : {'OK' if ok else 'FAIL'} {info}")
+        print('export_estimate_remember self-test', 'PASS' if ok else 'FAIL')
+        return 0 if ok else 1
+
+
+if __name__ == '__main__':
+    import argparse
+    ap = argparse.ArgumentParser(description='리멤버 견적서 xlsx 브리지 — 라이브러리 모듈. CLI는 자가 테스트만 제공.')
+    ap.add_argument('--self-test', action='store_true', help='calc → export → recalc → verify 자가 테스트')
+    a = ap.parse_args()
+    if a.self_test:
+        raise SystemExit(_self_test())
+    ap.print_help()

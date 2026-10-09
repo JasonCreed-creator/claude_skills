@@ -64,7 +64,7 @@
 | mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `analysis_result` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` `risk_notes_for_negotiation` · `estimate_hint`(→ mice-estimate 전용) · `open_questions`(→ mice-market-intel 재조사 의뢰). `target: mice-estimate` 전용 봉투(`client`·`budgetRange`·`evaluationCriteria`·`eventScale{target,guarantee}`·`venue`·`options` + `estimate_hint`)는 chaining-guide §3-1 |
 | mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client` `project_context` `discovery_data` `strategic_notes` `actions` `risks` `pending` |
 | jc-pptx | `jc-pptx/references/proposal-playbook.md §체이닝` | `deck_meta` `sections` `coverage_map` `presentation` · 견적 입력 키(`eventScale`·`venue`·`options`·`displayType`·`boothCount`·`eventDate`·`client`, 봉투 최상위에 평탄 — 중첩 `estimate_hint` 객체 아님) |
-| mice-estimate | `mice-estimate/references/chaining-schema.md` | `eventScale` `venue` `options` `sections` `totalAmount` |
+| mice-estimate | `mice-estimate/references/chaining-schema.md` | 입력 `eventScale` `venue` `options` `displayType` · 출력 `totalAmount` `totalAmountVat` `sections` |
 | pt-script | `pt-script/references/chaining-schema.md` | 수신 전용 — jc-pptx `presentation` 키를 읽는다(산출 봉투 없음, `proposal_meta`는 구 입력 컨테이너) |
 | jc-kv-guide | `jc-kv-guide/assets/guide.schema.json` | `guide`(eventName·docVersion·issuer·mode·inputDocs·sections·sourceCorrections) |
 | jc-doc-coauthor | `jc-doc-coauthor/references/message-planning.md` §5 | `doc_meta` `key_message` `sections` (메시지 기획 문서 → jc-kv-guide·jc-pptx). 그 밖의 산문은 봉투 없이 Docs 링크 |
@@ -81,7 +81,7 @@
 [주제·시장 질문] → mice-market-intel ──→ jc-strategy-canvas ──→ jc-pptx / mice-rfp-analyzer   (market-intel ──→ jc-pptx 시장 논거도 가능)
 [RFP·추진계획] → mice-rfp-analyzer ──→ jc-pptx(제안서) / mice-estimate(`estimate_hint`) / mice-market-intel(`open_questions` 재조사)
 [덱 확정]     → jc-pptx ──→ mice-estimate(견적) · pt-script(PT 대본 — `presentation`, 수신 전용)
-[견적 확정]   → mice-estimate ──→ jc-pptx(⑦예산 견적 요약 슬라이드 — `totalAmount`·`sections` 역방향)
+[견적 확정]   → mice-estimate ──→ jc-pptx(⑦예산 견적 요약 슬라이드 — `totalAmount`·`totalAmountVat`·`sections` 역방향)
 [행사명·슬로건] → jc-doc-coauthor(메시지 기획 문서) ──→ jc-kv-guide(KV 제작 가이드) / jc-pptx(표지 카피)
 [회의 메모]   → mice-meeting-minutes ──→ jc-strategy-canvas / jc-pptx / mice-ops-docs(운영계획서) / mice-aftermath(교훈)
 [수주 후]     → jc-pptx(`presentation`·`sections`) ──→ mice-run-of-show(큐시트) ──→ mice-ops-docs(계획 대비 실제)
@@ -120,7 +120,7 @@ def detect_input_source(payload: dict) -> str | None:
 
 ## 8. 변경 이력
 
-- **v2.2.0 (2026-10-09)** — §3에 '가이드·문서' 단계(`jc-doc-coauthor` 메시지 기획 봉투 · `jc-kv-guide`)와 봉투 비대상 줄 추가(라이브 19종 전부 분류, forge 린트 대조). §4에 jc-kv-guide·jc-doc-coauthor 행, §5에 메시지 기획 → KV 가이드 흐름, rfp-analyzer 핵심 키에 `analysis_result`·`risk_notes_for_negotiation`·`estimate_hint`·`open_questions` 병기. §5에 `mice-estimate → jc-pptx(⑦예산)` 역방향 화살표, 흐름을 현행 봉투에 맞춤(pt-script는 수신 전용·run-of-show 상류는 jc-pptx, aftermath R3 → jc-strategy-canvas, rfp-analyzer `open_questions` → mice-market-intel, 회의록 → mice-aftermath)·§4 pt-script·meeting-minutes 행 정정.
+- **v2.2.0 (2026-10-09)** — §3에 '가이드·문서' 단계(`jc-doc-coauthor` 메시지 기획 봉투 · `jc-kv-guide`)와 봉투 비대상 줄 추가(라이브 19종 전부 분류, forge 린트 대조). §4에 jc-kv-guide·jc-doc-coauthor 행, §5에 메시지 기획 → KV 가이드 흐름, rfp-analyzer 핵심 키에 `analysis_result`·`risk_notes_for_negotiation`·`estimate_hint`·`open_questions` 병기. §5에 `mice-estimate → jc-pptx(⑦예산)` 역방향 화살표, 흐름을 현행 봉투에 맞춤(pt-script는 수신 전용·run-of-show 상류는 jc-pptx, aftermath R3 → jc-strategy-canvas, rfp-analyzer `open_questions` → mice-market-intel, 회의록 → mice-aftermath)·§4 pt-script·meeting-minutes 행 정정. mice-estimate v3.3.1 정합: §4 행을 입력(`displayType` 포함)·출력(`totalAmountVat` 포함)으로 구분, §5 역방향에 `totalAmountVat`.
 - **v2.1.0 (2026-10-05)** — enum을 라이브 스킬 기준으로 재작성: `mice-run-of-show`·`mice-aftermath`를 라이브로 복구(v2.0.0의 "폐지" 표기 오류 정정), `jc-strategy-canvas`·`mice-market-intel`·`mice-ops-docs`·`mice-team-board` 등록. 폐합 source는 별칭 표로. §6 절 번호(6-1~6-4)·§7 판별 함수 명시(소비 스킬 참조 정합). 예시 버전 하드코딩·고객사 실명 제거.
 - v2.0.0 (2026-09-21) — 라이브 스킬 8종으로 enum 정리, `projectTitle` 권장 필드.
 - v1.x (2026-05~07) — 봉투 규약 신설, camelCase 정본화(이력은 git).

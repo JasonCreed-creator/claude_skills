@@ -1,7 +1,7 @@
 # 리멤버 견적서 템플릿 상세 사양
 
 ## 기본 정보
-- 파일명 패턴: `[리멤버]_견적서_{고객명}_{행사월}_{작성일YYMMDD}.xlsx`
+- 파일명 패턴: `outputs/리멤버견적서_{{event_name}}_{{YYMMDD}}.xlsx`
 - 시트명: 규모/옵션을 나타내는 이름 (예: "Opt1_240명")
 - 폰트: 맑은 고딕 (Malgun Gothic) 10pt 기본
 - 로고: A열 상단 (row 2~, col 0) — 리멤버 로고 이미지 (원본 템플릿에서 복사)
@@ -25,16 +25,18 @@
 
 #### 공급자 정보 (외부 주입 변수 슬롯)
 
-**v2.0 변경 사항**: 공급자 식별 정보는 모두 외부 주입 변수로 처리. 본 스킬·템플릿에 어떤 회사·개인의 구체 식별 정보도 하드코딩하지 않는다. (CLAUDE.md §10 회사 종속 표현 금지)
+**v2.0 변경 사항**: 공급자 식별 정보는 모두 외부 주입 변수로 처리. 본 스킬·템플릿에 어떤 회사·개인의 구체 식별 정보도 하드코딩하지 않는다. (정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`) 템플릿 xlsx에는 샘플 행사명·베뉴명 문구(B11·B13·B24·G24)가 남아 있으므로 복사 직후 주입값으로 교체한다(SKILL.md Assets 항목).
 
-| 셀 | 라벨 | 슬롯 키 (export_estimate_remember.py meta) |
+아래 셀 배치는 **템플릿(방식 B/C)** 기준이다. 방식 A(`export_estimate_remember.py`)는 5~9행에 자체 레이아웃을 만들며 `meta` 키 이름이 일부 다르다(`validity`, 연락처 행 없음) — 키 대조표는 SKILL.md Step 3.5.
+
+| 셀 | 라벨 | 슬롯 (템플릿 셀 → 방식 A `meta` 키) |
 |-----|------|--------|
-| F11 | "제안일자" (라벨, 고정) | G11: `proposal_date` |
-| F12 | "유효기간" (라벨, 고정) | G12: `validity_period` (기본 "제안일자로 부터 30일" 권장 — 정책 표현, 회사 식별 무관) |
-| F13 | "공 급 자" (라벨, 고정) | G13: `supplier_company` |
-| F14 | "주     소" (라벨, 고정) | G14: `supplier_address` |
-| F15 | "담 당 자" (라벨, 고정) | G15: `supplier_manager` |
-| F16 | "연 락 처" (라벨, 고정) | G16: `supplier_contact` |
+| F11 | "제안일자" (라벨, 고정) | G11 → `proposal_date` |
+| F12 | "유효기간" (라벨, 고정) | G12 → `validity` (기본 "제안일자로 부터 30일" 권장 — 정책 표현, 회사 식별 무관) |
+| F13 | "공 급 자" (라벨, 고정) | G13 → `supplier_company` |
+| F14 | "주     소" (라벨, 고정) | G14 → `supplier_address` |
+| F15 | "담 당 자" (라벨, 고정) | G15 → `supplier_manager` |
+| F16 | "연 락 처" (라벨, 고정) | G16 — 템플릿 전용(방식 A에는 행 없음, 필요 시 담당자에 병기) |
 
 ### 3. 요약 금액 (Row 17~20)
 | 행 | 항목 | 내용 |
@@ -63,7 +65,7 @@ Row M  : "total" (A열)  |  {정가합계} (D열)  |  {할인합계} (E열)  |  
 3. **디자인 및 브랜딩 비용** — 현수막, 웹페이지, 키비주얼
 4. **운영인력 및 보험** — 현장 운영인력, 보험
 5. **기타 운영비** — MC, 미디어, 기념품 등
-6. **PCO 기획료** — 직접비(섹션2~5 실청구액 합)의 25% 별도 계상 (2026-08 실무 반영, D1-③)
+6. **PCO 기획료** — 운영비 opCost(베뉴 s1 + 시스템 s2 + 디자인 s3 + 운영 s4 + 옵션 ot + 사전신청 관리 rsvpPkg + 참관객 genManage, **쇼업 보장만 제외**)의 25% 별도 계상, 만원 미만 절사 (SSOT calcEstimate.js — v3.1.0 정정, SKILL.md '금액 계산')
 7. **리멤버 모객 솔루션** — 모집리드, 쇼업 (KPI 확정 후 별도 협의)
 
 > **항목명 원칙 — "질문이 필요 없는 견적서"** (2026-08-03 확정 preference): 모든 항목명은 평이한 한국어로 쓴다. 발주처·사무국이 항목만 보고 즉시 이해하도록, 전문 약어·영문 직역·내부 코드명을 지양하고 DESCRIPTION 열에서 한 줄로 설명한다. "이게 뭐냐"는 후속 질문이 나올 항목명은 다시 손본다.
@@ -88,23 +90,23 @@ Row M  : "total" (A열)  |  {정가합계} (D열)  |  {할인합계} (E열)  |  
 | 셀 | 내용 |
 |-----|------|
 | 헤더행 | ITEM / DESCRIPTION / SIZE·SPEC / 직접비 합계 / 비율 / 소계 / REMARKS |
-| PCO 기획료 | "직접비의 25%" / D: 직접비합계 / E: 0.25 / F: D×E |
+| PCO 기획료 | "직접비의 25%" / D: 직접비(opCost) 합계 / E: 0.25 / F: FLOOR(D×E, 10000) |
 
-**직접비 합계 = 섹션2~5의 F열 합계** (베뉴는 실비 성격이라 관례상 직접비 산정에서 제외; 모객비용도 제외). 신규 생성은 직접비 25% 단일 라인으로 계상한다.
+**직접비(opCost) 합계 = 섹션 1~5의 F열 합 + 사전신청 관리(rsvpPkg) + 참관객 관리(genManage)** — **쇼업 보장(showup)만 제외**한다. (v3.1.0 SSOT 정정 — 구 "섹션2~5 합, 베뉴·모객비용 제외" 서술은 부정확.) PCO 기획료 = floor(opCost × 0.25 / 10000) × 10000, 신규 생성은 25% 단일 라인으로 계상한다. SKILL.md '금액 계산' 절과 동일 산식.
 
-> **v2→v3 변경**: 구 v2는 인건비(운영비 15%) + 기업이윤(운영비+인건비의 10%)의 2단 구조였다. v3부터 **PCO 기획료 = 직접비 × 25%** 단일 라인으로 대체(2026-08 실무 반영). 기존 파일(방식 C) 수정 시에는 원 파일 구조를 존중하되, 신규 생성은 25% 방식이 기본이다.
+> **v2→v3 변경**: 구 v2는 인건비(운영비 15%) + 기업이윤(운영비+인건비의 10%)의 2단 구조였다. v3부터 **PCO 기획료 = 직접비 × 25%** 단일 라인으로 대체(2026-08 실무 반영). 기존 파일(방식 C) 수정 시에는 원 파일 구조를 존중하되, 신규 생성은 25% 방식이 기본이다. **템플릿 xlsx의 59~64행은 아직 구 v2 2단 구조**(61행 인건비 15%, 62행 기업이윤 10%)이므로 템플릿 복사(방식 B) 시 61행 단일 PCO 기획료로 치환하고 62행을 비운다 — 절차는 SKILL.md '셀 위치 맵' 아래 단락.
 
 ### 6. 스타일 상세
 
-> 색상 역할→토큰 매핑은 [jc-design-mapping.md](jc-design-mapping.md) §3, 값 정본은 jc-design-system `signature-tokens.md §6 JSON 정본`. 아래 hex는 SoT 정본값 미러(Excel 매체 불가피).
+> 색상 역할→토큰 매핑은 [jc-design-mapping.md](jc-design-mapping.md) §3, 값 정본은 jc-design-system `signature-tokens.md §6 JSON 정본`. **값은 적지 않는다** — 런타임 로드 `scripts/estimate_tokens.py`(`palette()`), 폴백 상수는 로더 안에만(값 미러 금지, jc-design-mapping.md §1-4).
 
 #### 섹션 헤더 스타일
 - A열: Bold, 배경색 없음
-- 라벨 셀(A12 "Package Type" 등): Bold, 배경 `--jc-point-orange` (= `--jc-data-3`, 리멤버 포인트 — SoT 미러: `#FF5722`)
+- 라벨 셀(A12 "Package Type" 등): Bold, 배경 `color.accent`(리멤버 오렌지 — palette `accent`), 글자 `color.surface`(`paper`)
 - 비고(*VAT별도): Bold
 
 #### 열 헤더 스타일
-- 배경: `--jc-text` (중립 다크 면 — SoT 미러: `#1A1D24`), 텍스트 `--jc-surface` (`#FFFFFF`), Bold, 중앙정렬
+- 배경: `color.primarySoft`(잉크 다크 면 — palette `inkSoft`, [jc-design-mapping.md](jc-design-mapping.md) §3 `col_hdr.fill`), 텍스트 `color.surface`(`paper`), Bold, 중앙정렬
 
 #### 열 너비
 | 열 | 너비 |

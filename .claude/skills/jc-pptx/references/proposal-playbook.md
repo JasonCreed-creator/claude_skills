@@ -108,6 +108,6 @@
   - `eventScale.guarantee`는 모객 개런티 인원(없으면 `null` → target과 같게 처리). `venue.rental`은 확정 대관료(원), 미정이면 `null`(자동 산출).
   - `options`는 불리언 맵 — 위 9키만 쓴다. 문자열 배열(`["led", …]`) 금지. LED·프로젝터는 옵션이 아니라 `displayType`(`led`|`projector`), 포토월은 `photowall_basic`/`photowall_premium`.
   - `format`은 항상 `remember`(양식 단일). 미정 값은 `null` — `venue: null`이면 대관료 자동 산출, `options: null`이면 옵션 전부 미적용으로 처리된다.
-  - mice-estimate가 `source: "jc-pptx"`를 아직 자동 감지하지 못하면 봉투 파일을 주며 "이 봉투로 견적 산출"을 명시 요청한다(키 구조는 같다).
+  - mice-estimate(v3.3.1~)는 `source: "jc-pptx"`(구 `mice-proposal`은 별칭 치환)를 자동 감지해 방식 A(`estimatedFrom: proposal_chain`)로 들어간다(`mice-estimate/SKILL.md` Step 2.5). 봉투 파일(`.chaining/…_to_mice-estimate.json`)만 넘기면 된다.
 - `presentation`(`minutes`·`tone`·선택 `type`·`presenter`·`audience`) → `pt-script`가 읽어 발표 시간·톤을 채운다. `presentation.minutes`·`sections`는 `mice-run-of-show`가 발표 블록 시간·순서 참고로 읽는다(프로그램 세그먼트 배열은 내지 않는다).
 - 수신 측은 `source: "mice-proposal"`을 본 스킬 별칭으로 취급한다(하위호환).
