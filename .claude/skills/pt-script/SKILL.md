@@ -1,7 +1,7 @@
 ---
 name: pt-script
-description: "프레젠테이션 스크립트(대본)를 자동 생성하는 스킬. PPTX를 받으면 슬라이드 내용과 speaker notes를 분석해 슬라이드별 발표 멘트, 예상 소요시간, 전환 멘트, Q&A 예상 질의응답, 발표 체크리스트가 담긴 Word 문서(.docx)를 리멤버 웜 페이퍼 룩으로 만든다. jc-pptx 덱의 체이닝 봉투(presentation 키)를 읽어 발표 시간·톤·발표 주체를 자동으로 채운다. 발표 주체 기본값은 리멤버앤컴퍼니. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스크립트', '대본', '발표 멘트', '발표문', 'PT 대본', '발표 원고', '스피치 원고', '발표 준비', '프레젠테이션 스크립트', '멘트 작성'을 언급할 때, PPTX를 올리며 대본 작성을 요청할 때, 행사 MC 멘트·진행 대본·사회자 스크립트를 요청할 때, 발표 연습용 원고를 요청할 때. 비딩 PT·컨퍼런스·포럼·기업행사와 일반 비즈니스 발표 모두 지원. 형제 경계 — 덱 자체를 만들거나 고치는 것은 jc-pptx(상류), 행사 큐시트·운영 진행표는 mice-run-of-show, 대본·제안 논리의 적대 검증은 jc-redteam, 디자인 토큰은 jc-design-system 영역이므로 그 작업에는 사용하지 말 것."
-version: "v2.2.0"
+description: "프레젠테이션 스크립트(대본)를 자동 생성하는 스킬. PPTX를 받으면 슬라이드 내용과 speaker notes를 분석해 슬라이드별 발표 멘트, 예상 소요시간, 전환 멘트, Q&A 예상 질의응답, 발표 체크리스트가 담긴 Word 문서(.docx)를 리멤버 웜 페이퍼 룩으로 만든다. jc-pptx 덱의 체이닝 봉투(presentation 키)를 읽어 발표 시간·톤·발표 주체를 자동으로 채운다. 발표 주체 기본값은 리멤버앤컴퍼니. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스크립트', '대본', '발표 멘트', '발표문', 'PT 대본', '피티 대본', 'PT 멘트', '발표 원고', '스피치 원고', '발표 연습 원고', '프레젠테이션 스크립트', '멘트 작성', '사회자 대본', '진행 멘트'를 언급할 때, PPTX를 올리며 대본 작성을 요청할 때, 행사 MC 멘트·진행 대본·사회자 스크립트를 요청할 때. 비딩 PT·컨퍼런스·포럼·기업행사와 일반 비즈니스 발표 모두 지원. 형제 경계 — 덱 자체를 만들거나 고치는 것은 jc-pptx(상류), 행사 큐시트·연출 시나리오(cue·시간)는 mice-run-of-show, 대본·제안 논리의 적대 검증은 jc-redteam, 디자인 토큰은 jc-design-system 영역이므로 그 작업에는 사용하지 말 것."
+version: "v2.3.0"
 dependencies: python-pptx, python-docx
 ---
 
@@ -165,7 +165,7 @@ python scripts/build_script.py --notes "C:\work\notes.json" --meta "C:\work\deck
 - 상류: `jc-pptx`(덱 + `ChainPayload/v1` `presentation` 키) — 봉투 정본 `jc-design-system/references/chaining-protocol.md`
 - 디자인: `jc-design-system` v2 토큰 런타임 로드
 - 검증: `jc-redteam`(선택 — 비딩 PT Q&A·논리)
-- 행사 진행 순서 참고: `mice-run-of-show`(MC 대본)
+- 참고 입력: `mice-run-of-show` 큐시트 — MC 대본의 진행 순서 근거로 읽을 수 있다. 큐시트는 본 스킬 하류가 아니다(본 스킬은 봉투를 내보내지 않고 `.docx`가 종착점)
 
 ## 함께 보는 문서
 
@@ -180,6 +180,8 @@ python scripts/build_script.py --notes "C:\work\notes.json" --meta "C:\work\deck
 
 ## 변경 이력
 
+- v2.3.0 (2026-10-09): 트리거 '발표 준비' → '발표 연습 원고', '피티 대본'·'PT 멘트'·'사회자 대본'·'진행 멘트' 추가, 경계를 큐시트·연출 시나리오로 한정.
+  mice-run-of-show를 하류가 아닌 참고 입력으로 정리(체이닝 방향 단일화), `proposal_meta`는 구 입력 컨테이너임을 명시.
 - v2.2.0 (2026-10-05): 디자인 매핑을 구 네이비 → 리멤버 웜 페이퍼 토큰(§6 런타임 로드, 폴백 출처 주석)으로 재작성. jc-pptx 체이닝 봉투 `presentation` 키 읽기, `--presenter` 인자·전 직장 상호 유출 경고·`--self-test` 추가.
   상류를 폐합 mice-proposal → jc-pptx로, Phase 2 확인 → 기본값 진행(시간만 질문), 브리프 게이트 문구·샌드박스 경로 삭제. v2.1.0의 발표 주체(리멤버앤컴퍼니) 수정은 유지.
 - v2.1.0 (2026-10-01): 전 직장 명칭 치환 규칙(`sanitize_text`) 삭제 → 리멤버앤컴퍼니를 기본 발표 주체로.

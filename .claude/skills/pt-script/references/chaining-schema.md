@@ -1,4 +1,4 @@
-# Chaining Schema (v2.2.0) — jc-pptx → pt-script
+# Chaining Schema (v2.3.0) — jc-pptx → pt-script
 
 pt-script가 `jc-pptx` 덱을 받아 발표 대본을 만드는 체이닝 워크플로우와 입력 JSON 스키마다.
 
@@ -88,7 +88,7 @@ pt-script
 }
 ```
 
-- `proposal_meta` 컨테이너가 있으면 그대로 쓴다. `extracted_from`은 `jc-pptx`(또는 구 별칭)이며 검증용 정보일 뿐 빌드를 막지 않는다.
+- `proposal_meta`는 pt-script의 구 **입력** 컨테이너다(pt-script가 내보내는 출력이 아니다). 있으면 그대로 쓴다. `extracted_from`은 `jc-pptx`(또는 구 별칭)이며 검증용 정보일 뿐 빌드를 막지 않는다.
 - 필드: `client_name` · `rfp_title` · `presentation_minutes`(≥1) · `presentation_type`(enum) · `presenter`(선택) · `presenter_role` · `presenter_name` · `audience_type` · `tone`(enum) · `qna_included` · `qna_minutes`(기본 = 시간×0.2).
 - enum — `presentation_type`: `bidding_pt` | `conference` | `forum` | `corporate_event` | `mc` | `general_business` / `tone`: `formal` | `semi_formal` | `casual`.
 
@@ -117,12 +117,12 @@ def infer_presentation_type(pptx_titles):
 | 스킬 | 관계 |
 |------|------|
 | `jc-pptx` | **업스트림** — 덱 + `presentation` 키 제공 |
-| `mice-run-of-show` | 행사 큐시트·MC 진행 흐름. MC 대본의 순서 근거로 참고 가능 |
+| `mice-run-of-show` | **참고 입력** — 큐시트(XLSX)를 MC 대본의 진행 순서 근거로 읽을 수 있다. 큐시트는 pt-script 하류가 아니다(발표 시간은 run-of-show가 jc-pptx `presentation.minutes`에서 직접 받는다) |
 | `mice-rfp-analyzer` · `mice-estimate` · `mice-aftermath` | 무관 — 분석·견적·결과보고는 대본 입력이 아님 |
 | `jc-design-system` | **참조 의존** — `references/jc-design-mapping.md`가 토큰 매핑 |
 | `jc-redteam` | 비딩 PT 대본의 Q&A·논리 검수(선택) |
 
-출력 `.docx`는 현장 사용 종착점이다. 다른 스킬의 입력으로 들어가지 않는다.
+출력 `.docx`는 현장 사용 종착점이다. pt-script는 ChainPayload를 내보내지 않으며 다른 스킬의 입력으로 들어가지 않는다.
 
 ---
 
