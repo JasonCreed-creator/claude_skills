@@ -65,13 +65,15 @@ HEX_HEAD        = P["surfaceAlt"]   # 표 헤더 면 (웜 페이퍼 표준)
 HEX_ZEBRA       = P["bg"]           # 짝수 행
 HEX_BORDER      = P["border"]
 
-# 판정 배지 (배경, 글자) — GO=positive, HOLD=amber 면+잉크(앰버 단독 텍스트 금지), NO-GO=negative
+# 판정 배지 (배경, 글자) — SKILL §4 3단만. GO=positive, HOLD=amber 면+잉크(앰버 단독 텍스트 금지), NO-GO=negative
 JUDGMENT_STYLE = {
     "GO":        (P["success"], COLOR_WHITE),
-    "GO 조건부":  (P["successBg"], _rgb(P["success"])),
     "HOLD":      (P["warning"], COLOR_INK),
     "NO-GO":     (P["danger"], COLOR_WHITE),
 }
+
+QUICK_OMITTED_NOTE = ("생략한 축: 2 평가 · 4 경쟁 · 5 일정 · 6 예산 (Quick 모드). "
+                      "단, NO-GO 강제 조건 4개(필수 불가·치명 독소·원가>발주가·물리적 일정 불가)는 모두 점검했다.")
 
 FONT_KO = "Pretendard"
 FONT_FALLBACK = "Malgun Gothic"
@@ -172,8 +174,8 @@ def _add_emphasis_box(doc, text: str):
     _set_para_spacing(para, before=8, after=8, line=1.4)
 
 
-def _add_judgment_badge(doc, judgment: str, score: float):
-    """GO/HOLD/NO-GO 색상 박스"""
+def _add_judgment_badge(doc, judgment: str):
+    """GO/HOLD/NO-GO 색상 박스 — 판정은 SKILL §4 규칙의 결과(점수 표기 없음)"""
     bg, fg = JUDGMENT_STYLE.get(judgment, (HEX_HEAD, COLOR_INK))
 
     table = doc.add_table(rows=1, cols=1)
@@ -183,7 +185,7 @@ def _add_judgment_badge(doc, judgment: str, score: float):
 
     para = cell.paragraphs[0]
     para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = para.add_run(f"판정: {judgment}    |    종합 점수: {score:.1f} / 5.0")
+    run = para.add_run(f"판정: {judgment}")
     _set_run_font(run, size=14, bold=True, color=fg)
     _set_para_spacing(para, before=12, after=12)
 
@@ -279,11 +281,16 @@ def _build_cover(doc, data: Dict):
     _set_para_spacing(p, before=0, after=36)
 
     # 판정 배지
-    _add_judgment_badge(doc, data.get("judgment", "HOLD"), data.get("total_score", 0.0))
+    _add_judgment_badge(doc, data.get("judgment", "HOLD"))
 
-    # 메타 정보
+    # 메타 정보 — 판정 근거 3줄(+ HOLD면 GO 전환 조건)
     doc.add_paragraph()
     meta_rows = [
+        ["판정 근거", "\n".join(data.get("judgment_basis", [])[:3]) or "-"],
+    ]
+    if data.get("go_conditions"):
+        meta_rows.append(["GO 전환 조건", "\n".join(data["go_conditions"])])
+    meta_rows += [
         ["발행", data.get("issuer", ISSUER)],
         ["분석 일자", datetime.now().strftime("%Y-%m-%d")],
         ["분석자", data.get("analyst", ISSUER)],
@@ -430,12 +437,13 @@ def build_analysis_report(
         # 5. 부록
         _build_appendix(doc, data)
     else:
-        # Quick 모드: 핵심 3축만
+        # Quick 모드(SKILL §5): 핵심 3축(요건 필수만·리스크 치명·중대만·전략) + 판정, 생략 축 명시
         _add_heading(doc, "3. 핵심 분석 (Quick 모드)", level=1)
         axes = data.get("axes", {})
-        _build_axis_section(doc, 1, "요건 분석", axes.get("requirements", {}))
-        _build_axis_section(doc, 2, "평가 기준 분석", axes.get("evaluation", {}))
-        _build_axis_section(doc, 7, "전략 권고", axes.get("strategy", {}))
+        _build_axis_section(doc, 1, "요건 분석 — 필수만", axes.get("requirements", {}))
+        _build_axis_section(doc, 3, "리스크 분석 — 치명·중대만", axes.get("risks", {}))
+        _build_axis_section(doc, 7, "전략 권고 — 강제 조건 점검·판정", axes.get("strategy", {}))
+        _add_body(doc, QUICK_OMITTED_NOTE, color=COLOR_MUTED)
 
     # 파일 저장
     today = datetime.now().strftime("%Y%m%d")
@@ -463,7 +471,12 @@ def _sample() -> Dict:
         "submission_deadline": "2026-06-01",
         "eligibility": "최근 3년 내 유사 실적 3건 이상",
         "judgment": "GO",
-        "total_score": 4.2,
+        "judgment_basis": [
+            "NO-GO 강제 조건 0건 — 필수×불가 0 · 치명 독소 0 · 원가<발주가 · 일정 가능",
+            "승부 메시지 실재 — 운영 계획(30점)·차별화(20점)가 STRONG 요건과 겹침",
+            "불리 요인 — 지역 가산점 미충족",
+        ],
+        "go_conditions": [],
         "winrate": 0.45,
         "analyst": "MICE 전략가",
         "conclusion": "필수 요건 100% 충족 + 평가 가중치 70%가 우리 강점 영역. 응찰 권장.",
@@ -517,7 +530,7 @@ def _sample() -> Dict:
                 "comments": ["입찰가 권고: 2.95억 (리스크 프리미엄 5% 반영)"]
             },
             "strategy": {
-                "summary": "종합 점수 4.2 / 5.0. GO 판정. 응찰 권장.",
+                "summary": "NO-GO 강제 조건 0건 + 승부 메시지 3개 실재 → GO 판정(SKILL §4). 참고 가중 점수 4.2 / 5.0(판정 아님).",
                 "comments": [
                     "자원 투입 강도: 강 (시니어 PM + 디자이너 풀가동)",
                     "발표 자료에 운영 안정성·차별화 메시지 집중"
@@ -558,6 +571,18 @@ def _self_test() -> int:
                 return 1
             if P["accent"].upper() not in xml:
                 print(f"FAIL [{mode}] 액센트 {P['accent']} 미적용")
+                return 1
+            raw = Document(path)
+            text = "\n".join(p.text for p in raw.paragraphs)
+            text += "\n".join(c.text for t in raw.tables for row in t.rows for c in row.cells)
+            if "GO 조건부" in text or "종합 점수:" in text:
+                print(f"FAIL [{mode}] 가중합산 판정 잔재('GO 조건부'/'종합 점수:')")
+                return 1
+            if "판정 근거" not in text:
+                print(f"FAIL [{mode}] 판정 근거 누락")
+                return 1
+            if mode == "quick" and ("리스크 분석" not in text or "생략한 축" not in text):
+                print("FAIL [quick] 리스크 축·생략 축 명시 누락 (SKILL §5)")
                 return 1
             print(f"OK   [{mode}] {Path(path).name}")
     print("SELF-TEST PASS")
