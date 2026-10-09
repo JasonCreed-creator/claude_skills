@@ -8,17 +8,18 @@
 
 | 형식 | 용도 | 비고 |
 |------|------|------|
-| **HTML(단일 파일)** | 발주처 송부·화면 공유·PDF 인쇄 | 기본. CSS 변수로 SoT 토큰, 자가완결 |
+| **Claude Docs** | 팀·발주처와 공유·코멘트하며 다듬는 문서 | 문서 커넥터가 있으면 기본. 8축을 제목 구조로 |
+| **HTML(단일 파일)** | 발주처 송부본·화면 공유·PDF 인쇄 | 리멤버 웜 페이퍼 룩, 자가완결. 커넥터가 없으면 기본 |
 | **Markdown** | 내부 위키·빠른 공유·추가 가공 | 경량. 표 중심 |
 
-기본은 HTML. 사용자가 "간단히/md로"면 Markdown.
+사용자가 형식을 말하지 않으면 위 순서로 고르고 고른 형식을 한 줄로 밝힌다. "간단히/md로"면 Markdown.
 
 ---
 
 ## 2. HTML 레이아웃 (8축 1:1 매핑)
 
 ```
-┌ 헤더 (primary 배경) ─ 행사명 · 일자 · "사후 결과보고서" · 버전/생성일 ┐
+┌ 헤더 (잉크 밴드) ─ 리멤버 로고 슬롯 · 행사명 · 일자 · "사후 결과보고서" · 발행 명의 · 버전 ┐
 ├ 1. Executive Summary  (강조 박스 + 핵심 KPI 3 카드)
 ├ 2. 행사 개요          (정보 표)
 ├ 3. 목표 대비 성과     (KPI 표: 목표/실적/달성률/판정 + 달성률 배지)
@@ -29,40 +30,37 @@
 └ 8. 차기 권고 / Next   (권고 + 우선순위 3)
 ```
 
-- 차트가 필요하면 **mice-dashboard 산출을 인용/임베드**(재발명 금지). 본 보고서는 표·서사 중심.
+- 차트가 필요하면 **mice-ops-docs 산출을 인용/임베드**(재발명 금지). 본 보고서는 표·서사 중심.
 - 케이스 카드(`case-builder.md`)는 부록 또는 별지로 첨부 가능.
 
 ---
 
-## 3. SoT 토큰 매핑 (CSS 변수)
+## 3. SoT 토큰 매핑 (리멤버 웜 페이퍼)
 
-HTML은 CSS 변수로 SoT 참조. **hex 하드코딩 금지** — 빌드 시 `signature-tokens.md §6 JSON`에서 주입.
+HTML은 CSS 변수로 SoT 참조. 값은 `jc-design-system/references/signature-tokens.md §6 JSON`에서 런타임 로드하고, 로드 실패 시에만 §6 폴백 상수를 출처 주석과 함께 쓴다.
 
-| 역할 | 토큰 | 식별용 값 |
-|------|------|----------|
-| 헤더·타이틀 | `--jc-primary` | `#0A2540` |
-| 강조·링크·달성 배지 | `--jc-accent` | `#2962FF` |
-| 달성(✅) | `--jc-success-strong` | (SoT §1.7) |
-| 미달(⚠️) | `--jc-point-orange` | `#FF5722` |
-| 본문 | `--jc-text` + Pretendard | `#1A1D24` |
-| 수치(KPI·금액) | JetBrains Mono | — |
+| 역할 | SoT 키 (§6 color) |
+|------|------------------|
+| 페이지 배경 | `bg` (웜 페이퍼) |
+| 카드·표 면 | `surface` / `surfaceAlt` |
+| 헤더 밴드 | `primary` (잉크) + 글자 `bg` |
+| 강조 룰·Executive Summary 박스 테두리 | `accent` (리멤버 오렌지, 면은 문서당 1회) |
+| 작은 강조 글자·링크 | `accentStrong` |
+| 달성(✅) 배지 | `semantic.success` / `successBg` |
+| 미달(⚠️) 배지 | `semantic.danger` / `dangerBg` |
+| 정보·비교군 | `point.steel` / `steelTint` |
+| 본문 / 보조 | `text` / `textMuted` + Pretendard (수치는 JetBrains Mono) |
 
+- 로고 슬롯: 헤더 좌측 리멤버 로고(`assets.logoLight`, 없으면 "리멤버 MICE비즈팀" 텍스트). 발행 명의 기본 = 리멤버 MICE비즈팀.
+- 발주처 색을 받아도 리멤버 오렌지·잉크는 유지(`client-overlays.md`). 발주처는 이름·로고만 주입.
+- 구 네이비·일렉트릭블루 룩은 legacy-jc 오버레이로 명시 요청 시만.
 - 다크/인쇄 매핑·WCAG는 `jc-design-system/references/mode-mapping.md`.
-- 클라이언트 오버레이(`clientId`) 있으면 primary/accent 교체(`client-overlays.md`). 발주처 송부 시 발주처 오버레이 적용 가능.
 
 ---
 
 ## 4. 인쇄 (RULE-PRINT-LIGHT)
 
-결과보고서는 인쇄·PDF 첨부 빈도가 높다. **인쇄 시 라이트 강제**(다크 화면 상태여도). 정본 `shared-rules.md#RULE-PRINT-LIGHT` + `mode-mapping.md §4.2`.
-
-```css
-@media print {
-  :root, [data-theme="dark"] {
-    --jc-bg:#FFFFFF !important; --jc-surface:#FFFFFF !important; --jc-text:#1A1D24 !important;
-  }
-}
-```
+결과보고서는 인쇄·PDF 첨부 빈도가 높다. **인쇄 시 웜 페이퍼 라이트 강제**(다크 화면 상태여도). 정본 `shared-rules.md#RULE-PRINT-LIGHT` + `mode-mapping.md`. 인쇄 블록은 다크 변수를 라이트 토큰(`bg`·`surface`·`text`)으로 되돌린다.
 
 ---
 
@@ -71,7 +69,7 @@ HTML은 CSS 변수로 SoT 참조. **hex 하드코딩 금지** — 빌드 시 `si
 ```
 | KPI | 목표 | 실적 | 달성률 | 판정 |
 ```
-- 달성률 = 실적÷목표, % 표기. 100%↑ ✅, 미달 ⚠️(색=point-orange).
+- 달성률 = 실적÷목표, % 표기. 100%↑ ✅(success 배지), 미달 ⚠️(danger 배지).
 - 미달 행은 6축(교훈)으로 앵커 링크.
 - 목표 미확보 KPI는 `[목표 미설정]`으로 표기하고 실적만 — 단 "성과"로 주장하지 않는다.
 
@@ -81,8 +79,8 @@ HTML은 CSS 변수로 SoT 참조. **hex 하드코딩 금지** — 빌드 시 `si
 
 - [ ] 8축 모두 존재(데이터 없으면 `[미확보]` 명시, 누락 아님)
 - [ ] 모든 성과가 *목표 대비*로 표기
-- [ ] 토큰 하드코딩 0(SoT CSS 변수), `check_drift.py` FORBIDDEN 0
-- [ ] 회사·발주처 식별정보 외부 주입/익명화
+- [ ] 리멤버 웜 페이퍼 토큰(SoT 또는 §6 폴백), legacy-jc 색 0
+- [ ] 발행 명의 리멤버 MICE비즈팀·로고 슬롯, 발주처 식별정보 외부 주입/익명화
 - [ ] 인쇄 라이트 강제 CSS
-- [ ] 차트는 dashboard 인용(재발명 0)
+- [ ] 차트는 mice-ops-docs 산출 인용(재발명 0)
 - [ ] (영업 재사용 케이스) 익명화·동의 확인

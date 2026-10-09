@@ -10,13 +10,13 @@
 
 ```python
 event = {
-    'title': 'T社 테크 포럼 2026',   # 외부 주입 (자기 회사명 아님)
+    'title': 'A사 테크 포럼 2026',   # 외부 주입 (자기 회사명 아님)
     'date': '2026-06-20',
     'venue': '[그랜드볼룸]',          # 외부 주입
     'start_time': '09:00',
     'end_time': '12:30',             # 무결성 검증 기준
     'version': 1,
-    'client_id': None,
+    'publisher': None,               # 기본 '리멤버 MICE비즈팀'
 }
 cues = [  # segment, duration_min, stage, audio, video, light, cue, owner, note
     {'segment':'등록·입장','duration_min':30,'stage':'-','audio':'BGM','video':'로비 루프','light':'하우스','cue':'LX1 하우스 100%','owner':'운영','note':'정시 개문'},
@@ -31,7 +31,7 @@ cues = [  # segment, duration_min, stage, audio, video, light, cue, owner, note
     {'segment':'시상·기념촬영','duration_min':10,'stage':'시상자+수상자','audio':'MIC1','video':'시상 VT2','light':'무대 FULL','cue':'VT2 + 단체 스팟','owner':'운영','note':'포토월'},
     {'segment':'폐회','duration_min':5,'stage':'사회자','audio':'MIC1','video':'클로징','light':'하우스 전환','cue':'BGM IN','owner':'사회','note':''},
 ]
-out = build_runsheet(event, cues, '/home/claude/런오브쇼_T社테크포럼_v1_260620.xlsx')
+out = build_runsheet(event, cues, '<출력폴더>/런오브쇼_A사테크포럼_v1_260620.xlsx')
 ```
 
 소요 합 = 30+5+10+35+10+15+30+30+30+10+5 = **210분** = 09:00→12:30. ✅
@@ -51,9 +51,9 @@ out = build_runsheet(event, cues, '/home/claude/런오브쇼_T社테크포럼_v1
 ## 산출 (재현 기준)
 
 ```
-런오브쇼_T社테크포럼_v1_260620.xlsx
+런오브쇼_A사테크포럼_v1_260620.xlsx
 ├─ [큐시트]
-│   T社 테크 포럼 2026 | 2026-06-20 | [그랜드볼룸] | v1 | 생성 2026-06-05
+│   A사 테크 포럼 2026 | 2026-06-20 | [그랜드볼룸] | v1 | 생성 2026-06-05
 │   Cue# 시간   세그먼트       무대·발표        A         V          L           연출 cue              Owner 비고
 │   C01  09:00  등록·입장      -              BGM        로비 루프   하우스       LX1 하우스 100%       운영  정시 개문
 │   C02  09:30  개회 선언      사회자          MIC1       타이틀      무대 FULL    BGM FADE → MIC1       사회

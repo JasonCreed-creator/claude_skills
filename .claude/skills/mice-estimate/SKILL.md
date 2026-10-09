@@ -1,134 +1,56 @@
 ---
 name: mice-estimate
-version: "v3.0.0"
-description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 두 가지 양식을 지원한다: (1) 리멤버 견적서 — 패키지 할인 구조 + PCO 기획료(직접비 25%) 별도 계상의 기본 양식, (2) 산출내역서(공공·국가계약법형) — 국가계약법 기반 산출내역서 양식 + calcEstimate 자동 산출 엔진(공공·관 발주 대응). 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서'를 언급할 때. 특히 '리멤버 견적서', '산출내역서(공공형)' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. mice-proposal·mice-rfp-analyzer 체이닝 입력을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다."
-dependencies:
-  - openpyxl
+version: "v3.3.2"
+description: "MICE 행사 견적서를 엑셀(.xlsx)로 생성·수정하는 스킬. 양식은 리멤버 견적서 하나 — 패키지 할인 구조 + PCO 기획료(운영비 25%) 별도 계상, 컨피규레이터 가격 엔진(데이터셋 JSON) 기반 자동 산출 지원. 공공·관 발주의 산출내역서 요청도 같은 양식으로 작성한다. 반드시 이 스킬을 사용해야 하는 상황: 사용자가 '견적서', '견적', 'estimate', '산출내역서', '빠른견적', '견적 뽑아줘', '견적 계산해줘'를 언급할 때. 특히 '리멤버 견적서' 양식 명칭이 명시될 때. 기존 견적서 파일을 수정하거나 항목을 추가/삭제/변경할 때도 이 스킬을 사용한다. 견적 항목을 대화로 전달받아 새로 생성하거나, 기존 파일을 업로드받아 수정하거나, 행사 규모·옵션만 받아 자동 산출하는 세 가지 입력 방식을 모두 지원한다. jc-pptx·mice-rfp-analyzer 체이닝 입력(ChainPayload/v1)을 받아 자동 견적 생성 가능. 공급자·고객사 정보는 모두 외부 주입 변수로 처리 — 스킬 내 어떤 회사·개인 식별 정보도 하드코딩하지 않는다. 형제 경계 — 제안서·견적 요약 슬라이드는 jc-pptx, RFP 분석·입찰가 권고는 mice-rfp-analyzer, 가격 포지션 판단은 jc-strategy-canvas, 경쟁가·지불의향 조사는 mice-market-intel, 견적 숫자 검산·저가수주 리스크는 jc-redteam."
+dependencies: openpyxl
 ---
 
 # MICE 견적서 생성 스킬
 
-## 버전 히스토리
+## 변경 이력
 
-### v3.0.0 — 2026-08-18 (리멤버 전환 — D1)
-
-**소속 전환에 따른 양식 체계 재편** (변경명세서 v1.0 §2.1, D1 확정). 기본 양식과 명칭 체계가 바뀌는 major 변경.
-
-#### 변경 (breaking)
-- **기본 양식 전환**: 리멤버 견적서를 1차(기본) 양식으로 승격. 체이닝 `format` 기본값 `mnc` → `remember` (chaining-schema.md §4·§7). description·본문의 양식 서열을 리멤버 우선으로 재기술.
-- **양식 리네임 보존**: 기존 "M&C 견적서"를 **"산출내역서(공공·국가계약법형)"** 으로 일반화 리네임 — 공공·관 발주 대응 시 재사용 가치가 있어 삭제하지 않고 보존. 사용자 대면 명칭에서 회사 상호를 제거.
-  - `assets/mnc_template.xlsx`의 법인 직인 이미지 → 중립 **외부 주입 슬롯**(공급자 직인/로고) placeholder로 치환. xlsx 셀 내 회사 상호 텍스트 0건(기존부터 외부 주입 구조).
-  - 파일명 패턴 `[M&C]_{고객명}_{행사명}_견적서.xlsx` → `[{공급자}]_{고객명}_{행사명}_산출내역서.xlsx` (일반 패턴).
-  - **코드 식별자는 하위호환 위해 유지**: `format` 값 `mnc`, 함수 `export_mnc_estimate()`, 파일 `mnc_template.xlsx`는 그대로 두고 리네임 사실을 주석/문서로 명기(참조 무결성 보존).
-- **리멤버 양식 실무 반영** (D1-③):
-  - PCO 이윤 계산을 **PCO 기획료 = 직접비(섹션2~5 합)의 25% 별도 계상** 방식으로 명문화(remember_template.md §5).
-  - "질문이 필요 없는 견적서" 규칙 명문화 — 평이한 한국어 항목명 사용(2026-08-03 확정 preference).
-
-#### 범위 외 (백로그 유지)
-- calcEstimate 자동 산출 엔진의 리멤버 양식 연결은 본 전환 범위 외 — Sprint 1.6 백로그 유지. 자동 산출(방식 A)은 계속 산출내역서(공공형) 엔진만 사용.
-
-### v2.2.1 — 2026-07-03
-
-CP1 GO-1 후속 조치 — ChainPayload 출력 봉투에 필수 필드 `generatedAt` 추가(chaining-schema.md §4·§7), 참조 링크 무결성 2건 정정(venue-db-realdata.md §6 파일명, venue-db.md §5 외부 문서 링크 평문화).
-
-### v2.2.0 — 2026-07-03
-
-**Fable 5 재설계 패스 + Sprint 8 반영.**
-
-#### 신규 추가
-- Step 6.5 **완료 게이트** — 증거주의 6항(엔진 자가검증·3중 금액 일치·재오픈 무결성·입력 전수성·식별정보·가격 산식 연동). 통과 전 전달 금지.
-- `references/venue-db-realdata.{json,md}` — 베뉴파인더 견적이력 100건→25개 베뉴×홀 실데이터 (대관료 단독가 없음, 수용인원 검증·후보 제시용 — §0 경고 필독).
-
-#### 수리
-- calc 엔진 `target` 키 누락 시 KeyError → 명시적 한국어 ValueError (BL-S8-01). 회귀: golden 33케이스 + 신규 회귀 3케이스 PASS (개발 워크스페이스 `mice-skills-work/sprint-08/golden-tests/` 스위트 — 스킬 패키지 외부 자산).
-
-### v2.1.0 — 2026-06-04
-
-**전략 프라이싱 레이어 추가** (forge 인테이크). 원가 산출(pricing-engine)을 넘어 *제안가·할인·패키지 가격*을 전략적으로 정하는 가격 결정 논리.
-
-#### 신규 추가
-- `references/pricing-strategy.md` — 4대 가격 레버(가치기반·Van Westendorp PSM·티어/패키지·앵커링) + MICE 입찰/스폰서 맥락. 출처 패턴 maigentic/stratarts(MIT), 방법만 흡수.
-- SKILL.md "전략 프라이싱(선택)" 절 — 원가↔제안가 경계 + 체이닝(`mice-market-intel`·`jc-strategy-canvas`) 명시.
-
-### v2.0 — 2026-05-25
-
-**핵심 변화**: 자동 가격 산출 엔진 + 체이닝 + 외부 변수화 + 디자인 시맨틱 매핑.
-
-#### 신규 추가
-- ⭐ **자동 산출 엔진** `scripts/calc_estimate.py` — SSOT §5 calcEstimate Python 포팅 (CLI 자가검증 포함, SSOT §9 11/11 PASS)
-- ⭐ **xlsx 본문 자동 작성** `scripts/export_estimate.py` — 7섹션 자동 펼침 + 무결성 검증
-- **방식 A (자동 산출)** 워크플로우 — `calc_estimate({target, options})` 한 번 호출로 견적서 완성
-- **Step 2.5 체이닝 입력 감지** — mice-proposal / mice-rfp-analyzer 의 ChainPayload JSON 자동 처리
-- **Step 3.5 공급자·고객사 슬롯 명세** — M&C 13 슬롯 + 리멤버 6 슬롯 (외부 주입 변수)
-- 신규 references 5종:
-  - `pricing-engine.md` — 가격 엔진 공식·14상수
-  - `option-catalog.md` — 9종 옵션 + 상호배제 규칙 (media·photowall·scaler4k 자동)
-  - `venue-db.md` — 베뉴 DB 스키마 + 20 슬롯 (실데이터 보류)
-  - `jc-design-mapping.md` — Excel HEX → JC 시맨틱 토큰 매핑
-  - `chaining-schema.md` — 입출력 JSON 스키마 (3종)
-
-#### 변경
-- **frontmatter**: `name + description` → `name + version + description + dependencies`
-- **공급자 정보 외부 변수화** (CLAUDE.md §10 준수):
-  - SKILL.md 본문 — 회사 정보 하드코딩 제거
-  - `references/mnc_template.md` — 공급자 기본값 → 13 슬롯 명세표
-  - `references/remember_template.md` — 공급자 기본값 → 6 슬롯 명세표
-  - `assets/mnc_template.xlsx` 셀 — `(외부 주입 - ...)` placeholder 교체
-  - `assets/remember_template.xlsx` 셀 — placeholder 교체
-
-#### 유지 (변경 없음)
-- `scripts/korean_amount.py` — 한글 금액 변환 (v1 그대로)
-- 양식 시각 디자인 (색상·병합·로고) — 모두 보존
-
-#### 검증
-- ✅ SSOT §9 0원 일치 11/11 (pk = 83,750,000원, pkVat = 92,125,000원)
-- ✅ Summit 2026 hand-trace 10/10 (target=120, pk = 89,810,000원)
-- ✅ 9개 엣지 케이스 (target=40~501) PASS
-- ✅ 트리거 충돌 0건 / 회사 종속 표현 0건
-- ✅ jc-design 일관성 점수 100/100
-
-### v1.0 — (이전)
-
-- 두 양식(M&C / 리멤버) 템플릿 복사 + 수동 항목 입력 방식
-- `scripts/korean_amount.py` 한글 금액 변환
-- 공급자 정보 하드코딩
-- 자동 산출·체이닝·jc-design 매핑 없음
+- v3.3.2 (2026-10-09): 템플릿 자산 정정(`assets/remember_template.xlsx`) — 실명·샘플 헤더(B11·B13·B14·B15·B24·C24, Opt2 G24) → `(외부 주입 - …)` 자리표시자, 섹션 6을 25% 단일 라인 수식(D61·E61·F61·F64·F59)으로, 요약 B17·B19 수식화, 패키지 메타(docProps creator·lastModifiedBy) 인명 제거.
+  문서 동기: 셀 위치 맵·방식 B/C 코드 주석·Assets 설명·remember_template.md §2·§3·§5.
+- v3.3.1 (2026-10-09): 폐합 스킬 라우팅을 jc-pptx(구 mice-proposal 별칭)·mice-ops-docs·mice-aftermath로 교체, 폐지된 브리프 게이트 문구 삭제, 형제 경계 추가. mice-rfp-analyzer §3-1 전용 봉투(`estimate_hint`) 수용 → 완료 게이트 6 연동.
+  샌드박스 고정 경로 → `recalc()` 헬퍼·`outputs/`, 색상은 jc-design-system v2 토큰 런타임 로드(`scripts/estimate_tokens.py`), 긴 버전 히스토리는 `references/changelog.md`로 이관.
+- 이전 이력(v3.3.0 ~ v1.0): [references/changelog.md](references/changelog.md)
 
 ## 개요
 
-본 스킬은 두 가지 양식("리멤버 견적서"(기본), "산출내역서(공공·국가계약법형)" — 양식 식별자)의 MICE 행사 견적서를 엑셀로 생성·수정한다. **산출내역서(공공형) 양식은 calcEstimate 자동 산출 엔진**을 통해 행사 규모(target)·옵션만 받아 견적 자동 생성이 가능하다. 리멤버 양식이 1차(기본) 양식이며, 공공·관 발주 대응 시 산출내역서(공공형) 양식을 선택한다.
+본 스킬은 **리멤버 견적서** 양식(단일 양식, v3.3.0)의 MICE 행사 견적서를 엑셀로 생성·수정한다. 컨피규레이터 가격 엔진 포팅(`calc_estimate_remember`)으로 행사 규모·옵션만 받아 자동 산출(방식 A)이 가능하고, 항목을 직접 받아 작성(방식 B)하거나 기존 파일을 수정(방식 C)할 수도 있다. 공공·관 발주의 "산출내역서" 요청도 같은 양식으로 작성한다.
 
-**자산 정의 원칙**: 본 스킬은 어떤 회사·개인의 식별 정보도 하드코딩하지 않는다. 양식 명칭('리멤버', '산출내역서(공공형)')만 식별자로 보존되며, 공급자·고객사·담당자·연락처 등 모든 식별 정보는 **외부 주입 변수**로 처리된다. 산출물 본문에는 사용자가 매번 주입하는 변수만 들어간다. (정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY` — 양식 식별자 보존은 정본의 '허용' 항목)
+**자산 정의 원칙**: 본 스킬은 어떤 회사·개인의 식별 정보도 하드코딩하지 않는다. 양식 명칭('리멤버 견적서')만 식별자로 보존되며, 공급자·고객사·담당자·연락처 등 모든 식별 정보는 **외부 주입 변수**로 처리된다. 산출물 본문에는 사용자가 매번 주입하는 변수만 들어간다. (정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY` — 양식 식별자 보존은 정본의 '허용' 항목)
 
-> **코드 식별자 하위호환**: 리네임(구 "M&C 양식" → "산출내역서(공공·국가계약법형)")은 사용자 대면 명칭에만 적용된다. 하위호환을 위해 코드 식별자는 유지된다 — 체이닝 `format` 값 `mnc`, 함수 `export_mnc_estimate()`, 파일 `mnc_template.xlsx`. 문서·코드 주석에서 `mnc`는 산출내역서(공공형) 양식을 가리키는 레거시 키다.
 
 ## 워크플로우
 
-### Step 1: 양식 판별
+### Step 1: 양식 확인
 
-사용자의 요청에서 어떤 양식인지 판별한다:
-- **"리멤버", "remember"** → 리멤버 양식 (패키지 할인 구조 + PCO 기획료 25%) — **기본 양식**
-- **"산출내역서", "공공", "국가계약법", (레거시) "M&C"** → 산출내역서(공공·국가계약법형) 양식 (`mnc` 코드 키)
-- 불명확하면 반드시 먼저 물어본다. 별도 지정이 없고 공공·관 발주 맥락이 아니면 **리멤버 양식(기본)** 으로 진행.
+양식은 **리멤버 견적서** 하나다(패키지 할인 구조 + PCO 기획료 25%). "산출내역서"·"공공"·"국가계약법" 요청도 같은 양식으로 작성하되, 발주 서식이 요구하는 항목명(예: 기업이윤·인건비 분리 표기)·합계 구조가 있으면 섹션 안에서 항목명과 비고로 맞춘다. 구 양식(다른 템플릿) 파일을 수정해 달라는 요청(방식 C)은 원 파일 구조를 존중한다.
 
 ### Step 2: 입력 방식 판별 (3가지)
 
 | 방식 | 트리거 | 동작 |
 |---|---|---|
-| **A. 자동 산출 (산출내역서(공공형) 전용)** | "빠른견적", "자동 산출", "100명 규모 견적 계산해줘" 등 | `calc_estimate()` 호출 → 결과로 템플릿 채움 |
+| **A. 자동 산출** | "빠른견적", "자동 산출", "100명 규모 견적 계산해줘" 등 | `calc_estimate_remember()` + `export_estimate_remember()` |
 | **B. 대화 입력 (v1 방식)** | 사용자가 항목·단가를 직접 지정 | 템플릿 복사 후 데이터 채우기 |
 | **C. 파일 수정** | 사용자가 기존 견적서 xlsx 업로드 | 해당 파일 로드하여 수정 |
 
-리멤버 양식(기본)은 **B / C만 지원** (calcEstimate 리멤버 연결은 별도 사이클 분리 — Sprint 1.6 백로그). 자동 산출(방식 A)이 필요하면 산출내역서(공공형) 양식을 사용한다.
+방식 A 실행 순서: ① 엔진 자가검증(`python calc_estimate_remember.py` → ALL PASS 확인) ② `calc_estimate_remember(cfg)` ③ `export_estimate_remember.export_remember_estimate(result, meta, path)` ④ `recalc(path)` ⑤ `verify(path, result)` 0원 일치 확인.
 
-### Step 2.5: 체이닝 입력 감지 (v2 신규)
+### Step 2.5: 체이닝 입력 감지
 
-다음 ChainPayload JSON이 입력되었으면 자동으로 방식 A 진입:
+`$schema: "ChainPayload/v1"` 봉투가 입력되면(`target`은 힌트 — 없거나 다른 값이어도 `source`가 `jc-pptx`·`mice-rfp-analyzer`이고 `eventScale` 키가 있으면) 별도 정보 수집 없이 방식 A로 진입한다. `source` 판별은 jc-design-system chaining-protocol §7(`detect_input_source`, 별칭 자동 치환) 규칙을 따른다.
 
-- `source: "mice-proposal"` → estimatedFrom: `proposal_chain`
-- `source: "mice-rfp-analyzer"` → estimatedFrom: `rfp_default`
+| source | estimatedFrom | 읽는 키 (봉투 최상위, 평탄) |
+|---|---|---|
+| `jc-pptx` (구 `mice-proposal`은 별칭 — 수신 시 `jc-pptx`로 치환) | `proposal_chain` | `client` `eventDate` `eventScale{target,guarantee}` `venue{type,region,name,rental}` `options{9키 불리언}` `displayType`(`led`·`projector`) `boothCount` `format`. 같은 봉투의 `deck_meta`·`sections`·`coverage_map`·`presentation`은 견적과 무관 — 무시 |
+| `mice-rfp-analyzer` (§3-1 전용 봉투) | `rfp_default` | `client` `rfpId` `eventDate` `budgetRange{min,max,currency,vatIncluded}` `evaluationCriteria[{name,weight}]` `eventScale` `venue`(null 가능) `options`(null 가능) `boothCount` `format` `notes` + **`estimate_hint{budget_announced, estimated_cost, recommended_bid, vat, risk_premium}`** |
 
-ChainPayload 스키마 상세는 [references/chaining-schema.md](references/chaining-schema.md) 참조.
+- `estimate_hint`는 calc 입력이 아니다. 산출 후 제안가(`pk`·`pkVat`)를 `budget_announced`·`recommended_bid`와 대비해 어디에 있는지 한 줄로 명시한다 → Step 6.5 완료 게이트 6(가격 산식 연동)의 입력.
+- `venue: null` → 대관료 자동 산출, `options: null` → 옵션 전부 미적용, `guarantee: null` → target, `displayType` 없으면 `led`.
+
+봉투 예시·필드 매핑표는 [references/chaining-schema.md](references/chaining-schema.md) §2(jc-pptx)·§3(mice-rfp-analyzer) 참조.
 
 ### Step 3: 필수 정보 수집
 
@@ -139,27 +61,16 @@ ChainPayload 스키마 상세는 [references/chaining-schema.md](references/chai
 | 행사명 (project_title) | 시트명·파일명에 사용 | ✅ |
 | target | 총 참석인원 (40~500) | ✅ |
 | guarantee | 모객 게런티 | 선택 (None이면 target) |
-| 옵션 | 9종 중 활성화 ([option-catalog.md](references/option-catalog.md)) | 선택 |
+| 옵션 | 데이터셋 옵션(`assets/remember_pricing_dataset_v1.json`의 options) 중 활성화 | 선택 |
 | venueName | 베뉴명 (참조용) | 선택 |
+| displayType | `led`(기본) 또는 `projector` — 스케일러·화면중계 과금 게이트 | 선택 |
 | boothCount | 부스 수 | 선택 (default 0) |
 | **공급자 정보 슬롯** (Step 3.5) | 외부 주입 변수 | 사용자가 매번 제공 |
 | **고객사 정보 슬롯** (Step 3.5) | 외부 주입 변수 | 사용자가 매번 제공 |
 
-→ `calc_estimate(cfg)` 호출 → 결과를 템플릿에 자동 채움 → `export_estimate()` 로 본문 자동 작성.
+→ `calc_estimate_remember(cfg)` 호출 → `export_remember_estimate(result, meta, path)` 로 리멤버 견적서 자동 작성 → recalc → `verify()`.
 
 #### 방식 B/C (수동) — v1과 동일
-
-##### 산출내역서(공공형) 양식 필수 정보
-
-| 항목 | 설명 | 필수 |
-|------|------|------|
-| 행사명 | 예: "2026 ABC 박람회" | ✅ |
-| 고객명 | 외부 주입 변수 | ✅ |
-| 일시 | 예: "계약체결일~'26.12.16" | ✅ |
-| 장소 | 외부 주입 변수 | ✅ |
-| 세부 항목 | 섹션별 항목·단가·수량·기간 | ✅ |
-| 인건비 | 인원·직급·참여율·기간 | 선택 |
-| 절사/할인 | 금액 조정 | 선택 |
 
 ##### 리멤버 양식 필수 정보
 
@@ -177,35 +88,21 @@ ChainPayload 스키마 상세는 [references/chaining-schema.md](references/chai
 
 본 스킬은 **공급자(견적 발행 측)·고객사(견적 수신 측) 모든 식별 정보를 사용자가 매번 주입**한다. 스킬 자체에는 회사·개인 식별 정보가 하드코딩되어 있지 않다.
 
-#### 산출내역서(공공형) 양식 슬롯
-
-| 슬롯 키 | 설명 | Excel 셀 위치 |
-|---|---|---|
-| `customer_name` | 고객명 | B4 |
-| `supplier_logo` | 공급자 직인/로고 이미지 (외부 주입 — 템플릿 K열 상단 슬롯) | K2~ (이미지) |
-| `event_period` | 일시 | B5 |
-| `event_venue` | 장소 | B6 |
-| `supplier_company` | 공급자 상호 | I3 |
-| `supplier_biz_reg_no` | 사업자등록번호 | I4 |
-| `supplier_representative` | 대표자 | K4 |
-| `supplier_address` | 주소 | I5 |
-| `supplier_biz_type` | 업태 | I6 |
-| `supplier_biz_item` | 종목 | K6 |
-| `supplier_manager` | 담당자 | I7 |
-| `supplier_email` | 이메일 | K7 |
-| `supplier_phone` | 전화 | I8 |
-| `supplier_fax` | 팩스 | K8 |
-
 #### 리멤버 양식 슬롯
 
-| 슬롯 키 | 설명 | Excel 셀 위치 |
+같은 슬롯이 방식에 따라 다른 곳에 들어간다 — **방식 A**는 `export_remember_estimate()`가 5~9행에 자체 레이아웃을 만들며 `meta` dict의 아래 키만 읽는다. **방식 B/C**는 템플릿(`assets/remember_template.xlsx`)의 G11~G16 셀에 직접 쓴다.
+
+| 슬롯 | 방식 A — `meta` 키 (기입 셀) | 방식 B/C — 템플릿 셀 |
 |---|---|---|
-| `proposal_date` | 제안일자 | G11 |
-| `validity_period` | 유효기간 | G12 |
-| `supplier_company` | 공급자 상호 | G13 |
-| `supplier_address` | 주소 | G14 |
-| `supplier_manager` | 담당자 | G15 |
-| `supplier_contact` | 연락처 | G16 |
+| 제안일자 | `proposal_date` (G5) | G11 |
+| 유효기간 | `validity` (G6, 기본 "제안일자로 부터 30일") | G12 |
+| 공급자 상호 | `supplier_company` (G7) | G13 |
+| 주소 | `supplier_address` (G8) | G14 |
+| 담당자 | `supplier_manager` (G9) | G15 |
+| 연락처 | **행 없음** — 필요하면 `supplier_manager` 값에 병기 | G16 |
+| 행사·고객사 | `project_title`(B5, 필수) · `venue_text`(B7 + 섹션 1 장소 사용료 행 C16) · `venue_type`(B16 '내용', 기본 "5성급 호텔") · `remark`(B8) · `quote_date`(B9) · `targeting`(모객 C열) · `sheet_name` · `booth_count`/`booth_premium_count`(부스 단가×수량 분해, 선택) | B11 행사명 · B12 패키지 · B13 베뉴 · B14 비고 · B15 견적일 |
+
+방식 A `meta`에 `venue`·`note`·`validity_period`·`package_type`·`supplier_contact` 같은 다른 이름을 쓰면 **조용히 무시되어 기본값이 기입**된다(베뉴 공란·비고 "1일 full day 기준"·유효기간 기본값) — 위 키 이름 그대로 쓴다.
 
 #### 수집 방식 권장 순서
 
@@ -221,122 +118,115 @@ ChainPayload 스키마 상세는 [references/chaining-schema.md](references/chai
 
 | 양식·방식 | 읽을 reference |
 |---|---|
-| 리멤버 (B/C) — **기본 양식** | `references/remember_template.md` |
-| 방식 A (산출내역서 공공형 자동 산출) | `references/pricing-engine.md` + `references/option-catalog.md` + `references/mnc_template.md` |
+| 방식 B/C (수동) | `references/remember_template.md` |
+| 방식 A (자동 산출) | `references/remember_template.md` + `assets/remember_pricing_dataset_v1.json`(단가·산식·골든 벡터) |
 | 방식 A + 베뉴 룩업 시 | `references/venue-db.md` |
-| 방식 B/C (산출내역서 공공형 수동) | `references/mnc_template.md` |
 | 체이닝 입력 처리 | `references/chaining-schema.md` |
 
-#### 방식 A: calcEstimate 자동 산출 (산출내역서 공공형; 함수·파일은 레거시 `mnc` 키 유지)
+#### 방식 A: 컨피규레이터 엔진 자동 산출 (리멤버 견적서)
 
 ```python
-import sys
-sys.path.insert(0, '/path/to/skill/scripts')
-from calc_estimate import calc_estimate
-from export_estimate import export_mnc_estimate
+import sys, subprocess
+from datetime import date
+from pathlib import Path
+SKILL = Path('<이 스킬 폴더>')              # 예: Path.home()/'.claude/skills/synced/<bucket>/mice-estimate'
+sys.path.insert(0, str(SKILL / 'scripts'))
+from calc_estimate_remember import calc_estimate_remember
+from export_estimate_remember import export_remember_estimate, recalc, verify
+YYMMDD = date.today().strftime('%y%m%d')
+
+subprocess.run([sys.executable, str(SKILL / 'scripts' / 'calc_estimate_remember.py')], check=True)  # ① ALL PASS 아니면 사용 금지
 
 cfg = {
-    'target': 100,
-    'guarantee': 100,
+    'target': 100,            # 총 참석 인원
+    'guarantee': 100,         # 모객 게런티(없으면 target)
     'venueName': '(외부 주입)',
-    'options': {'video': True, 'emcee': True},
+    'displayType': 'led',     # 'led' | 'projector'
+    'options': {},            # 데이터셋 options 키 중 활성화할 것만 True
     'boothCount': 0,
 }
-result = calc_estimate(cfg)
+result = calc_estimate_remember(cfg)                                              # ② 산출
 
-# 공급자·고객사 정보는 사용자가 주입 (예시 — 실제 값은 매번 다름)
-meta = {
-    'project_title':         '(외부 주입)',
-    'customer_name':         '(외부 주입)',
-    'event_period':          '(외부 주입)',
-    'event_venue':           '(외부 주입)',
-    'supplier_company':      '(외부 주입)',
-    'supplier_biz_reg_no':   '(외부 주입)',
-    'supplier_representative':'(외부 주입)',
-    'supplier_address':      '(외부 주입)',
-    'supplier_biz_type':     '(외부 주입)',
-    'supplier_biz_item':     '(외부 주입)',
-    'supplier_manager':      '(외부 주입)',
-    'supplier_email':        '(외부 주입)',
-    'supplier_phone':        '(외부 주입)',
-    'supplier_fax':          '(외부 주입)',
+meta = {                                   # 공급자·고객사 정보는 매번 주입(Step 3.5) — 키 이름은 export_remember_estimate()가 읽는 그대로
+    'project_title': '(외부 주입)',                                     # 필수 — B5·파일명
+    'venue_text': '(외부 주입)', 'venue_type': '5성급 호텔',             # B7·C16 / B16(섹션 1 '내용')
+    'remark': '(일시·규모 등)', 'quote_date': '(외부 주입)',             # B8 / B9
+    'proposal_date': '(외부 주입)', 'validity': '제안일자로 부터 30일',   # G5 / G6
+    'supplier_company': '(외부 주입)', 'supplier_address': '(외부 주입)', 'supplier_manager': '(외부 주입)',  # G7~G9 (연락처 행 없음)
+    'targeting': '(모객 C열 텍스트, 선택)', 'sheet_name': '리멤버MICE솔루션',
+    # 체이닝 봉투용(§7 to_chain_payload가 읽음) — 상류 봉투가 있으면 clientId·projectTitle 무변경 승계
+    'projectTitle': '(외부 주입)', 'clientId': None, 'venueName': cfg['venueName'],
+    'createdAt': date.today().isoformat(), 'estimatedFrom': 'auto_calc',   # 체이닝 입력이면 'proposal_chain' | 'rfp_default'
 }
-
-output_path = export_mnc_estimate(
-    template_path='/path/to/skill/assets/mnc_template.xlsx',
-    output_path=f'/home/claude/[{meta.get("supplier_company","공급자")}]_{meta["project_title"]}_산출내역서_{YYMMDD}.xlsx',
-    result=result,
-    meta=meta,
-)
-# → 헤더·본문(세부산출내역 7개 섹션)·B8(한글금액) 모두 자동 채움
-# → 무결성 검증 포함 (재오픈 가능 여부)
+if cfg['boothCount']:
+    meta['booth_count'] = cfg['boothCount']                                       # 섹션 5 부스 행 단가×수량 분해
+out = Path('outputs') / f'리멤버견적서_{meta["project_title"]}_{YYMMDD}.xlsx'; out.parent.mkdir(exist_ok=True)
+export_remember_estimate(result, meta, str(out))                                  # ③ xlsx 작성(7섹션·옵션 O/X·PCO 수식·상단 합계)
+recalc(str(out))                                                                  # ④ xlsx 스킬 recalc.py → 없으면 LibreOffice headless
+verify(str(out), result)                                                          # ⑤ D10↔pk · D11↔pk_excluding_options 0원 일치 게이트
+meta['estimateFile'] = str(out)                                                   # §7 봉투 estimateFile
 ```
 
 #### 방식 B/C: v1 수동 입력 (변경 없음)
 
 ```python
-from openpyxl import load_workbook
 import shutil
+from pathlib import Path
+from openpyxl import load_workbook
 
-template = "/path/to/skill/assets/{mnc|remember}_template.xlsx"
-output = "/home/claude/{파일명}.xlsx"
+SKILL = Path('<이 스킬 폴더>')
+template = SKILL / 'assets' / 'remember_template.xlsx'
+output = Path('outputs') / '리멤버견적서_{{event_name}}_{{YYMMDD}}.xlsx'; output.parent.mkdir(exist_ok=True)
 shutil.copy(template, output)
 wb = load_workbook(output)
-ws = wb.active
+# 단일 옵션 견적이면 미사용 시트는 삭제(남는 시트의 로고는 보존 — 이미지는 시트별 앵커): del wb['Opt2_350명']
+for ws in wb.worksheets:   # 두 시트 모두 `(외부 주입 - …)` 자리표시자·샘플 리터럴을 갖는다 — 남기는 시트는 전부 채운다
+    # 헤더·베뉴 셀(B11·B13·B14·B15·B24·C24)은 `(외부 주입 - …)` 자리표시자 — 주입값으로 교체
+    ws['B11'] = '{{event_name}}'; ws['B13'] = ws['B24'] = '{{venue}}'; ws['B14'] = '{{remark}}'; ws['C24'] = '{{venue_spec}}'
+    ws['B15'] = '{{quote_date}}'  # 날짜 서식 셀(yyyy"년" m"월" d"일" 유지) — 문자열·datetime 모두 주입 가능
+    ws['G13'] = meta['supplier_company']  # Step 3.5 슬롯(G11~G16) — 절대 하드코딩 금지
+    # ...
+    # 세부 항목 행 작성
+    # ...
 
-# 외부 주입 변수로 헤더 채움
-ws['B4'] = meta['customer_name']  # 절대 하드코딩 금지
-# ...
-
-# 세부 항목 행 작성
-# ...
-
+wb.properties.creator = 'mice-estimate'; wb.properties.lastModifiedBy = None   # 파일 메타(docProps)에도 인명 미기재 — RULE-NO-COMPANY
 wb.save(output)
 ```
 
-**중요**: 템플릿을 복사하면 로고 이미지, 병합셀, 서식이 모두 보존된다.
+**중요**: 템플릿을 복사하면 병합셀·서식은 보존되고, 로고·직인 이미지는 **복사한 시트를 그대로 쓸 때만** 보존된다. 시트를 삭제하거나 새로 만들면 이미지는 따라오지 않는다 — "앵커 객체(로고·직인) 보존 규칙" 절 참조.
 
-### Step 5: 수식 재계산 + 한글 금액 반영 (산출내역서 공공형 전용)
+### Step 5: 수식 재계산 (방식 B/C — 방식 A는 ④에서 수행)
 
-**1단계: 수식 재계산** (방식 B/C, 또는 방식 A에서 합계영역 일치 확인용)
+`export_estimate_remember.recalc(path)` 헬퍼 하나로 재계산한다(방식 A·B/C 공통):
 
-```bash
-python /mnt/skills/public/xlsx/scripts/recalc.py {output_file}
-```
-
-**2단계: 한글 금액 변환 및 B8 반영**
+1. xlsx 스킬의 `recalc.py` 탐색 — 환경변수 `XLSX_RECALC`(파일 경로) → 형제 스킬 폴더 `xlsx/scripts/recalc.py` → `~/.claude/skills/xlsx/scripts/recalc.py` → `~/.claude/skills/synced/*/xlsx/scripts/recalc.py` 순. 찾으면 `python recalc.py <파일>`로 실행.
+2. 없으면 LibreOffice headless(`soffice --headless --convert-to xlsx`)로 재계산한 결과로 원본을 교체한다.
+3. 둘 다 없으면 한국어 안내를 출력하고 `False`를 돌려준다 — 이때는 **Excel에서 열어 저장**(수식 계산)한 뒤 `verify()`를 돌린다.
 
 ```python
-from openpyxl import load_workbook
-from korean_amount import format_estimate_amount
-
-# 방식 A: result['pkVat'] 직접 사용 (calc_estimate가 이미 정확)
-# 방식 B/C: recalc 후 I17 값 읽기
-wb = load_workbook(output, data_only=True)
-total = wb.active['I17'].value
-wb.close()
-
-wb = load_workbook(output)
-wb.active['B8'] = format_estimate_amount(total)
-wb.save(output)
+from export_estimate_remember import recalc, verify
+ok = recalc(str(output))        # True = 재계산 완료 / False = Excel 저장 후 verify 필요
 ```
+
+재계산 후 합계 셀을 다시 읽어 섹션 소계·최종 견적이 맞는지 확인한다. 한글 금액 표기가 필요하면 `korean_amount.py`의 `num_to_korean()`을 쓴다(방식 A는 `export_estimate_remember`가 정적 한글 + TEXT 동적 숫자 하이브리드로 자동 기입).
 
 ### Step 6: 출력
 
-완성된 파일을 `/mnt/user-data/outputs/` 로 복사하고 present_files 로 전달한다.
+완성 파일은 작업 폴더의 `outputs/`에 `리멤버견적서_{{event_name}}_{{YYMMDD}}.xlsx`로 저장한다. 전달은 환경에 따라 — claude.ai에서는 present_files로 파일을 첨부하고, Claude Code에서는 저장 경로를 안내한다(파일 카드가 필요하면 그 환경의 파일 전달 도구를 쓴다).
 
-체이닝 후속 스킬에 전달할 ChainPayload JSON이 필요하면 [chaining-schema.md §7](references/chaining-schema.md) 의 `to_chain_payload()` 헬퍼 사용.
+체이닝 후속 스킬(jc-pptx ⑦예산 · mice-ops-docs 예산 집행률 · mice-aftermath 계획 예산)에 전달할 ChainPayload JSON이 필요하면 [chaining-schema.md §7](references/chaining-schema.md) 의 `to_chain_payload()` 헬퍼를 쓴다 — 호출: `payload = to_chain_payload(result, meta, cfg, target='jc-pptx', skill_dir=SKILL)`. `cfg`는 ② 입력(`optionsApplied`를 여기서 만든다), `meta`는 방식 A의 meta 그대로(`estimatedFrom` 필수), `skill_dir`는 세션에 붙여넣어 쓸 때 필수(`__file__` 없음), `target`은 `'jc-pptx'`·`'mice-ops-docs'`·`'mice-aftermath'`·`None`(공통). 저장: `.chaining/{{event_name}}_{{YYYYMMDD}}_to_{{target}}.json`.
 
 ### Step 6.5: 완료 게이트 (증거주의 — 통과 전 전달 금지)
 
 견적서는 숫자가 곧 신뢰다. 전달 직전 아래를 실제로 실행·확인하고, 미통과면 수정 후 재검증한다:
 
-1. **엔진 자가검증** (방식 A): `python scripts/calc_estimate.py` 실행 → "SSOT §9 검증 통과 (PASS)" 확인. 실패 시 엔진·입력을 의심하고 임의 보정 금지.
-2. **3중 금액 일치**: 엔진 결과(`pkVat`) ↔ 시트 합계 셀 ↔ 한글 금액(B8)이 동일한가 — 셀 값을 다시 읽어 대조한다(눈대중 금지).
+1. **엔진 자가검증** (방식 A): `python scripts/calc_estimate_remember.py` 실행 → "ALL PASS — golden 14 + adjustment 1 + grid 47행" 확인. 실패 시 엔진·입력을 의심하고 임의 보정 금지.
+2. **3중 금액 일치**: 엔진 결과(`pk`·`pk_excluding_options`) ↔ 시트 합계 셀(D10·D11) ↔ 한글 금액 표기가 동일한가 — 셀 값을 다시 읽어 대조한다(눈대중 금지).
 3. **재오픈 무결성**: 산출 .xlsx를 openpyxl로 재로드해 깨짐·수식 오류(#REF! 등)가 없는가.
 4. **입력 반영 전수성**: 요청·체이닝 입력의 인원·기간·옵션·특이 요구가 각각 어느 행에 반영됐는지 대응을 확인한다 — 누락 항목 0건.
 5. **식별정보**: 슬롯 주입값 외 회사·개인 식별정보 하드코딩 0건 (RULE-NO-COMPANY).
-6. **가격 산식 연동** (rfp-analyzer 체이닝 + RFP 가격 점수 산식 존재 시): 제안가가 최적 입찰가 구간 대비 어디에 있는지 한 줄 명시해 전달한다.
+6. **가격 산식 연동** (mice-rfp-analyzer 체이닝의 `estimate_hint` 또는 RFP 가격 점수 산식 존재 시): 제안가(`pk`·`pkVat`)가 `budget_announced`·`recommended_bid`(최적 입찰가 구간) 대비 어디에 있는지 한 줄 명시해 전달한다. `estimate_hint.vat`에 맞춰 비교 기준(VAT 별도/포함)을 맞춘다.
+7. **앵커 객체 보존**: 로고·직인이 산출물에 실제로 들어 있는가 — ① 시트별 `ws._images` 수 ② 저장본 `xl/media/` 존재 ③ recalc 후 재확인. 시트를 새로 만들거나 삭제한 작업이면 **필수**. 금액 검증은 이 결함을 걸러내지 못한다.
 
 확인 불가 항목(예: 발주가 미공개)은 "미확인"으로 표기하고 완료 주장하지 않는다.
 
@@ -344,98 +234,21 @@ wb.save(output)
 
 ## 전략 프라이싱 (선택 — 원가→제안가)
 
-`calc_estimate`/`pricing-engine.md`가 *원가·마진*을 산출한다면, 견적의 **제안가·할인폭·패키지 가격을 전략적으로** 정해야 할 때는 [pricing-strategy.md](references/pricing-strategy.md)를 참조한다. 4대 레버(가치기반·Van Westendorp 가격민감도·티어/패키지 구조·앵커링)로 "얼마에 제안할까"를 설계한다.
+`calc_estimate_remember`(데이터셋 단가·산식)가 *원가·마진*을 산출한다면, 견적의 **제안가·할인폭·패키지 가격을 전략적으로** 정해야 할 때는 [pricing-strategy.md](references/pricing-strategy.md)를 참조한다. 4대 레버(가치기반·Van Westendorp 가격민감도·티어/패키지 구조·앵커링)로 "얼마에 제안할까"를 설계한다.
 
 - 기계적 원가 산출만 필요하면 이 절을 건너뛴다(과함).
-- 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션 *판단*은 `jc-strategy-canvas`, *원가*는 `pricing-engine`. 본 절은 그 사이 가격 *결정 논리*.
+- 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션 *판단*은 `jc-strategy-canvas`, *원가*는 `calc_estimate_remember`. 본 절은 그 사이 가격 *결정 논리*.
 - 데이터 없는 지불의향·경쟁가는 `[가설]` — 추정 금지. 저가수주 리스크·낙관 마진은 `jc-redteam`으로 점검.
 
-## 산출내역서(공공·국가계약법형) 상세 규칙
-
-> 구 "M&C 견적서". 코드 키는 `mnc`(레거시 유지). 공공·관 발주(국가계약법 산출내역서) 대응용.
-
-### 자동 산출 매핑 (v2 신규)
-
-calc_estimate 결과를 산출내역서(공공형) 양식에 매핑하는 표준 카테고리:
-
-| 양식 카테고리 (Row 20+ A열) | calc_estimate 키 | 비고 |
-|---|---|---|
-| "1. 베뉴 사용료" | `s1` | 단일 행 (venueName 명시) |
-| "2. 시스템 구축" | `sysBreakdown` 7개 | video / scaler4k / audio / engineer / presentation / registration / misc |
-| "3. 디자인 및 브랜딩" | `desBreakdown` 3개 | env / web / kv |
-| "4. 운영 및 보험" | `opsBreakdown` 3개 | desk / ops / insurance |
-| "5. 추가옵션" | `otBreakdown` (활성 옵션만) | 옵션 라벨로 펼침 |
-| "6. 모객 솔루션" | `rsvpPkg` + `showup` | 2행 (RSVP / 쇼업) |
-| "7. PCO 기획료" | `s5` | 단일 행 |
-
-각 카테고리 끝에 "소계" 행 (I열 = SUM(...)) 자동 삽입. 섹션 간 빈 행 (높이 10) 삽입.
-
-상세 구현: `scripts/export_estimate.py` 의 `export_mnc_estimate()` 함수 참조.
-
-### 금액 계산 (v1과 동일 — 기존 호환)
-
-- **일반 항목**: `AMOUNT = PRODUCT(D열:F열)` (단가 × 수량 × 기간)
-- **인건비**: `AMOUNT = PRODUCT(D열:G열)` (단가 × 수량 × 개월 × 참여율) — 방식 B/C 전용
-- **소계**: 각 섹션의 AMOUNT 합계 (`=SUM(범위)`)
-
-### 합계 구조 (Row 12~17)
-
-| 셀 | 항목 | 수식 (방식 B/C) | 방식 A 처리 |
-|---|---|---|---|
-| I12 | 1. 합계 | 모든 섹션 소계의 SUM | calc_estimate 의 (s1+s2+s3+s4+ot+rsvpPkg+showup) |
-| I13 | 2. 기업이윤 | 인건비 기반 수식 | calc_estimate 의 s5 (PCO 기획료) |
-| I14 | 3. 총계 | =I12+I13 | 자동 (수식 유지) |
-| I15 | 4. 절사/할인 | 사용자 입력 | 0 (또는 사용자 지정) |
-| I16 | 5. 부가세 | =(I14+I15)*0.1 | 자동 |
-| I17 | 총 견적 | =I14+I15+I16 | calc_estimate 의 pkVat 와 일치해야 함 |
-
-방식 A에서 무결성 보장: `export_estimate.py` 가 본문 작성 후 `result['pkVat']` 과 셀 I17 결과 일치 여부 자동 verify.
-
-### 데이터 행 삽입 시 주의사항 (v1과 동일)
-
-1. **행 삭제 전 병합 해제 필수**: Row 19+ 영역의 기존 병합셀을 모두 `unmerge_cells()` 로 해제한 후 행을 삭제해야 충돌 방지
-2. 카테고리 구분 행 → 아이템 행 → 서브아이템 행 순서를 유지한다
-3. 소계 행의 I열에 `=SUM(시작:끝)` 수식을 넣는다
-4. 섹션 간 빈 행(구분선, 높이 10)을 삽입한다
-
-### 필수 병합 규칙 (v1과 동일)
-
-- **세부산출내역(Row 19)**: A19:K19 전체 병합
-- **열 헤더 REMARKS**: J20:K20 병합
-- **모든 데이터 행**: J:K 병합 (카테고리, 아이템, 소계 모두)
-- **소계 행**: A:H 병합 + J:K 병합
-
-### 동적 수식 규칙 (v1과 동일)
-
-- **B7 (견적일시)**: `=TODAY()` + 날짜 형식 `YYYY"년 "M"월 "D"일"`
-- **B8 (견적금액)**: recalc 또는 calc_estimate 후 한글 변환하여 정적 문자열 기입
-- **K9 (RFP 금액)**: 사용자 입력 셀 (파란색 텍스트, 외부 주입)
-- **J17 (비율)**: `=IF(K9>0,I17/K9,"")` — RFP 대비 비율, 0% 형식
-
-### 스타일 규칙 (역할→SoT 토큰 매핑은 [jc-design-mapping.md](references/jc-design-mapping.md), 값 정본은 jc-design-system signature-tokens.md §6 JSON 정본)
-
-| 위치 | 시맨틱 역할 | SoT 토큰 | 클라이언트 오버레이 |
-|---|---|---|---|
-| 세부산출내역 타이틀 (Row 19), 열 헤더 (Row 20), 총 견적 (Row 17) | 헤더·타이틀 | `--jc-primary` | `remember` |
-| 카테고리 행 | 액센트·구분 강조 | `--jc-accent` | `remember` |
-| 소계 금액 강조 | 위험·금액 강조 | `--jc-danger` | 유니버설 |
-| 소계 배경 | 중립 강조 면 | `--jc-border-strong` | 유니버설 |
-| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base` | 유니버설 |
-
-#### 행 높이
-- Row 1 (타이틀): 37.5 / Row 2~10: 25.0 / 구분선: 10.0 / 데이터: 25.0
-
----
-
-## 리멤버 견적서 상세 규칙 (기본 양식)
+## 리멤버 견적서 상세 규칙
 
 ### 금액 계산
 
 - **차액**: `F열 = D열(정가) - E열(패키지할인가)`
 - **섹션 소계**: total 행에 D/E/F열 각각 SUM
-- **PCO 기획료 (직접비의 25% 별도 계상 — 2026-08 실무 반영, D1-③)**:
-  - **직접비 = 섹션2~5의 F열 합계** (베뉴·시스템·디자인·운영인력+보험·기타운영비의 실청구액; 모객비용 제외)
-  - **PCO 기획료 = 직접비 × 25%** — 단일 라인으로 별도 계상(섹션 6)
+- **PCO 기획료 (운영비의 25% — SSOT: calcEstimate.js, v3.1.0 정정)**:
+  - **opCost = s1(베뉴)+s2(시스템)+s3(디자인)+s4(운영)+ot(옵션)+rsvpPkg(사전신청 관리)+genManage(참관객)** — **쇼업 보장(showup) 비용만 제외**, leadPkg 조정 델타 미포함
+  - **PCO 기획료 = floor(opCost × 0.25 / 10000) × 10000** — 만원 미만 절사(반올림 아님), 단일 라인 별도 계상(섹션 6)
   - (레거시 참고) 구 v2 방식은 인건비(운영비 15%) + 기업이윤(10%)의 2단 구조였다. v3부터 직접비 25% 단일 기획료로 대체. 기존 파일(방식 C) 수정 시에는 원 파일 구조를 존중하되 신규 생성은 25% 방식을 기본으로 한다.
 - **최종 견적**: 모든 섹션 F열 합계 + 할인
 
@@ -473,13 +286,23 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 * KPI 확정 후 모객 규모 및 비용 별도 협의
 ```
 
-### 스타일 규칙 (역할→SoT 토큰 매핑은 [jc-design-mapping.md](references/jc-design-mapping.md) §3, 값 정본은 jc-design-system signature-tokens.md §6 JSON 정본)
+### 스타일 규칙 (색은 jc-design-system v2 토큰 런타임 로드)
 
-| 위치 | 시맨틱 역할 | SoT 토큰 | 클라이언트 오버레이 |
-|---|---|---|---|
-| 섹션 라벨 배경 | 포인트·핫 강조 (브랜드 포인트) | `--jc-point-orange` (= `--jc-data-3`) | `remember` |
-| 열 헤더 배경 | 중립 다크 헤더 면 (Charcoal 톤) | `--jc-text` | 유니버설 |
-| 본문 폰트 | 보조 텍스트·테이블 | `--jc-font-ko` + `--jc-text-sm` (맑은 고딕 레거시 폴백) | `remember` |
+값(HEX)은 문서에 적지 않는다 — `scripts/estimate_tokens.py`의 `palette()`가 `jc-design-system/references/signature-tokens.md` §6 JSON에서 역할별 색을 읽어 `export_estimate_remember.py`의 `ST` 스타일에 채우고, 로드 실패 시에만 §6 값을 출처 주석과 함께 둔 폴백 상수를 쓴다(`palette()["_source"]`로 `sot:`/`fallback` 확인). 글꼴 크기·굵기·정렬·테두리·숫자서식·열 너비·행 높이는 컨피규레이터 실측 레이아웃 그대로 — 바뀌는 것은 색뿐. 매핑 정본은 [jc-design-mapping.md](references/jc-design-mapping.md) §3.
+
+| 위치 | 역할(palette 키) | §6 키 |
+|---|---|---|
+| 타이틀·섹션 합계 배경 | `ink` | `color.primary` |
+| 열 헤더 배경 | `inkSoft` | `color.primarySoft` |
+| 다크 면 위 글자(타이틀·라벨·헤더) | `paper` | `color.surface` |
+| 섹션 라벨 배경·총액 글자 (리멤버 오렌지) | `accent` | `color.accent` |
+| 총액 행 배경 | `accentSoft` | `color.accentSoft` |
+| 회색 라벨 / 소계 행 배경 | `surfaceAlt` / `surfaceSoft` | `color.surfaceAlt` / `color.surfaceSoft` |
+| 섹션 헤더 배경 | `amberTint` | `color.point.amberTint` |
+| 경고 문구 글자 / 배경 | `accentStrong` / `warningBg` | `color.accentStrong` / `color.semantic.warningBg` |
+| 안내 문구 글자 / 배경 | `steel` / `steelTint` | `color.point.steel` / `color.point.steelTint` |
+| 푸터 글자 | `danger` | `color.semantic.danger` |
+| 본문 서체·크기·굵기 | (매체값 10pt 유지) | `font.ko` · `size.sm` · `weight.bold` |
 
 #### 행 높이
 - 기본 15.75 / 구분선 6.75 / 섹션·열 헤더 29.25
@@ -499,48 +322,125 @@ C열에 타겟팅 조건을 줄바꿈(\n)으로 기재:
 | 3. 디자인 | 37 | 38 | 39~42 | 43 |
 | 4. 운영인력 | 45 | 46 | 47~49 | 50 |
 | 5. 기타운영비 | 52 | 53 | 54~56 | 57 |
-| 6. PCO이윤 | 59 | 60 | 61~62 | 64 |
+| 6. PCO 기획료 | 59 | 60 | 61 (62~63 예비) | 64 |
 | 7. 모객솔루션 | 66 | 67 | 68~69 | 70 |
 
 **주의**: `insert_rows()` / `delete_rows()` 사용 시 수식 범위가 자동 조정되지 않으므로 소계 수식을 반드시 재설정한다.
+
+**섹션 6(방식 B 템플릿 복사 시)**: 템플릿 `assets/remember_template.xlsx`의 59~64행은 25% 단일 라인 — D61 `=F25+F35+F43+F50+F57+F68`(섹션 1~5 total + F68 = 섹션 7 68행 모집리드·사전모집 = `rsvpPkg`, 쇼업 F69 제외) · E61 0.25 · F61 `=FLOOR(D61*E61,10000)` · F64 `=F61` · F59 `=F64`, 요약 B17 `=F25+F35+F43+F50+F57+F64+F70` · B19 `=B17+B18`. **값 교체만 하면 되고 행 치환은 불필요**하다.
+62~63행은 섹션 6 예비(빈 행, 스타일·병합 유지). 섹션 6에 라인을 추가해 62·63행을 쓰면 F64를 `=SUM(F61:F63)`로 바꾼다. 참관객 관리 등 직접비 항목은 섹션 7(68~69행 아래 insert — 위 주의대로 F70·B17 참조 재설정)에 넣고, 그 F셀을 D61 수식에 더한다(쇼업 보장 F69는 계속 제외).
+
+---
+
+## 앵커 객체(로고·직인) 보존 규칙 (v3.2.0 신규)
+
+xlsx의 로고·직인 이미지는 워크북이 아니라 **개별 시트에 앵커**된다(`xl/drawings/drawingN.xml` ↔ 시트 rels). 시트를 지우면 그 시트에 얹힌 이미지도 함께 사라진다. 금액·수식·서식은 멀쩡하므로 **금액 검증만으로는 절대 걸러지지 않는다.**
+
+### 소실이 발생하는 경로
+
+| 작업 경로 | 이미지 | 대응 |
+|---|---|---|
+| 템플릿 복사 → 기존 시트에 값만 교체 | 보존 | 조치 불필요 — **권장 경로** |
+| 템플릿 복사 → `create_sheet()`로 새 시트 → 원본 시트 `del wb[name]` | **소실** | 앵커 재삽입 필수 |
+| `copy_worksheet()`로 시트 복제 | **소실** (openpyxl은 이미지를 복제하지 않는다) | 앵커 재삽입 필수 |
+| `load_workbook()` → `save()` 왕복 | 대체로 보존, 버전에 따라 유실 | 저장 후 게이트로 확인 |
+
+리멤버 견적서의 "값 교체 우선 원칙"은 이 소실을 구조적으로 회피하는 장치이기도 하다. 시트를 새로 만들어야 하는 변환 작업에서만 아래 절차가 필요하다.
+
+### 앵커 좌표 추출
+
+눈대중 배치 금지 — 원본 `drawing1.xml`의 EMU 값을 그대로 재사용한다.
+
+```python
+import zipfile, re
+
+with zipfile.ZipFile(SRC) as z:
+    xml = z.read('xl/drawings/drawing1.xml').decode()
+    open(LOGO, 'wb').write(z.read('xl/media/image1.png'))
+
+# Excel 저장본 = 기본 네임스페이스(접두사 없음)+twoCellAnchor / openpyxl 저장본 = xdr: 접두사+oneCellAnchor → 둘 다 대응
+f = re.search(r'<(?:xdr:)?from>\s*<(?:xdr:)?col>(\d+)</(?:xdr:)?col>\s*<(?:xdr:)?colOff>(\d+)</(?:xdr:)?colOff>'
+              r'\s*<(?:xdr:)?row>(\d+)</(?:xdr:)?row>\s*<(?:xdr:)?rowOff>(\d+)</(?:xdr:)?rowOff>', xml)
+e = re.search(r'<(?:xdr:|a:)?ext\b[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"', xml)  # oneCellAnchor <xdr:ext> 또는 xfrm <a:ext>
+COL, COL_OFF, ROW, ROW_OFF = map(int, f.groups())
+CX, CY = map(int, e.groups())   # 1 px = 9,525 EMU (96 DPI)
+```
+
+### 재삽입
+
+```python
+from openpyxl.drawing.image import Image as XLImage
+from openpyxl.drawing.spreadsheet_drawing import OneCellAnchor, AnchorMarker
+from openpyxl.drawing.xdr import XDRPositiveSize2D
+
+def add_anchored_image(ws, path, col, col_off, row, row_off, cx, cy):
+    img = XLImage(path)
+    img.anchor = OneCellAnchor(
+        _from=AnchorMarker(col=col, colOff=col_off, row=row, rowOff=row_off),
+        ext=XDRPositiveSize2D(cx, cy))
+    ws.add_image(img)
+```
+
+새 시트를 만드는 즉시 호출한다 — 마지막에 몰아서 처리하면 시트 하나를 빠뜨리기 쉽다.
+
+### 저장 전 게이트 (필수)
+
+```python
+for name in wb.sheetnames:
+    n = len(wb[name]._images)
+    assert n == EXPECTED, f'{name}: 앵커 이미지 {n}개 (기대 {EXPECTED})'
+wb.save(OUT)
+
+with zipfile.ZipFile(OUT) as z:
+    assert [n for n in z.namelist() if n.startswith('xl/media/')], '저장본에 이미지 없음'
+```
+
+`recalc.py`는 LibreOffice 왕복이므로 **재계산 후에도 한 번 더 확인**한다. 동일 이미지가 여러 시트에 있으면 이 단계에서 하나로 병합되는데, 이는 정상 동작이다.
+
+### 외부 주입 직인 슬롯
+
+공급자 직인·로고는 Step 3.5의 `supplier_logo` 슬롯이며 외부 주입 대상이다. 템플릿 자산에 특정 법인의 직인 이미지가 embed된 채로 남아 있으면 공급자 슬롯과 무관하게 그 직인이 찍혀 나간다. 템플릿 자산을 수정하거나 동기화할 때 `xl/media/` 실물을 확인한다 — 파일 크기 급증은 이미지 잔존 신호다.
+
+```bash
+unzip -l assets/<템플릿>.xlsx | grep -E 'media|drawing'
+```
 
 ---
 
 ## 코드 작성 원칙
 
 1. **수식 사용 필수** (방식 B/C): 금액은 Python으로 계산하지 말고 반드시 Excel 수식으로 넣는다
-2. **자동 산출은 Python에서** (방식 A, v2 신규): `calc_estimate()` + `export_estimate()` 결합
+2. **자동 산출은 Python에서** (방식 A): `calc_estimate_remember()` + `export_remember_estimate()` 결합
 3. **템플릿 복사 우선**: 새 견적서는 항상 assets/의 템플릿을 복사하여 시작한다
-4. **서식 보존**: 템플릿의 폰트, 색상, 병합셀, 로고를 최대한 보존한다
-5. **외부 주입 변수 엄수**: 공급자·고객사 정보 하드코딩 절대 금지 (CLAUDE.md §10)
+4. **서식·앵커 객체 보존**: 폰트·색상·병합셀은 셀 스타일이라 시트를 새로 만들어도 복제할 수 있지만, 로고·직인은 **시트에 앵커된 별도 객체**라 셀 스타일 복제로 따라오지 않는다. 시트를 삭제·신규 생성하는 경로에서는 앵커 재삽입 + 저장 전 게이트를 반드시 거친다
+5. **외부 주입 변수 엄수**: 공급자·고객사 정보 하드코딩 절대 금지 (정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`)
 6. **체이닝 입력 우선 처리** (v2): ChainPayload JSON이 있으면 별도 정보 수집 없이 자동 진행
-7. **§9 검증값 인지**: 100명 표준 (옵션 없음) = 83,750,000원. 자동 산출 결과가 이 값에서 크게 벗어나면 입력값 재확인.
-8. **양식 식별자 외 회사명 금지**: 본문·산출물에 구체 회사 상호를 작성하지 않는다. 양식 식별자(`리멤버 견적서`·`산출내역서(공공형)`)만 양식 명칭으로 사용. 공급자·고객사 식별 정보는 모두 외부 주입 변수 (Step 3.5 슬롯). 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`.
+7. **골든 벡터 인지**: 데이터셋 golden 14건·headcount grid 47행이 엔진 자가검증의 기준값이다. 자동 산출 결과가 같은 인원대의 골든 값에서 크게 벗어나면 입력값 재확인.
+8. **양식 식별자 외 회사명 금지**: 본문·산출물에 구체 회사 상호를 작성하지 않는다. 양식 식별자(`리멤버 견적서`)만 양식 명칭으로 사용. 공급자·고객사 식별 정보는 모두 외부 주입 변수 (Step 3.5 슬롯). 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`.
 
 ---
 
 ## References
 
-- [pricing-engine.md](references/pricing-engine.md) — calc_estimate 엔진 사용법·공식 (원가 산출)
+- [changelog.md](references/changelog.md) — 변경 이력 원문(v3.3.0 ~ v1.0). 최신 항목은 본 문서 '## 변경 이력'
 - [pricing-strategy.md](references/pricing-strategy.md) — 전략 프라이싱(가치기반·Van Westendorp·티어·앵커링), 원가→제안가 결정 논리
-- [option-catalog.md](references/option-catalog.md) — 9종 옵션·상호배제 규칙
 - [venue-db.md](references/venue-db.md) — 베뉴 DB 스키마 + 슬롯 (데이터 보류)
 - [venue-db-realdata.md](references/venue-db-realdata.md) — 베뉴파인더 견적이력 기반 실데이터 25건 (2026-04~05 스냅샷, Sprint 8 입수). 사용 전 주의:
-  - `per_pax_rate`·대관료 단독가는 소스에 없어 **여전히 미채움** — calcEstimate 자동 산출 경로는 변경 없이 유지되며 기존 `VENUE_PER_PAX_5STAR` 폴백이 계속 적용된다.
+  - `per_pax_rate`·대관료 단독가는 소스에 없어 **여전히 미채움** — 자동 산출 경로는 데이터셋의 베뉴 단가 규칙을 따른다.
   - 실데이터의 금액 필드(`min_rental`/`max_rental_observed`)는 **견적 총액(F&B 등 포함)이지 대관료 단독이 아니다** — 대관료 라인아이템(s1) 참고 시 반드시 [venue-db-realdata.md](references/venue-db-realdata.md) §0을 먼저 읽을 것.
   - `lookup_venue()`는 아직 실데이터 기준으로 구현되지 않음 — 현재 실질 가치는 수용인원 검증(capacity sanity check)과 지역별 베뉴 후보 제시다.
-- [jc-design-mapping.md](references/jc-design-mapping.md) — Excel 색상 → JC 시맨틱 토큰
-- [chaining-schema.md](references/chaining-schema.md) — 입출력 JSON 스키마·풀 워크플로우
-- [mnc_template.md](references/mnc_template.md) — 산출내역서(공공형) 양식 상세 사양 (레거시 파일명 `mnc_template.md` 유지)
-- [remember_template.md](references/remember_template.md) — 리멤버 양식 상세 사양 (v1 유지)
+- [jc-design-mapping.md](references/jc-design-mapping.md) — Excel 셀 역할 → jc-design-system §6 키 매핑(값 없음 — `estimate_tokens.py` 런타임 로드)
+- [chaining-schema.md](references/chaining-schema.md) — 입출력 JSON 스키마(입력 jc-pptx·mice-rfp-analyzer / 출력 jc-pptx·mice-ops-docs·mice-aftermath)·직렬화 헬퍼
+- [remember_template.md](references/remember_template.md) — 리멤버 양식 상세 사양(템플릿 v3.3.2 실측 셀·수식·스타일)
 
 ## Scripts
 
-- [calc_estimate.py](scripts/calc_estimate.py) — 자동 산출 엔진. `python calc_estimate.py` 로 SSOT §9 자가검증
-- [export_estimate.py](scripts/export_estimate.py) — Excel 본문 자동 작성 (calc_estimate 결과 → xlsx)
+- [calc_estimate_remember.py](scripts/calc_estimate_remember.py) — 리멤버 양식 자동 산출 엔진 (v3.1.0). `python calc_estimate_remember.py` 로 golden 14+adjustment 1+grid 47행 자가검증
+- [export_estimate_remember.py](scripts/export_estimate_remember.py) — 리멤버 견적서 xlsx 자동 작성 브리지 + `recalc()` 재계산 헬퍼 + `verify()` 무결성 게이트. `--self-test`로 export→recalc→verify 왕복과 토큰 출처(`_source`) 확인
+- [estimate_tokens.py](scripts/estimate_tokens.py) — jc-design-system v2 토큰 런타임 로더. `palette()` 역할명 → HEX, `_source`로 SoT/폴백 구분 (v3.3.1)
 - [korean_amount.py](scripts/korean_amount.py) — 한글 금액 변환
 
 ## Assets
 
-- [mnc_template.xlsx](assets/mnc_template.xlsx) — 산출내역서(공공형) 템플릿 (레거시 파일명 유지; 공급자 직인/로고는 외부 주입 슬롯, 회사 상호 텍스트 0건)
-- [remember_template.xlsx](assets/remember_template.xlsx) — 리멤버 견적서 템플릿 (양식 식별자 '리멤버' 만 포함)
+- [remember_template.xlsx](assets/remember_template.xlsx) — 리멤버 견적서 템플릿(방식 B/C 수동 입력용 — 방식 A는 export_estimate_remember가 레이아웃 자체 생성). 자리표시자만(실명 0 — 셀·docProps 메타 모두; 두 시트 B11·B13·B14·B15·B24·C24 `(외부 주입 - …)`)·섹션 6 25% 단일 라인(D61·E61·F61·F64·F59 수식)·요약 수식(B17·B19), 그 외 금액은 샘플 리터럴(방식 B가 덮어씀). 복사 직후 자리표시자를 주입값으로 교체(RULE-NO-COMPANY, Step 6.5 게이트 5)
+- [remember_pricing_dataset_v1.json](assets/remember_pricing_dataset_v1.json) — 컨피규레이터 단가·산식·골든 벡터 SSOT 스냅샷 (v3.1.0)

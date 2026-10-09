@@ -10,7 +10,7 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 - **시트 수**: 7개 (요건 / 평가 / 리스크 / 경쟁 / 일정 / 예산 / 종합)
 - **인코딩**: UTF-8
 - **글꼴**: 본문 Pretendard 10pt / 헤더 Pretendard SemiBold 11pt
-- **색상**: jc-design-system signature 토큰 호출
+- **색상**: jc-design-system v2(리멤버 웜 페이퍼) 토큰 런타임 로드 — `scripts/rfp_tokens.py`. 아래 서식 규칙은 **토큰 역할명**으로 적는다(HEX 미러 금지).
 
 ---
 
@@ -23,38 +23,51 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 | A | 항목 라벨 | 25 |
 | B | 값 | 40 |
 | C | 비고 | 30 |
+| D | 리멤버 로고 슬롯 | 24 |
 
 ### 행 구성
 
 ```
-1행:  RFP 분석 평가 매트릭스 (병합 A1:C1, 헤더, 16pt Bold, Primary Navy 배경)
+1행:  RFP 분석 평가 매트릭스 (병합 A1:C1, 16pt Bold 잉크, bg 면 + 하단 accent 굵은 룰) | D1 리멤버 로고(없으면 발행 명의 텍스트)
 3행:  발주처              | [발주처명]
 4행:  행사명              | [행사명]
 5행:  분석 일자            | [YYYY-MM-DD]
 6행:  분석자              | [작업자명]
-8행:  ▼ 7축 종합 점수
-9행:  1. 요건             | [점수]/5.0 | 가중치 15%
-10행: 2. 평가             | [점수]/5.0 | 가중치 20%
-11행: 3. 리스크           | [점수]/5.0 | 가중치 20%
-12행: 4. 경쟁             | [점수]/5.0 | 가중치 15%
-13행: 5. 일정             | [점수]/5.0 | 가중치 10%
-14행: 6. 예산             | [점수]/5.0 | 가중치 15%
-15행: 7. 종합 가치         | [점수]/5.0 | 가중치 5%
-17행: ▶ 가중 평균 종합 점수 | =SUMPRODUCT(B9:B15, 가중치) | 자동 계산
-18행: ▶ 판정              | =IF(B17>=4,"GO",IF(B17>=3,"GO 조건부",IF(B17>=2,"HOLD","NO-GO")))
-19행: ▶ 추정 승률          | [XX%] | 참고용
-21행: ▼ 핵심 메시지 (GO인 경우)
-22행: 메시지 1
-23행: 메시지 2
-24행: 메시지 3
+8행:  ▼ NO-GO 강제 조건 (SKILL §4 — 하나라도 TRUE면 판정 NO-GO)
+9행:  ① 필수 요건 충족 불가 (필수×불가) | =COUNTIFS('1_요건'!$A:$A,"필수",'1_요건'!$D:$D,"불가")>0 | 자동
+10행: ② 치명 독소 조항 + 협상 여지 없음  | TRUE/FALSE | 분석자 입력 (3_리스크 '상' 중 협상 불가)
+11행: ③ 합리적 원가 > 발주가            | =AND('6_예산'!$B$2>0,'6_예산'!$B$4>'6_예산'!$B$2) | 자동
+12행: ④ 물리적 일정 불가                | TRUE/FALSE | 분석자 입력 (5_일정 리드타임 미달)
+13행: HOLD 조건 — 판정 좌우 정보 미확인(질의로 해소 가능) | TRUE/FALSE | C열에 GO 전환 조건
+15행: ▶ 판정 (SKILL §4 규칙) | =IF(OR(B9:B12),"NO-GO",IF(B13,"HOLD",IF(COUNTA(B20:B22)>0,"GO","HOLD")))
+16행: ▶ 판정 근거          | [3줄: 강제 조건 점검 · 승부 메시지 근거 · 불리 요인]
+17행: ▶ 추정 승률          | [XX%] | 참고용
+19행: ▼ 핵심 메시지 (승부 메시지 — GO 조건)
+20행: 메시지 1
+21행: 메시지 2
+22행: 메시지 3
+24행: ▼ 7축 강약 점수 (참고 지표 — 판정에 쓰지 않음)
+25행: 1. 요건             | [점수]/5.0 | 참고 가중 15%
+26행: 2. 평가             | [점수]/5.0 | 참고 가중 20%
+27행: 3. 리스크           | [점수]/5.0 | 참고 가중 20%
+28행: 4. 경쟁             | [점수]/5.0 | 참고 가중 15%
+29행: 5. 일정             | [점수]/5.0 | 참고 가중 10%
+30행: 6. 예산             | [점수]/5.0 | 참고 가중 15%
+31행: 7. 전략 가치         | [점수]/5.0 | 참고 가중 5%
+32행: ▶ 참고 가중 점수 (판정 아님) | =B25*0.15+…+B31*0.05 | 승률 추정·강약 시각화용
 ```
 
+### 판정 규칙 (SKILL §4를 수식으로)
+- **B15 판정**은 가중 점수를 보지 않는다. 순서: ① 강제 조건 체크셀(B9:B12) 중 하나라도 TRUE → `NO-GO` ② HOLD 조건(B13) TRUE → `HOLD` ③ 승부 메시지(B20:B22)가 1개 이상 → `GO` ④ 그 밖(경계선) → `HOLD`.
+- ①·③은 요건·예산 시트에서 자동 계산, ②·④·HOLD는 분석자가 TRUE/FALSE로 입력한다. 발주가 미공개(B2=0)면 ③은 FALSE로 두고 HOLD 조건으로 처리한다.
+- .docx 판정과 B15 값이 같아야 한다(SKILL §8 완료 게이트 5). `build_matrix.rule_judgment()`가 같은 규칙의 파이썬 미러다.
+
 ### 서식 규칙
-- B18 셀 조건부 서식:
-  - "GO" → 배경 #00E676 (Neon Green)
-  - "GO 조건부" → 배경 #00E676 (Neon Green) 30% 투명도
-  - "HOLD" → 배경 #FF5722 (Orange)
-  - "NO-GO" → 배경 #E91E63 (Magenta), 글자 흰색
+- B9:B12 TRUE → 배경 `dangerBg`, 글자 `danger` Bold / B13 TRUE → 배경 `warningBg`, 글자 잉크
+- B15 셀 조건부 서식 (3단만):
+  - "GO" → 배경 `success`, 글자 흰색
+  - "HOLD" → 배경 `warning`, 글자 잉크(`text`) — 앰버 단독 텍스트 금지
+  - "NO-GO" → 배경 `danger`, 글자 흰색
 
 ---
 
@@ -82,9 +95,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - A열 조건부 서식:
-  - "필수" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "선택" → 배경 #FF5722 (Orange)
-  - "가산" → 배경 #00E676 (Neon Green)
+  - "필수" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "선택" → 배경 `warningBg`, 글자 잉크
+  - "가산" → 배경 `successBg`, 글자 `success`
 - D열 조건부 서식:
   - "불가" + A열="필수" → 행 전체 빨강 강조 (실격 위험 경고)
 
@@ -114,9 +127,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - G열 조건부 서식:
-  - "강점" → 배경 #2962FF (Electric Blue), 글자 흰색
-  - "약점" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "중립" → 배경 회색
+  - "강점" → 배경 `steelTint`, 글자 `steel` Bold
+  - "약점" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "중립" → 서식 없음(기본 행)
 
 ---
 
@@ -135,9 +148,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - D열 조건부 서식:
-  - "상" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "중" → 배경 #FF5722 (Orange)
-  - "하" → 배경 #00E676 (Neon Green) 50% 투명도
+  - "상" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "중" → 배경 `warningBg`, 글자 잉크
+  - "하" → 배경 `successBg`, 글자 `success`
 
 ### 자동 집계
 ```
@@ -159,8 +172,8 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 | D | 위협도 (상/중/하) | 14 |
 | E | 우리 대비 우열 | 14 |
 
-### 우리 측 SWOT 영역 (별도)
-시트 하단 또는 별도 박스:
+### 응찰 S/W/O/T 메모 (4축 부속)
+시트 하단 박스. 이 비딩에 응찰할 때의 자사 강점·약점·기회·위협 메모이며, 4축(경쟁) 판단의 부속 자료다. TOWS 전략 옵션화와 전사·신사업 SWOT는 `jc-strategy-canvas`(F3) 몫이다.
 ```
 우리 강점:   [추출 데이터]
 우리 약점:   [추출 데이터]
@@ -191,8 +204,8 @@ D열 간격       | =B열 - 직전 행 B열
 
 ### 서식 규칙
 - C열 조건부 서식:
-  - 7일 이하 → 배경 #E91E63 Magenta
-  - 14일 이하 → 배경 #FF5722 Orange
+  - 7일 이하 → 배경 `dangerBg`
+  - 14일 이하 → 배경 `warningBg`
 - E열 조건부 서식 동일 매핑
 
 ---
@@ -225,36 +238,40 @@ D열 간격       | =B열 - 직전 행 B열
 
 ### 서식 규칙
 - B5 조건부 서식:
-  - 5% 미만 → 배경 #E91E63 Magenta
-  - 5~15% → 배경 #FF5722 Orange
-  - 15% 이상 → 배경 #00E676 Neon Green
+  - 5% 미만 → 배경 `dangerBg`
+  - 5~15% → 배경 `warningBg`
+  - 15% 이상 → 배경 `successBg`
 
 ---
 
-## 공통 서식 토큰 (jc-design-system 호출)
+## 공통 서식 토큰 (jc-design-system 런타임 로드)
 
 ```python
-# build_matrix.py 에서 사용할 컬러 상수
-COLOR_PRIMARY     = "0A2540"  # Deep Navy
-COLOR_ACCENT      = "2962FF"  # Electric Blue
-COLOR_NEON        = "00E676"  # Neon Green (GO)
-COLOR_ORANGE      = "FF5722"  # Orange (HOLD)
-COLOR_MAGENTA     = "E91E63"  # Magenta (NO-GO/리스크 상)
-COLOR_LIGHT_GRAY  = "F5F5F5"  # 헤더 배경
-COLOR_DARK_GRAY   = "333333"  # 본문 텍스트
+# build_matrix.py — 값 미러 금지. SoT(signature-tokens.md §6)에서 역할명으로 읽는다.
+from rfp_tokens import palette
+P = palette()          # P["text"], P["surfaceAlt"], P["accent"], P["danger"] … ('#' 없는 HEX)
 ```
 
+| 역할 | 토큰 |
+|------|------|
+| 본문·헤더 글자 | `text` |
+| 헤더 면 | `surfaceAlt` |
+| 짝수 행 면 | `bg` |
+| 테두리 | `border` |
+| 섹션 라벨(▼·▶) | `accentStrong` Bold 11pt |
+| 상태 상/중/하 | `danger*` / `warning*` / `success*` |
+
 ## 헤더 행 표준 서식
-- 배경: COLOR_PRIMARY
-- 글자: 흰색 (#FFFFFF)
-- 글꼴: Pretendard SemiBold 11pt
+- 배경: `surfaceAlt`
+- 글자: 잉크(`text`) Bold
+- 글꼴: Pretendard 11pt
 - 가운데 정렬
 - 행 높이: 28pt
-- 셀 테두리: 흰색 1pt
+- 셀 테두리: `border` thin, 하단 잉크 medium
 
 ## 데이터 행 표준 서식
-- 배경: 짝수 행 #F8F9FB / 홀수 행 흰색
-- 글자: COLOR_DARK_GRAY
+- 배경: 짝수 행 `bg` / 홀수 행 흰색
+- 글자: 잉크(`text`)
 - 글꼴: Pretendard 10pt
-- 셀 테두리: #E0E0E0 0.5pt
+- 셀 테두리: `border` thin
 - 행 높이: 22pt

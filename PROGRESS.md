@@ -187,3 +187,52 @@ jc-skill-forge 인테이크 적용 기록 (날짜·소스·결정·근거).
 - proposal-voice v1.1.0: §0 "SKILL §3·§5·§6과 충돌 시 본 문서 우선"(배점 역설계·발주처 목차 우선은 상위) · §3-1 5 한 주장 정의 · §3-4 6항목(피동 T-2형·"통해" 2회·한 주장) · A-2 범위·분모 · §9 H-1 열 갱신·운용 메모·블라인드 결과.
 - SKILL v3.1.2: §3-6 우선권 승격 · §8 게이트 10 6항목. description 무변경.
 - 채널: ① Drive 정본 완료(백업 `_archive/20260925-blind/`) · ④ 본 커밋 · ② sync_deploy · ③ zip 재업로드는 기획자님.
+
+---
+
+## 2026-10-09 — 교통정리(Full Stocktake → 집행): 라이브 19종 정본화 · 폐합 20종 아카이브 · 계승·업그레이드 17종
+
+- **모드**: jc-skill-forge D 점검(Full Stocktake) → 사용자 지시로 집행. 브랜치 `claude/lucid-franklin-37n8cu`, 드래프트 PR #23(base `claude/relaxed-fermat-M5h5C`). 복구 지점 커밋 `8e47432`.
+- **대조**: 의도 상태(lint `LIVE` 19 / `ARCHIVED` 20, 2026-10-05) × claude.ai 업로드본(synced 48종, manifest 10-09) × git 정본(29종).
+- **핵심 발견**: ① claude.ai에 폐합 19종 잔존(10-02 일괄 재업로드분, 10-05 라이브 갱신 때 삭제 누락) ② git 정본이 9/21 재편 이전(라이브 7종 없음·11종 구버전·폐합 17종 잔존, mice-meeting-minutes는 claude.ai에 없음) ③ Code 목록 이중 노출은 구조(레포 루트 + synced).
+- **집행**: 라이브 18종 업로드본 동기 → 폐합 20종 `archive/skills/` 이동(git mv) + 레거시 3파일 `archive/legacy/` → CI에 forge 린트·토큰 테스트 → 워크플로우(경계검증 6클러스터 90건·흡수감사 20종·비평가 2명) → 적용 에이전트 4개 + 계승 에이전트 2개 + mice-meeting-minutes 개정 → 17종 개정(버전 대조표 `docs/CHANGELOG-2026-10-09.md` §2).
+- **계승**(폐합 → 라이브): 스폰서 덱(sponsor-deck.md)·proposal-voice v1.1.0(우선권) → jc-pptx / 행사명·슬로건 메시지 기획 → jc-doc-coauthor / HTML 리스킨·드라이브 운영 표준 → mice-ops-docs / 커뮤니케이션 양식 → mice-slack-ops.
+- **검증**: lint ERROR 0(WARN 3 = 채널명·멘션 오탐) · check_drift PASS · test_jc_tokens PASS · 스크립트 self-test PASS(meeting-minutes 2·rfp-analyzer 3·team-board·run-of-show·pt-script·kv-guide·ops-docs·check_deck·lint·build) · README 버전 = frontmatter · CI drift-guard 녹색.
+- **채널**: ① git 반영 완료 · ② Code 로컬 설치 미반영(0종 유지) · ③ claude.ai **미반영** — 폐합 19종 삭제 + `.skill` 18종 업로드는 기획자님(리포트 §6 카드 A·B). `mice-estimate`는 사용자 관리 — 내용 무수정, 패치 목록 §6 카드 C.
+- **리포트**: `docs/stocktake-2026-10-09.md`(세 집합 대조표·발견 90건 처리·흡수감사·프리셋 판정·결정 카드 A~H).
+
+## 2026-10-09 — mice-estimate v3.3.1(카드 C 적용) · claude.ai 동기화 런북(확장프로그램 삭제·끄기 지시문)
+
+- **지시**: "모든 스킬 삭제 수정 등등 확장프로그램으로 진행" / "업로드는 못하더라도 삭제 및 끄기는 가능하잖아" → 이 클라우드 세션은 브라우저 확장을 조작할 수 없어 **지시문·런북으로 대체**(`docs/claude-ai-sync-runbook-2026-10-09.md`: 폐합 19종 삭제 + 프리셋 doc-coauthoring 끄기 지시문, 수동 업로드 절차, manifest 확인표). 카드 C는 사용자 GO로 해석해 적용(되돌릴 수 있는 git 작업).
+- **mice-estimate v3.3.0 → v3.3.1**(워크플로우: 문서·스크립트 적용 2 → 적대 검증 3렌즈 → 수정 1): description 폐합명·브리프 게이트 삭제·형제 경계 / Step 2.5 `source: jc-pptx`(구 mice-proposal 별칭)·rfp §3-1 `estimate_hint` → 완료 게이트 6 / `/mnt` 3곳 → `recalc()`(xlsx recalc.py 탐색 → LibreOffice headless → Excel 저장 안내)·`outputs/` / 색 리터럴 → `estimate_tokens.py` 런타임 로드(§6 폴백) / chaining-schema 전면 현행화(§7 헬퍼 `optionsApplied` KeyError 수정, 실명 → 자리표시자) / 방식 A meta 키를 exporter 실제 키로 / remember_template PCO 산식 일치·구 토큰 제거 / 히스토리 `references/changelog.md` 이관. 산출 엔진·데이터셋·템플릿 자산 무변경(ALL PASS 유지).
+- **정합 보정(범프 없음, 미배포)**: jc-pptx proposal-playbook §6 "아직 자동 감지하지 못하면" 문장 → 자동 감지 서술 / jc-design-system chaining-protocol §4 mice-estimate 행 입력·출력 구분(`displayType`·`totalAmountVat`)·§5 역방향.
+- **검증**: lint(제외 없음) ERROR 0·WARN 3(오탐) · check_drift PASS · test_jc_tokens PASS · mice-estimate self-test 3종 PASS · CI `--exclude mice-estimate` 제거 · `build_skills.py --include-estimate` 19종.
+- **채널**: ① git 반영 완료 · ② Code 설치 없음 · ③ claude.ai **미반영** — 삭제·끄기는 확장프로그램(런북 §1), 업로드 19종은 기획자님 수동(런북 §2, 번들 `dist/jc-skills-live19-2026-10-09.zip`). 업로드 후 deploy-pipeline.md §1 "37종" 팩트 갱신 예정.
+- **남은 결정**: C-2(템플릿 xlsx 샘플 실문구·구 PCO 2단 구조 자산 정정) · E(브랜치) · H(보조 드라이브 폴더).
+
+## 2026-10-09 — ③ claude.ai 배포 완료(기획자님) · 배포 팩트 현행화
+
+- **집행(기획자님, 14:05Z)**: 폐합 19종 삭제(Claude in Chrome 지시문) · 라이브 19종 재업로드(mice-meeting-minutes 신규·mice-estimate v3.3.1) · 프리셋 doc-coauthoring OFF. 확인: claude.ai 화면 "내가 만듦 19"(폐합 0, mice-weekly-performance 포함 전부 삭제). Code 동기화본은 다음 주기 반영.
+- **문서**: deploy-pipeline §1 "37종" → 30종(자작 19 + 프리셋 11) 현행화 → jc-skill-forge v2.2.1. stocktake §5 ③ 반영 완료·카드 A·B·D 완료·§7 해소, CHANGELOG §4 완료.
+- **채널**: ① git 반영 완료 · ② Code 설치 없음(synced만) · ③ claude.ai **반영 완료** — 단 jc-skill-forge는 ③ v2.2.0(① v2.2.1과 배포 팩트 1줄 차이, 다음 배치에 재업로드).
+- **남은 결정**: C-2(견적 템플릿 xlsx 자산 정정) · E(브랜치) · H(보조 드라이브 폴더).
+
+## 2026-10-09 — mice-estimate v3.3.2(카드 C-2 템플릿 자산 정정, 사용자 위임) · H 기본값
+
+- **지시**: "견적템플릿은 뭔소린지 모르겠지만 알아서 처리" → 결정 위임으로 해석, 적용. "C드라이브 외 드라이브 없음"은 카드 H(구글 드라이브 행사 폴더 구조)를 PC 디스크로 이해하신 회신으로 보여 재안내 + 기본값(보조 폴더 유지) 채택. forge v2.2.1 재업로드 완료 보고 반영.
+- **템플릿 `assets/remember_template.xlsx`**(워크플로우: 적용 1 → 적대 검증 2렌즈 → 수정 1): 두 시트 실명·샘플 헤더(고객사명·호텔명·날짜) → `(외부 주입 - …)` 자리표시자 / 섹션 6 구 2단(인건비 15%+이윤 10%) → 25% 단일 라인 수식(D61=F25+F35+F43+F50+F57+F68, F61=FLOOR(D61*E61,10000), F64=F61, F59=F64) / 요약 B17·B19 수식 / 파일 메타 인명(creator·lastModifiedBy) 제거(검증 렌즈가 발견) / B15 날짜 서식 복원(검증 렌즈 과잉 변경 지적). 게이트: 전 셀 값·스타일 비교 차이 50건 = 의도 집합, 로고 앵커 EMU·이미지 바이트·병합 70·열너비·행높이 동일, LibreOffice 재계산 12값 기대값 일치·오류 셀 0.
+- **문서**: SKILL.md 셀 위치 맵·방식 B/C 코드(두 시트 순회·단일 옵션 시 시트 삭제)·Assets·변경 이력 v3.3.2, remember_template.md §2·§3·§5 실측 동기. README·CHANGELOG·stocktake C-2 완료.
+- **검증**: lint(제외 없음) ERROR 0 · calc ALL PASS · export self-test PASS · `_archive/20261009-template/` 원본 백업(로컬).
+- **채널**: ① git 반영 완료 · ② 없음 · ③ claude.ai — mice-estimate **v3.3.2 재업로드 필요**(기획자님, 구버전 삭제 → `.skill` 업로드). 나머지 18종은 ①=③.
+- **남은 결정**: E(브랜치 — `main` fast-forward 후 PR base 변경, ★ E-1). H는 기본값 채택.
+
+## 2026-10-09 — 세션 체크아웃 (교통정리 세션 종료)
+
+1. **완료**: 라이브 19종 git 정본화·폐합 20종 아카이브·계승/업그레이드 18종·mice-estimate v3.3.1→v3.3.2·jc-skill-forge v2.2.1 / claude.ai 폐합 19종 삭제·19종 재업로드·doc-coauthoring OFF / Code 동기화본 일치 / 런북·체크리스트·점검 리포트·CHANGELOG.
+2. **채널(최종)**: ① git — 브랜치 `claude/lucid-franklin-37n8cu`, PR #23 드래프트(base `claude/relaxed-fermat-M5h5C`), CI 녹색 · ② Code 로컬 설치 없음(synced만, 운영 원칙 G) · ③ claude.ai — 라이브 19종 ①=③ 일치, 프리셋 10 ON·doc-coauthoring OFF.
+3. **미결**: E(브랜치 — `main` fast-forward 후 PR base 변경, ★ E-1 / 또는 relaxed-fermat을 기본 브랜치로) → PR 머지는 기획자님.
+4. **백로그(F)**: ops-docs 구 대시보드 역량 선택 계승 · jc-pptx `program[]`·표지 라벨 인자화 · kv-guide 템플릿 토큰 런타임 로드 · design-system `--line-soft`·`--charcoal` 키 · session-protocol '브리프' 어휘 · lint 채널명 허용 목록 · effort 등급표 · deploy-pipeline §1에 "끈 프리셋은 synced에서 제외" 사실 추가(다음 forge 개정).
+5. **복구 지점**: 커밋 `8e47432`(재편 직전) · 로컬 `_archive/20261009-template/`(템플릿 원본).
+6. **다음 세션 착수점**: E 결정 → PR 머지 → `docs/stocktake-2026-10-09.md` §6 전 카드 종결 확인. 신규 작업은 행사 프로젝트 폴더에서(운영 원칙 G).
+7. **주의**: 견적 xlsx 색은 v3.3.1부터 리멤버 웜 페이퍼 토큰(순오렌지·검정 → accent·ink 계열). 회의록은 첫 렌더 라이트 모드. mice-estimate 템플릿 헤더는 자리표시자라 방식 B/C에서 반드시 주입값으로 교체.
+

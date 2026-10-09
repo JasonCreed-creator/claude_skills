@@ -1,77 +1,73 @@
-# jc-design-system 매핑 (jc-design-mapping)
+# jc-design-system 매핑
 
-**대상 스킬**: jc-design-system (SoT — Single Source of Truth)
-**참조**: jc-design-system `references/signature-tokens.md` (§1 라이트 토큰, §6 JSON 정본), `references/mode-mapping.md`
-**상태**: ✅ R1 정합 완료 — jc-design-system 정본 참조
+**대상 스킬**: jc-design-system (SoT — Single Source of Truth, v2 리멤버 웜 페이퍼)
+**참조**: `jc-design-system/references/signature-tokens.md` (§6 JSON 정본), `jc-design-system/references/mode-mapping.md`, `jc-design-system/scripts/jc_tokens.py`(로더)
+**상태**: v3.3.1 — 값 미러 폐지, 런타임 로드(`scripts/estimate_tokens.py`)
 
-mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접 사용 → 디자인 일관성 깨짐. v2/R1은 각 색상의 **시맨틱 역할**을 jc-design-system 시그니처 토큰에 매핑한다. 모든 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON 정본`이며, 본 문서는 "Excel 셀 역할 → SoT 토큰" 참조표다.
+mice-estimate v1은 Excel 자체 색상 hex를 직접 사용 → 디자인 일관성 깨짐. v2/R1은 각 색상의 **시맨틱 역할**을 jc-design-system 토큰에 매핑했고, v3.3.1부터는 값을 문서·코드에 미러하지 않고 **실행 시점에 SoT JSON을 읽는다**. 모든 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON`이며, 본 문서는 "Excel 셀 역할 → §6 키" 참조표다(값 열 없음).
 
-> **매체 제약**: Excel(xlsx)은 CSS 변수를 사용할 수 없으므로, 렌더링 단계의 hex 리터럴은 불가피하다. 이 리터럴은 반드시 SoT 정본값과 일치시키고 `SoT 미러: --jc-xxx` 주석을 단다(`scripts/export_estimate.py` 참조). 값 자체는 본 문서가 아니라 SoT JSON 정본을 진실의 원천으로 한다.
+> **매체 제약**: Excel(xlsx)은 CSS 변수를 쓸 수 없어 렌더링 단계에서는 hex 리터럴이 셀 스타일에 들어간다. 그 리터럴은 `estimate_tokens.palette()`가 실행 시점에 §6 JSON에서 꺼내 온 값이며, 로드 실패 시에만 §6 값을 출처 주석과 함께 둔 폴백 상수를 쓴다. 값을 바꾸려면 SoT를 고친다 — 본 스킬 쪽 문서·코드에서 값을 손대지 않는다.
 
 ---
 
 ## 1. 매핑 원칙
 
-1. **시맨틱(역할) 우선**: hex 코드를 직접 외우지 않고 "이 셀의 *역할*은 무엇인가"로 식별한 뒤 SoT 토큰에 매핑.
-2. **클라이언트 오버레이**: 소속사 기본 오버레이는 `remember`(Track A). 기본(시그니처)은 SoT 정본, 오버레이는 `jc-design-system/client-overlays.md` 책임.
+1. **시맨틱(역할) 우선**: hex 코드를 직접 외우지 않고 "이 셀의 *역할*은 무엇인가"로 식별한 뒤 §6 키에 매핑.
+2. **클라이언트 오버레이**: 소속사 기본 오버레이는 `remember`. 기본(시그니처)은 SoT 정본, 오버레이는 jc-design-system `client-overlays.md` 책임.
 3. **유니버설 vs 클라이언트별**:
-   - 시맨틱(danger·success 등)·중립(텍스트·보더·서피스) 역할 → 유니버설 (SoT 시그니처 그대로)
+   - 시맨틱(danger·warning 등)·중립(잉크·서피스) 역할 → 유니버설 (SoT 시그니처 그대로)
    - 브랜드(primary·accent) 역할 → 시그니처는 SoT, 클라이언트별 차별화는 오버레이
+4. **값 미러 금지**: 문서·코드 어디에도 §6 값을 복제해 두지 않는다. 유일한 예외는 로더의 폴백 상수(§6 값 + 출처 주석, 로드 실패 시에만).
 
 ---
 
-## 2. 산출내역서(공공형) 양식 매핑 (Excel 셀 역할 → SoT 토큰)
+## 2. 런타임 로드 — `scripts/estimate_tokens.py`
 
-값은 모두 jc-design-system `signature-tokens.md §6 JSON 정본` 기준. 아래 hex는 "SoT 정본값"으로, Excel 렌더링 시 미러링되는 참고치다.
+`mice-rfp-analyzer/scripts/rfp_tokens.py`와 같은 패턴. importlib로 `jc-design-system/scripts/jc_tokens.py`(`find_sot`/`load_tokens`/`color`/`dark`)를 불러 §6 JSON을 파싱한다.
 
-| Excel 위치 | 시맨틱 역할 | SoT 토큰 | SoT 정본값 | 비고 |
-|---|---|---|---|---|
-| 세부산출내역 타이틀 (A19:K19) | 헤더·타이틀 (신뢰 톤) | `--jc-primary` | `#0A2540` | Deep Navy — 표지/헤더/로고 역할 |
-| 열 헤더 행 (Row 20) | 헤더 배경 | `--jc-primary` | `#0A2540` | 동상 |
-| 카테고리 행 (예: "1. 유통판로 지원") | 액센트·구분 강조 | `--jc-accent` | `#2962FF` | Electric Blue 액센트 |
-| 소계 금액 강조 | 위험·금액 강조 (시맨틱) | `--jc-danger` | `#D32F2F` | 유니버설 — 모든 클라이언트 공통 |
-| 소계 행 배경 | 중립 강조 보더/면 | `--jc-border-strong` | `#C9CFD8` | 유니버설 |
-| 헤더 텍스트 | 카드·시트 서피스(흰색) | `--jc-surface` | `#FFFFFF` | 유니버설 |
-| Row 17 (총견적) 배경 | 헤더·강조 | `--jc-primary` | `#0A2540` | 유니버설(시그니처) |
-| 데이터 행 hair 테두리 | 구분선 | `--jc-border` | `#E5E8ED` | 유니버설 (hair/thin 두께는 렌더 로직) |
-| 데이터 행 thin 외곽 | 강조 보더 | `--jc-border-strong` | `#C9CFD8` | 유니버설 |
-| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base`(16px) | Pretendard | 산출내역서(공공형) 표준 (xlsx 실제 12pt 매체값) |
-| 타이틀 폰트 | 페이지 타이틀 | `--jc-font-heading` + `--jc-text-4xl`(44px) | Pretendard | Row 1 (xlsx 실제 30pt 매체값) |
-| 헤더 폰트 | H4·소제목 | `--jc-font-heading` + `--jc-text-xl`(22px) + `--jc-weight-bold` | Pretendard | 행사명·고객명 등 (xlsx 실제 14pt 매체값) |
-
-> Excel 폰트 포인트(12/14/30pt)는 xlsx 매체 고유 단위로, SoT의 px 스케일과 1:1 대응이 아니라 역할(본문/헤딩/타이틀) 기준 매핑이다.
+- **탐색 순서**: 형제 경로(`scripts/estimate_tokens.py` 파일 기준 parents[2] = `<skills>` 루트 → `jc-design-system`) → `~/.claude/skills/jc-design-system` → `~/.claude/skills/synced/*/jc-design-system`. 샌드박스 고정 경로는 보지 않는다.
+- **API**: `palette() -> dict` — 역할명 → `'#'` 없는 6자리 HEX. `P["_source"]`는 `"sot:<경로>"` 또는 `"fallback"`.
+- **소비처**: `export_estimate_remember.py`의 `ST` 스타일 사전이 `palette()` 값으로 fill·font 색을 채운다. `export_estimate_remember.py --self-test`가 `_source`를 출력하므로 SoT를 읽었는지 폴백인지 바로 확인할 수 있다.
 
 ---
 
-## 3. 리멤버 양식 매핑 (Excel 셀 역할 → SoT 토큰)
+## 3. 리멤버 양식 매핑 (Excel 셀 역할 → §6 키)
 
-| Excel 위치 | 시맨틱 역할 | SoT 토큰 | SoT 정본값 | 비고 |
-|---|---|---|---|---|
-| 섹션 라벨 배경 (A12 등) | 포인트·핫 강조 (브랜드 포인트) | `--jc-point-orange` (= `--jc-data-3`) | `#FF5722` | Vivid Orange — 리멤버 시그니처 포인트 역할 |
-| 열 헤더 배경 | 본문 텍스트(Charcoal) 톤의 진한 헤더 면 | `--jc-text` | `#1A1D24` | 유니버설 (중립 다크 면) |
-| 열 헤더 텍스트 | 카드·시트 서피스(흰색) | `--jc-surface` | `#FFFFFF` | 유니버설 |
-| 본문 폰트 | 보조 텍스트·테이블 | `--jc-font-ko` + `--jc-text-sm`(14px) | 맑은 고딕(레거시 폴백) | 리멤버 표준 (xlsx 실제 10pt 매체값) |
-| VAT 비고 강조 | 강조 본문 | `--jc-font-ko` + `--jc-weight-bold` | (유니버설) | |
+| 역할(palette 키) | §6 키 | 쓰이는 곳(`ST` 스타일) | 비고 |
+|---|---|---|---|
+| `ink` | `color.primary` | `title.fill`, `sec_amt.fill` | 타이틀·섹션 합계 다크 면 |
+| `inkSoft` | `color.primarySoft` | `col_hdr.fill` | 열 헤더 다크 면 |
+| `paper` | `color.surface` | `title`·`label_o`·`sec_amt`·`col_hdr` 글자색 | 다크 면 위 글자 |
+| `surfaceAlt` | `color.surfaceAlt` | `label_g.fill` | 회색 라벨 |
+| `surfaceSoft` | `color.surfaceSoft` | `sub.fill`, `sub_amt.fill` | 소계 행 |
+| `accent` | `color.accent` | `label_o.fill`, `tot_val` 글자색 | 리멤버 오렌지 — 섹션 라벨·총액 |
+| `accentSoft` | `color.accentSoft` | `tot_kor`·`tot_val`·`tot_sub`·`tot_vat.fill` | 총액 행 |
+| `accentStrong` | `color.accentStrong` | `warn` 글자색 | 경고 문구 |
+| `warningBg` | `color.semantic.warningBg` | `warn.fill` | 경고 배경 |
+| `amberTint` | `color.point.amberTint` | `sec_hdr.fill` | 섹션 헤더 |
+| `steel` | `color.point.steel` | `note_blue` 글자색 | 안내 문구 |
+| `steelTint` | `color.point.steelTint` | `note_blue.fill` | 안내 배경 |
+| `danger` | `color.semantic.danger` | `footer` 글자색 | 푸터 주의 문구 |
+| (서체) | `font.ko` · `size.sm` · `weight.bold` | 본문 폰트 | 매체값(10pt·굵기)은 컨피규레이터 실측 그대로 — 토큰화 대상은 색뿐 |
 
-> `--jc-point-orange`의 인쇄·구형 모니터 폴백은 없음(SoT §1.3). Neon 계열만 폴백 정의됨.
+색 외의 레이아웃(글꼴 크기·굵기·정렬·테두리·숫자서식·열 너비·행 높이)은 컨피규레이터 실측값을 유지한다. 견적서는 라이트 전용이라 `color.dark.*`는 쓰지 않는다.
 
 ---
 
-## 4. 클라이언트 오버레이 토글 (개념 설계)
-
-본 문서는 *정적 역할 매핑*을 정의한다. 실제 런타임 토글·오버레이 주입은 jc-design-system 스킬의 `client-overlays.md`가 SoT로 관장한다.
+## 4. 사용 예 — `estimate_tokens.palette()`
 
 ```python
-# 개념 모식 — 실제 토큰 값은 jc-design-system SoT가 반환
-from jc_design_system import get_token, set_overlay
+import sys
+sys.path.insert(0, str(SKILL / 'scripts'))          # SKILL = 이 스킬 폴더
+from estimate_tokens import palette
 
-set_overlay('remember')                   # 산출내역서(공공형)·리멤버 견적서 생성 시 (소속사 기본 오버레이 Track A)
-primary = get_token('--jc-primary')       # 시그니처 정본 → '#0A2540'
-
-point = get_token('--jc-point-orange')    # → '#FF5722' (리멤버 포인트 역할)
+P = palette()                 # 역할명 → '#' 없는 HEX 6자리 (SoT §6 JSON 런타임 로드)
+P['accent']                   # 섹션 라벨 배경·총액 글자 — color.accent
+P['ink'], P['paper']          # 다크 면과 그 위 글자 — color.primary / color.surface
+P['_source']                  # 'sot:<jc-design-system 경로>' 또는 'fallback'
 ```
 
-xlsx는 매체 특성상 hex를 직접 기입하되, 의미는 본 문서의 SoT 토큰과 1:1 매핑됨을 보장한다. 값의 진실의 원천은 jc-design-system `signature-tokens.md §6 JSON 정본`이다.
+클라이언트 오버레이 토글은 jc-design-system `client-overlays.md`가 관장한다 — 본 스킬은 역할 키만 묻고, 값은 SoT가 돌려준다.
 
 ---
 
@@ -80,28 +76,26 @@ xlsx는 매체 특성상 hex를 직접 기입하되, 의미는 본 문서의 SoT
 | 항목 | 적용 여부 |
 |---|---|
 | 역할 매핑 문서 (본 문서) | ✅ |
-| Excel 생성 코드 hex → SoT 정본값 정합 + `SoT 미러` 주석 | ✅ (`scripts/export_estimate.py`) |
-| 런타임 jc-design-system 토큰 fetch | jc-design-system SoT 책임 (향후) |
+| Excel 생성 코드 색 → 런타임 로드 (`scripts/estimate_tokens.py` → `export_estimate_remember.py` `ST`) | ✅ v3.3.1 |
+| 폴백 상수 (§6 값 + 출처 주석, 로드 실패 시에만) | ✅ `estimate_tokens.py` 안에만 둔다 |
 | 클라이언트 오버레이 자동 토글 | jc-design-system `client-overlays.md` 책임 |
 | Pretendard 폰트 보장 | 사용자 PC 설치 책임 |
 
 ---
 
-## 6. jc-design-system 정본과의 정합 (R1)
+## 6. jc-design-system 정본과의 정합
 
 본 매핑의 정합성 보장 조건:
 
-1. 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON 정본` — 본 문서는 토큰명 참조만 하고 값을 재정의하지 않는다.
-2. `client-overlays.md`에 `remember`(소속사 Track A) 오버레이 정의(브랜드 색 차별화)를 둔다. 구 `mc`는 아카이브(deprecated).
+1. 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON` — 본 문서는 키만 참조하고 값을 재정의·미러하지 않는다.
+2. `client-overlays.md`에 `remember`(소속사) 오버레이 정의를 둔다. 구 `mc`는 아카이브(deprecated).
 3. 견적서(xlsx)는 라이트 모드 전용 — `mode-mapping.md §1`상 xlsx 기본 모드 Light, 다크는 N/A(인쇄·이메일 첨부 표준).
-4. mice-estimate 렌더 코드는 SoT 정본값을 미러링하고 `SoT 미러: --jc-xxx` 주석으로 추적성을 유지한다.
-
-✅ R1 정합 완료 — jc-design-system 정본 참조
+4. mice-estimate 렌더 코드는 `estimate_tokens.py`로 §6를 **런타임 로드**한다. 폴백 상수는 §6 값 + 출처 주석(로드 실패 시에만). `--self-test`의 `_source`로 SoT/폴백 여부를 확인한다.
 
 ---
 
-## 7. 결정 사항 (R1 확정)
+## 7. 결정 사항
 
-- ✅ **색상 정본은 jc-design-system SoT(`signature-tokens.md §6`)로 단일화**. 본 문서는 역할→토큰 참조표 역할만 한다.
-- ✅ **Excel 생성 코드의 hex는 SoT 정본값으로 정합**(드리프트 교정). 매체 제약상 리터럴은 유지하되 `SoT 미러` 주석 필수.
-- ✅ **소속사 오버레이는 `remember`(Track A)로 단일화** (리멤버 전환 D2). 구 `mc`는 아카이브(deprecated), 그 외는 미사용.
+- ✅ **색상 정본은 jc-design-system SoT(`signature-tokens.md §6`)로 단일화**. 본 문서는 역할→키 참조표 역할만 한다.
+- ✅ **값 미러 폐지(v3.3.1)**: Excel 생성 코드의 색은 `estimate_tokens.py` 런타임 로드. 폴백 상수는 §6 값 + 출처 주석으로 로더 안에만 둔다.
+- ✅ **소속사 오버레이는 `remember`로 단일화**. 구 `mc`는 아카이브(deprecated), 그 외는 미사용.

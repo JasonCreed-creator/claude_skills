@@ -1,7 +1,7 @@
 ---
 name: jc-redteam
-version: "v1.2.2"
-description: 이미 도출된 결론·주장·판단·완성 문서를 외부 감사관 시각에서 적대적으로 재검증하는 레드팀 스킬. 3축(내용검증·오탈자감수·대안제시)으로 분석하고, 결함마다 심각도(Critical/Major/Minor)를 부여하며, 짧은 판단은 인라인 비평(Quick Strike), 장문·문서는 감수 리포트(Deep Audit)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '레드팀', 'red team', 'redteam', '결론 검증', '주장 검증', '논리 검증', '가설 검증', '의사결정 검증', '반론', '반박', '비판적 검토', '적대적 검증', '허점 분석', '맹점 분석', '데블스 애드보킷', '악마의 변호인', 'devils advocate', '스틸맨', 'steelman', '최종 감수', '정밀 감수'를 언급할 때. 사용자가 자신의 결론이나 Claude의 답변에 대해 '이거 맞아', '때려봐', '허점 찾아줘', '반대로 생각해봐', '뭐가 문제야', '검증해줘', '감수해줘'라고 요청할 때. 제안서·전략 문서·견적·판정 결과를 업로드하며 '최종 점검해줘', '납품 전에 봐줘', '틀린 거 없나 봐줘'를 요청할 때. 핵심 차별점 본 스킬은 RFP·공고 같은 '입력 문서'를 분석하지 않고, 이미 내려진 '결론·완성 산출물'을 공격한다. 따라서 'RFP 분석', 'RFP 검토', '비딩 분석'은 mice-rfp-analyzer 영역이므로 사용하지 말 것. 또한 '제안서 작성'은 mice-proposal, '견적서 생성'은 mice-estimate, '대본/스크립트/MC 멘트'는 pt-script, '대시보드/시각화'는 mice-dashboard, '회의록'은 mice-meeting-minutes, '스폰서/협찬 데크'는 mice-sponsor-deck 영역. 본 스킬은 위 모든 스킬의 산출물을 입력으로 받아 워크플로우 최하류에서 최종 품질 게이트 역할을 한다.
+version: "v1.4.0"
+description: 이미 도출된 결론·주장·판단·완성 문서를 외부 감사관 시각에서 적대적으로 재검증하는 레드팀 스킬. 3축(내용검증·오탈자감수·대안제시)으로 분석하고, 결함마다 심각도(Critical/Major/Minor)를 부여하며, 짧은 판단은 인라인 비평(Quick Strike), 장문·문서는 감수 리포트(Deep Audit)로 산출한다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '레드팀', 'red team', 'redteam', '결론 검증', '주장 검증', '논리 검증', '가설 검증', '의사결정 검증', '반론', '반박', '비판적 검토', '적대적 검증', '허점 분석', '맹점 분석', '데블스 애드보킷', '악마의 변호인', 'devils advocate', '스틸맨', 'steelman', '최종 감수', '정밀 감수'를 언급할 때. 자신의 결론이나 Claude의 답변에 대해 '이거 맞아', '때려봐', '허점 찾아줘', '반대로 생각해봐', '뭐가 문제야', '검증해줘', '감수해줘'라고 요청할 때. 제안서·전략 문서·견적·판정 결과를 올리며 '최종 점검해줘', '납품 전에 봐줘', '틀린 거 없나 봐줘'라고 할 때. 형제 경계 — 본 스킬은 RFP·공고 같은 '입력 문서'가 아니라 이미 내려진 '결론·완성 산출물'을 공격한다. 'RFP 분석·비딩 분석'은 mice-rfp-analyzer, 제안서·소개서·스폰서 덱 작성은 jc-pptx, 견적 생성은 mice-estimate, 대본·MC 멘트는 pt-script, 운영계획서·KPI 대시보드는 mice-ops-docs, 회의록은 mice-meeting-minutes 영역이다. 본 스킬은 이 스킬들의 산출물을 받아 워크플로우 최하류에서 최종 품질 게이트 역할을 한다.
 ---
 
 # jc-redteam
@@ -17,35 +17,18 @@ description: 이미 도출된 결론·주장·판단·완성 문서를 외부 �
 - 사실 오류·논리 비약·숨은 가정·인지 편향·누락 관점 탐지
 - 오탈자·용어 불일치·비문·숫자/단위 오류 감수
 - 반대 시나리오(steelman)와 더 나은 대안 제시
-- **LP 마케팅 패널 모드** — B2B 랜딩페이지 산출물을 '5인 마케터 + 3인 고객' 패널로 검증 (jc-landing-page 1차 HTML 직후 자동 발동). 절차·페르소나·6단계: `references/lp-marketing-panel.md`
+- **LP 마케팅 패널 모드** — B2B 랜딩페이지(HTML) 산출물을 '5인 마케터 + 3인 고객' 패널로 검증. LP 검증을 요청받았을 때만 쓴다(자동 발동 없음). 절차·페르소나·6단계: `references/lp-marketing-panel.md`
 
 ### 다루지 않는 것 (DON'T)
-- RFP·공고·입찰 안내서 등 **입력 요청 문서**의 분석 (→ mice-rfp-analyzer)
-- 제안서·비딩 자료 **생성** (→ mice-proposal)
-- 견적서 생성 (→ mice-estimate)
-- 발표 대본·MC 멘트 생성 (→ pt-script)
-- 대시보드·시각화 (→ mice-dashboard)
-- 회의록 (→ mice-meeting-minutes)
+- 형제 경계는 description 참조. 요지: 입력 문서 분석(RFP·공고 → mice-rfp-analyzer)이 아니라 이미 내린 결론·완성물을 공격한다 — 생성은 각 산출 스킬 몫.
 
-> **mice-rfp-analyzer와의 결정적 차이**: analyzer는 발주처가 *요청한 문서(RFP)* 를 해체해 응찰 전략을 도출한다. redteam은 *내가 이미 내린 결론* 을 공격해 결함을 찾는다. 입력의 성격(요청 vs 결론)과 자세(분석 vs 공격)가 정반대다.
+## 2. 호출 시점
 
-## 2. 호출 시점 판단 가이드
-
-| 사용자 입력 | 본 스킬 호출 | 사용 스킬 |
-|------------|:-----------:|----------|
-| "이 결론 레드팀 해줘" | ✅ | jc-redteam |
-| "내 판단에 허점 있나 때려봐" | ✅ | jc-redteam |
-| "방금 네 답변 반대로 검증해봐" | ✅ | jc-redteam |
-| "이 제안서 납품 전에 최종 감수해줘" | ✅ | jc-redteam |
-| "이 견적 논리·숫자 틀린 거 없나" | ✅ | jc-redteam |
-| "이 RFP 분석해줘" + 파일 | ❌ | mice-rfp-analyzer |
-| "이 RFP로 제안서 만들어줘" | ❌ | mice-proposal |
-| "견적 뽑아줘" | ❌ | mice-estimate |
-| "발표 대본 써줘" | ❌ | pt-script |
+트리거·형제 경계는 description이 정본이다(본문에 재기재하지 않는다). 모드 선택은 §4, 상류 스킬별 초점은 §9.
 
 ## 3. 핵심 작동 원칙 — 적대성 강제 (본 스킬의 정체성)
 
-레드팀의 최대 실패는 **면피성 비판**이다("좋은 분석입니다만, 한 가지만…"). 이는 검증의 외형만 갖춘 동조이며 의사결정에 무가치하다. 본 스킬은 아래 6원칙으로 진짜 적대성을 강제한다.
+레드팀의 최대 실패는 **면피성 비판**이다("좋은 분석입니다만, 한 가지만…"). 이는 검증의 외형만 갖춘 동조이며 의사결정에 무가치하다. 본 스킬은 아래 7원칙으로 진짜 적대성을 강제한다.
 
 1. **칭찬 금지 (No-Praise)** — 검증 응답을 칭찬·동조로 시작하지 않는다. "훌륭합니다", "좋은 접근입니다" 같은 완충 문구를 금지한다. 강점이 검증 맥락상 필요하면 별도 1줄로만 언급한다.
 2. **최약 고리 우선 (Weakest-Link-First)** — 가장 치명적인 결함부터 제시한다. 사소한 것부터 나열해 핵심을 묻어버리지 않는다.
@@ -62,7 +45,7 @@ description: 이미 도출된 결론·주장·판단·완성 문서를 외부 �
 | **Quick Strike** (즉응 타격) | 대화 내 짧은 결론·판단·주장 (첨부 문서 없음) | **대화 내 인라인 비평** | 빠른 의사결정 점검 |
 | **Deep Audit** (정밀 감사) | 제안서·전략 문서·장문 업로드, 또는 "정밀 감수"·"리포트로" 명시 | **구조화 감수 리포트** (.md 기본 / 요청 시 .docx) | 납품·확정 직전 최종 감수 |
 
-- 기본 판단은 입력 길이·형태로 자동 결정한다. 모호하면 사용자에게 한 번 묻는다.
+- 기본 판단은 입력 길이·형태로 정한다. 모호하면 묻지 않고 Deep Audit를 기본값으로 고른 뒤 한 줄로 밝힌다("모드: Deep Audit — 문서 분량 기준").
 - 두 모드 모두 §5(3축) → §6(심각도) → 종합 판정 순서를 따른다.
 
 **Quick Strike 출력 형식 (인라인 — 리포트 골격 미사용)**: 간결성이 생명. 아래 순서로만 출력한다.
@@ -122,34 +105,40 @@ description: 이미 도출된 결론·주장·판단·완성 문서를 외부 �
 
 ## 8. jc-design-system 연동 (Deep Audit 리포트용)
 
-Deep Audit 리포트는 jc-design-system signature 토큰을 참조한다. Quick Strike(인라인)는 디자인 미적용.
+Deep Audit 리포트(.md·.docx·HTML)는 jc-design-system v2 **리멤버 웜 페이퍼** 토큰을 `jc-design-system/scripts/jc_tokens.py`로 런타임 로드한다(값 하드코딩 금지). Quick Strike(인라인)는 디자인 미적용. 괄호 HEX는 `signature-tokens.md §6`(2.1.0) 기준 참고값이다.
 
-| 적용 영역 | 호출 토큰 |
-|----------|----------|
-| 리포트 표지·헤더 | `color.primary` (#0A2540 Deep Navy) |
-| 강조 박스·섹션 구분 | `color.accent` (#2962FF Electric Blue) |
-| Critical 결함 | `color.point.magenta` (#E91E63) |
-| Major 결함 | `color.point.orange` (#FF5722) |
-| Minor 결함 / 결론 유지 판정 | `color.point.neon` (#00E676) |
-| 조건부 보완 판정 | `color.point.orange` (#FF5722) |
-| 결론 재검토 판정 | `color.point.magenta` (#E91E63) |
+| 적용 영역 | 토큰 |
+|----------|------|
+| 캔버스 / 본문 | `color.bg` (#FBFAF6) / `color.text` (#1A1A1A) |
+| 리포트 표지·헤더 | 잉크 `color.primary` (#1A1A1A) 제목 + 오렌지 룰 `color.accent` (#EB6F2A) 1줄 |
+| 섹션 제목·강조 박스 | 제목 `color.text`, 박스 배경 `color.accentSoft` (#FFF1E6) + 강조 글자 `color.accentStrong` (#B8431A) |
+| Critical 결함 · 결론 재검토 판정 | 배경 `color.semantic.dangerBg` (#FBE9E9) + 글자 `color.semantic.danger` (#D93636), Bold |
+| Major 결함 · 조건부 보완 판정 | 배경 `color.semantic.warningBg` (#FBF2DF) + 잉크 글자 (앰버 단독 텍스트 금지) |
+| Minor 결함 · 결론 유지 판정 | 배경 `color.semantic.successBg` (#E7EFE8) + 글자 `color.semantic.success` (#196B24) |
+| 캡션·검증일 | `color.textCaption` (#8C867A) — 본문에 쓰지 않음 |
 
-→ 클라이언트 오버레이 미적용 (작업자 personal 베이스 유지).
+- 서체 Pretendard. 발행 명의는 리멤버 MICE비즈팀 기본, 발주처 오버레이는 적용하지 않는다(내부 감수 문서).
+- 구 jc 시그니처(네이비·블루)는 사용자가 명시 요청할 때만 `legacy-jc` 오버레이로.
 
 ## 9. 체이닝 — 모든 스킬의 공통 출구
 
-본 스킬은 워크플로우 **최하류**에 위치하며, 상류 스킬의 산출물을 입력으로 받아 최종 검증한다.
+본 스킬은 워크플로우 **최하류**에서 상류 산출물을 받아 최종 검증한다. 상류 스킬당 한 줄로만 적는다(입력 매핑 상세는 `references/chaining-guide.md`).
 
-```
-mice-proposal      → jc-redteam   (제안서 납품 직전 최종 감수)
-mice-rfp-analyzer  → jc-redteam   (GO/NO-GO 판정 근거 적대적 재검증)
-mice-estimate      → jc-redteam   (견적 논리·숫자 검증)
-mice-sponsor-deck  → jc-redteam   (스폰서 ROI 주장 검증)
-mice-dashboard     → jc-redteam   (KPI 해석·결론 검증)
-[범용]  모든 결론·문서·판단  → jc-redteam
-```
-
-→ 상세 입력 매핑은 `references/chaining-guide.md` 참조.
+| 상류 스킬 | 검증 초점 | 기본 모드 |
+|-----------|----------|----------|
+| jc-pptx | 제안서·소개서·스폰서 덱 납품 직전 감수(논리·평가 대응·ROI 주장·숫자 일관성) | Deep |
+| mice-rfp-analyzer | GO/NO-GO 판정 근거 | Deep/Quick |
+| mice-estimate | 견적 논리·숫자 검산 | Deep |
+| pt-script | 발표 시간·메시지 정합 | Quick |
+| jc-strategy-canvas · mice-market-intel | 전략 결론·시장 수치의 근거 강도 | Deep |
+| mice-ops-docs · mice-run-of-show | 운영계획 책임자·기한·단일 실패점·큐 타이밍 | Deep |
+| mice-aftermath | 성과 해석 인과·목표 대비 정합 | Deep |
+| mice-meeting-minutes | 결정·Action Item 정합 | Quick |
+| jc-doc-coauthor | 산문 문서의 실행 안전성·숨은 가정·내부 모순·섹션 간 수치 정합(유형별 포인트는 가이드) | Deep(짧은 메모·메시지 기획은 Quick) |
+| jc-kv-guide | [확인 필요] 미표기 추측·디자인 제안 혼입 0건·규격/검수 기준 누락 | Quick |
+| mice-slack-ops | 공지·발주처 메일·캔버스 발송 전 사실·수신자·톤·발송 불가역 | Quick |
+| jc-skill-forge | 스킬 인테이크 감수 — 트리거 정확도·형제 중복·금지 문구·외부 스크립트 보안·lint 대조 | Deep |
+| [범용] 모든 결론·문서·판단 | 3축 | 길이 기준 |
 
 ## 10. 파일 구조
 
@@ -160,9 +149,9 @@ jc-redteam/
     ├── verification-checklist.md     # 3축 세부 체크리스트
     ├── bias-catalog.md               # 인지 편향 카탈로그 + 탐지 신호
     ├── proofreading-rules.md         # 한글 교정·용어·숫자 검증 규칙
-    ├── audit-report-template.md      # Deep Audit 리포트 템플릿 (jc-design 연동)
+    ├── audit-report-template.md      # Deep Audit 리포트 템플릿 (jc-design-system 리멤버 토큰)
     ├── chaining-guide.md             # 타 스킬 산출물 입력 매핑
-    └── lp-marketing-panel.md         # LP 마케팅 패널 모드 (jc-landing-page 전용 도메인 검증)
+    └── lp-marketing-panel.md         # LP 마케팅 패널 모드 (B2B 랜딩페이지 도메인 검증, 요청 시)
 ```
 
 ## 11. 운영 원칙 / 한계 명시
@@ -173,7 +162,10 @@ jc-redteam/
 - **신호 대비 잡음**: Critical·Major를 우선하고 Minor는 묶음 처리한다. 모든 것을 흠집 내 핵심을 흐리지 않는다.
 - **역할 고정**: 검증 도중 협조 모드로 회귀하지 않는다. 마지막 줄까지 외부 감사관 자세를 유지한다.
 
-## 12. 버전 히스토리
+## 변경 이력
+
+- v1.4.0 (2026-10-09): §9 체이닝 표·chaining-guide에 jc-doc-coauthor(문서 유형별 공격 포인트 이관)·jc-kv-guide·mice-slack-ops·jc-skill-forge(스킬 인테이크 감수) 4종 추가.
+  §1 DON'T를 1줄로, §2 호출 시점 표 삭제(트리거·경계는 description 정본) — 절 번호는 유지.
 
 | 버전 | 일자 | 주요 변경 |
 |------|------|---------|
@@ -184,3 +176,6 @@ jc-redteam/
 | v1.2.0 | 2026-07-03 | **Fable 5 재설계 패스**: 제7원칙 '증거주의(Evidence-Before-Claim)' 신설 — 재검증 가능 결함은 재계산·재실행·원문 대조 후 증거 병기, 미검증 추정 구분 표기. 축 1에 '제품·버전 팩트 실검증' 추가 + verification-checklist.md §1-8 신설 (RULE-VERSION-FACTS 연동). §10 파일 구조에 lp-marketing-panel.md 등재 (기존 누락 정정). |
 | v1.2.1 | 2026-07-03 | 외부 verification-before-completion 패턴 흡수(CP1 GO-4): verification-checklist.md 검증 실행 순서에 '완료 선언 전 증거 확인(Verify-Before-Done)' 원칙 신설 — 수치·사실 주장은 원본 재대조·재실행 증거 확보 후에만 검증 완료 처리, 심각도·종합 판정과 연동. |
 | v1.2.2 | 2026-07-12 | CP3 인테이크 — ECC santa-method(이중 독립 감수 수렴)·council(4관점 카운슬) 옵션 티어 흡수. 기본 2모드 동작 불변. |
+
+- v1.3.0 (2026-10-05): 리포트 색을 구 시그니처 → 리멤버 토큰(런타임 로드)으로, "6원칙"→7원칙 정정. 체이닝을 라이브 스킬 1행씩으로 정리(폐합 스킬 행·중복 제거),
+  LP 패널 자동 발동 잔재 삭제, 모드가 모호하면 묻지 않고 기본값(Deep Audit)으로 진행.

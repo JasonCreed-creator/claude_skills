@@ -1,75 +1,97 @@
 ---
 name: jc-skill-forge
-description: 기획자님의 개인 스킬 라이브러리(mice-*, jc-*)를 외부 Claude 스킬 생태계와 대조해 업그레이드·대체·통폐합·신규보강하는 라이브러리 관리 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 스캔', '외부 스킬 찾아줘', '쓸만한 스킬 찾아줘', '내 스킬 업데이트', '스킬 라이브러리 점검', '스킬 정리', 'skill intake', 'skill upgrade'를 언급할 때. 외부 컬렉션(superpowers, stratarts, ComposioHQ, VoltAgent, Deep-Research 등)을 뒤져 기존 자산을 개선·교체·병합할지 판단해달라고 요청할 때. 기본 동작은 읽기 전용 스캔·제안이며, 파일 변경은 사용자가 명시적으로 승인(GO)한 항목에만 적용한다. 단, 다음은 이 스킬 영역이 아니다 — 백지에서 새 스킬을 직접 제작·평가하는 일반 작업은 skill-creator 영역. 특정 산출물 생성은 각 전용 스킬(제안서=mice-proposal, 견적=mice-estimate, 대본=pt-script, 대시보드=mice-dashboard, 회의록=mice-meeting-minutes, RFP분석=mice-rfp-analyzer, 스폰서데크=mice-sponsor-deck) 영역. 완성물의 적대적 검증만 단독으로 필요하면 jc-redteam 영역. 이 스킬은 '외부 생태계 대조를 통한 내 라이브러리 진화'에만 트리거한다. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
-version: "v1.0.3"
+description: 기획자님의 Claude 스킬 라이브러리(jc-*·mice-*)를 만들고·고치고·점검하고·배포하는 단일 메타 스킬. 신규 스킬 제작, 기존 스킬 개선·버전업, 외부 스킬 생태계 대조 인테이크(업그레이드·대체·통폐합), 정기 라이브러리 점검(Quick Scan / Full Stocktake), 정본 레포 → claude.ai 업로드·Claude Code 로컬 설치 배포 파이프라인, 하우스 규약(명명·description·리멤버 SoT 앵커·공통 룰·Windows 경로)을 담는다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '스킬 만들어줘', '새 스킬', '스킬 제작', '스킬 개선', '스킬 수정', '버전 올려', '스킬 업그레이드', '스킬 인테이크', '스킬 통폐합', '스킬 정리', '스킬 점검', '스킬 라이브러리', '외부 스킬 찾아줘', '쓸만한 스킬', '스킬 업로드', '스킬 배포', '스킬 빌드', '.skill 파일', '스킬 동기화', '스킬셋 개정'을 언급할 때. 기본 제공 스킬을 우리 것으로 바꿔달라고 할 때. 기본 skill-creator 대신 본 스킬을 우선 사용한다(skill-creator는 평가 기계로만). 소스 수정은 `_archive` 백업 후 바로 진행하고, 배포(Code 설치·claude.ai 업로드 안내)·삭제는 승인 후, claude.ai 업로드와 git 커밋·푸시는 사용자 몫이다. 형제 경계 — 산출물 자체 생성은 각 전용 스킬, 완성 스킬의 적대 검증은 jc-redteam, 세션·턴 규약은 jc-session-protocol, 디자인 토큰 값은 jc-design-system.
+version: "v2.2.1"
 license: Complete terms in LICENSE.txt
 ---
 
-# jc-skill-forge
+# jc-skill-forge v2 — 스킬 라이브러리 관리
 
-기획자님의 스킬 라이브러리를 외부 생태계와 대조해 진화시키는 관리 스킬.
+정본 레포 `C:\.Claude\Code\claude_skills`(GitHub `JasonCreed-creator/claude_skills`)의 `.claude/skills/`를 편집하고, `.skill`로 묶어 claude.ai에 올리며, Claude Code에는 `~/.claude/skills`로 설치한다. (2026-09-21 구 스킬 제작 스킬의 하우스 규약 흡수)
 
-## 0. 가드레일 (발동 즉시 따른다, 위반 금지)
-- 기본 모드 = 읽기 전용. 1~4단계(스캔·판정·제안)에서는 어떤 파일도 변경하지 않는다.
-- 5단계 승인 게이트에서 기획자님이 GO한 항목에만 6~7단계(적용)를 수행한다.
-- GitHub는 동기화 저장소다. 이 스킬은 git 명령(브랜치·커밋·머지·push)을 절대 수행하지 않는다. 스킬 파일은 로컬에서 직접 편집하고, GitHub 동기화는 기획자님이 평소 방식대로 처리한다.
-- 변경 전 원본 SKILL.md를 `_archive/<YYYYMMDD>/`로 복사해 보존(롤백용).
-- 외부 스킬 그대로 복사·설치 금지 → SKILL.md 패턴만 흡수해 기획자님 네이밍(jc-*, mice-*)으로 재구성.
-- 외부 스크립트(.py/.sh 등)는 내용 검토 전 실행·포함 금지.
-- 고밀도 스킬 변경은 3턴 분할(기획→빌드→검수).
-- 호칭 "기획자님", 응답 구조 핵심 결론→분석→실행 전략→리스크/추가.
+## 0. 가드레일
 
-## 범위
-사용자가 지정한 도메인·소스(예: "전략", "stratarts")로 한정. 미지정 시 전체 라이브러리 대상.
+- 소스 수정(되돌릴 수 있음): 원본을 `_archive/<YYYYMMDD>/<스킬>/`(로컬 롤백 백업 — gitignore, 커밋 안 됨)로 보존한 뒤 합리적 기본값으로 바로 진행하고, 고른 기본값을 한 줄로 밝힌다. 단계마다 묻지 않는다.
+- 인테이크·전수 점검·통폐합처럼 범위가 큰 변경만 계획(대상·버전·변경 요지 표) 1회 확인 후 적용.
+- 되돌릴 수 없는 작업(로컬 설치 덮어쓰기·폐합 스킬 삭제 안내 실행·배포)만 승인 후. 폐합 스킬도 삭제가 아니라 git 보관소로 아카이브(ARCHIVE 정의는 §3 — `_archive/`가 아니다).
+- **소스 반영 ≠ 배포.** 보고는 스킬마다 ①소스 반영 ②Code 로컬 설치 ③claude.ai 업로드를 따로 적는다. ③은 사용자가 Settings > Capabilities에서 직접 한다 — 업로드했다고 가정하지 않는다.
+- 패키지는 ZIP `.skill`(내부 `<name>/SKILL.md`)만. tar.gz 등 다른 형식 금지.
+- git 커밋·푸시는 사용자 몫. 스킬은 커밋 메시지 초안(`<스킬명>: <요약>`)만 제시한다.
+- 외부 스킬은 복사하지 않고 패턴만 흡수해 jc-*/mice-* 네이밍으로 재구성. 외부 스크립트는 검토 전 실행·포함 금지.
+- `~/.claude/skills/synced/`는 편집하지 않는다(10분마다 덮어씀). `mice-estimate`는 사용자가 직접 관리 — 건드리지 않는다(2026-09-21).
+- 호칭 "기획자님". 응답 구조: 핵심 결론 → 분석 → 실행 → 리스크.
 
-## 1. 인벤토리 — 현재 자산
-- skills 디렉토리를 Glob(`**/SKILL.md`)으로 스캔, 각 스킬의 name·description·핵심 역할을 표로 정리.
-- CLAUDE.md / PROGRESS.md를 읽어 현재 로드맵·확정사항·금지사항을 컨텍스트로 반영.
-- **점검 2모드**: 인벤토리 점검은 규모에 따라 나눈다 — Quick Scan(변경분만: 트리거 정확도·version·변경이력 표층 확인, 저비용 정기용) / Full Stocktake(전체: 중복·최신성·활용도·범위적합 4축 전수 감사, 분기 점검·대형 인테이크용). 소규모·정기면 Quick, 광범위·구조 변경 동반이면 Full을 택한다.
+## 1. 모드 판별
 
-## 2. 외부 소스 스캔 — 화이트리스트만
-WebFetch로 최신 상태 확인(범위 한정):
-- obra/superpowers · maigentic/stratarts · Weizhena/Deep-Research-skills
-- ComposioHQ/awesome-claude-skills · VoltAgent/awesome-agent-skills
-- sales-skills/sales · anthropics/skills
-- 디렉토리 보강: claudeskills.info, lobehub.com/skills
-각 후보의 name·description·핵심 차별점·라이선스·최종 업데이트·코드실행 여부·출처 URL 기록.
+| 모드 | 트리거 | 절차 |
+|------|--------|------|
+| **A 인테이크** | 외부 스킬 대조·업그레이드·통폐합 | §2 스캔 → §3 판정 → 계획 1회 확인 → 적용 → 검증 |
+| **B 신규 제작** | 없던 기능을 새로 | 실패 시나리오(RED) → 최소 SKILL.md(GREEN) → 반례 표(REFACTOR) → 하우스 규약 → 검증 |
+| **C 개선·버전업** | 기존 스킬 수정 | `_archive` → 변경 → `version` 범프 → 변경 이력 → 린트 |
+| **D 점검** | 정기·구조 변경 전 | Quick Scan(변경분: 트리거·version·이력) / Full Stocktake(전체: 중복·최신성·활용도·범위적합 4축 + 세션 로그 실사용 집계) |
+| **E 배포** | 업로드·설치·동기화 | `references/deploy-pipeline.md` — 린트 → 빌드(.skill ZIP) → 업로드 안내(사용자) → 로컬 설치(승인) |
 
-## 3. 적합도 필터
-기획자님 프로필(MICE 전략·제안·리서치·신사업 BM / Track A 현직·Track B 독립 / Chat·Cowork·Code 3환경)에 부합하는 후보만 남기고, 나머지는 SKIP 사유와 함께 제외.
+## 2. 인테이크 스캔 (모드 A)
 
-**저작 품질 보조 기준**: 프로필 적합도와 별개로, 후보 스킬의 저작 방식 자체도 품질 신호로 본다 — ① 실패 시나리오를 먼저 관찰하고 그에 대한 최소 대응을 설계했는가(RED→GREEN), ② 압박 상황에서 나올 법한 변명·우회를 반례로 미리 차단했는가(REFACTOR). 이 두 관점은 jc-skill-creator의 저작 검증 루프와 동일 기준이므로, 상세 적용법은 jc-skill-creator를 참조한다(원문 복사 금지, 개념만 흡수해 판정 근거에 인용).
+- 인벤토리: `.claude/skills/**/SKILL.md`(`_archive` 제외) name·description·version 표 + 최근 세션 로그에서 실제 Skill 호출 집계(활용도).
+- 외부 소스 화이트리스트: anthropics/skills · obra/superpowers · maigentic/stratarts · Weizhena/Deep-Research-skills · ComposioHQ/awesome-claude-skills · VoltAgent/awesome-agent-skills · sales-skills/sales · claudeskills.info · lobehub.com/skills. 후보별 name·차별점·라이선스·최종 갱신·코드 실행 여부·URL.
+- 적합도: 리멤버 MICE비즈팀 팀장 업무(견적·제안서·운영계획·현장·결과보고·Slack 운영·팀 보드) + Code·Cowork·Claude Design 서피스. 저작 품질 보조 기준: 실패 시나리오 기반(RED→GREEN), 반례 차단(REFACTOR).
 
-## 4. 결정 매트릭스
-살아남은 후보를 기존 자산과 매핑:
-- UPGRADE: 기존 스킬에 외부의 우월한 패턴 흡수
-- REPLACE: 기존을 외부 기반으로 전면 교체(드묾)
-- MERGE: 중복 스킬 통폐합
-- NEW: 부재 구간 신규 보강
-- SKIP: 불채택
-각 결정에 근거·영향범위·심각도(Critical/Major/Minor)·예상 작업량 명시.
-- **NEW 판정 전 중복 탐색 순서**: 신규 보강(NEW)을 확정하기 전, 로컬(jc-*·mice-*·프리셋·설치된 MCP 도구) → §2 화이트리스트 소스 → GitHub → 웹 순으로 동일 기능 자산의 존재를 먼저 배제한다. 로컬·근접 자산이 나오면 NEW 대신 UPGRADE/MERGE로 강등 검토.
+## 3. 결정 매트릭스
 
-## 5. 승인 게이트 — 필수 정지점
-1~4를 "스킬 인테이크 제안 리포트"로 출력하고 정지한다.
-기획자님이 적용 대상을 확정(예: "UPGRADE 3건, NEW 2건만 GO")하기 전엔 다음 단계로 진행하지 않는다.
+UPGRADE(패턴 흡수) · REPLACE(전면 교체, 드묾) · MERGE(통폐합) · NEW(신규) · ARCHIVE(폐합) · SKIP. 각 결정에 근거·영향 범위·심각도·작업량. NEW 전 중복 탐색: 로컬 → 화이트리스트 → GitHub → 웹.
 
-## 6. 적용 — 승인분만 (로컬 파일 직접 편집)
-- 변경 전 원본 스킬 폴더를 `_archive/<날짜>/`로 복사(`cp -r`).
-- 승인된 항목만 Edit/Write로 로컬 스킬 파일에 직접 반영. 외부는 패턴만 흡수해 jc-*/mice- 네이밍 + jc-design-system 토큰 + 운영 원칙(호칭·응답구조·3턴분할)으로 재구성.
-- git 작업은 하지 않는다.
+**ARCHIVE 실행** = `git mv .claude/skills/<n> archive/skills/<n>` + `scripts/lint_skills.py`의 LIVE/ARCHIVED 갱신 + `archive/README.md` 폐합 → 후속 매핑 행 추가 + `jc-design-system/references/chaining-protocol.md` §3에서 제거(봉투를 내던 스킬이면 §3-1 별칭·§7 ALIASES에 후속 스킬로 등록). `_archive/`는 로컬 롤백 백업(gitignore)일 뿐 폐합 보관소가 아니다. 커밋은 사용자.
 
-## 7. 검증·로그
-- jc-redteam 관점으로 변경된 SKILL.md를 인테이크 감수(트리거 정확도·중복·보안·오탈자).
-- PROGRESS.md에 인테이크 로그(날짜·소스·결정·근거) 추가, 필요시 CLAUDE.md 스킬 목록 갱신.
-- 마지막에 변경 요약과 `_archive` 백업 위치를 보고한다. GitHub 동기화는 기획자님이 평소 방식대로 — 스킬은 push하지 않는다.
+## 4. 하우스 규약 (요지 — 상세 `references/house-conventions.md`)
 
-## 환경 분기
-- Claude Code: 전체 1~7단계 수행(로컬 파일 직접 편집·서브에이전트 병렬 가능).
-- Claude Cowork: 1~5단계 병렬 스캔 가능, 적용은 동일 게이트.
-- Claude Chat: 1~5단계(스캔·제안)까지만. 로컬 파일이 없으므로 실제 적용은 Code에서 이어서.
+1. 명명·구조: 디렉터리 = `name` = `jc-<도메인>`/`mice-<도메인>`. SKILL.md(<300줄 권장, <500 상한) + references/ + scripts/ + assets/.
+2. description: 한국어·푸시형, 무엇을 + 언제(키워드) + 형제 경계. **1,024자 이하**. 폐지 게이트 문구(브리프·범위·턴 분할)·폐합 스킬 이름 금지.
+2-1. 진행 규약 정본 = `jc-session-protocol` SKILL.md §3(고밀도 산출물만 기획안 1회 확인). forge 고유분: 소스 수정 = 백업 후 즉시, 배포·삭제 = 승인. 호칭은 사용자 '기획자님'(§0), 산출물 속 직함 '팀장'(house-conventions §6.2). 모델명은 jc-session-protocol §5.
+3. SoT 앵커: 색·서체·간격은 `jc-design-system` v2(리멤버) 런타임 로드. 값 미러 금지.
+4. 명의: 리멤버 MICE비즈팀 기본, 발주처·담당자 주입(RULE-NO-COMPANY v2).
+5. 생태계: 검증 `jc-redteam` · 세션 `jc-session-protocol` · 봉투 `ChainPayload/v1`. 재발명 금지.
+6. 경로: `/mnt/skills` 금지. SoT 탐색은 형제 → `~/.claude/skills` → synced. 스크립트는 `python`(3.14, Windows)에서 실행 검증.
+7. 스크립트는 자가 테스트(`--self-test` 또는 `test_*.py`)를 갖는다.
 
-## 변경이력
+## 5. 마감 절차
 
-- v1.0.2 (2026-07-03): CP1 GO-4 외부 패턴 흡수 — §3 적합도 필터에 '저작 품질 보조 기준'(RED→GREEN·REFACTOR 관점, obra/superpowers writing-skills 벤치마크 재구성, 상세는 jc-skill-creator 위임) 추가.
-- v1.0.3 (2026-07-12): CP3 인테이크 — ECC skill-scout(중복 탐색 순서 게이트)·skill-stocktake(Quick Scan/Full Stocktake 2모드) 패턴 흡수.
+1. `python scripts/lint_skills.py <스킬폴더>` ERROR 0(프론트매터·폐합·없는 스킬 참조·"N턴"·구 모델 ID·"리더"·구 시그니처 HEX·깨진 경로·컴파일). 스크립트 자가 테스트 통과.
+2. `version` 범프(SemVer) + SKILL.md 변경 이력 1항.
+2-1. 신규·폐합 시 같은 커밋에서 `lint_skills.py` LIVE/ARCHIVED + `jc-design-system/references/chaining-protocol.md` §3 enum(봉투 비대상 줄 포함)·§3-1 별칭·§7 ALIASES를 갱신한다. 린트가 §3 분류 누락·잔존을 WARN으로 잡는다.
+3. README 카탈로그·`docs/CHANGELOG-<날짜>.md`·`PROGRESS.md` 갱신, 모드 A 판정은 `docs/skill-intake-log.md`(단일 트래커)에 누적.
+4. `jc-redteam` '스킬 인테이크 감수'(Deep — 트리거 정확도·형제 중복·금지 문구·외부 스크립트 보안·lint 대조, `jc-redteam/references/chaining-guide.md` §jc-skill-forge).
+5. 배포(모드 E): `python scripts/build_skills.py` → `dist/skills/*.skill`(ZIP) → claude.ai 업로드 + 구스킬 삭제는 사용자 → `python scripts/install_local.py`(승인 후). 보고는 ①②③ 채널별.
+6. 커밋 메시지 초안 제시. 커밋·푸시는 사용자.
+
+## 6. 파일 구조
+
+```
+jc-skill-forge/
+├── SKILL.md
+├── references/
+│   ├── house-conventions.md    # 불변식 상세 · 프론트매터 템플릿 · 자가점검
+│   ├── deploy-pipeline.md      # 정본 레포 → .skill → claude.ai → ~/.claude/skills (동기화 규칙 포함)
+│   └── upstream-machinery.md   # 상위 skill-creator 평가 기계 포인터(탐색 순서: 개인 → synced → 원 레포)
+└── scripts/
+    ├── lint_skills.py          # 정합 검사 (경로 인자 · 체이닝 enum 분류 대조 · --self-test)
+    ├── build_skills.py         # .skill(ZIP) 패키징, zip 없는 Windows 대응 (--self-test)
+    └── install_local.py        # ~/.claude/skills 정션/복사 설치·해제 (--self-test)
+```
+
+## 변경 이력
+
+- v2.2.1 (2026-10-09): deploy-pipeline §1 업로드 상태 팩트 현행화(폐합 19종 삭제·라이브 19종 재업로드·doc-coauthoring OFF → 30종) + 삭제·끄기 확장프로그램 대행·수동 업로드 경로 명시. 스크립트·규약 무변경.
+- v2.2.0 (2026-10-09): ARCHIVE를 레포 실제(`archive/skills/` git 보관소 + LIVE/ARCHIVED + archive README + 체이닝 별칭)로 정의, `_archive/`는 로컬 롤백 백업으로만. 진행 규약·모델은 jc-session-protocol 정본 포인터, 호칭 구분 명시, description에 skill-creator 대비 우선 1문. lint에 description 인용 트리거 중복 WARN(스킬 간 같은 트리거 = 재중복 신호) 추가.
+  마감에 체이닝 enum 동시 갱신 항목, 린트에 'LIVE ⊆ chaining-protocol §3' WARN·`CURRENT_MODELS` 상수, upstream 탐색 순서(synced 확인), deploy §6 구 `/skillupgrade` 잔존 삭제 안내.
+- v2.1.0 (2026-10-05): 린트 강화(경로 인자·`--self-test`, 폐합·없는 스킬 참조·"N턴"·구 모델 ID·"리더"·구 시그니처 HEX·깨진 상대경로), build·install 자가 테스트 추가.
+  배포 문서를 현재 실태로 — 소스 반영≠배포(3채널 보고), claude.ai 업로드는 사용자 몫, ZIP(.skill)만·tar.gz 금지. 소스 수정은 백업 후 진행·배포만 승인, "리더"→"팀장".
+
+### v2.0.0 (2026-09-21)
+- `jc-skill-creator` v1.0.1 흡수(하우스 규약·저작 검증 루프·상위 기계 포인터). 모드 5종으로 재편(인테이크·제작·개선·점검·배포).
+- 하우스 규약 v2: 리멤버 홈베이스, description 1,024자 상한, 브리프 게이트 문구 금지, `/mnt` 금지, Windows `python` 검증.
+- 스크립트 3종 신설(lint·build·install). 배포 파이프라인 문서화(synced 10분 갱신·개인 스킬 우선·Cowork는 claude.ai만).
+- 2026-09-21 전수조사 결과 반영: 커스텀 30 → 14종 재편의 실행 도구.
+
+### v1.0.3 (2026-07-12) 이전
+CP1·CP3 인테이크 패턴 흡수(저작 품질 기준·중복 탐색 순서·점검 2모드). 이력은 git.

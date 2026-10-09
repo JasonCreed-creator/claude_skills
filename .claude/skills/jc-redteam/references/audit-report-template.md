@@ -1,11 +1,11 @@
 # Deep Audit 리포트 템플릿
 
-> Deep Audit 모드의 산출물 구조. `.md` 기본, 요청 시 `.docx`로 렌더. 아래 7개 섹션을 고정 골격으로 쓴다. jc-design-system 토큰은 docx 렌더 시 색상으로 적용한다(Quick Strike 인라인은 미적용).
+> Deep Audit 모드의 산출물 구조. `.md` 기본, 요청 시 `.docx`로 렌더. 아래 7개 섹션을 고정 골격으로 쓴다. jc-design-system 리멤버 토큰은 docx·HTML 렌더 시 색상으로 적용한다(Quick Strike 인라인은 미적용).
 
 ## 목차
 - [리포트 골격 (7섹션)](#리포트-골격-7섹션)
 - [채움 템플릿 (.md)](#채움-템플릿-md)
-- [jc-design 토큰 적용 (.docx)](#jc-design-토큰-적용-docx)
+- [jc-design-system 토큰 적용 (.docx·HTML)](#jc-design-system-토큰-적용-docxhtml)
 - [파일명 규칙](#파일명-규칙)
 
 ---
@@ -105,22 +105,23 @@
 
 ---
 
-## jc-design 토큰 적용 (.docx)
+## jc-design-system 토큰 적용 (.docx·HTML)
 
-docx 렌더 시 아래 매핑으로 색상을 적용한다(SKILL.md §8과 동일).
+렌더 시 `jc-design-system/scripts/jc_tokens.py`로 리멤버 웜 페이퍼 토큰을 로드해 아래처럼 매핑한다(SKILL.md §8과 동일). 괄호 HEX는 `signature-tokens.md §6`(2.1.0) 참고값 — 로드 실패 시 폴백으로만 쓴다.
 
-| 요소 | 토큰 | HEX |
+| 요소 | 토큰 | 참고 HEX |
 |------|------|-----|
-| 표지·헤더 바탕/제목 | `color.primary` | #0A2540 |
-| 섹션 제목·강조 박스 | `color.accent` | #2962FF |
-| 🔴 Critical / "결론 재검토" 배지 | `color.point.magenta` | #E91E63 |
-| 🟡 Major / "조건부 보완" 배지 | `color.point.orange` | #FF5722 |
-| 🟢 Minor / "결론 유지" 배지 | `color.point.neon` | #00E676 |
-| 본문 | 기본 텍스트 | #1A1A1A |
+| 캔버스 | `color.bg` | #FBFAF6 |
+| 표지·헤더 제목 / 하단 룰 | `color.primary` / `color.accent` | #1A1A1A / #EB6F2A |
+| 섹션 제목 · 강조 박스 | `color.text` · 배경 `color.accentSoft` + 글자 `color.accentStrong` | #1A1A1A · #FFF1E6 + #B8431A |
+| 🔴 Critical / "결론 재검토" 배지 | 배경 `semantic.dangerBg` + 글자 `semantic.danger` | #FBE9E9 + #D93636 |
+| 🟡 Major / "조건부 보완" 배지 | 배경 `semantic.warningBg` + 잉크 글자 | #FBF2DF + #1A1A1A |
+| 🟢 Minor / "결론 유지" 배지 | 배경 `semantic.successBg` + 글자 `semantic.success` | #E7EFE8 + #196B24 |
+| 본문 · 캡션 | `color.text` · `color.textCaption` | #1A1A1A · #8C867A |
 
 - 폰트: Pretendard (없으면 시스템 산세리프 폴백).
-- 클라이언트 오버레이 **미적용** — 작업자 personal 베이스 유지.
-- 판정 배지는 해당 색상 배경 + 흰색 텍스트의 강조 박스로.
+- 발행 명의 리멤버 MICE비즈팀 기본. 발주처 오버레이 미적용(내부 감수 문서).
+- 판정 배지는 연한 배경 + 진한 글자의 pill로(흰 글자 위 원색 배경 금지 — 대비 미달). 대비 규칙: `jc-design-system/references/shared-rules.md#RULE-WCAG`.
 
 ---
 

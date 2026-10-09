@@ -1,7 +1,9 @@
 name: drift-guard
 
-# jc-design-system(SoT) 디자인 토큰 정합 회귀 방지.
-# consumer 스킬에 R1에서 제거한 비-canon 토큰값이 다시 들어오면 CI 실패.
+# 스킬 라이브러리 정합 게이트 2종.
+# 1) lint_skills.py — jc-skill-forge 하우스 규약(프론트매터·폐합 스킬 참조·폐지 게이트 문구·구 모델 ID·호칭·구 시그니처 HEX·깨진 경로·컴파일)
+# 2) check_drift.py — jc-design-system(SoT) 디자인 토큰 비-canon 값 회귀
+# mice-estimate는 v3.3.1(2026-10-09)부터 lint 대상(업로드만 사용자 직접 관리 — deploy-pipeline §1). archive/ 아래는 검사 대상이 아니다.
 
 on:
   pull_request:
@@ -24,7 +26,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: 린트 자가 테스트
+        run: python3 .claude/skills/jc-skill-forge/scripts/lint_skills.py --self-test
+      - name: 스킬 린트 (하우스 규약 · 폐합 참조 · 구 룩)
+        run: python3 .claude/skills/jc-skill-forge/scripts/lint_skills.py
       - name: 탐지기 자체 검증
         run: python3 scripts/check_drift.py --selftest
       - name: SoT 토큰 드리프트 검사
         run: python3 scripts/check_drift.py
+      - name: 디자인 토큰 로더 테스트
+        run: python3 .claude/skills/jc-design-system/scripts/test_jc_tokens.py

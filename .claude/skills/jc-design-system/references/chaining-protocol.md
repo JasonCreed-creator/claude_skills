@@ -1,247 +1,126 @@
-# Chaining Protocol — 체이닝 봉투 정본 (ChainPayload/v1)
+# ChainPayload/v1 — 스킬 간 데이터 전달 봉투 규약
 
-> **정본(Single Source of Truth)**: MICE 스킬 간 데이터 교환에 쓰이는 공통 "봉투(envelope)" 구조를 한 곳에서 권위 정의한다.
-> 각 스킬의 reference 문서(`chaining-guide.md` / `chaining-schema.md`)는 **자기 고유의 input/output 페이로드 매핑**만 정의하고, 봉투 구조는 본 문서를 참조한다.
->
-> 적용 대상 스킬: `mice-rfp-analyzer` · `mice-proposal` · `mice-estimate` · `pt-script` · `mice-dashboard` · `mice-meeting-minutes` · `mice-sponsor-deck` · `jc-redteam`.
+스킬 A의 산출 데이터를 스킬 B가 재분석 없이 이어받기 위한 JSON 봉투. 봉투(헤더)는 여기서 정의하고, 페이로드 내용은 각 스킬의 `references/chaining-*.md`가 정의한다.
 
 ---
 
-## 목차
-
-- [1. 봉투란 무엇인가](#1-봉투란-무엇인가)
-- [2. ChainPayload/v1 봉투 구조](#2-chainpayloadv1-봉투-구조)
-- [3. 공통 메타 필드 정의](#3-공통-메타-필드-정의)
-- [4. 페이로드(payload) — 스킬 고유 영역](#4-페이로드payload--스킬-고유-영역)
-- [5. 스킬 간 체이닝 흐름](#5-스킬-간-체이닝-흐름)
-- [6. 표준 규약](#6-표준-규약)
-- [7. 자동 라우팅 (입력 source 판별)](#7-자동-라우팅-입력-source-판별)
-- [8. 마이그레이션 노트 (기존 변형 통합)](#8-마이그레이션-노트-기존-변형-통합)
-
----
-
-## 1. 봉투란 무엇인가
-
-체이닝 봉투는 **"누가, 어떤 버전으로, 언제 만든 데이터인가"** 를 식별하는 공통 헤더다.
-봉투 안에 담기는 **실제 데이터(페이로드)** 는 스킬마다 다르지만, 봉투(헤더) 구조는 모든 스킬이 동일하게 따른다.
-
-```
-┌─ ChainPayload/v1 봉투 (공통 — 본 문서가 정의) ─────────────┐
-│  $schema, source, version, generatedAt, (target)          │
-│  ┌─ payload (스킬 고유 — 각 스킬 reference가 정의) ──────┐ │
-│  │  rfp_meta / discovery_data / sections / sponsor_…     │ │
-│  └───────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-```
-
-이 분리 원칙 덕분에:
-- **봉투 규약 변경**은 본 문서 한 곳만 고치면 된다.
-- **스킬 고유 데이터 모델**은 각 스킬이 독립적으로 진화시킨다.
-
----
-
-## 2. ChainPayload/v1 봉투 구조
-
-모든 체이닝 JSON은 다음 봉투 필드를 **최상위(top-level)** 에 둔다.
+## 1. 봉투 구조
 
 ```json
 {
   "$schema": "ChainPayload/v1",
-  "source": "mice-estimate",
-  "version": "v2.0",
-  "generatedAt": "2026-05-25T16:30:00+09:00",
-  "target": "mice-dashboard",
-
-  "// 이하 스킬 고유 페이로드 (각 스킬 reference 문서가 정의)": "...",
-  "projectTitle": "REMEMBER SUMMIT 2026",
-  "sections": { "...": "..." }
+  "source": "mice-rfp-analyzer",
+  "version": "{{생산 스킬 SemVer — 해당 SKILL.md frontmatter에서 읽음}}",
+  "generatedAt": "2026-10-05T10:00:00+09:00",
+  "target": "jc-pptx",
+  "clientId": "a-corp-2026",
+  "projectTitle": "A사 고객 감사의 밤 2026",
+  "...": "이하 스킬 고유 페이로드 (평탄 구조)"
 }
 ```
 
-- 봉투 필드와 페이로드 필드는 **같은 최상위 객체에 평탄(flat)하게 공존**한다 (페이로드를 별도 `payload` 키로 감싸지 않는다 — 기존 모든 스킬이 평탄 구조를 쓴다).
-- 봉투 필드는 **예약어**다. 페이로드가 `source` / `version` 등의 이름을 재사용하지 않는다.
+봉투 필드와 페이로드 필드는 같은 최상위 객체에 평탄하게 공존한다. 봉투 필드명은 예약어이며 camelCase가 정본이다. `version`은 예시에 숫자를 박지 않는다 — 생산 스킬이 자기 frontmatter 값을 넣는다.
 
----
-
-## 3. 공통 메타 필드 정의
+## 2. 공통 메타 필드
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `$schema` | string | ✅ | 봉투 버전 식별자. **항상 `"ChainPayload/v1"`**. 입력 라우팅의 1차 판별 키. |
-| `source` | string | ✅ | 생산 스킬 ID. `mice-rfp-analyzer` \| `mice-proposal` \| `mice-estimate` \| `pt-script` \| `mice-dashboard` \| `mice-meeting-minutes` \| `mice-sponsor-deck` 중 하나. |
-| `version` | string | ✅ | 생산 스킬의 시맨틱 버전 (예: `"v2.0"`, `"v2.1.1"`). 다운스트림 호환성 판단용. |
-| `generatedAt` | ISO 8601 string | ✅ | 생성 시각 (예: `"2026-05-27T10:00:00+09:00"`). |
-| `target` | string | optional | 의도된 수신 스킬 ID. 다대다 체이닝에서 라우팅 힌트. 생략 가능. |
-| `clientId` | string \| null | optional | 클라이언트 오버레이 ID (jc-design-system `client-overlays.md` 참조). null = personal 시그니처. 디자인 산출물 스킬 간 전달 시 사용. |
+| `$schema` | string | ✅ | 항상 `"ChainPayload/v1"` |
+| `source` | string | ✅ | 생산 스킬 ID (§3) |
+| `version` | string | ✅ | 생산 스킬 SemVer |
+| `generatedAt` | ISO 8601 | ✅ | 생성 시각(+09:00) |
+| `target` | string | 선택 | 수신 스킬 힌트 (§3 enum 중 하나) |
+| `clientId` | string \| null | 선택 | `client-overlays.md`의 발주처 슬롯 ID. null = 리멤버 기본 |
+| `projectTitle` | string | 권장 | 행사·프로젝트명 |
 
-### 3-1. 명명 규약 (camelCase 정본)
+## 3. source / target enum (라이브 스킬 기준, 2026-10-09)
 
-봉투 필드는 **camelCase** 를 정본으로 한다: `generatedAt`, `projectTitle`, `clientId`.
+| 단계 | 스킬 ID |
+|------|---------|
+| 리서치·전략 | `mice-market-intel` · `jc-strategy-canvas` · `mice-rfp-analyzer` · `mice-meeting-minutes` |
+| 제안·견적·발표 | `jc-pptx` · `mice-estimate` · `pt-script` |
+| 가이드·문서 | `jc-doc-coauthor`(메시지 기획 문서 봉투만 산출, 선택) · `jc-kv-guide` |
+| 운영·현장 | `mice-run-of-show` · `mice-ops-docs` |
+| 사후 | `mice-aftermath` |
+| 팀 운영 | `mice-slack-ops` · `mice-team-board` |
+| 검증 | `jc-redteam` (수신 전용, 임의 산출물 수용) |
 
-> 과거 일부 스킬이 `generated_at`(snake_case), `source_skill`, `extracted_from` 등 변형을 썼다. 이는 **각 스킬 내부 페이로드 관례**일 뿐 봉투 표준이 아니다. 신규/갱신 시 봉투 헤더는 camelCase + 위 표의 필드명을 사용한다. 기존 페이로드 내부 필드명은 호환을 위해 그대로 두되, 봉투 레벨 식별은 `$schema`/`source` 우선으로 처리한다. (§8 참조)
+봉투 비대상(인프라·메타 — 봉투를 내지도 받지도 않음): `jc-design-system`(본 규약 정본) · `jc-skill-forge` · `jc-session-protocol` · `jc-slack-relay`. 라이브 스킬은 위 표 또는 이 줄 중 한 곳에 반드시 분류한다 — 갱신 책임은 `jc-skill-forge` 마감 절차(신규·폐합과 같은 커밋), 누락은 `lint_skills.py`가 WARN.
 
----
+### 3-1. 하위호환 별칭 (수신 측이 자동 치환, 새로 생산하지 않는다)
 
-## 4. 페이로드(payload) — 스킬 고유 영역
+| 구 source | → 해석 | 비고 |
+|-----------|--------|------|
+| `mice-proposal` · `mice-sponsor-deck` | `jc-pptx` | 2026-09-21 jc-pptx로 흡수 |
+| `mice-dashboard` | `mice-ops-docs` | KPI 대시보드는 mice-ops-docs |
+| `jc-pptx(구 mice-proposal 별칭)` 류 괄호 표기 | 괄호 앞 ID | 문자열 정규화 |
 
-봉투 아래의 실제 데이터 구조는 **각 스킬의 reference 문서가 권위 정의**한다. 본 문서는 봉투까지만 정의하고 페이로드 필드는 정의하지 않는다.
+## 4. 페이로드 정본 위치
 
-| 스킬 | 페이로드 정본 문서 | 페이로드 핵심 키 (예시) |
-|------|-------------------|----------------------|
-| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta`, `analysis_result`, `requirements`, `evaluation_focus`, `differentiation_points` |
-| mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client`, `project_context`, `discovery_data`, `strategic_notes` |
-| mice-estimate | `mice-estimate/references/chaining-schema.md` | `eventScale`, `venue`, `options`, `sections`, `breakdown`, `totalAmount` |
-| mice-dashboard | `mice-dashboard/references/chaining-schema.md` | `rounds`, `kpis`, `insights`, `actualSpending`, `outputs` |
-| mice-sponsor-deck | `mice-sponsor-deck/references/chaining-schema.md` | `event_meta`, `sponsor_candidates`, `audience_hints` |
-| pt-script | `pt-script/references/chaining-schema.md` | `proposal_meta` (client_name, presentation_minutes, tone, …) |
-| jc-redteam | `jc-redteam/references/chaining-guide.md` | 페이로드 스키마 없음 — 임의 산출물/텍스트 수용 |
+| source | 정본 | 핵심 키 |
+|--------|------|---------|
+| mice-market-intel | `mice-market-intel/references/chaining-schema.md` | `market_size` `competitors`(`competitor_tier`·`scores`·`tension_axes`·`source_tier`(구 `tier`)) `whitespace_candidates` `trends` `policy_demand` `benchmarks` `sponsor_candidates` `gaps` `sources` |
+| jc-strategy-canvas | `jc-strategy-canvas/references/chaining-schema.md` | `recommendation` `differentiation_axes` `key_messages` `evidence_flags` `open_questions` |
+| mice-rfp-analyzer | `mice-rfp-analyzer/references/chaining-guide.md` | `rfp_meta` `analysis_result` `requirements` `evaluation_focus` `differentiation_points` `proposal_structure_hint` `risk_notes_for_negotiation` · `estimate_hint`(→ mice-estimate 전용) · `open_questions`(→ mice-market-intel 재조사 의뢰). `target: mice-estimate` 전용 봉투(`client`·`budgetRange`·`evaluationCriteria`·`eventScale{target,guarantee}`·`venue`·`options` + `estimate_hint`)는 chaining-guide §3-1 |
+| mice-meeting-minutes | `mice-meeting-minutes/references/chaining-guide.md` | `client` `project_context` `discovery_data` `strategic_notes` `actions` `risks` `pending` |
+| jc-pptx | `jc-pptx/references/proposal-playbook.md §체이닝` | `deck_meta` `sections` `coverage_map` `presentation` · 견적 입력 키(`eventScale`·`venue`·`options`·`displayType`·`boothCount`·`eventDate`·`client`, 봉투 최상위에 평탄 — 중첩 `estimate_hint` 객체 아님) |
+| mice-estimate | `mice-estimate/references/chaining-schema.md` | 입력 `eventScale` `venue` `options` `displayType` · 출력 `totalAmount` `totalAmountVat` `sections` |
+| pt-script | `pt-script/references/chaining-schema.md` | 수신 전용 — jc-pptx `presentation` 키를 읽는다(산출 봉투 없음, `proposal_meta`는 구 입력 컨테이너) |
+| jc-kv-guide | `jc-kv-guide/assets/guide.schema.json` | `guide`(eventName·docVersion·issuer·mode·inputDocs·sections·sourceCorrections) |
+| jc-doc-coauthor | `jc-doc-coauthor/references/message-planning.md` §5 | `doc_meta` `key_message` `sections` (메시지 기획 문서 → jc-kv-guide·jc-pptx). 그 밖의 산문은 봉투 없이 Docs 링크 |
+| mice-run-of-show | `mice-run-of-show/references/chaining-schema.md` | `plan` (`startTime` `endTime` `cues`) |
+| mice-ops-docs | `mice-ops-docs/references/chaining-schema.md` | `kpis` `insights` `actualSpending` `rounds` |
+| mice-aftermath | `mice-aftermath/references/chaining-schema.md` | `event` `performance` `cases` `lessons` `next` |
+| mice-slack-ops | `mice-slack-ops/references/contract-message.md §6` | `contract` (계약완료 메시지 파싱 결과) |
+| mice-team-board | `mice-team-board/references/sheet-schema.md` | 수신 전용 — `contract` → 프로젝트 탭 행 |
+| jc-redteam | 스키마 없음 | 임의 산출물 수용 |
 
-> **이 페이로드 매핑들은 "중복"이 아니다.** 각 스킬만의 고유 필드·예시·변환 룰이므로 해당 스킬 문서에 그대로 보존한다.
-
----
-
-## 5. 스킬 간 체이닝 흐름
-
-### 5-1. 풀 워크플로우 (수주 → 운영 → 결과)
-
-```
-[RFP 원문]
-     ↓
-mice-rfp-analyzer ──→ 분석 보고서(.docx) + 평가 매트릭스(.xlsx)
-     │                  └─ ChainPayload(source=mice-rfp-analyzer) ─┐
-     ↓ GO 판정                                                     │
-mice-proposal ───────→ 제안서(.pptx)  ←──────────────────────────┘
-     │                  └─ ChainPayload(source=mice-proposal) ─┬─┐
-     ↓ 제안 확정                                                │ │
-mice-estimate ───────→ 견적서(.xlsx)  ←──────────────────────┘ │
-     │                  └─ ChainPayload(source=mice-estimate) ──┼─┐
-     ↓ 발표 준비                                                 │ │
-pt-script ───────────→ 발표 대본(.docx)  ←───────────────────────┘ │
-     ↓ (행사 종료 후)                                                │
-mice-dashboard ──────→ 결과 대시보드(.html/.pdf)  ←─────────────────┘
-     ↑ (시리즈 누적)
-mice-meeting-minutes (시리즈)
-```
-
-### 5-2. 회의록 발원 체인
+## 5. 체이닝 흐름 (실사용 경로)
 
 ```
-Discovery / 정기 / 사후 협의
-     ↓
-mice-meeting-minutes (8축 구조화)
-     ├──→ ChainPayload(source=mice-meeting-minutes, target=mice-proposal)   [Discovery 5데이터]
-     ├──→ ChainPayload(source=mice-meeting-minutes, target=mice-estimate)   [규모·예산 단서]
-     ├──→ ChainPayload(source=mice-meeting-minutes, target=mice-dashboard)  [시리즈 누적 rounds]
-     └──→ ChainPayload(source=mice-meeting-minutes, target=mice-sponsor-deck) [스폰서 후보]
+[주제·시장 질문] → mice-market-intel ──→ jc-strategy-canvas ──→ jc-pptx / mice-rfp-analyzer   (market-intel ──→ jc-pptx 시장 논거도 가능)
+[RFP·추진계획] → mice-rfp-analyzer ──→ jc-pptx(제안서) / mice-estimate(`estimate_hint`) / mice-market-intel(`open_questions` 재조사)
+[덱 확정]     → jc-pptx ──→ mice-estimate(견적) · pt-script(PT 대본 — `presentation`, 수신 전용)
+[견적 확정]   → mice-estimate ──→ jc-pptx(⑦예산 견적 요약 슬라이드 — `totalAmount`·`totalAmountVat`·`sections` 역방향)
+[행사명·슬로건] → jc-doc-coauthor(메시지 기획 문서) ──→ jc-kv-guide(KV 제작 가이드) / jc-pptx(표지 카피)
+[회의 메모]   → mice-meeting-minutes ──→ jc-strategy-canvas / jc-pptx / mice-ops-docs(운영계획서) / mice-aftermath(교훈)
+[수주 후]     → jc-pptx(`presentation`·`sections`) ──→ mice-run-of-show(큐시트) ──→ mice-ops-docs(계획 대비 실제)
+[행사 종료]   → mice-ops-docs·mice-estimate·mice-run-of-show·mice-rfp-analyzer ──→ mice-aftermath(결과보고) ──→ jc-pptx(R1·R2 레퍼런스) / jc-strategy-canvas(R3 실적 근거)
+[Slack 계약완료 메시지] → mice-slack-ops ──→ mice-team-board(행 등록, 시트 쓰기는 승인 후)
+모든 산출물 ──→ jc-redteam
 ```
 
-### 5-3. 영업 분기 (스폰서)
+## 6. 수신 규칙
 
-```
-mice-meeting-minutes ──→ sponsor_candidates ──→ mice-sponsor-deck ──→ HTML/PPTX 데크
-                                                       └──→ (PPTX) ──→ pt-script (영업 PT 대본)
-```
+### 6-1. 판별
+`$schema`가 `ChainPayload/v1`이 아니면 체이닝 입력으로 취급하지 않는다(파일·텍스트·대화 입력으로 처리).
 
-### 5-4. 최하류 품질 게이트 (jc-redteam)
+### 6-2. 무변경 승계
+`source`로 페이로드 정본(§4)을 찾아 필드를 해석한다. 모르는 필드는 무시하고 경고만. 봉투에 있는 팩트(금액·일정·규모)를 재분석하거나 임의로 바꾸지 않는다. 보정이 필요하면 사유를 남기고, 충돌 시 봉투 값 + 사용자 확인.
 
-```
-mice-proposal / mice-estimate / mice-sponsor-deck / mice-dashboard / mice-rfp-analyzer / mice-meeting-minutes
-        모든 산출물 (PPTX/XLSX/DOCX/HTML/JSON 또는 결론 텍스트)
-                                  ↓
-                            jc-redteam  ← 최종 검증 (재생성 안 함, 결함 지적·교정·대안만)
-```
+### 6-3. 발주처 슬롯
+`clientId`가 있으면 `client-overlays.md` 슬롯을 그대로 승계한다. 실명 하드코딩 금지(`shared-rules.md#RULE-NO-COMPANY`).
 
-### 5-5. 체이닝 엣지 요약표
+### 6-4. 저장 위치
+`.chaining/[project_or_topic]_[YYYYMMDD]_to_[target].json`. `target`이 없으면 `_to_any`.
 
-| From | To | 봉투 source | 전달 핵심 |
-|------|----|-----------|----------|
-| mice-rfp-analyzer | mice-proposal | `mice-rfp-analyzer` | 요건·평가·차별화·핵심 메시지 |
-| mice-rfp-analyzer | mice-estimate | `mice-rfp-analyzer` | 발주가·예산 범위 (베뉴·옵션 TBD) |
-| mice-meeting-minutes | mice-proposal | `mice-meeting-minutes` | Discovery 5데이터 |
-| mice-meeting-minutes | mice-estimate | `mice-meeting-minutes` | 규모·예산 단서 |
-| mice-proposal | mice-estimate | `mice-proposal` | eventScale·venue·options |
-| mice-proposal | pt-script | `mice-proposal` | 발표 메타 (시간·톤·청중) |
-| mice-estimate | pt-script | `mice-estimate` | sections·총액 (비용 슬라이드 멘트) |
-| mice-estimate | mice-dashboard | `mice-estimate` | 예산 vs 실적 |
-| mice-meeting-minutes | mice-dashboard | `mice-meeting-minutes` | 시리즈 rounds 누적 |
-| mice-meeting-minutes | mice-sponsor-deck | `mice-meeting-minutes` | sponsor_candidates |
-| mice-sponsor-deck | pt-script | `mice-sponsor-deck` | 영업 데크 PPTX |
-| (모든 스킬) | jc-redteam | (각 source) | 최종 산출물 검증 |
-| mice-dashboard | mice-proposal/rfp-analyzer | `mice-dashboard` | 차기 행사 기획용 전년 실적 (선순환) |
-
----
-
-## 6. 표준 규약
-
-### 6-1. 입력 수용 원칙
-
-1. 다운스트림 스킬은 입력 봉투의 `$schema == "ChainPayload/v1"` 를 먼저 확인한다.
-2. `$schema` 가 없거나 봉투가 아니면 → 파일/텍스트/대화 입력으로 처리 (봉투 강제 아님).
-3. `source` 로 페이로드 파싱 분기를 결정한다 (§7).
-4. `jc-redteam` 은 봉투 유무와 무관하게 모든 산출물·텍스트를 수용한다 (엄격 스키마 없음).
-
-### 6-2. 데이터 무결성
-
-- **단일 진실 소스**: 원천 데이터(RFP 원문·회의 transcript 등)가 진실. 다운스트림은 받은 페이로드를 임의 변경하지 않는다.
-- **변경 추적**: 수정이 불가피하면 사유를 명시하고 업스트림에 피드백.
-- **버전 표기**: 산출물 파일명에 날짜 포함, `version` 필드로 갱신 추적.
-
-### 6-3. 회사·개인 식별 정보 금지
-
-- 봉투·페이로드 어디에도 자기 회사명·데이터 파트너 실명을 **하드코딩하지 않는다.**
-- 발주처/클라이언트/공급자 정보는 **외부 주입 변수**(`clientId` 오버레이 등)로 처리한다.
-- 검출 시 일반 표현으로 치환하거나 사용자에게 경고한다. (각 스킬의 회사 종속 표현 검증 룰은 해당 스킬 문서에 보존.)
-
-### 6-4. 저장 위치 관례
-
-```
-.chaining/[client_or_project]_[YYYYMMDD]_to_[target].json
-```
-
-다운스트림 스킬 호출 시 본 경로를 우선 탐색한다. (스킬별 파일명 세부는 각 문서 참조.)
-
-### 6-5. 디자인 토큰 일관성
-
-체이닝으로 생성되는 시각 산출물(PPTX/XLSX/DOCX/HTML)은 jc-design-system 시그니처 토큰을 적용한다. `clientId` 봉투 필드가 있으면 해당 오버레이를 적용한다. 토큰 로드·오버레이·모드 매핑 절차는 `usage-guide.md` 참조.
-
----
-
-## 7. 자동 라우팅 (입력 source 판별)
-
-다운스트림 스킬의 표준 입력 분기 로직:
+## 7. source 판별 (detect_input_source)
 
 ```python
-def detect_input_source(input_payload) -> str:
-    """입력 형식으로 처리 분기 결정 (ChainPayload/v1 봉투 우선)."""
-    if isinstance(input_payload, dict) and input_payload.get("$schema") == "ChainPayload/v1":
-        return input_payload.get("source")     # mice-estimate, mice-meeting-minutes, ...
-    if isinstance(input_payload, dict) and "$schema" in input_payload:
-        return input_payload["$schema"]         # 레거시 스킬 전용 스키마 (마이그레이션 중)
-    if hasattr(input_payload, "read"):
-        return "file_upload"                     # Excel/CSV/PPTX 등 파일 객체
-    if isinstance(input_payload, (list, dict)):
-        return "inline_data"                     # 대화/인라인 데이터
-    return "unknown"
+ALIASES = {"mice-proposal": "jc-pptx", "mice-sponsor-deck": "jc-pptx", "mice-dashboard": "mice-ops-docs"}  # 폐합 source 별칭(§3-1)
+
+def detect_input_source(payload: dict) -> str | None:
+    if payload.get("$schema") != "ChainPayload/v1":
+        return None
+    src = str(payload.get("source", "")).split("(")[0].strip()
+    return ALIASES.get(src, src) or None
 ```
 
-판별된 `source` 에 맞춰 해당 스킬 reference 문서의 페이로드 파싱 룰을 적용한다.
+반환값이 §3 enum에 없으면 경고 후 범용 입력으로 처리한다.
 
----
+## 8. 변경 이력
 
-## 8. 마이그레이션 노트 (기존 변형 통합)
-
-본 정본 수립 이전, 스킬마다 봉투 관례가 갈라져 있었다. 정본은 이를 **`ChainPayload/v1` + camelCase 메타** 로 수렴시킨다.
-
-| 스킬 | 기존 봉투 관례 | 정본 대비 차이 | 호환 처리 |
-|------|---------------|---------------|----------|
-| mice-estimate | `$schema: ChainPayload/v1` + `source` + `version` | generatedAt 필드 보강 완료(2026-07-03) — 정본과 일치 | 그대로 |
-| mice-dashboard | `$schema: ChainPayload/v1` + `source` + `version` + `generatedAt` | ✅ 정본과 일치 | 그대로 |
-| mice-rfp-analyzer | `source` 만 (`$schema`·`version` 없음) | 봉투 헤더 미흡 | 신규 출력 시 `$schema`/`version`/`generatedAt` 추가 권장 |
-| mice-meeting-minutes | `source_skill` + `generated_at` (snake) | 필드명 변형 | `source`/`generatedAt` 로 수렴 권장. 기존 페이로드는 유지 |
-| mice-sponsor-deck | `$schema: mice-sponsor-deck/v2.0` + `extracted_from` | 봉투에 스킬 전용 스키마 사용 | 입력 검증은 기존 유지. 봉투 식별은 `source`로 수렴 권장 |
-| pt-script | `$schema: pt-script/v2.0` + `extracted_from` | 봉투에 스킬 전용 스키마 사용 | 입력 검증은 기존 유지. 봉투 식별은 `source`로 수렴 권장 |
-| jc-redteam | 봉투 없음 (임의 입력) | 해당 없음 | 변경 없음 — 모든 입력 수용 유지 |
-| jc-strategy-canvas | `$schema: ChainPayload/v1` 준수 | 8종 적용대상 외 — 자율 채택 | 그대로 (자율 채택. §0 적용 대상 8종에는 미포함) |
-| mice-market-intel | `$schema: ChainPayload/v1` 준수 | 8종 적용대상 외 — 자율 채택 | 그대로 (자율 채택. §0 적용 대상 8종에는 미포함) |
-
-> **호환성 원칙**: `detect_input_source()`(§7)는 `ChainPayload/v1` 과 레거시 스킬 전용 스키마(`pt-script/v2.0` 등)를 **모두** 받아낸다. 따라서 기존 페이로드를 깨지 않고 점진 수렴이 가능하다. 각 스킬의 enum·필드 검증 룰은 해당 스킬 문서가 계속 권위를 가진다.
+- **v2.2.0 (2026-10-09)** — §3에 '가이드·문서' 단계(`jc-doc-coauthor` 메시지 기획 봉투 · `jc-kv-guide`)와 봉투 비대상 줄 추가(라이브 19종 전부 분류, forge 린트 대조). §4에 jc-kv-guide·jc-doc-coauthor 행, §5에 메시지 기획 → KV 가이드 흐름, rfp-analyzer 핵심 키에 `analysis_result`·`risk_notes_for_negotiation`·`estimate_hint`·`open_questions` 병기. §5에 `mice-estimate → jc-pptx(⑦예산)` 역방향 화살표, 흐름을 현행 봉투에 맞춤(pt-script는 수신 전용·run-of-show 상류는 jc-pptx, aftermath R3 → jc-strategy-canvas, rfp-analyzer `open_questions` → mice-market-intel, 회의록 → mice-aftermath)·§4 pt-script·meeting-minutes 행 정정. mice-estimate v3.3.1 정합: §4 행을 입력(`displayType` 포함)·출력(`totalAmountVat` 포함)으로 구분, §5 역방향에 `totalAmountVat`.
+- **v2.1.0 (2026-10-05)** — enum을 라이브 스킬 기준으로 재작성: `mice-run-of-show`·`mice-aftermath`를 라이브로 복구(v2.0.0의 "폐지" 표기 오류 정정), `jc-strategy-canvas`·`mice-market-intel`·`mice-ops-docs`·`mice-team-board` 등록. 폐합 source는 별칭 표로. §6 절 번호(6-1~6-4)·§7 판별 함수 명시(소비 스킬 참조 정합). 예시 버전 하드코딩·고객사 실명 제거.
+- v2.0.0 (2026-09-21) — 라이브 스킬 8종으로 enum 정리, `projectTitle` 권장 필드.
+- v1.x (2026-05~07) — 봉투 규약 신설, camelCase 정본화(이력은 git).

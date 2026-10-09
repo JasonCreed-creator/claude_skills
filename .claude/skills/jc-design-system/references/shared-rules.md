@@ -1,171 +1,70 @@
-# Shared Rules — 공통 룰 정본 (Single Source of Truth)
+# Shared Rules — 공통 룰 정본
 
-여러 소비자 스킬(mice-proposal·mice-sponsor-deck·mice-dashboard·mice-estimate·pt-script·mice-rfp-analyzer·mice-meeting-minutes)에 반복 등장하는 **공통 규칙의 권위 정의**다. 각 스킬은 짧은 인라인 리마인더를 유지하되, 규칙의 근거·예시·전체 정의는 이 문서를 정본으로 참조한다.
+여러 소비 스킬(jc-pptx · mice-ops-docs · mice-meeting-minutes · pt-script · mice-rfp-analyzer · mice-estimate · mice-run-of-show · mice-aftermath · jc-strategy-canvas · mice-market-intel · jc-redteam · mice-team-board · jc-kv-guide)에 반복 등장하는 공통 규칙의 권위 정의. 소비 문서는 짧은 인라인 리마인더 + `정본: jc-design-system/references/shared-rules.md#<RULE-ID>` 링크만 둔다.
 
-> **참조 표기 규약**: 소비자 문서에서 본 정본을 가리킬 때는
-> `정본: jc-design-system/references/shared-rules.md#<RULE-ID>` 형식을 사용한다.
-> (예: `정본: jc-design-system/references/shared-rules.md#RULE-PPTX-HEX`)
-
-> **이 문서의 범위**: 디자인 토큰 *값*의 정본은 `signature-tokens.md`(라이트·시그니처)와 `mode-mapping.md`(다크·대비비)다. 본 문서는 그 위에서 작동하는 **교차 스킬 공통 정책 4종**만 정의하며, 색상 값은 정본 파일로 위임한다.
+색상 값의 정본은 `signature-tokens.md`, 다크·대비는 `mode-mapping.md`. 본 문서는 정책만 정의한다.
 
 ---
 
 ## 규칙 인덱스
 
-| ID | 규칙 | 적용 산출물 | 정본 보강 |
-|----|------|------------|----------|
-| `RULE-PPTX-HEX` | pptxgenjs hex 는 `#` 없이 6자리 | PPTX (proposal·sponsor-deck) | — |
-| `RULE-WCAG` | WCAG AA 대비 목표 | 전 산출물 | `mode-mapping.md §9` (계산 표준)·§5, `signature-tokens.md §1.7.2` |
-| `RULE-PRINT-LIGHT` | 다크 산출물도 인쇄 시 라이트 강제 | HTML (dashboard·sponsor-deck) | `mode-mapping.md §4.2` |
-| `RULE-NO-COMPANY` | 회사·개인 식별정보 하드코딩 금지 | 전 산출물 | 구현 예: pt-script·sponsor-deck 스크립트 |
-| `RULE-VISUAL-ROUTING` | 시각 에셋 라우팅 (사진·영상=Higgsfield / 표·차트·SVG·HTML=Claude) | 이미지·영상 포함 산출물 | — |
-| `RULE-VERSION-FACTS` | 제품·버전 팩트는 기록 직전 실검증 + 검증일 병기 | 전 산출물·스킬 문서 | — |
+| ID | 규칙 | 적용 |
+|----|------|------|
+| `RULE-WCAG` | WCAG AA 대비 목표 | 전 산출물 |
+| `RULE-PRINT-LIGHT` | 다크 산출물도 인쇄 시 라이트 강제 | HTML |
+| `RULE-PPTX-HEX` | python-pptx/pptxgenjs hex는 `#` 없이 6자리 | PPTX |
+| `RULE-NO-COMPANY` | 발주처·담당자 식별정보는 외부 주입, 리멤버 명의는 기본 | 전 산출물 |
+| `RULE-VISUAL-ROUTING` | 시각 에셋 소스 우선순위 | 이미지 포함 산출물 |
+| `RULE-VERSION-FACTS` | 제품·버전 팩트는 실검증 + 검증일 병기 | 전 문서·스크립트 |
 
 ---
 
-## RULE-PPTX-HEX — pptxgenjs hex 표기
+## RULE-WCAG
 
-**정의**: pptxgenjs 에 전달하는 모든 hex 컬러 문자열은 `#` 접두사 없이 6자리(`RRGGBB`)로 표기한다.
+- 본문 4.5:1 이상, 큰 텍스트(18pt+ Bold / 24pt+) 3.0:1 이상, 비텍스트 3.0:1 이상.
+- 리멤버 팔레트 실측 결론(`mode-mapping.md §5`): 오렌지 `#EB6F2A` 텍스트는 큰 글자 전용, 작은 강조는 `#B8431A`, 다크 위는 `#F08A4C`. 캡션 `#8C867A`는 보조 정보만. 앰버 단독 텍스트 금지.
+- 계산 표준: `mode-mapping.md §9`(sRGB 상대 휘도, WebAIM 기준값).
+- 체크: 새 색 조합을 쓰면 §9 공식으로 계산해 표에 추가한다.
 
-```
-"0A2540"   ✅  (pptxgenjs 가 요구하는 형식)
-"#0A2540"  ❌  (앞의 # 때문에 색이 적용되지 않거나 무시됨)
-```
+## RULE-PRINT-LIGHT
 
-**근거**: pptxgenjs 의 `color`/`fill`/`background`/차트 시리즈 색상 옵션은 6자리 hex 리터럴만 파싱한다. `#` 가 붙으면 색상이 적용되지 않는다(무음 실패). 동일 토큰을 HTML/CSS 에서 쓸 때는 `#0A2540` 처럼 `#` 를 붙여야 하므로, **같은 색이라도 산출물 종류에 따라 표기가 다르다**는 점에 주의한다.
+- 다크 토글이 있는 HTML도 인쇄·PDF는 항상 라이트. `@media print`에서 토큰을 라이트로 덮어쓰고 화면 상태는 유지.
+- 잠금·내부 전용 블록(단가·마진 등)은 `.no-print`로 인쇄 제외.
+- 구현: `mode-mapping.md §4.2`.
 
-**적용 범위**:
-- PPTX 를 생성하는 스킬에만 해당: `mice-proposal`, `mice-sponsor-deck`(2차 산출물).
-- HTML 산출물(`mice-dashboard`, sponsor-deck 1차 HTML)·DOCX 산출물에는 적용되지 않는다(CSS 는 `#` 사용).
+## RULE-PPTX-HEX
 
-**구현 예 / 적용 위치**:
-- `mice-proposal/references/visual-patterns.md` — `COLOR_*`·`CHART_SERIES` 상수가 `#` 없는 6자리(`signature-tokens.md §6` 미러).
-- `mice-sponsor-deck/references/visual-patterns.md`·`output-build-guide.md`·`design-tokens-mapping.md` — PPTX 변환 시 `#` 제외.
-- 값의 SoT 는 항상 `signature-tokens.md §6`(라이트)·`mode-mapping.md §3`(다크). 본 규칙은 *표기 형식*만 규정한다.
+- python-pptx `RGBColor.from_string("EB6F2A")`, pptxgenjs `color: "EB6F2A"` — `#`가 붙으면 무음 실패.
+- HTML/CSS는 `#EB6F2A`. 같은 값이라도 매체별 표기가 다르다. `jc_tokens.color(tok, key, hash_prefix=False)`가 변환한다.
+- 체크: 빌드 후 hex 문자열에 `#` 0건.
 
-**체크 항목**: PPTX 빌드 후 hex 문자열에 `#` 가 0건인지 확인.
+## RULE-NO-COMPANY (v2 재정의)
 
----
+**정의**: 산출물의 발행 명의는 리멤버 MICE비즈팀이 기본이다. 그 외 식별 정보 — 발주처·고객사·담당자 실명·연락처·협력사 — 는 산출 시 외부 주입 변수로만 받는다.
 
-## RULE-WCAG — WCAG AA 대비 목표
+- 허용(기본 명의): `(주)리멤버앤컴퍼니 마켓데이터사업실 · MICE 비즈팀`, 로고 2종, 공용 문의 `mice_solution@remember.co.kr`, 양식 명칭("리멤버 견적서", "산출내역서" — 리멤버 양식 단일).
+- 주입 슬롯: `{{client_company}}` `{{client_contact}}` `{{event_name}}` `{{venue}}` `{{author_name}}` `{{author_title}}` + 스킬별 슬롯.
+- 금지: 개인 휴대전화·사설 메일을 대외 문서에 넣는 것. 구 소속사(M&C) 명칭·프로젝트명·누적 건수를 리멤버 명의 문서에 넣는 것(2026-09-18 결정). 팀원 경력은 범위·규모 표현으로만("APEC 국제회의 ~ BCWW 초대형 박람회", 18년, 2만 명 규모).
+- 고객사 실명 레퍼런스는 노출 동의 확인 후에만(익명 요청 사례 있음). 미확인이면 익명 표기(A사·I사).
+- 체크: 대외 산출물에 M&C·엠앤씨·mnccom 0건, 개인 연락처 0건.
 
-**정의**: 모든 산출물의 텍스트·UI 색상 대비는 WCAG 2.1 AA 를 충족한다.
+## RULE-VISUAL-ROUTING
 
-| 텍스트 종류 | 대비 목표 |
-|-------------|----------|
-| 본문 텍스트 (18pt 미만 일반 / 14pt 미만 bold) | **4.5:1 이상** |
-| 큰 텍스트 (18pt bold 이상 / 24pt 이상 일반) | **3.0:1 이상** |
-| 비텍스트(그래픽·UI 컴포넌트) | **3.0:1 이상** |
-| AAA 본문 (선택적 상향) | 7.0:1 이상 |
+- 사진·래스터 히어로: ① `assets/objet-*.png` 7점(다크 슬라이드) ② 발주처·베뉴 제공 원본 ③ 생성 이미지(Higgsfield 등, 연결돼 있을 때만). 임의 스톡 금지 — 없으면 플레이스홀더 + 이미지 브리프.
+- 표·차트·다이어그램·인포그래픽·SVG/HTML: Claude 코드로 직접 렌더.
+- 라이트 캔버스 위 오브제 금지.
 
-**근거 / 계산 표준**: 대비비 산출 공식(sRGB 상대 휘도)·판정 기준·검증 도구는 본 문서에서 재정의하지 않는다. **구체 대비표·계산 공식·도구의 정본은 다음이다**:
+## RULE-VERSION-FACTS
 
-- **`jc-design-system/references/mode-mapping.md §9`** — WCAG AA 대비비 계산 표준(sRGB→상대 휘도 공식, WebAIM Contrast Checker 기준). 본 스킬 군의 모든 대비비 표기는 WebAIM 결과값을 기준으로 하며 다른 도구의 근사값은 채택하지 않는다.
-- **`jc-design-system/references/mode-mapping.md §5`** — 라이트/다크 표준 조합별 대비비 표.
-- **`jc-design-system/references/signature-tokens.md §1.7.2`** — 확장 variant 토큰(`--jc-success-strong` 등)의 대비비.
-
-**자주 쓰는 결론(요약, 정본 수치는 위 §9 표 참조)**:
-- 본문에 녹색이 필요하면 `--jc-success`(`#00C853`, 본문 2.24:1 FAIL) 대신 `--jc-success-strong`(`#00733B`, 6.36:1 AA) 사용.
-- 다크 액센트 `#5B8DEF` 위 흰 텍스트는 큰 텍스트(3:1)에서만 AA — 본문 라벨에 쓰지 않는다.
-
-**구현 예 / 적용 위치**:
-- `mice-dashboard/references/dark-mode-patterns.md §5` — 다크 조합 대비비 표(§9 미러).
-
----
-
-## RULE-PRINT-LIGHT — 인쇄 시 라이트 강제
-
-**정의**: 다크 모드로 표시되는 산출물(HTML 대시보드·HTML 데크)도 **인쇄(PDF 출력) 시에는 항상 라이트 모드로 강제 전환**한다. `always-dark`/사용자 토글로 다크 상태여도 인쇄 출력은 라이트여야 한다.
-
-**근거**:
-- 다크 배경 풀블리드는 잉크/토너 과다 소모 + 대비 저하로 인쇄 가독성이 떨어진다.
-- 배포본(인쇄·PDF 첨부)은 라이트가 표준(`mode-mapping.md §1`: "인쇄물(배포본) = Light 강제").
-- 인쇄 강제는 화면 상태를 **영구 변경하지 않는다** — 인쇄 컨텍스트에서만 라이트 토큰을 덮어쓰고, 인쇄 종료 후 원래(다크) 상태로 복귀한다.
-
-**구현 패턴(요지)** — 산출물별 CSS/JS 는 각 스킬이 소유하되, 동작 규약은 동일하다:
-
-```css
-@media print {
-  /* 다크 토글 상태여도 인쇄는 라이트 토큰으로 덮어쓴다 */
-  :root, [data-theme="dark"] {
-    --jc-bg: #FFFFFF !important;
-    --jc-surface: #FFFFFF !important;
-    --jc-text: #1A1D24 !important;
-    /* 보더·차트 영역 등도 라이트 토큰으로 */
-  }
-}
-```
-
-라이트 강제 시 사용하는 토큰 값의 정본은 `jc-design-system/references/mode-mapping.md §4.2`(인쇄 강제 변환).
-
-**적용 범위**: 다크 모드를 지원하는 HTML 산출물 — `mice-dashboard`, `mice-sponsor-deck`(1차 HTML 데크). PPTX/DOCX 는 기본 라이트라 별도 처리 불필요(표지 등 다크 슬라이드는 산출물 자체가 그 디자인이므로 예외).
-
-**구현 예 / 적용 위치**:
-- `mice-dashboard/references/dark-mode-patterns.md §4` — `@media print` 라이트 강제 CSS.
-- `mice-sponsor-deck/references/dark-mode-patterns.md` — `beforeprint`/`afterprint` 토글 + `@media print` 라이트 강제(복귀 보장).
-
----
-
-## RULE-NO-COMPANY — 회사·개인 식별정보 하드코딩 금지
-
-**정의**: 어떤 스킬도 산출물·문서·스크립트에 **특정 회사명·개인 실명·부서명 등 식별 정보를 하드코딩하지 않는다.** 발주처·공급자·고객사·발행자·발표자 등 모든 식별 정보는 **외부 주입 변수**로만 처리하며, 사용자가 매 산출 시 직접 제공한다.
-
-**근거**: 본 스킬 군은 특정 소속사가 아닌 **개인(MICE 전략가) 자산**이다(`jc-design-system/SKILL.md` 핵심 원칙 3 "회사 종속 표현 배제"). 회사 종속 표현이 박히면 Track A/B 양쪽 재사용이 깨지고, 산출물이 특정 고용주에 묶인다. CLAUDE.md §10(외부 주입 변수 원칙)과 동일 정책.
-
-**금칙(하드코딩 금지) 예시**:
-- 회사 상호: `엠앤씨`, `M&C`(및 `M&C커뮤니케이션즈`), `리멤버앤컴퍼니` 등 구체 상호
-- 부서·조직: `신사업실` 등 내부 조직명
-- 개인 실명·직함을 식별 가능한 형태로 고정
-
-**허용**:
-- 일반화 표현: "MICE 전문가", "행사 기획팀", "본 행사 사무국", "발표자", "본 PCO", "발주처"(또는 `T社`)
-- **양식 식별자**로서의 명칭: mice-estimate 의 `산출내역서(공공형)`·`리멤버 견적서`는 *양식 종류*를 가리키는 식별자이므로 보존된다(회사 상호를 산출물 본문에 쓰는 것과 구분). 구 "M&C 견적서" 양식은 리멤버 전환(D1)으로 "산출내역서(공공·국가계약법형)"으로 일반화 리네임됨 — 코드 키 `mnc`는 하위호환 유지.
-- 외부 주입 변수 슬롯: `{{client_company}}`, `{{author_name}}`, `{{personal_brand}}`, `{{author_title}}`, `{{company_name}}` 등(`jc-design-system/SKILL.md` v1.1.0 표준 5종) 및 각 스킬의 공급자/고객사 슬롯.
-
-**구현 예 (실제 sanitize 코드)** — 문서 규칙의 코드 레벨 구현은 다음 스크립트가 정본이다(로직 자체는 본 문서로 옮기지 않는다):
-- `pt-script/scripts/build_script.py` — `sanitize_text()`: 금칙 상호/부서명을 `[발표 주체]`·`[부서명]` 등 placeholder 로 치환하고, meta 슬롯 전반에 적용.
-- `mice-sponsor-deck/scripts/sample_generator.py` — `FORBIDDEN_TERMS` + `scan_forbidden_terms()`: 후보 JSON·데크 콘텐츠에서 금칙어를 검출해 검증 단계에서 차단.
-
-**체크 항목**: 산출물·후보 JSON 에 금칙어 0건인지 검증(스킬별 QA 체크리스트의 "회사 종속 표현 0건" 항목).
-
----
-
-## RULE-VISUAL-ROUTING — 시각 에셋 라우팅
-
-- 사진/래스터 이미지(슬라이드 배경·히어로·키비주얼) → **Higgsfield 이미지 생성**
-- 영상 → **Higgsfield 영상 생성**
-- 표·다이어그램·차트·KPI·인포그래픽, SVG/HTML 빌드 → **Claude 자체 기능(코드)**
-- 예외: 코드 아트(p5.js 제너러티브·캔버스 정적 아트)는 각 스킬 고유 방식 유지
-- 전제: 실행 환경에 Higgsfield 연결이 켜져 있어야 함. 꺼져 있으면 플레이스홀더로 폴백하고 연결을 안내
-
----
-
-## RULE-VERSION-FACTS — 제품·버전 팩트 실검증
-
-**정의**: 산출물·스킬 문서·스크립트에 **제품명·모델명·버전·가격 등 시점 종속 팩트**를 기록할 때는, 기록 직전에 공식 소스(공식 문서·레퍼런스 스킬·웹 검증)로 실검증하고 **검증일을 병기**한다. 기억·추정에 의한 기록 금지.
-
-**표기 규칙**:
-- **계열명 우선**: 특정 스냅숏 ID보다 계열명(예: Claude Sonnet 계열 최신)을 우선 표기하고, 코드에 ID가 필요한 경우에만 정확한 현행 ID를 사용한다.
-- 검증일 병기 형식: `(YYYY-MM-DD 검증 기준)` — 예: `claude-sonnet-5  # 2026-07-03 검증 기준 — 각 계열 최신 버전 사용 (RULE-VERSION-FACTS)`
-
-**근거**: 폐기 모델 ID가 스킬 스크립트에 잔존하면 실행 시 404로 즉시 파손된다(2026-07 jc-mcp-builder에서 실사례 — 폐기된 claude-3-7-sonnet·claude-3-5-sonnet ID 4곳 교체). 시점 종속 팩트는 부패하는 자산이므로, "언제 검증했는가"가 팩트의 일부다.
-
-**구현 예**: `jc-mcp-builder/scripts/evaluation.py` L223 — 기본 모델 상수에 검증일 주석 병기.
-
-**체크 항목**: jc-redteam `verification-checklist.md` §1-8 (제품·버전 팩트 실검증) — 검증일 누락·폐기 버전 잔존 여부를 감수 단계에서 재확인.
+- 제품명·모델명·버전·가격 등 시점 종속 팩트는 기록 직전 공식 소스로 실검증하고 `(YYYY-MM-DD 검증 기준)`을 병기한다. 계열명 우선, 스냅숏 ID는 코드에 필요할 때만.
+- 근거: 폐기 모델 ID가 스크립트에 남으면 실행 시 404(2026-07 실사례).
+- 체크: jc-redteam 검증 체크리스트 §1-8.
 
 ---
 
 ## 변경 이력
 
-### v1.2.0 (2026-07-03) — 제품·버전 팩트 룰 추가
-- `RULE-VERSION-FACTS` 신설(기록 직전 실검증 + 검증일 병기 + 계열명 우선). jc-mcp-builder 폐기 모델 ID 사고의 재발 방지책. jc-redteam 체크리스트 §1-8과 상호 참조.
-
-### v1.1.0 (2026-06-04) — 시각 에셋 라우팅 추가
-- `RULE-VISUAL-ROUTING` 신설(사진/래스터·영상=Higgsfield, 표·차트·SVG/HTML=Claude). mice-proposal·mice-sponsor-deck·jc-landing-page·jc-artifact-builder 참조.
-
-### v1.0.0 (2026-06-02) — R3 공통 룰 통합
-
-- 4개 공통 규칙(`RULE-PPTX-HEX`·`RULE-WCAG`·`RULE-PRINT-LIGHT`·`RULE-NO-COMPANY`)을 ID 부여하여 단일 정본화.
-- 색상 *값*은 `signature-tokens.md`·`mode-mapping.md` 로 위임, 본 문서는 *정책*만 정의.
-- 소비자 스킬은 짧은 인라인 리마인더를 유지하고 본 문서를 `#<RULE-ID>` 로 참조.
+- **v2.2.0 (2026-10-09)** — 소비 스킬 목록에 mice-estimate 추가, 허용 양식명 '산출내역서(공공형)' → '산출내역서'(리멤버 양식 단일, mice-estimate v3.3.0 기준).
+- **v2.1.0 (2026-10-05)** — 소비 스킬 목록을 라이브 기준으로 갱신, RULE-NO-COMPANY 예시의 고객사 실명 삭제.
+- **v2.0.0 (2026-09-21)** — 리멤버 전환. RULE-NO-COMPANY를 "리멤버 명의 기본 + 발주처 주입"으로 재정의, M&C 언급 금지·레퍼런스 실명 동의 규칙 추가. RULE-WCAG에 리멤버 팔레트 실측 결론 추가. RULE-VISUAL-ROUTING을 오브제 우선으로 개정. mice-sponsor-deck 등 폐지 스킬 참조 제거.
+- v1.2.0 (2026-07-03) RULE-VERSION-FACTS 신설 · v1.1.0 (2026-06-04) RULE-VISUAL-ROUTING 신설 · v1.0.0 (2026-06-02) 4룰 통합.

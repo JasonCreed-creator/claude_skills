@@ -1,402 +1,101 @@
-# Component Patterns — 컴포넌트 패턴
+# Component Patterns — 문체 · 컴포넌트 · 레이아웃
 
-산출물에 자주 등장하는 시각 컴포넌트 패턴을 정의한다.
-
----
-
-## 1. KPI 카드
-
-### 1.1 표준형
-
-```html
-<div style="
-  background: var(--jc-surface);
-  border: 0.5px solid var(--jc-border);
-  border-radius: var(--jc-radius-lg);
-  padding: 16px 20px;
-">
-  <div style="
-    font-family: var(--jc-font-ko);
-    font-size: 12px;
-    color: var(--jc-text-muted);
-  ">2026 매출 목표</div>
-  
-  <div style="
-    font-family: var(--jc-font-mono);
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--jc-primary);
-    margin-top: 4px;
-  ">5.0억</div>
-  
-  <div style="
-    font-family: var(--jc-font-ko);
-    font-size: 12px;
-    color: var(--jc-accent);
-    margin-top: 4px;
-  ">▲ 전년比 +25%</div>
-</div>
-```
-
-### 1.2 강조형 (좌측 액센트 라인)
-
-```html
-<div style="
-  background: var(--jc-surface);
-  border: 0.5px solid var(--jc-border);
-  border-left: 3px solid var(--jc-point-orange);
-  border-radius: var(--jc-radius-lg);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding: 16px 20px;
-">
-  <!-- KPI 내용 -->
-</div>
-```
-
-### 1.3 KPI 카드 사용 규칙
-
-- 한 행 최대 4개. 5개 이상은 2행으로 분리
-- 숫자는 항상 `--jc-font-mono` 적용
-- 트렌드 표시는 `▲ ▼ ●` 기호 + 컬러로 의미 전달
-  - 상승·긍정 → `--jc-accent` 또는 `--jc-success`
-  - 하락·부정 → `--jc-danger`
-  - 핫스팟 → `--jc-point-orange`
-  - 라이브·실시간 → `--jc-point-neon`
+값은 전부 `signature-tokens.md` 참조. 출처: remember-proposal-ds 브랜드 가이드(제안서), 팀 보드 `styles.css`(대시보드), 플레이북 `_DECK-COMPONENTS.md`(문서형 HTML), 구 리멤버 HTML 스킬 v1.0.0(2026-09-21 본 스킬로 흡수).
 
 ---
 
-## 2. 차트 컨테이너
+## 0. 콘텐츠 문체 (제안서·소개서·리포트)
 
-### 2.1 기본 구조
+- **존댓말 서술체**("~합니다", "~입니다"). 발주처는 회사명으로(예: "A사"), 우리는 "리멤버".
+- **헤드라인 두 문체** — ① 문장형 주장 + 오렌지 강조어구 1개(판단·제안·콘셉트 슬라이드) ② 짧은 주제형(개요·표·별첨·목차). 쉼표 뒤 줄바꿈으로 리듬. 마침표는 표지·클로징 선언문에만.
+- **서브 헤드라인**은 대시(—)로 조건·범위를 덧붙인다.
+- **레이블**은 한글 + 영문 병기, 가운뎃점·세로선 구분("이해 · 기획 | UNDERSTANDING", "SECTION 04"). 영문 대문자 + 자간 .18em.
+- **숫자로 말한다.** 단위·기준을 항상 붙인다(VAT 별도, 분, 명). tabular-nums.
+- **권장/선택**: ◎ 당사 권장 · ○ 대안. 표에서 권장 열은 오렌지.
+- **금지**: 이모지, 느낌표, 과장 수사("혁신적인", "최고의"), 웹 카피 톤, 발주처 로고 재염색.
+- 팀 지침·프로토콜류 내부 문서는 마데실 Ground Rule 문체(개조식 중첩 불릿 + 원칙만 합니다체) — `mice-ops-docs` 참조. Slack 메시지는 해요체 허용 — `mice-slack-ops` 참조.
 
-```html
-<div style="
-  background: var(--jc-surface);
-  border: 0.5px solid var(--jc-border);
-  border-radius: var(--jc-radius-lg);
-  padding: 20px 24px;
-">
-  <!-- 차트 헤더 -->
-  <div style="margin-bottom: 16px;">
-    <div style="
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--jc-text);
-    ">월별 매출 추이</div>
-    <div style="
-      font-size: 12px;
-      color: var(--jc-text-muted);
-      margin-top: 4px;
-    ">2026년 1월 ~ 12월 (단위: 억원)</div>
-  </div>
-  
-  <!-- 차트 영역 -->
-  <div style="height: 280px;"><!-- 차트 라이브러리 렌더링 --></div>
-  
-  <!-- 범례 -->
-  <div style="
-    display: flex;
-    gap: 16px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 0.5px solid var(--jc-border);
-    font-size: 12px;
-    color: var(--jc-text-muted);
-  ">
-    <span><span style="color: var(--jc-data-1);">●</span> 실적</span>
-    <span><span style="color: var(--jc-data-2);">●</span> 목표</span>
-  </div>
-</div>
-```
+## 1. 버튼
 
-### 2.2 차트 시리즈 운용 규칙
+| 종류 | 스타일 |
+|------|--------|
+| Primary | bg `#EB6F2A` · 텍스트 white · r6~8 · hover bg `#B8431A` |
+| Secondary | 1.5px `#4A463F` 아웃라인 · 텍스트 brown · hover 반전 |
+| Ghost | 텍스트 `#B8431A` · hover bg `#FFF1E6` |
 
-- 한 차트 동시 사용 시리즈 **최대 3종**
-- 시리즈 우선순위: data-1 → data-2 → data-3 → data-4 → data-5
-- Neon Green(data-4)은 강조 시리즈에 한정. 면적 5% 이내
-- 그리드 라인: `var(--jc-border)` 0.5px solid
-- 축 텍스트: `var(--jc-text-muted)` 12px
+패딩 10~13px × 20~24px, 600 weight. 다크에서 Primary는 그대로, 텍스트 링크는 `#F08A4C`.
 
----
+## 2. 배지 (pill)
 
-## 3. 섹션 구분
+| 상태 | 배경 | 텍스트 |
+|------|------|--------|
+| 진행중 | `#FFF1E6` | `#B8431A` |
+| 검토·정보 | `#E8EEF3` | `#476580` |
+| 완료 | `#E7EFE8` | `#196B24` |
+| 지연·경고 | `#FBE9E9` | `#D93636` (Bold 14px+) |
+| 주의·보류 | `#FBF2DF` | `#1A1A1A` |
+| 중립 | `#F4F1EA` | `#4A463F` |
 
-### 3.1 섹션 타이틀
+팀 보드 상태 칩 7톤(견적·계약·준비·진행·완료·정산완료·드롭)은 위 6종 + 드롭 = 중립 취소선.
 
-```html
-<div style="margin: 48px 0 24px;">
-  <div style="
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--jc-accent);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  ">SECTION 01</div>
-  
-  <div style="
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--jc-primary);
-    line-height: 1.2;
-  ">사업 개요</div>
-  
-  <div style="
-    width: 32px;
-    height: 3px;
-    background: var(--jc-accent);
-    margin-top: 12px;
-  "></div>
-</div>
-```
+## 3. KPI 카드
 
-### 3.2 섹션 구분선
+- surface + border 1px + r10~12 + 그림자 1단계(대시보드), 슬라이드는 플랫. 패딩 18~24px(문서) / 36~40px(슬라이드).
+- 구조: 라벨(13~14px, ink-3 600, 자간 .1em) → 수치(31~49px 700, tabular-nums, 단위는 캡션색 400 분리) → 증감(positive/negative 600 + 비교 기준 캡션).
+- 솔리드 변형: 그라디언트 배경 + 흰 수치 — 슬라이드당 1개, 화면당 1개.
+- 다크: surface `#2A2620` / border `#3E3931` / 수치 `#F4F0E9` / 강조 `#F08A4C`.
 
-```html
-<!-- 약한 구분 -->
-<hr style="
-  border: none;
-  border-top: 0.5px solid var(--jc-border);
-  margin: 32px 0;
-">
+## 4. 카드
 
-<!-- 강한 구분 -->
-<hr style="
-  border: none;
-  border-top: 1px solid var(--jc-border-strong);
-  margin: 48px 0;
-">
-```
+- 흰색 · 1px `#DCD6C8` · r10~12 · 패딩 36/40(슬라이드) 20~24(문서).
+- 강조 카드는 오렌지 1.25px 보더 + 상단 그라디언트 룰(9px). **슬라이드에서 좌측 컬러 보더 카드 금지**(DS 규칙).
+- 문서·대시보드 HTML에서는 상태 표시용 좌측 4px 바 허용(플레이북 `.card.tint/.note/.warn/.neg/.pos`): tint `#F5A05A` · note `#476580` · warn `#D39A1F` · neg `#D93636` · pos `#196B24`.
+- 다크 패널 카드(charcoal `#332F29`, 텍스트 `#F4F0E9`, 라벨 `#F5A05A`)는 페이지·슬라이드당 1개.
 
----
+## 5. 표
 
-## 4. 테이블
+- 가로선만. 헤더: 캡션색 텍스트 12~13px 600 자간 .06em + **1.5px 잉크 하단선**. 행 1px `#DCD6C8`(문서) 또는 `#EFEBE2`(대시보드 밀도형). 세로선·줄무늬 없음.
+- 첫 열 600 잉크, 나머지 ink-2. 숫자 우측 정렬 tabular(목표는 ink-3, 실적은 700).
+- 슬라이드 표는 24px 본문(12pt) 미만 금지. 밀도가 넘치면 차트 1 + 핵심 수치 1로 재구성.
+- 카드형 표: surface + border + r10 + overflow hidden. 권장 열은 오렌지 텍스트(큰 글자) 또는 `#FFF1E6` 배경.
 
-### 4.1 표준 테이블
+## 6. 차트·바
 
-```html
-<table style="
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--jc-font-ko);
-  font-size: 14px;
-">
-  <thead>
-    <tr style="
-      background: var(--jc-surface-alt);
-      border-bottom: 1px solid var(--jc-border-strong);
-    ">
-      <th style="
-        text-align: left;
-        padding: 12px 16px;
-        font-weight: 600;
-        color: var(--jc-text);
-      ">항목</th>
-      <th style="
-        text-align: right;
-        padding: 12px 16px;
-        font-weight: 600;
-        color: var(--jc-text);
-      ">금액</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="border-bottom: 0.5px solid var(--jc-border);">
-      <td style="padding: 12px 16px; color: var(--jc-text);">기획비</td>
-      <td style="
-        padding: 12px 16px;
-        text-align: right;
-        font-family: var(--jc-font-mono);
-        color: var(--jc-text);
-      ">15,000,000</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr style="background: var(--jc-primary); color: var(--jc-surface);">
-      <td style="padding: 14px 16px; font-weight: 600;">합계</td>
-      <td style="
-        padding: 14px 16px;
-        text-align: right;
-        font-family: var(--jc-font-mono);
-        font-weight: 600;
-      ">50,000,000</td>
-    </tr>
-  </tfoot>
-</table>
-```
+- 수평 바: 트랙 `#F4F1EA` pill, 채움은 시리즈 순서, 라벨 좌 / 수치 우(600).
+- 진행률 바·퍼널·히트맵: `signature-tokens.md §1.7` 스케일. 팀 보드 가동률 히트맵은 orange 스케일(over) + green(ok) + amber(warn).
+- 도넛·링: 트랙 `#F4F1EA`, 값 S1. 3D·그림자 금지.
+- SVG 직접 렌더 우선(오프라인·CSP 무관). Chart.js 사용 시 CSS 변수에서 색을 읽는다(`usage-guide.md §3.4`).
 
-### 4.2 테이블 사용 규칙
+## 7. 문서 헤더 · 섹션
 
-- 헤더 배경: `--jc-surface-alt`
-- 합계 행 배경: `--jc-primary` + 흰색 텍스트
-- 숫자 컬럼: `--jc-font-mono` + 우측 정렬
-- 행 구분선: `0.5px solid --jc-border`
-- 호버 행 배경: `--jc-accent-soft` (인터랙티브 산출물에서만)
+- 헤더: 모노 킥커(10~11px, 자간 2px, orange 600) + 우측 날짜(모노, 캡션색) → 제목 25px 700 → 오렌지 룰(3~4px × 44~56px) → 리드(14px brown, line-height 1.7).
+- 섹션 넘버링: 모노 01/02… orange + 섹션명 h2. 라이트/화이트 밴드 교차로 리듬. 다크 밴드는 페이지당 1개 이하.
+- 탭형 문서(플레이북): 상단 탭바 + 좌측 목차 + 해시 라우팅. 콘텐츠 상한: 카드 4장/그룹, 체크리스트 8개(2열이면 16), 표 9행 초과는 접이식.
 
----
+## 8. 슬라이드 프레임 (1920×1080)
 
-## 5. 헤더 / 표지 / 푸터
+- 좌우 마진 90 · eyebrow y72(22px 700 orange 자간 .18em) · headline y130(64px 700, 강조어 orange) · sub y236(30px ink-2) · 콘텐츠 y340~1000 · 푸터 y1017(18px 캡션: 좌 행사명 · 중앙 페이지 · 우 로고 24px).
+- 우상단 섹션 태그: 흰 pill, 1px 보더, r6, 18px 700 자간 .1em.
+- 그리드: 3열 카드 / 좌 텍스트 520px + 우 표 / 4열 프로필. 열 간격 28px.
+- 다크 표지 프레임: 상하 60% 화이트 1.5px 룰(y122·y972), 우측 오브제 620px + 좌측 페이드 오버레이.
+- 상세 지오메트리·pt 좌표는 `jc-pptx/references/slide-types.md`, 템플릿 문법은 `jc-pptx/references/remember-deck-templates.md`.
 
-### 5.1 문서 헤더 (상단 풀블리드)
+## 9. 회의록 · 액션 아이템 · 트래커
 
-```html
-<div style="
-  background: var(--jc-primary);
-  color: var(--jc-surface);
-  padding: 24px 48px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-">
-  <div>
-    <div style="font-size: 12px; opacity: 0.7;">2026 / Q1</div>
-    <div style="font-size: 20px; font-weight: 600;">제안서 타이틀</div>
-  </div>
-  <div style="font-size: 12px; opacity: 0.7;">{{client_name}}</div>
-</div>
-```
+- 카드 헤더: 제목 + 상태 배지(우측). 행: 항목 / 담당(캡션색) / 기한(모노 — 임박 `#B8431A`, 여유 `#6E6E6E`).
+- 체크리스트: 체크서클 + 취소선 완료. 칸반은 열 헤더에 상태 배지색.
 
-### 5.2 표지 (Dark 모드 풀블리드)
+## 10. 링크 · 상태
 
-```html
-<div style="
-  background: var(--jc-primary);
-  color: var(--jc-surface);
-  padding: 80px 64px;
-  min-height: 540px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-">
-  <!-- 상단: 클라이언트 -->
-  <div>
-    <div style="
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      opacity: 0.6;
-    ">FOR {{client_name}}</div>
-  </div>
-  
-  <!-- 중앙: 타이틀 -->
-  <div>
-    <div style="
-      font-size: 14px;
-      color: var(--jc-accent);
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
-    ">PROPOSAL</div>
-    <div style="
-      font-size: 56px;
-      font-weight: 700;
-      line-height: 1.1;
-    ">{{document_title}}</div>
-    <div style="
-      width: 48px;
-      height: 4px;
-      background: var(--jc-accent);
-      margin-top: 24px;
-    "></div>
-  </div>
-  
-  <!-- 하단: 메타 -->
-  <div style="
-    font-size: 12px;
-    opacity: 0.6;
-    display: flex;
-    justify-content: space-between;
-  ">
-    <span>{{author_name}} / {{author_title}}</span>
-    <span>{{date}}</span>
-  </div>
-</div>
-```
+- `a { color:#B8431A } a:hover { color:#EB6F2A }`. 다크 `#F08A4C` / hover `#F5A05A`.
+- hover 보더 `#CFC8BC`, press opacity .85. 바운스·스케일 없음. 슬라이드 전환 fade 240ms.
 
-### 5.3 푸터
+## 11. 아이콘
 
-```html
-<div style="
-  border-top: 0.5px solid var(--jc-border);
-  padding: 16px 48px;
-  font-size: 11px;
-  color: var(--jc-text-muted);
-  display: flex;
-  justify-content: space-between;
-">
-  <span>© 2026. All rights reserved.</span>
-  <span>Page {{page_num}} / {{total_pages}}</span>
-</div>
-```
+- 아이콘 시스템 없음. 기호는 유니코드만(◎ ○ · | — × → ①②③). 꼭 필요하면 1.5px 스트로크 라인 아이콘 잉크 단색.
 
----
+## 12. 동시 사용 규칙
 
-## 6. 배지·태그·라벨
-
-### 6.1 상태 배지
-
-```html
-<!-- 진행중 -->
-<span style="
-  display: inline-block;
-  background: var(--jc-accent-soft);
-  color: var(--jc-accent-strong);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--jc-radius-pill);
-">진행중</span>
-
-<!-- 핫 (Orange) -->
-<span style="
-  background: #FFF0EC;
-  color: #C7401A;
-  /* 나머지 동일 */
-">우선순위 핫</span>
-
-<!-- 완료 -->
-<span style="
-  background: #E8F8EE;
-  color: #00873D;
-">완료</span>
-```
-
----
-
-## 7. 인용·콜아웃
-
-```html
-<div style="
-  border-left: 3px solid var(--jc-accent);
-  background: var(--jc-accent-soft);
-  padding: 16px 20px;
-  border-radius: 0 var(--jc-radius-md) var(--jc-radius-md) 0;
-  margin: 24px 0;
-">
-  <div style="
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--jc-accent-strong);
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-  ">KEY POINT</div>
-  <div style="
-    font-size: 15px;
-    color: var(--jc-text);
-    line-height: 1.6;
-  ">핵심 메시지 본문 영역</div>
-</div>
-```
-
----
-
-## 8. 컴포넌트 동시 사용 규칙
-
-| 규칙 | 한도 |
-|------|------|
-| 한 화면 KPI 카드 동시 노출 | 최대 4개 (한 행) |
-| 차트 시리즈 동시 사용 | 최대 3종 |
-| 포인트 컬러 동시 사용 | 최대 3종 |
-| 페이지당 강조 컴포넌트 (콜아웃·배지) | 최대 2개 |
-| 페이지당 헤딩 레벨 | H1=1, H2=무제한, H3=H2당 5개 권장 |
-
-원칙: 시각 노이즈 최소화. 한 화면에 강조 요소가 너무 많으면 모두 평준화된다.
+- 그라디언트 면 / 솔리드 KPI / 다크 패널 중 슬라이드(화면)당 1개.
+- 배지는 한 행에 2개 이하. 오렌지 텍스트 강조는 슬라이드당 1구.
+- 배경색 3종 이상 혼용 금지.
