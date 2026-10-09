@@ -1,7 +1,7 @@
 ---
 name: jc-slack-relay
-description: 회사 정책으로 claude.ai 커넥터가 막혀 Slack이 Claude Code(PC)에서만 읽히는 환경에서, Code가 Slack 내용을 읽어 C:\.Claude\Slack-내보내기 폴더에 md 파일로 저장하고 Cowork·채팅은 그 파일을 읽어 쓰게 하는 중계 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'Cowork에서 슬랙', '슬랙 내보내기', '슬랙 파일로 저장', '슬랙 중계', '슬랙 파일 읽어줘', 'Cowork용 슬랙 정리'를 언급할 때. Cowork·채팅에서 Slack 도구 없이 Slack 내용이 필요할 때. 형제 경계 — Slack 운영 규칙(채널 프로토콜·브리프 형식·캔버스·공지)은 mice-slack-ops, 이 스킬은 Code→파일→Cowork 전달 경로만 다룬다. Slack 쓰기(발송·캔버스 수정)는 하지 않는다.
-version: "v1.0.0"
+description: 회사 정책으로 claude.ai 커넥터가 막혀 Slack이 Claude Code(PC)에서만 읽히는 환경에서, Code가 Slack 내용을 읽어 C:\.Claude\Slack-내보내기 폴더에 md 파일로 저장하고 Cowork·채팅은 그 파일을 읽어 쓰게 하는 중계 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'Cowork에서 슬랙', '슬랙 내보내기', '슬랙 파일로 저장', '슬랙 중계', '슬랙 파일 읽어줘', 'Cowork용 슬랙 정리', '내보내기 파일', '_목록.md', '슬랙 md', '내보내기 폴더'를 언급할 때. Cowork·채팅에서 Slack 도구 없이 Slack 내용이 필요할 때. 형제 경계 — Slack 운영 규칙(채널 프로토콜·브리프 형식·캔버스·공지)은 mice-slack-ops, 이 스킬은 Code→파일→Cowork 전달 경로만 다룬다. Slack 쓰기(발송·캔버스 수정)는 하지 않는다.
+version: "v1.1.0"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -14,7 +14,7 @@ license: Complete terms in LICENSE.txt
 - 도구 목록에 `mcp__plugin_*_slack__` 계열 Slack 도구가 있으면 → **A. 내보내기 모드**(Claude Code)
 - 없으면 → **B. 읽기 모드**(Cowork·채팅). Slack에 직접 접속하려 하지 않는다
 
-## 1. 저장 위치
+## 1. 저장 위치 (경로 상수 정본 — 다른 스킬은 이 절을 가리킨다)
 
 - 폴더: `C:\.Claude\Slack-내보내기\` (Cowork 작업 시 이 폴더를 작업 폴더로 허용해 둔다)
 - 파일 이름: `YYYY-MM-DD_HHMM_<채널 또는 주제>.md` (한국 시간 기준)
@@ -24,7 +24,7 @@ license: Complete terms in LICENSE.txt
 
 1. 범위를 정한다: 채널·스레드·검색어·기간. 지정이 없으면 '최근 7일, 요청에 나온 채널'로 하고 그렇게 골랐다고 한 줄 밝힌다.
 2. 수집: `slack_read_channel`·`slack_read_thread`·`slack_search_public_and_private` 등 읽기 도구만 쓴다. 메시지 발송·캔버스 수정은 하지 않는다.
-3. 아래 형식으로 파일을 쓴다. 원문은 줄이지 않고 그대로, 요약은 따로.
+3. 아래 형식으로 파일을 쓴다. 기본은 원문을 줄이지 않고 그대로 쓰는 것뿐이다(요약은 선택 — 아래).
 4. `_목록.md`에 한 줄 추가.
 5. 답장: 저장 경로와 "Cowork에서 '슬랙 파일 읽어줘'라고 하시면 됩니다" 한 줄.
 
@@ -36,17 +36,14 @@ license: Complete terms in LICENSE.txt
 - 범위: #채널명 / 2026-09-28 ~ 2026-10-05 / 검색어: (있으면)
 - 메시지 수: N건 (스레드 답글 포함)
 
-## 요약
-- 결정: …
-- 할 일: … (담당 · 기한)
-- 대기·확인 필요: …
-
 ## 원문
 ### 2026-10-02 14:03 · 작성자
 본문 그대로
 - 링크: <permalink>
   - ↳ 14:10 · 답글 작성자: 답글 본문
 ```
+
+- (선택) 사용자가 요약을 원할 때만 `## 원문` 위에 `## 요약` 절을 둔다. 형식은 `mice-slack-ops/references/briefs.md` §3(스레드별 주제·결론/결정·내 액션·상대 액션·미결) 그대로 — 이 스킬은 별도 요약 형식을 두지 않는다.
 
 ## 3. B. 읽기 모드 (Cowork·채팅)
 
@@ -63,4 +60,6 @@ license: Complete terms in LICENSE.txt
 
 ## 변경 이력
 
+- v1.1.0 (2026-10-09): 트리거 '내보내기 파일'·'_목록.md'·'슬랙 md'·'내보내기 폴더' 추가, §1을 경로 상수 정본으로 명시.
+  파일 형식의 '## 요약' 의무 절 삭제 — 기본은 원문 그대로, 요약은 선택이며 mice-slack-ops briefs.md §3 형식에 위임.
 - v1.0.0 (2026-10-05): 신규. 커넥터 차단 환경에서 Cowork가 Slack 내용을 쓰기 위한 2안(Code 저장 → Cowork 읽기) 확정.
