@@ -13,19 +13,18 @@
 [프로젝트 약어]-[유형]
 ```
 
-### 권장 series_id 예시 (기획자님 현재 진행 프로젝트 기준)
+### series_id 예시 (가명)
 
 | series_id | 프로젝트 | 유형 |
 |-----------|---------|------|
-| `clientA-discovery` | 고객사A | Discovery (수주 전) |
-| `clientA-execution` | 고객사A | 수주 후 운영 |
-| `rmb-rebuild26` | RMB REBUILD26 | 정기 협의 |
-| `clientB-seminar26` | 고객사B 세미나 2026 | 정기 협의 |
-| `confex-bidding` | ConfEx 박람회 | 입찰 단계 |
-| `remember-weekly` | 리멤버 주대웅 실장 | 주간 정기 |
-| `pco-internal-weekly` | 자사 내부 팀 | 주간 내부 |
+| `a-corp-discovery` | A사 고객 컨퍼런스 | Discovery (수주 전) |
+| `a-corp-execution` | A사 고객 컨퍼런스 | 수주 후 운영 |
+| `b-corp-regular26` | B사 정기 협의 | 정기 협의 |
+| `c-corp-seminar26` | C사 세미나 2026 | 정기 협의 |
+| `d-org-expo-bidding` | D기관 박람회 | 입찰 단계 |
+| `team-weekly` | 리멤버 MICE비즈팀 | 주간 내부 |
 
-→ 기획자님이 새 시리즈 시작 시 `--series=<신규 ID>`로 호출하면 자동 생성.
+→ 새 시리즈는 `--series=<신규 ID>`로 호출하면 자동 생성.
 
 ---
 
@@ -44,9 +43,9 @@
 
 ```json
 {
-  "series_id": "clientA-discovery",
-  "project_name": "고객사A 디스커버리",
-  "client_id": "clientA",
+  "series_id": "a-corp-discovery",
+  "project_name": "A사 고객 컨퍼런스 Discovery",
+  "client_id": "a-corp-2026",
   "default_type": "A",
   "created_at": "2026-04-15",
   "last_updated": "2026-05-09",
@@ -55,12 +54,12 @@
       "session_no": 1,
       "date": "2026-04-15",
       "type": "A",
-      "dashboard_file": "dashboard_clientA-discovery_20260415.html",
+      "dashboard_file": "dashboard_a-corp-discovery_20260415.html",
       "decisions_count": 3,
       "actions": [
         {
-          "id": "CA-DISC-001",
-          "owner": "호스트",
+          "id": "AC-DISC-001",
+          "owner": "호스트 (리멤버 MICE비즈팀)",
           "due": "2026-04-22",
           "priority": "P1",
           "status": "DONE",
@@ -68,8 +67,8 @@
           "linked": null
         },
         {
-          "id": "CA-DISC-002",
-          "owner": "고객사A 김부장",
+          "id": "AC-DISC-002",
+          "owner": "김부장 (A사)",
           "due": "2026-05-02",
           "priority": "P1",
           "status": "BLOCKED",
@@ -79,9 +78,9 @@
       ],
       "pending_items": [
         {
-          "id": "CA-DISC-PEND-001",
+          "id": "AC-DISC-PEND-001",
           "item": "동시통역 부스 설치 여부",
-          "reason": "고객사A 본사 결재 필요",
+          "reason": "A사 본사 결재 필요",
           "next_review": "다음 미팅"
         }
       ]
@@ -90,9 +89,9 @@
       "session_no": 2,
       "date": "2026-05-09",
       "type": "A",
-      "dashboard_file": "dashboard_clientA-discovery_20260509.html",
-      "carry_over_actions": ["CA-DISC-002"],
-      "carry_over_pending": ["CA-DISC-PEND-001"],
+      "dashboard_file": "dashboard_a-corp-discovery_20260509.html",
+      "carry_over_actions": ["AC-DISC-002"],
+      "carry_over_pending": ["AC-DISC-PEND-001"],
       "new_actions_count": 7,
       "decisions_count": 4
     }
@@ -105,7 +104,7 @@
     "blocked": 2,
     "todo": 2,
     "completion_rate": 0.54,
-    "long_pending_actions": ["CA-DISC-002"]
+    "long_pending_actions": ["AC-DISC-002"]
   }
 }
 ```
@@ -130,13 +129,13 @@
 본 회차 transcript에서 carry-over Action ID 또는 내용 매칭:
 
 ```
-"베뉴 후보 자료 보내드렸습니다"          → CA-DISC-001 → DONE
-"동시통역 결재 아직 못 받았어요"          → CA-DISC-002 → BLOCKED 유지
-"통역 결재 받았습니다"                  → CA-DISC-002 → TODO/DOING 갱신
-"통역사 1명 계약 완료"                  → CA-DISC-002 → DONE
+"베뉴 후보 자료 보내드렸습니다"          → AC-DISC-001 → DONE
+"동시통역 결재 아직 못 받았어요"          → AC-DISC-002 → BLOCKED 유지
+"통역 결재 받았습니다"                  → AC-DISC-002 → TODO/DOING 갱신
+"통역사 1명 계약 완료"                  → AC-DISC-002 → DONE
 ```
 
-매칭 신뢰도 낮은 경우 사용자 확인 요청.
+매칭 신뢰도가 낮으면 Status를 바꾸지 않고 `(추정)` 표기 후 응답 끝 "확인 필요" 목록에 올린다(묻고 멈추지 않음).
 
 ---
 
@@ -148,8 +147,8 @@
 ```
 
 ### Carry-over Action 표시
-- Action 트래커 칸반에서 carry-over 카드는 외곽선 표시 (`color.point.orange`)
-- ID 옆에 (carried) 마커
+- Action 트래커 칸반에서 carry-over 카드는 앰버 면(`--amber-bg`) + ID 앞 `↻` 마커
+- 미결 사항 carry-over는 앰버 점선 바
 - "처음 등록 회차: N차" 메타 표시
 
 ### 미결 사항 carry-over 표시
@@ -175,7 +174,7 @@
 
 | ID | 최초 등록 | 회차 횟수 | 현재 Status | Owner | Due | Action |
 |----|----------|----------|-------------|-------|-----|--------|
-| CA-DISC-002 | 2026-04-15 | 3 | BLOCKED | 고객사A 김부장 | 2026-05-02 (지연) | 본사 동시통역 결재 |
+| AC-DISC-002 | 2026-04-15 | 3 | BLOCKED | 김부장 (A사) | 2026-05-02 (지연) | 본사 동시통역 결재 |
 
 → 장기 미해결 자동 감지 → 전략 메모 탭에 "장기 미해결 N건 처리 시급" 자동 권고.
 
@@ -209,17 +208,17 @@
 
 ### 신규 시리즈 시작 (1차 미팅)
 ```
-사용자: "고객사A 디스커버리 1차 미팅 정리해줘. transcript는 [붙여넣기]. --series=clientA-discovery"
+사용자: "A사 고객 컨퍼런스 Discovery 1차 미팅 정리해줘. transcript는 [붙여넣기]. --series=a-corp-discovery"
 ```
 
 → 본 스킬:
-- `.series-data/clientA-discovery.json` 신규 생성
+- `.series-data/a-corp-discovery.json` 신규 생성
 - session_no=1로 기록
 - HTML 대시보드 산출 (본 미팅 탭 + Action 트래커 탭)
 
 ### 2차 미팅 (carry-over 자동 적용)
 ```
-사용자: "고객사A 디스커버리 2차 미팅 정리해줘. transcript는 [붙여넣기]. --series=clientA-discovery"
+사용자: "A사 고객 컨퍼런스 Discovery 2차 미팅 정리해줘. transcript는 [붙여넣기]. --series=a-corp-discovery"
 ```
 
 → 본 스킬:
@@ -231,7 +230,7 @@
 
 ### 시리즈 조회
 ```
-사용자: "clientA-discovery 시리즈 현황 보여줘"
+사용자: "a-corp-discovery 시리즈 현황 보여줘"
 ```
 
 → 본 스킬:
@@ -239,7 +238,7 @@
 
 ### 시리즈 종료
 ```
-사용자: "clientA-discovery 시리즈 종료 처리해줘"
+사용자: "a-corp-discovery 시리즈 종료 처리해줘"
 ```
 
 → 본 스킬:
@@ -250,7 +249,7 @@
 
 ## 8. 시리즈 데이터 백업 권장
 
-JSON 데이터 파일은 챗 환경 리셋 시 손실될 수 있으므로 외부 백업 권장:
+JSON 데이터 파일은 세션 환경 리셋 시 손실될 수 있으므로 외부 백업 권장(긴 시리즈의 세션 간 이어가기는 jc-session-protocol의 PROGRESS.md 규약을 함께 쓴다):
 
 | 백업 방식 | 비고 |
 |-----------|------|

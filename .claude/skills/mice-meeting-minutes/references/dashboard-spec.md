@@ -1,340 +1,166 @@
-# Dashboard Spec — HTML 대시보드 사양
+# Dashboard Spec — HTML 회의록 대시보드 사양
 
-본 스킬의 메인 산출물인 단일 HTML 대시보드의 구조·인터랙션·영속화 룰을 정의한다.
-
----
-
-## 1. 파일 구조
-
-### 산출물
-```
-dashboard_[프로젝트]_[YYYYMMDD].html  (단일 파일, 메인)
-.series-data/[series_id].json         (시리즈 모드 시 동기화)
-```
-
-### 외부 의존 (CDN)
-- React 18 (UMD)
-- ReactDOM 18 (UMD)
-- Recharts 2.12 (UMD)
-- Babel Standalone (런타임 JSX 트랜스파일)
-- Pretendard (한글) / Inter (영문) / JetBrains Mono (모노스페이스)
-
-### 오프라인 동작
-- CDN 의존으로 인터넷 환경 필수
-- 향후 v2.1 확장 후보: 라이브러리 인라인 임베드 옵션 (`--offline`)
+메인 산출물인 단일 HTML 대시보드의 구조·인터랙션·토큰·영속화 규칙. 디자인 값의 정본은 `jc-design-system`(v2 리멤버 웜 페이퍼)이며, 여기서는 CSS 변수 이름과 역할만 쓴다.
 
 ---
 
-## 2. UI 구조 — 4개 핵심 영역
+## 1. 파일 · 의존
 
-### 영역 1: Header (sticky top)
-- Deep Navy 배경 + Electric Blue/Orange 그라데이션 띠
-- 좌측: 프로젝트명·미팅일·유형·시리즈 정보
-- 우측: Internal/External 모드 토글
-- 알림: 지연 Action 카운트 자동 표시
+```
+dashboard_[프로젝트]_[YYYYMMDD].html   (단일 파일, 메인)
+.series-data/[series_id].json          (시리즈 모드 시 동기화)
+```
 
-### 영역 2: KPI Cards (4개)
-- 결정사항 / Action 총개 / 미결 사항 / 완료율
-- 카드 상단 색상 라인으로 영역 구분 (Accent / Magenta / Orange / Neon)
-- 모바일: 2단 그리드 자동 전환
+CDN(버전 고정, 인터넷 필요) — React 18.3.1 · ReactDOM 18.3.1 · prop-types 15.8.1(Recharts UMD가 전역 `PropTypes`를 요구) · Recharts 2.12.7 · Babel standalone 7.29.8(버전 미지정 시 8.x로 풀려 JSX 런타임이 바뀐다). 서체 Pretendard Variable + JetBrains Mono(ID·기한·킥커).
 
-### 영역 3: Tabs (4개)
-- 본 미팅 (디폴트)
-- Action 트래커
-- 시리즈 누적 (`--series` 모드만 활성)
-- 전략 메모 (Internal 모드만 활성)
-
-### 영역 4: Toolbar Footer (sticky bottom)
-- Internal/External 모드 표시
-- Slack 페이스트 / PDF 저장 / JSON 백업 / 시리즈 저장 버튼
+오프라인 동작 옵션(`--offline` 라이브러리 인라인)은 미구현 후보.
 
 ---
 
-## 3. 인터랙션 룰
+## 2. 토큰 주입
 
-### 모드 토글 (Internal ↔ External)
-- 헤더 우상단 토글 클릭 시 즉시 전환
-- 전략 메모 탭 활성화/비활성화 자동 반영
-- 익명화: External 시 자동 적용 (이름 → 직함·역할명)
-- Redaction: External 시 표시
-- Slack 페이스트 결과물에도 반영
-
-### Action Status 변경
-- 칸반 카드 내 Status 드롭다운으로 변경
-- TODO → DOING → BLOCKED → DONE 자유 전환
-- 변경 즉시 KPI 카드 (완료율) 자동 갱신
-- window.storage 자동 저장 (시리즈 모드)
-
-### 필터링
-- 검색: 제목·Owner·ID 부분 매칭
-- Priority: P0/P1/P2/P3 단일 선택
-- Owner: 드롭다운 단일 선택
-- 다중 필터 AND 조합
-
-### Due 자동 표시
-- 오늘 ~ +3일: Orange 굵은 글자 (`due-soon`)
-- 오늘 이전 + DONE 아닌 경우: Magenta 굵은 글자 (`due-overdue`)
-
-### Carry-over 시각 표시
-- Action 카드 배경 Orange 약색
-- ID 앞 ↻ 마커
-- 미결 사항도 동일 처리 (왼쪽 외곽선 점선)
+- 템플릿 `<style id="design-tokens">` 안의 `@design-tokens:start ~ end` 블록이 라이트(`:root`)·다크(`:root[data-theme="dark"]`)·인쇄(`@media print`, 라이트 강제) 변수 세트다. 이 블록은 미러이며, `build_dashboard.py`가 빌드 때 `jc_tokens.py`로 SoT(`signature-tokens.md §6`)를 읽어 통째로 교체한다.
+- 컴포넌트 CSS와 JS는 변수만 참조한다. HEX 직접 기입 금지. 차트 색은 JS가 `getComputedStyle`로 변수를 읽어 칠하고, 테마 전환 때 다시 읽는다(`jc-design-system/references/usage-guide.md` §3.5).
+- 변수 이름은 팀 보드·플레이북 HTML과 같다(`--paper` `--surface` `--surface-warm` `--ink` `--brown` `--ink-sub` `--warm-gray` `--orange` `--orange-deep` `--orange-tint` `--steel` `--positive` `--negative` `--amber` `--s1`~`--s5` …). 역할→SoT 키 표는 SKILL.md §8.
 
 ---
 
-## 4. 차트 사양 (Recharts)
+## 3. UI 구조
 
-### Status 분포 도넛 (Action 트래커 탭)
-```
-PieChart
-- innerRadius=50, outerRadius=80
-- Colors: TODO=Grey, DOING=Accent, BLOCKED=Magenta, DONE=Neon
-- 라벨: "{name} {value}"
-- 0건 카테고리 자동 제외
-```
+### 헤더 (component-patterns §7 문서 헤더)
+- 좌: 모노 킥커(`Meeting Minutes · Type A · 시리즈 N차`, 딥 오렌지) → 제목 25px 700 → 오렌지 룰 4×48px → 리드(일시·장소·유형·발주처, brown). 지연 Action이 있으면 부정색 "지연 Action N건".
+- 우: 리멤버 로고 슬롯(라이트 `remember-black.png` / 다크 `remember-offwhite.png`, 높이 20px) → [Internal | External] · [라이트 | 다크] 세그먼트 토글.
+- 로고 데이터가 없으면 발행 명의 텍스트("리멤버 MICE비즈팀").
 
-### Owner별 Bar 차트 (Action 트래커 탭)
-```
-BarChart
-- X: Owner (이름)
-- Y: 건수
-- 2 시리즈: 총 Action (Accent) / 완료 (Neon)
-- 폰트 10pt (모바일 가독성)
-```
+### KPI 카드 4장 (§3)
+결정사항 · Action(완료 N건) · 미결 사항(Action 차단 N건) · **Action 완료율**(강조 카드 — 오렌지 1.25px 보더 + 상단 그라디언트 룰, 화면당 1장). 수치 31px 700 tabular-nums, 단위는 캡션색. 반응형 4열 → 2열(≤900px).
 
-### 시리즈 완료율 LineChart (시리즈 누적 탭)
-```
-LineChart
-- X: "1차", "2차", "N차"
-- Y: 완료율 0~100%
-- Stroke: Neon, Width 3
-- 추이 시각화 핵심 차트
-```
+### 탭
+본 미팅(기본) · Action 트래커 · 시리즈 누적(`series_id` 있을 때) · 전략 메모(Internal). 활성 탭은 잉크 면 + 페이퍼 글자.
 
-### 시리즈 Action 분포 BarChart (시리즈 누적 탭)
-```
-BarChart (Stacked)
-- X: 회차
-- Y: Action 건수
-- 2 시리즈 stack: 신규 (Accent) / Carry-over (Orange)
-```
+### 본 미팅 탭 — 상태 카드는 좌측 4px 바 (§4)
+| 패널 | 카드 |
+|------|------|
+| 안건 | 웜 서피스 행 + 모노 번호(01·02, 딥 오렌지) |
+| 결정사항 | 틴트(`--orange-tint` 면 + `--orange-soft` 바) |
+| 발언 요지 | 안건 라벨(딥 오렌지) + 화자/발화 2열, 행 구분 `--line-soft` |
+| 리스크·이슈 | 부정(`--negative-bg` 면 + `--negative` 바) |
+| 미결 사항 | 앰버(`--amber-bg` 면 + `--amber` 바), carry-over는 점선 바 + `↻` |
+| 후속 일정 | 노트(`--surface-warm` 면 + `--steel` 바) |
+
+카드 메타 글자는 `--brown`(틴트 면 위 대비 확보).
+
+### Action 트래커 탭 (§9)
+- 차트 2개: 상태 도넛(TODO `--s4` · DOING `--s2` · BLOCKED `--negative` · DONE `--positive`, 라벨 병기) · Owner별 바(전체 `--s4` · 완료 `--positive`).
+- 필터: 검색(제목·Owner·ID) · Priority 칩(P0~P3) · Owner 선택. AND 조합.
+- 칸반 4열: 열 헤더 = 상태 배지(TODO 중립 · DOING 스틸 · BLOCKED 부정 Bold 14px · DONE 긍정) + 건수.
+- Action 카드: 좌측 4px 우선순위 바(P0 부정 · P1 오렌지 소프트 · P2 스틸 · P3 보더) · 모노 ID · 제목 600 · Priority 배지 · Owner · 기한(모노 — 임박 `--orange-deep`, 지연 `--negative` Bold + "지연") · 상태 드롭다운. carry-over는 앰버 면 + `↻`.
+
+### 시리즈 누적 탭
+회차별 완료율 라인(`--s1`, 3px) · 회차별 Action 구성 누적 바(신규 `--s2` · Carry-over `--s5`) · 누적 통계 표(가로선만, 헤더 1.5px 잉크 하단선, 숫자 우측 정렬 tabular, BLOCKED>0은 부정색) · "본 회차 시리즈 저장" Primary 버튼.
+
+### 전략 메모 탭 (Internal 전용)
+5W1H 카드 6장(웜 서피스, 모노 질문 라벨 딥 오렌지 + 힌트 + 본문).
+
+### 하단 툴바 (sticky)
+좌: 발행 명의 · 모드 표기(`[Internal] 외부 공유 금지` / `[External] 송부용`). 우: Slack 페이스트(Primary — `--btn-primary` 딥 오렌지 면 + 흰 글자 5.45:1) · PDF 저장 · JSON 백업 · ↻ 시리즈 저장(Secondary — brown 1.5px 아웃라인).
+
+### 아이콘·문체
+이모지 없음. 기호는 유니코드(`↻` `·` `—`)만. 토스트는 fade 240ms, 바운스 없음.
 
 ---
 
-## 5. 영속화 룰
+## 4. 인터랙션
 
-### Storage Adapter 우선순위
-```
-1. window.storage (Claude 환경)
-   ├─ 비동기 API
-   ├─ 5MB per key 제한
-   └─ 사용자별 격리
+- **모드 토글**: Internal ↔ External 즉시 전환. External이면 전략 메모 탭 비활성, Slack 페이스트 푸터 문구 전환. 발화 익명화·마스킹 자체는 8축 추출 단계에서 데이터에 반영한다(redaction-rules.md).
+- **테마 토글**: 첫 렌더는 `BRAND.theme`(기본 라이트). 사용자가 토글하면 `localStorage` `mm-theme`에 저장하고 다음 방문 때 복원. 전환 시 차트 재색칠.
+- **Action 상태 변경**: 카드 드롭다운 → KPI 완료율 즉시 갱신. 저장은 "시리즈 저장" 클릭 때만(의도치 않은 덮어쓰기 방지).
+- **기한 표시**: 오늘~+3일 임박(딥 오렌지 600), 지연(부정 700 + "지연"), DONE은 표시 없음.
 
-2. localStorage (일반 브라우저)
-   ├─ 동기 API (await Promise.resolve(...) 래핑)
-   ├─ 도메인별 격리
-   └─ 5~10MB 한계
-```
+---
 
-### 키 구조
-```
-mice-mtg:[series_id]                    # 시리즈 회차 누적 데이터
-mice-mtg:settings:[user]                # (옵션) 사용자 설정
-```
+## 5. 영속화
 
-### 저장 데이터 스키마
+| 순위 | 저장소 | 비고 |
+|------|--------|------|
+| 1 | `window.storage` | Claude 아티팩트 환경, 비동기 |
+| 2 | `localStorage` | 일반 브라우저, 도메인별 격리 |
+
+키: `mice-mtg:[series_id]`(회차 배열) · `mm-theme`(테마). 회차 레코드: `session_no` `date` `new_actions` `carry_over_actions` `done` `doing` `blocked` `todo` `completion_rate` `data_snapshot`. 서버 측 백업은 `build_dashboard.py`의 `.series-data/[series_id].json`.
+
+---
+
+## 6. Slack 페이스트
+
+`buildSlackMd` — 제목·시리즈 / 참석 / 결정 최대 3 / Action 최대 3 / 다음 일정 / 미결·리스크 건수 / 전략 코멘트(Internal) / 공유 범위 푸터. 200~600자. `navigator.clipboard` 실패 시 textarea + `execCommand('copy')` 폴백. 채널 게시는 사용자 몫(채널 운영 규칙은 mice-slack-ops).
+
+---
+
+## 7. PDF (RULE-PRINT-LIGHT)
+
+`window.print()` → 인쇄 대화상자에서 "PDF로 저장". `@media print`:
+- 토큰 블록이 다크 상태여도 라이트 값으로 덮어쓴다(캔버스 흰색).
+- 툴바·탭·필터·헤더 토글 숨김, 헤더 제목·로고(라이트)는 인쇄.
+- 패널·차트·KPI 카드 `break-inside: avoid`, 그림자 제거, 칸반 2열.
+- 인쇄 전용 푸터: "발행 리멤버 MICE비즈팀 · 일자 · 송부용/내부 보관용".
+
+---
+
+## 8. JSON 백업
+
 ```json
 {
-  "series_id": "clientA-discovery",
-  "sessions": [
-    {
-      "session_no": 1,
-      "date": "2026-04-15",
-      "new_actions": 8,
-      "carry_over_actions": 0,
-      "done": 6, "doing": 0, "blocked": 1, "todo": 1,
-      "completion_rate": 0.75,
-      "data_snapshot": { /* 전체 회차 데이터 */ }
-    }
-  ]
+  "_meta": {"backup_date": "...", "skill_version": "<BRAND.skillVersion>", "project_name": "...", "series_id": "...", "theme": "light", "mode": "internal"},
+  "current_session": {"meeting_date": "...", "agenda": [], "decisions": [], "actions": [], "risks": [], "pending": [], "next_steps": [], "discussion": {}, "strategy_note": {}},
+  "series_history": []
 }
 ```
 
-### 영속화 트리거
-- "시리즈 저장" 버튼 명시 클릭 (사용자 의도 보존)
-- 자동 저장 안 함 (의도치 않은 덮어쓰기 방지)
-
-### 백업 전략
-- JSON 다운로드 버튼: 사용자 명시 클릭으로 즉시 다운로드
-- 외부 영속화: Google Drive·Notion 등에 사용자가 수기 백업
-- 챗 환경 리셋 시 window.storage 손실 가능 → JSON 백업 운영 권장
+파일명 `mm-series-backup-[series_id]-[YYYYMMDD].json` (시리즈 없으면 `mm-backup-[프로젝트]-[YYYYMMDD].json`). 다시 입력하면 같은 대시보드로 재빌드.
 
 ---
 
-## 6. Slack 페이스트 포맷
+## 9. 접근성 · 반응형
 
-### 출력 마크다운 구조 (`buildSlackMd`)
-```markdown
-**[프로젝트명] 미팅 요약 (YYYY-MM-DD)**
-_시리즈 series_id / N차_
+- 토글은 `aria-pressed`, 탭은 `role="tab"`·`aria-selected`, 포커스 링 2px 오렌지.
+- 대비: `jc-design-system/references/shared-rules.md#RULE-WCAG` — 작은 강조 글자는 `--orange-deep`, `--orange` 글자는 큰 글자만, 캡션색은 단위·푸터에만.
 
-**참석:** [참석자 목록]
-
-**결정사항**
-- [최대 3건]
-- (외 N건은 본 회의록 참조)
-
-**Action**
-- (Owner) Action — Due
-- [최대 3건]
-- (외 Action N건은 본 회의록 참조)
-
-**다음:** 다음 미팅 (YYYY-MM-DD HH:MM)
-
-_(미결 N건 / 리스크 N건 — 회의록 본문 참조)_
-
-**전략 코멘트:** [Internal 모드 strategy_oneliner 한 줄]
-
----
-_[Internal] 외부 공유 금지_  또는  _본 요약은 양측 공유용입니다._
-```
-
-### 클립보드 복사 메커니즘
-```
-1. navigator.clipboard.writeText() 우선 시도
-   └─ 실패 시 (HTTPS 미환경) ↓
-2. textarea + execCommand('copy') fallback
-   └─ 모든 환경에서 동작 보장
-```
-
-### 분량 가이드
-- 200~600자 (Slack/Email 1스크롤 내)
-- 모바일 가독성 우선
-
----
-
-## 7. PDF Export 메커니즘
-
-### 동작 원리
-```javascript
-window.print()  → 브라우저 인쇄 대화상자 →
-사용자가 "PDF로 저장" 선택 → 다운로드
-```
-
-### @media print 스타일 적용
-```css
-@media print {
-  .header, .toolbar, .tabs, .input-area, .filter-bar { display: none; }
-  .panel { page-break-inside: avoid; border: 1px solid #999; }
-  body { background: white; }
-  .kanban { grid-template-columns: repeat(2, 1fr); }
-}
-```
-
-→ 인쇄 시 다음 자동 처리:
-- 헤더·푸터 툴바·탭 숨김
-- 패널 페이지 브레이크 회피
-- 칸반 4컬럼 → 2컬럼 (인쇄 가독성)
-- 컬러 → 흑백 친화 변환
-
-### PDF 활용 시나리오
-- Type C 발주처 공식 송부 (워드 대체)
-- 임원 종이 보고
-- 인쇄·보관 의무 미팅
-- 클라이언트 이메일 첨부
-
----
-
-## 8. JSON 백업 메커니즘
-
-### 다운로드 데이터 스키마
-```json
-{
-  "project_name": "...",
-  "meeting_date": "...",
-  "agenda": [...],
-  "decisions": [...],
-  "actions": [...],
-  "risks": [...],
-  "pending": [...],
-  "next_steps": [...],
-  "strategy_note": {...},
-  "series_id": "...",
-  "_seriesHistory": [...]   // 시리즈 누적 데이터 동시 백업
-}
-```
-
-### 파일명 규칙
-```
-mice-mtg_[프로젝트]_[YYYY-MM-DD].json
-```
-
-### 복원 가능성
-- JSON을 다시 본 스킬에 입력하면 동일 대시보드 재생성
-- 시리즈 모드 복원 시 `_seriesHistory` 자동 인식
-
----
-
-## 9. 접근성 / 반응형
-
-### 키보드 인터랙션
-- Tab: 포커스 이동
-- Enter/Space: 버튼 활성화
-- Esc: 모달 닫기 (향후 v2.1)
-
-### 화면 크기 반응
 | 너비 | 레이아웃 |
 |------|---------|
-| ≥ 900px | KPI 4단 / Kanban 4컬럼 |
-| 720~900px | KPI 4단 / Kanban 2컬럼 |
-| < 720px | KPI 2단 / Kanban 1컬럼 / 헤더 축소 |
-
-### 인쇄
-- A4 세로 기준
-- 패널 페이지 브레이크 회피
-- 컬러 → 회색조 친화
+| > 900px | KPI 4열 · 칸반 4열 |
+| 600~900px | KPI 2열 · 칸반 2열 |
+| < 600px | 칸반 1열 · 헤더 세로 정렬 · 발언 요지 1열 |
 
 ---
 
-## 10. 보안·프라이버시
+## 10. 보안 · 프라이버시
 
-### Internal/External 토글 보안
-- External 모드 전환 시 즉시 익명화 적용
-- 전략 메모 탭 비활성화 (DOM에서도 제거)
-- Redaction 표시 활성화
-
-### 클립보드 데이터 처리
-- Slack 페이스트 시 모드별 마스킹 자동 적용
-- 사용자 의도 명시적 클릭 후에만 동작
-
-### 영속화 데이터 보호
-- window.storage / localStorage 모두 사용자 디바이스 한정
-- 서버 전송 없음
-- 외부 백업은 사용자 책임 (JSON 다운로드)
+- External 전환 시 전략 메모 탭 비활성(DOM에서 렌더 안 함).
+- 저장 데이터는 사용자 기기 한정, 서버 전송 없음. 외부 백업은 JSON 다운로드로 사용자가 관리.
+- 빌드 산출물에는 로컬 경로를 넣지 않는다(`BRAND.tokenSource`는 `sot`/`fallback`만).
 
 ---
 
-## 11. 검증 체크리스트
-
-생성 직후 자동 검증 (`validate_dashboard_html`):
+## 11. 자동 검증 (`validate_dashboard_html`)
 
 | 체크 | 통과 기준 |
 |------|----------|
-| 플레이스홀더 치환 | `{{TITLE}}`·`{{INITIAL_DATA}}` 잔존 없음 |
-| 라이브러리 연결 | React + Recharts 확인 |
-| 시그니처 토큰 | 5색 (#0A2540·#2962FF·#FF5722·#E91E63·#00E676) 모두 적용 |
-| 파일 크기 | 50KB 이상 (정상 빌드 시 50~80KB 템플릿 + JSON 데이터) |
+| 플레이스홀더 | `{{TITLE}}` · `{{INITIAL_DATA}}` · `{{BRAND}}` 잔존 0 |
+| 라이브러리 | React · Recharts 연결 |
+| SoT 토큰 | `--orange` · `--paper` · `--s1` 라이트 값과 다크 `--paper` 값이 SoT와 일치 |
+| 인쇄 | `@media print` 라이트 강제 블록 존재 |
+| legacy 색 | 구 네이비·일렉트릭블루 계열 0건 |
+| 크기 | 40KB 이상 (템플릿 단독 약 54KB, 로고 2종 포함 약 95KB) |
+
+실패해도 파일은 남기고 "검토 필요"로 보고한다.
 
 ---
 
-## 12. v2.1 확장 후보 (참고)
+## 12. 확장 후보
 
-| 기능 | 설명 | 우선순위 |
-|------|------|---------|
-| `--offline` | 라이브러리 인라인 임베드 (오프라인 동작) | 중 |
-| `--client=<id>` 오버레이 | 클라이언트별 컬러 자동 적용 | 중 |
-| 통합 미팅 대시보드 | 다중 series_id 통합 조회 | 낮 |
-| 다음 어젠다 자동 생성 | 미결+후속 일정 → 어젠다 .md | 중 |
-| Action 마감 알림 | window.Notification API | 낮 |
-| 음성 메모 임베드 | Web Audio API (대시보드 내 재생) | 낮 |
-| 다국어 지원 | i18n (영문 모드) | 중 |
+| 기능 | 설명 |
+|------|------|
+| `--offline` | 라이브러리 인라인 임베드 |
+| 발주처 로고 병기 | `client-overlays.md` 슬롯의 발주처 로고를 헤더 우측에 병기 (오렌지 불변) |
+| 다중 시리즈 통합 뷰 | 여러 `series_id` 통합 조회 |
+| 다음 어젠다 자동 생성 | 미결 + 후속 일정 → 어젠다 초안 |

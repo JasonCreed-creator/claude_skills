@@ -1,361 +1,205 @@
 ---
 name: mice-meeting-minutes
-description: MICE 행사 기획·운영 과정의 미팅 메모·텍스트 transcript·구술 정리를 입력받아 8축 프레임(안건·발언요지·결정사항·Action Items·리스크·미결사항·후속일정·전략메모)으로 구조화한 인터랙티브 HTML 대시보드를 생성하는 스킬. 대시보드는 KPI 카드·Action 칸반·시리즈 누적 차트·전략 메모 5W1H 카드를 단일 파일로 통합하며, Slack 페이스트·PDF 저장·JSON 백업 옵션을 제공한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '회의록', '미팅록', '미팅 노트', '회의 정리', '회의 요약', '미팅 정리', 'Action Items', '액션 아이템', '후속 조치', '팔로업', 'follow-up', 'Discovery Meeting 정리', '킥오프 미팅 정리', '정기 미팅 정리', '발주처 협의 기록', '사전답사 기록', '협력사 미팅 정리'를 언급할 때. 클로바노트·Otter·Whisper·Zoom·Google Meet·Microsoft Teams 등에서 추출한 transcript 텍스트를 업로드하며 '정리해줘', '구조화해줘', '회의록으로 만들어줘', 'Action 뽑아줘', '대시보드로 만들어줘'를 요청할 때. 외부 클라이언트 송부용/내부 보관용 톤 분기 지원. 정기 미팅 시리즈 모드로 회차 누적 추적 가능 (window.storage 영속화). 본 스킬의 산출물은 mice-proposal 스킬의 입력으로 체이닝 가능 (Discovery 회의록에서 고객 니즈·예산·일정 자동 추출). 단, '발표 스크립트', '발표 대본', 'PT 멘트', 'MC 멘트'는 pt-script 영역이므로 사용하지 말 것. '제안서'는 mice-proposal, '견적서'는 mice-estimate, '행사 결과 KPI 대시보드'는 mice-dashboard 영역. 음성 파일 자체 STT는 본 스킬 범위 밖 — 클로바노트·Otter·Whisper 등 외부 도구로 텍스트 변환 후 입력. 실행형 지시는 실행 전 jc-prompt-builder 브리프를 거친다.
-version: "v2.1.2"
+description: "MICE 행사 기획·운영 미팅의 transcript·메모·구두 보고를 8축(안건·발언 요지·결정사항·Action Items·리스크·미결·후속 일정·전략 메모)으로 구조화해, 리멤버 웜 페이퍼 룩의 단일 HTML 회의록 대시보드(KPI 카드·Action 칸반·시리즈 누적 차트·라이트/다크·Slack 페이스트·PDF·JSON 백업)로 만드는 스킬. 외부 송부용/내부 보관용 톤 분기, 정기 미팅 회차 누적과 미완료 Action 이월 추적을 지원한다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '회의록', '미팅록', '미팅 노트', '회의 정리', '회의 요약', '미팅 정리', 'Action Items', '액션 아이템', '후속 조치', '팔로업', 'follow-up', 'Discovery 미팅 정리', '킥오프 미팅 정리', '정기 미팅 정리', '발주처 협의 기록', '사전답사 기록', '협력사 미팅 정리'를 말할 때, 클로바노트·Otter·Whisper·Zoom·Meet·Teams transcript를 올리며 '정리해줘', '회의록으로 만들어줘', 'Action 뽑아줘', '대시보드로 만들어줘'를 요청할 때. Discovery·킥오프 회의록은 ChainPayload로 제안서 덱(jc-pptx)·전략 캔버스(jc-strategy-canvas)·운영계획서(mice-ops-docs)·결과보고(mice-aftermath)에 이어진다. 형제 경계 — 덱은 jc-pptx, 행사 KPI 대시보드·운영계획서는 mice-ops-docs, 결과보고서·교훈 종합은 mice-aftermath, 산문 문서 공동작성은 jc-doc-coauthor, Slack 요약·공지는 mice-slack-ops, 발표 대본·MC 멘트는 pt-script, 완성본 검증은 jc-redteam. 음성 파일 STT는 범위 밖(외부 도구로 텍스트 변환 후 입력)."
+version: "v2.2.0"
+dependencies: Pillow (선택 — 로고 축소용, 없으면 원본 크기로 임베드)
 ---
 
-# mice-meeting-minutes (v2.1.2)
+# mice-meeting-minutes — 회의록 대시보드 (v2.2.0)
 
-MICE 행사 기획·운영 미팅을 18년 경력 전략가 시각의 8축 프레임으로 구조화하여 **인터랙티브 HTML 대시보드**로 즉시 시각화·추적·공유하는 스킬.
+MICE 행사 기획·운영 미팅을 18년 경력 전략가 시각의 8축 프레임으로 구조화해 **단일 HTML 회의록 대시보드**로 시각화·추적·공유한다. 룩은 리멤버 웜 페이퍼 하나(`jc-design-system` 토큰 런타임 로드), 발행 명의 기본은 **리멤버 MICE비즈팀**.
 
-## 버전 히스토리
+## 0. 진행 원칙
 
-| 버전 | 일자 | 변경 사항 |
-|------|------|----------|
-| v1 | ~2026-04 | .docx 회의록 + .xlsx Action 트래커 (정적 산출물) |
-| v2 | 2026-05 | HTML 단일 파일 대시보드 (인터랙티브) + External/Internal 토글 + window.storage 시리즈 영속화 |
-| v2.1.0 | 2026-05-27 | 라이트/다크 모드 토글 추가 + JSON 자동 백업 옵션 강화 + jc-design-system DARK_* 토큰 매핑 (mice-proposal v2.1.1 / mice-sponsor-deck v2.1.0 / mice-dashboard v2.0 일관) |
-| **v2.1.2** | **2026-07-04** | **CP2 Deep Audit 조치 — 크기 검증 게이트 50KB로 정합(100KB→50KB), RULE-NO-COMPANY 예시 전량 변수/가명화, 레거시 .docx 산출 참조 .html 정정.** |
-| v2.1.1 | 2026-07-03 | 레거시 v1 산출물 서술 잔재 정정 (.docx·.xlsx → HTML 대시보드·.series-data JSON) + 파일 크기 검증 기준 100KB 통일 (CP1 GO-1) |
+- 기본 흐름은 **기획안 1회 확인 → 빌드 → 검수(jc-redteam)**. 회의록은 입력(transcript)이 내용을 정하므로 기획안 확인 없이 기본값으로 바로 빌드한다. 되돌릴 수 있는 작업은 기본값으로 바로 진행하고, 고른 기본값은 응답 첫머리에 한 줄씩 밝힌다. 사용자가 바꾸면 재빌드.
+- 되돌릴 수 없는 작업(발주처 메일 송부·Slack 게시)은 하지 않는다. 산출물은 파일까지, 송부는 승인 후 사용자 몫.
+- 비어 있는 값은 지어내지 않는다. 추정은 `(추정)`, 미확인은 `[확인 필요]`로 두고 응답 끝 "확인 필요" 목록에 모은다.
 
-### v2 → v2.1.0 변경 요약 (5줄)
-1. 대시보드 우상단에 **테마 토글** (라이트/다크) 추가. External/Internal 토글과 독립 동시 작동
-2. `[data-theme="dark"]` CSS 변수 셀렉터로 8축 KPI 카드·Action 칸반·차트·전략 메모·헤더·테이블 일괄 다크 매핑
-3. **localStorage 영속화** (`mm-theme`) + `prefers-color-scheme` 시스템 설정 자동 감지 (첫 방문)
-4. **인쇄 시 라이트 강제** (`@media print`) + 토글 버튼 숨김 처리
-5. 우상단 **"JSON 백업 다운로드"** 버튼이 시리즈 데이터를 `mm-series-backup-YYYYMMDD.json` 파일로 자동 저장 (window.storage 외부 영속화 보강)
+| 비어 있는 입력 | 기본값 |
+|---------------|--------|
+| 회의 유형 | 시그널 점수 1위. 동점·근소하면 더 공식적인 유형(C > A > E > D > B) |
+| 모드 | 유형 기본값 — Type A·C `external`, B·D·E `internal` |
+| 화자 매핑 | 발화 내용·호칭으로 추정 + `(추정)` 표기 |
+| Owner / Due | 호스트 / 미팅일+7일 + `(재확인)` 플래그 |
+| Redaction 의심 발화 | External 모드에서 보수적으로 마스킹, 의심 목록을 함께 제시 |
+| 테마 | 라이트 |
+| 발주처 | `client_company` 슬롯(`{{client_company}}`), 예시는 가명(A사) |
 
-## 1. 본 스킬이 다루는 것 / 다루지 않는 것
+## 1. 다루는 것 / 다루지 않는 것
 
-### 다루는 것 (DO)
-- 미팅 transcript의 8축 추출 + 인터랙티브 대시보드 빌드
-- 5종 회의 유형(외부 클라이언트 / 내부 팀 / 발주처 공식 / 사전답사 / 협력사) 톤·구조 자동 분기
-- 외부 송부용(`--external`) / 내부 보관용(`--internal`) 모드 전환
-- **라이트/다크 테마 토글** (v2.1.0 신규) — External/Internal과 독립
-- Action Items 칸반 보드 (TODO·DOING·BLOCKED·DONE) + 우선순위·Due 자동 표시
-- 정기 미팅 시리즈 누적 추적 (회차별 완료율 차트 + carry-over 자동 처리)
-- 민감 발언 redaction 룰 자동 적용 (External 모드)
-- Discovery Meeting 회의록 → mice-proposal 체이닝 JSON 자동 생성
-- 4채널 입력(클로바노트 / Otter·Whisper·Zoom·Meet·Teams / 메모형 / 구두 보고) 자동 인식
-- Slack 페이스트(클립보드) / PDF 저장(브라우저 인쇄) / **JSON 백업 다운로드** (v2.1.0 강화)
+**다루는 것**
+- transcript 8축 추출 + 인터랙티브 대시보드 빌드 (`references/analysis-framework.md`)
+- 5종 회의 유형(외부 클라이언트·내부 팀·발주처 공식·사전답사·협력사) 톤·구조 분기 (`references/meeting-types.md`)
+- External(송부용)/Internal(내부 보관용) 모드 + Redaction (`references/redaction-rules.md`)
+- Action Items 5열 표준 + 칸반(TODO·DOING·BLOCKED·DONE) (`references/action-items-schema.md`)
+- 정기 미팅 시리즈 누적·carry-over (`references/series-tracking.md`)
+- Discovery·킥오프 회의록 → ChainPayload/v1 (`references/chaining-guide.md`)
 
-### 다루지 않는 것 (DON'T)
-- 발표 사전 스크립트 작성 (→ pt-script)
-- **음성 파일 자체 STT** — Claude는 오디오 처리 불가. 클로바노트·Otter·Whisper 등 외부 도구로 텍스트 변환 후 입력
-- 손글씨 사진 OCR (→ 별도 OCR 도구 활용 후 텍스트로 입력)
-- 제안서 본문 작성 (→ mice-proposal)
-- 견적서 작성 (→ mice-estimate)
-- **행사 결과 KPI 대시보드** (→ mice-dashboard) — 본 스킬은 사전·운영 미팅 추적, mice-dashboard는 사후 결과 분석
+**다루지 않는 것** — 음성 파일 STT(클로바노트·Otter·Whisper로 텍스트 변환 후 입력), 손글씨 OCR, 제안서·소개서 덱(jc-pptx), 견적(mice-estimate), 행사 KPI 대시보드·운영계획서(mice-ops-docs), 결과보고서(mice-aftermath), Slack 채널 요약·공지(mice-slack-ops), 발표 대본(pt-script). 대시보드의 Slack 페이스트 버튼은 회의 1건 요약 복사까지만 한다.
 
-## 2. 호출 시점 판단 가이드
-
-| 사용자 입력 | 본 스킬 호출 | 사용 스킬 |
-|------------|------------|----------|
-| "이 미팅 정리해줘" + 메모 | ✅ | mice-meeting-minutes |
-| "회의록 만들어줘" + 클로바노트 transcript | ✅ | mice-meeting-minutes |
-| "미팅 대시보드로 만들어줘" | ✅ | mice-meeting-minutes |
-| "Action Items 칸반으로 보여줘" | ✅ | mice-meeting-minutes |
-| "Discovery Meeting 정리" | ✅ | mice-meeting-minutes |
-| "사전답사 기록 작성" | ✅ | mice-meeting-minutes |
-| "발표 멘트 만들어줘" | ❌ | pt-script |
-| "제안서 만들어줘" | ❌ | mice-proposal |
-| "견적 뽑아줘" | ❌ | mice-estimate |
-| "행사 결과 분석 대시보드" | ❌ | mice-dashboard |
-| 음성 파일(.m4a/.mp3) 단독 업로드 | ❌ 처리 불가 | (외부 STT 안내) |
-
-## 3. 표준 워크플로우
+## 2. 워크플로우
 
 ```
-[미팅 진행]
-    ↓
-외부 STT 도구 (클로바노트 / Otter / Whisper / Zoom·Meet·Teams)
-    ↓
-[transcript 텍스트 export]
-    ↓
-Claude에 텍스트 입력 + 호출 + 화자 매핑
-    ↓
-[scripts/parse_input.py]
-    ├─ 4채널 입력 형식 자동 인식
-    ├─ 화자 라벨 정규화 + 매핑 적용
-    ├─ 30분 단위 청크 분할 (긴 transcript)
-    └─ Redaction 사전 힌트 부착
-    ↓
-[references/meeting-types.md] 5종 유형 자동 추정 (수동 지정 우선)
-    ↓
-[references/analysis-framework.md] 8축 추출 (Claude 본체)
-    ↓
-[references/redaction-rules.md] 모드별 민감 발언 처리
-    ↓
-[references/action-items-schema.md] Action 5열 표준화 + Priority/Due 자동 추정
-    ↓
-[scripts/build_dashboard.py] ⭐ HTML 대시보드 생성
-    ├─ assets/dashboard-template.html에 JSON 데이터 주입
-    ├─ jc-design-system 시그니처 토큰 인라인 (라이트 + 다크 변수)
-    └─ React + Recharts CDN 호출 단일 파일
-    ↓
-[--series 모드] .series-data/[series_id].json 동기화 (carry-over 처리)
-    ↓
-[Discovery 유형 + GO 흐름] mice-proposal 체이닝 JSON 자동 생성
-    ↓
-present_files: dashboard_[프로젝트]_[YYYYMMDD].html (메인 산출물 1개)
+[미팅] → 외부 STT(클로바노트·Otter·Whisper·Zoom·Meet·Teams) → transcript 텍스트
+   ↓
+① 파싱      python scripts/parse_input.py transcript.txt --mapping "참석자 1 = 호스트, 참석자 2 = 김부장 (A사)"
+             채널 감지 · 화자 매핑 · 30분 청크 · Redaction 힌트 · 입력 검증 (references/input-formats.md)
+   ↓
+② 판정      유형(meeting-types.md) · 모드 · 기본값 — 응답 첫머리에 한 줄씩
+   ↓
+③ 8축 추출  analysis-framework.md → redaction-rules.md → action-items-schema.md  (Claude 본체)
+   ↓
+④ 빌드      8축 JSON 저장 → python scripts/build_dashboard.py --input minutes.json --out <출력폴더>
+             SoT 토큰 런타임 로드 · 로고 슬롯 · 자동 검증 · (시리즈) .series-data 동기화
+   ↓
+⑤ 체이닝    Discovery·킥오프면 ChainPayload/v1 → .chaining/ (chaining-guide.md)
+   ↓
+⑥ 검수      발주처 송부용(External)은 jc-redteam Quick(결정·Action 정합, 마스킹 누락)
+   ↓
+산출: dashboard_[프로젝트]_[YYYYMMDD].html 1개 + 확인 필요 목록
 ```
 
-## 4. 입력 채널 4종 (input-formats.md 상세)
+입력 JSON 형식은 `python scripts/build_dashboard.py --dump-sample sample.json`으로 확인한다(필드 = `DashboardData`).
 
-| 채널 | 입력원 | 정확도 | 권장도 |
-|------|--------|--------|--------|
-| **Ch1** | 클로바노트 export (화자+타임스탬프) | 최고 | ★★★★★ |
-| **Ch2** | Otter·Whisper·Zoom·Meet·Teams export | 높음 | ★★★★☆ |
-| **Ch3** | 메모형 자유 텍스트 | 중간 (발화자 추정) | ★★★☆☆ |
-| **Ch4** | 채팅창 직접 구두 보고 | 중간 | ★★★☆☆ |
+## 3. 입력 채널 4종
 
-→ 6종 export 포맷별 파서 사양은 `references/input-formats.md`.
+| 채널 | 입력원 | 정확도 |
+|------|--------|--------|
+| Ch1 | 클로바노트 export (화자+타임스탬프) | 최고 |
+| Ch2 | Otter·Whisper·Zoom(VTT)·Google Meet·Teams export | 높음 |
+| Ch3 | 메모형 자유 텍스트 | 중간 (화자 추정) |
+| Ch4 | 채팅창 구두 보고 | 낮음 (대부분 `(추정)`) |
 
-## 5. 산출물 사양 — 단일 HTML 대시보드
+## 4. 산출물 — 단일 HTML 대시보드
 
-### 파일명 규칙
-```
-dashboard_[프로젝트]_[YYYYMMDD].html
-```
-
-예시:
-- `dashboard_clientA-discovery_20260509.html`
-- `dashboard_rmb-rebuild26_20260509.html`
-- `dashboard_internal-weekly_20260509.html`
-
-### 대시보드 구조 (v2.1.0)
+파일명 `dashboard_[프로젝트]_[YYYYMMDD].html` (예: `dashboard_a사-discovery_20260509.html`). 구조·인터랙션 상세는 `references/dashboard-spec.md`, 산출 순서·검증은 `references/output-spec.md`.
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│  [Header] Deep Navy Band — 다크 모드 시 #0A2540              │
-│  프로젝트명 · 미팅일 · 시리즈 N차                            │
-│  우상단 컨트롤: [Internal | External] [☀ | ☾]               │
-├────────────────────────────────────────────────────────────┤
-│  [KPI Cards 4] (다크 모드 시 #1A3556 배경)                   │
-│  결정사항 / Action 총개 / 미결 사항 / 완료율 (%)             │
-├────────────────────────────────────────────────────────────┤
-│  [Tabs]                                                     │
-│  본 미팅 · Action 트래커 · 시리즈 누적 · 전략 메모          │
-│                                                             │
-│  [본 미팅 탭] (디폴트)                                       │
-│    안건·발언 요지·결정사항·리스크·미결·후속 일정 6패널       │
-│                                                             │
-│  [Action 트래커 탭]                                          │
-│    Status 분포 도넛 + Owner별 Bar 차트 (다크 자동 매핑)      │
-│    필터: 검색·Priority·Owner                                │
-│    Kanban 4컬럼 (TODO/DOING/BLOCKED/DONE)                  │
-│    Status 변경 (드롭다운) — window.storage 자동 저장        │
-│                                                             │
-│  [시리즈 누적 탭] (--series 모드만)                          │
-│    회차별 완료율 LineChart + Action 분포 BarChart            │
-│    회차 누적 통계 표 + 본 회차 시리즈 저장 버튼              │
-│                                                             │
-│  [전략 메모 탭] (Internal 모드만)                            │
-│    5W1H 6질문 카드 (Who·What·When·Where·Why·How)           │
-├────────────────────────────────────────────────────────────┤
-│  [Toolbar Footer] (다크 모드 시 동일 Deep Navy 유지)         │
-│  💬 Slack 페이스트  📄 PDF 저장  💾 JSON 백업  ↻ 시리즈 저장│
-└────────────────────────────────────────────────────────────┘
+┌ 헤더 ─ 모노 킥커(유형·시리즈) · 제목 · 오렌지 룰 · 일시·장소·발주처 ───── 리멤버 로고 슬롯 ┐
+│        [Internal | External]  [라이트 | 다크]                                              │
+├ KPI 4장 ─ 결정사항 · Action · 미결 사항 · Action 완료율(강조 카드 1장)                       ┤
+├ 탭 ─ 본 미팅 | Action 트래커 | 시리즈 누적(--series) | 전략 메모(Internal)                   ┤
+│   본 미팅: 안건 · 결정(틴트 카드) · 발언 요지 · 리스크(부정 바) · 미결(앰버 바) · 후속 일정    │
+│   Action: 상태 도넛 · Owner별 바 · 필터 · 칸반 4열(상태 배지) · 상태 드롭다운                 │
+│   시리즈: 회차별 완료율(S1) · 신규(S2)/carry-over(S5) 누적 바 · 누적 통계 표                  │
+│   전략 메모: 5W1H 카드 6장                                                                   │
+└ 하단 툴바 ─ 발행 명의 · 모드 표기 │ Slack 페이스트 · PDF 저장 · JSON 백업 · 시리즈 저장      ┘
 ```
 
-### 기술 스택
-- **단일 HTML 파일** — 다운로드·로컬 실행 가능
-- **React 18 + Recharts 2.12** — CDN 호출 (인터넷 환경 필요)
-- **Babel Standalone** — 브라우저 내 JSX 트랜스파일
-- **window.storage / localStorage** — 시리즈 데이터 영속화
-- **Pretendard / Inter / JetBrains Mono** — 한글·영문·코드 폰트
-- **CSS 변수 + `[data-theme]` 셀렉터** (v2.1.0 신규) — 라이트/다크 동시 정의
+- 기술: 단일 파일, React 18.3.1 + prop-types 15.8.1 + Recharts 2.12.7 + Babel standalone 7.29.8 CDN(버전 고정, 인터넷 필요), Pretendard + JetBrains Mono.
+- 영속화: 시리즈 회차는 `window.storage`(없으면 `localStorage`) 키 `mice-mtg:[series_id]`, 테마 선택은 `mm-theme`. 빌드 측 백업은 `.series-data/[series_id].json`.
+- JSON 백업 버튼: `mm-series-backup-[series_id]-[YYYYMMDD].json` — 다른 세션에서 이 파일을 입력하면 같은 상태로 재빌드.
 
-### 영속화 룰
-- 시리즈 모드 활성 시 `mice-mtg:[series_id]` 키로 회차별 데이터 자동 저장
-- 챗 환경 리셋 대비 JSON 다운로드 버튼으로 외부 백업 권장
-- `.series-data/[series_id].json` 파일도 동시 생성 (서버 사이드 백업)
-- **테마 선호도** `mm-theme` 키로 localStorage 영속화 (v2.1.0)
+## 5. 모드
 
-## 6. 모드 분기
+| 모드 | 톤 | Redaction | 전략 메모 탭 |
+|------|----|-----------|-------------|
+| `external` | 정중·사실 위주 | 적용 | 숨김 |
+| `internal` | 솔직한 평가 | 미적용 | 노출 (5W1H) |
 
-### 6-1. External / Internal 모드 (콘텐츠 톤)
+- 헤더 토글로 실시간 전환. 테마(라이트/다크)와 독립.
+- 라이트가 첫 화면 기본. 다크는 토글(사용자 선택은 `mm-theme`에 저장). **인쇄·PDF는 다크 상태여도 라이트**(`jc-design-system/references/shared-rules.md#RULE-PRINT-LIGHT`).
 
-| 모드 | 톤 | Redaction | 전략 메모 탭 | 토글 위치 |
-|------|----|-----------| -----------|----------|
-| `--external` | 정중·사실 위주 | 자동 적용 | 비활성화 | 헤더 우상단 |
-| `--internal` (기본) | 솔직한 평가 | 미적용 | 활성화 (5W1H) | 헤더 우상단 |
+## 6. 시리즈 모드 (`--series=<id>`)
 
-→ **모드는 대시보드 우상단 토글로 실시간 전환 가능**. 빌드 직후 사용자가 토글하면 전략 메모 탭 표시·익명화 자동 반영.
+1차 빌드 → 대시보드 "시리즈 저장" → 2차 빌드 시 직전 회차 미완료 Action·미결 사항 자동 carry-over(`↻` 표시, 앰버 배경) → 3회 이상 이월 시 장기 미해결 경고. 상세 `references/series-tracking.md`.
 
-### 6-2. 라이트 / 다크 테마 토글 (v2.1.0 신규)
+## 7. 체이닝 (ChainPayload/v1)
 
-| 테마 | 페이지 배경 | 카드 배경 | 본문 | 보조 | 액센트 |
-|------|------------|----------|------|------|--------|
-| **라이트** (기본) | #F5F7FA | #FFFFFF | #1A1A1A | #808080 | #2962FF |
-| **다크** | #0A2540 | #1A3556 | #FFFFFF | #B8C5D6 | #2962FF |
+봉투 정본 `jc-design-system/references/chaining-protocol.md`, source `mice-meeting-minutes`. 페이로드 키 `client` · `project_context` · `discovery_data` · `strategic_notes` (+ `actions`·`risks`·`pending`).
 
-**작동 원리**:
-- 우상단 토글 버튼 (☀ ↔ ☾) 클릭으로 즉시 전환
-- 첫 방문 시 `prefers-color-scheme: dark` 시스템 설정 자동 감지
-- localStorage `mm-theme` 키로 선호도 영속화 (다음 방문 시 자동 복원)
-- **인쇄 시 라이트 강제** (`@media print`) — PDF 저장은 항상 라이트 톤 유지
-- External/Internal 모드와 **독립적**으로 작동 (4개 조합 모두 가능)
+| target | 언제 | 수신 측 용도 |
+|--------|------|-------------|
+| `jc-pptx` | Type A Discovery + 제안 진행 합의 | 제안서 덱 인테이크(Partial 입력) |
+| `jc-strategy-canvas` | Discovery에서 전략 판단이 필요할 때 | ① 인테이크·JTBD·SWOT 시드 |
+| `mice-ops-docs` | 수주 후 킥오프·운영 협의 | 운영계획서 1·2·7섹션(결정·Action·담당) |
+| `mice-aftermath` | 사후 회고·정산 미팅 | 6축 교훈·8축 차기 권고 |
 
-**컬러 매핑 출처**: mice-proposal v2.1.1 `dark-mode-patterns.md` DARK_* 토큰 (DARK_BG = #0A2540 / DARK_BG_ALT = #1A3556 / DARK_TEXT = #FFFFFF / DARK_TEXT_MUTED = #B8C5D6 / DARK_BORDER = #2A4A6E / DARK_ACCENT = #2962FF). mice-sponsor-deck v2.1.0 / mice-dashboard v2.0과 1:1 일관.
+저장 `.chaining/[project]_[YYYYMMDD]_to_[target].json`. 상세 매핑 `references/chaining-guide.md`.
 
-**WCAG AA 대비비 검증**:
-- 흰색 (`#FFFFFF`) on Deep Navy (`#0A2540`) = **17.4:1** ✓ (목표 4.5:1 충분 초과)
-- B8C5D6 on `#0A2540` = 7.5:1 ✓
-- 다크 모드 본문 텍스트 가독성 보장
+## 8. 디자인 — jc-design-system 연동
 
-## 7. 시리즈 모드 (`--series`)
+- 값은 전부 `jc-design-system`(v2 리멤버 웜 페이퍼)에서 런타임 로드한다. `build_dashboard.py`가 `jc-design-system/scripts/jc_tokens.py`를 import해 `signature-tokens.md §6 JSON`을 읽고, 템플릿의 `@design-tokens` CSS 블록(미러)을 SoT 값으로 통째로 교체한다. 탐색: 형제 경로 → `~/.claude/skills/jc-design-system` → `~/.claude/skills/synced/*/jc-design-system`. 로드 실패 시에만 `signature-tokens.md §6` 출처 주석이 달린 폴백 상수.
+- 컴포넌트는 `jc-design-system/references/component-patterns.md` §3 KPI · §4 카드(좌측 4px 상태 바) · §5 표 · §6 차트 · §7 헤더 · §9 회의록·액션을 따른다.
 
-```
---series=clientA-discovery
-```
+| 역할 | CSS 변수 → SoT 키 |
+|------|------------------|
+| 캔버스 / 카드 / 웜 서피스 | `--paper` bg(다크 dark.panel) · `--surface` surface · `--surface-warm` surfaceAlt |
+| 잉크 / 보조 / 뮤트 / 캡션 | `--ink` text · `--brown` textSecondary · `--ink-sub` textMuted · `--warm-gray` textCaption |
+| 오렌지 면·룰·큰 글자 | `--orange` accent |
+| 작은 강조 텍스트·마감 임박 | `--orange-deep` accentStrong(다크 accentText) |
+| Primary 버튼 | `--btn-primary` accentStrong + 흰 글자 |
+| 결정 / 후속 / 미결 / 리스크 카드 | 틴트 accentSoft · 스틸 steel · 앰버 warning · 부정 danger |
+| 칸반 배지 TODO / DOING / BLOCKED / DONE | 중립 · 스틸 · 부정(Bold 14px) · 긍정 |
+| 차트 | 시리즈 `--s1`~`--s5` = color.data[0..4], 상태 도넛은 배지와 같은 의미색 |
 
-→ 이전 회차 미해결 Action 자동 carry-over + 차회 빌드 시 누적 시트 갱신. 상세는 `references/series-tracking.md`.
+- 대비(`shared-rules.md#RULE-WCAG`): 오렌지 `#EB6F2A` 텍스트는 큰 글자 전용, 작은 강조는 딥 오렌지 `#B8431A`. `--self-test`가 핵심 조합의 대비비를 계산해 확인한다.
+- 리멤버 로고 슬롯: 라이트 `jc-design-system/assets/remember-black.png` · 다크 `jc-design-system/assets/remember-offwhite.png`를 data URI로 임베드(Pillow가 있으면 높이 64px로 축소, 재염색 없음). SoT를 못 찾으면 "리멤버 MICE비즈팀" 텍스트.
+- 구 네이비·일렉트릭블루 룩은 `legacy-jc` 오버레이로만 존재하며 이 대시보드는 지원하지 않는다.
 
-### v2.1.0 시리즈 영속화 흐름 (강화)
-```
-1차 회차 빌드 → 대시보드에서 "시리즈 저장" 클릭 → window.storage 저장
-                                                     ↓
-[v2.1.0 신규] "JSON 백업 다운로드" 클릭 → 외부 파일로 영구 백업
-                                                     ↓
-2차 회차 빌드 → 자동 carry-over (이전 회차 미완료 Action) → 대시보드 차트에 누적 표시
-                                                     ↓
-3차 회차 → carry-over 횟수 3회 도달 시 "장기 미해결" 경고 표시
-                                                     ↓
-[v2.1.0 신규] JSON 백업 자동 다운로드 옵션 활성 시 매 회차 저장 후 즉시 외부 백업
-```
+## 9. 옵션
 
-## 8. 시리즈 누적 백업 (v2.1.0 강화)
-
-### 8-1. JSON 백업 다운로드 버튼
-
-대시보드 우상단·하단 툴바 양쪽에 "💾 JSON 백업" 버튼 배치. 클릭 시:
-
-1. 현재 시리즈 데이터(window.storage 또는 localStorage) 전체 추출
-2. 파일명: `mm-series-backup-{project}-{YYYYMMDD}.json` (날짜 자동 포함)
-3. 브라우저 다운로드 트리거 (Blob + URL.createObjectURL 활용)
-4. Toast 알림: "JSON 백업 다운로드 완료"
-
-### 8-2. JSON 백업 파일 구조
-
-```json
-{
-  "_meta": {
-    "backup_date": "2026-05-27T10:30:00+09:00",
-    "skill_version": "v2.1.0",
-    "project_name": "고객사B 세미나 2026 Discovery",
-    "series_id": "clientB-seminar26-discovery"
-  },
-  "current_session": {
-    "meeting_date": "2026-05-09",
-    "actions": [...],
-    "decisions": [...],
-    "pending": [...]
-  },
-  "series_history": [
-    {
-      "session_no": 1,
-      "date": "2026-05-09",
-      "new_actions": 8,
-      "carry_over_actions": 0,
-      "done": 3,
-      "completion_rate": 0.375
-    }
-  ]
-}
-```
-
-### 8-3. JSON 복원 워크플로우
-
-1. 다른 챗 세션에서 JSON 파일 업로드
-2. Claude에 "이 시리즈 데이터로 N차 회차 대시보드 빌드해줘" 요청
-3. `build_dashboard.py`가 `series_history` 로드 + 차트 자동 복원
-4. 동일 상태에서 작업 재개 가능
-
-→ 본 영속화 강화로 챗 환경 리셋·다중 디바이스 작업·장기 시리즈 유실 리스크 0건 보장
-
-## 9. 체이닝 (mice-proposal로 전달)
-
-Type A 외부 클라이언트 미팅(Discovery / 정기 협의)에서 추출한 5개 데이터를 mice-proposal 입력 JSON 패키지로 자동 변환. 상세는 `references/chaining-guide.md`.
-
-## 10. jc-design-system 연동
-
-### 10-1. 라이트 모드 토큰
-
-| 적용 영역 | 토큰 |
-|----------|------|
-| 헤더 띠 | `color.primary` (#0A2540 Deep Navy) |
-| KPI 카드 강조 | `color.accent` (#2962FF Electric Blue) |
-| Action P0 (블로커) | `color.point.magenta` (#E91E63) |
-| Action P1 (금주) | `color.point.orange` (#FF5722) |
-| 미결 사항 | `color.point.orange` |
-| 리스크 마커 | `color.point.magenta` |
-| Status DONE | `color.point.neon` (#00E676) |
-| Status BLOCKED | `color.point.magenta` |
-| Carry-over 외곽선 | `color.point.orange` |
-| 시리즈 차트 라인 | `color.point.neon` (완료율) / `color.accent` (신규) / `color.point.orange` (carry-over) |
-
-### 10-2. 다크 모드 토큰 (v2.1.0 신규)
-
-| 적용 영역 | 토큰 (CSS 변수) | HEX |
-|----------|---------------|-----|
-| 페이지 배경 | `--bg` | #0A2540 (DARK_BG) |
-| 카드 배경 | `--surface` | #1A3556 (DARK_BG_ALT) |
-| 보조 서피스 | `--surface-alt` | #12304D (DARK_SURFACE) |
-| 본문 글자 | `--text` | #FFFFFF (DARK_TEXT) |
-| 보조 글자 | `--text-muted` | #B8C5D6 (DARK_TEXT_MUTED) |
-| 비활성 글자 | `--text-disabled` | #6B7B92 (DARK_TEXT_DISABLED) |
-| 테두리 | `--border` | #2A4A6E (DARK_BORDER) |
-| 강조 테두리 | `--border-strong` | #3D5F87 (DARK_BORDER_STRONG) |
-| Accent | `--accent` | #2962FF (DARK_ACCENT, 라이트와 동일) |
-| Accent soft (호버) | `--accent-soft` | #1E4DCC |
-| 포인트 색상 (P0·DONE·BLOCKED 등) | 동일 유지 | E91E63 / FF5722 / 00E676 |
-
-→ 폰트: Pretendard (KR) / Inter (EN) / JetBrains Mono (코드·ID·숫자) — 양 테마 동일
-
-## 11. 옵션 플래그
-
-| 플래그 | 기능 | 기본값 |
-|--------|------|--------|
-| `--type=A/B/C/D/E` | 회의 유형 수동 지정 | 자동 추정 |
-| `--external` / `--internal` | 모드 지정 | Type A·C → external / B·D·E → internal |
-| `--series=<id>` | 시리즈 누적 모드 | OFF |
+| 옵션 | 기능 | 기본값 |
+|------|------|--------|
+| `--type=A~E` | 회의 유형 지정 | 자동 판정 |
+| `--external` / `--internal` | 모드 | 유형 기본값 |
+| `--series=<id>` | 시리즈 누적 | OFF |
 | `--quote` | 결정 근거 인용 보존 | OFF |
-| `--quick` | 핵심 5축만 빠르게 | OFF |
-| `--client=<id>` | 클라이언트 오버레이 지정 | personal |
-| `--mapping="참석자 1 = 이름"` | 화자 매핑 명시 | 자동 추정 |
-| `--theme=light/dark/auto` (v2.1.0) | 초기 테마 지정 | auto (시스템 설정 따름) |
+| `--quick` | 핵심 5축만 | OFF |
+| `--client=<id>` | 발주처 슬롯 ID(`client-overlays.md`) — 로고·푸터만, 오렌지 불변 | 없음(리멤버 기본) |
+| `--mapping="참석자 1 = 이름"` | 화자 매핑 | 자동 추정 |
+| `--theme=light/dark` | 첫 화면 테마 (`build_dashboard.py --theme`) | light |
 
-## 12. 산출물 활용 패턴
+## 10. 명의 · 식별정보 (RULE-NO-COMPANY v2)
 
-### 패턴 1: 미팅 직후 즉시 공유 (가장 흔함)
-1. 클로바노트 transcript 입력 → 본 스킬 호출
-2. 대시보드 다운로드 → 브라우저 열기
-3. 모드·테마 확인 → "Slack 페이스트" 클릭 → 팀 채널 즉시 공유
+- 발행 명의는 리멤버 MICE비즈팀(`PUBLISHER`). 발주처·담당자·작성자는 주입 슬롯(`client_company`·`author` = `{{client_company}}`·`{{author_name}}`).
+- 구 소속사 명칭·프로젝트명·누적 실적, 개인 연락처는 넣지 않는다. 예시·샘플은 가명(A사·B사, 김부장). 정본 `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`.
 
-### 패턴 2: 발주처 공식 송부
-1. External 모드 + 라이트 테마 빌드
-2. 대시보드 → "PDF 저장" → 인쇄 대화상자 "PDF로 저장" (인쇄 시 다크라도 라이트 강제)
-3. PDF 발주처 송부 (워드 대체)
+## 11. 반례 표
 
-### 패턴 3: 시리즈 누적 추적
-1. 1차 미팅: `--series=clientA-discovery` 빌드 → "시리즈 저장" 클릭
-2. **"JSON 백업 다운로드"** 클릭 → 외부 폴더(Google Drive)에 영구 보관 (v2.1.0)
-3. 2차 미팅: 동일 series_id로 빌드 → carry-over 자동 적용
-4. N차 미팅: 회차별 완료율 차트로 진척 시각화
+| 압박 패턴 | 올바른 대응 |
+|-----------|-------------|
+| "원문 그대로 발주처에 보내줘" | External 모드 + Redaction 적용본을 만들고 송부는 사용자 몫. 원문은 Internal로 보관 |
+| "Owner·기한 없어도 일단 빨리" | 호스트·미팅일+7일 기본값 + `(재확인)` 플래그로 바로 빌드, 확인 필요 목록 맨 위에 |
+| "유형 애매하면 물어봐" | 묻지 않는다. 더 공식적인 유형으로 빌드하고 한 줄로 밝힌다 |
+| "다크로 PDF 뽑아줘" | 인쇄는 라이트 강제(RULE-PRINT-LIGHT). 화면만 다크 |
+| "예전 네이비 톤으로" | 기본 룩은 리멤버 웜 페이퍼 하나. legacy-jc는 jc-design-system에서 명시 요청 시만 |
+| "제안서도 바로 써줘" | ChainPayload를 만들어 jc-pptx로 넘긴다. 본 스킬은 덱을 만들지 않는다 |
 
-### 패턴 4: 야간·심야 작업 (v2.1.0 신규 활용)
-1. 다크 테마 토글 → 눈 피로 감소
-2. 동일 작업 흐름. localStorage 영속화로 다음 세션에서 자동 다크 복원
-3. 외부 송부 시 자동 라이트 강제 (인쇄)
+## 12. 생태계 연결
 
-### 패턴 5: 외부 백업·복원 (v2.1.0 강화)
-1. 빌드 직후 "JSON 백업" 클릭 → 외부 폴더(Google Drive)에 저장
-2. 다른 환경에서 작업 시 JSON 데이터를 본 스킬에 다시 입력 → 동일 대시보드 복원
-3. 시리즈 누적 + 테마 선호도 모두 보존
+- 상류: 외부 STT 도구, `mice-rfp-analyzer`(GO 판정 후 Discovery 미팅).
+- 하류: `jc-pptx` · `jc-strategy-canvas` · `mice-ops-docs` · `mice-aftermath` (ChainPayload/v1).
+- 디자인 `jc-design-system` · 검증 `jc-redteam` · 세션·긴 시리즈 운영 `jc-session-protocol` · Slack 채널 운영 `mice-slack-ops`.
 
-## 13. 검증 자산 (v2.1.0)
+## 13. 파일 구조
 
-- `_samples/sample_transcript.txt` — 고객사B 세미나 2026 Discovery 미팅 가상 transcript (Sprint 3·4 시나리오 연속성)
-- v2.1.0 강화 후 본 transcript로 샘플 HTML 대시보드 생성·검수
-- 회사 종속 표현 0건 (발주처는 "T社"로 일반화) — 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`
+```
+mice-meeting-minutes/
+├── SKILL.md
+├── assets/dashboard-template.html   # React 대시보드 템플릿 (@design-tokens 미러 블록 포함)
+├── references/
+│   ├── analysis-framework.md   # 8축 추출 규칙 · 전략 메모 5W1H · --quick
+│   ├── meeting-types.md        # 5종 유형 · 판별 시그널 · 기본값
+│   ├── input-formats.md        # 4채널 6포맷 파서 사양 · 화자 매핑 · 청크
+│   ├── redaction-rules.md      # 마스킹 5카테고리 · 모드별 강도
+│   ├── action-items-schema.md  # Action 5열 표준 · Priority/Due 추정
+│   ├── series-tracking.md      # 시리즈 데이터 · carry-over
+│   ├── dashboard-spec.md       # UI 구조 · 인터랙션 · 토큰 · 인쇄
+│   ├── output-spec.md          # 산출 순서 · 부가 기능 · 검증 체크리스트
+│   └── chaining-guide.md       # ChainPayload/v1 페이로드 · target별 매핑
+└── scripts/
+    ├── parse_input.py          # transcript 파서 (--self-test)
+    └── build_dashboard.py      # 대시보드 빌더 · SoT 토큰 로드 · 검증 (--self-test)
+```
+
+자가 테스트: `python scripts/parse_input.py --self-test` · `python scripts/build_dashboard.py --self-test` (토큰 해석·legacy 색 0·대비비·폴백·샘플 빌드·시리즈 carry-over).
+
+## 변경 이력
+
+- v2.2.0 (2026-10-09): 룩을 구 네이비 시그니처 → 리멤버 웜 페이퍼(jc_tokens.py 런타임 로드·로고 슬롯·인쇄 라이트·S1~S5)로, 폐합 스킬 참조를 jc-pptx·mice-ops-docs 등 라이브 체이닝으로, 게이트 문구 → 기본값 진행, 예시 실명 → 가명.
+  CDN 버전 고정 + prop-types 추가(Recharts UMD 미렌더 버그), 파서 Teams·메모 감지 버그 수정, 두 스크립트에 `--self-test`·`--input` JSON 빌드 추가.
+- v2.1.2 (2026-07-04): 크기 검증 게이트 정합, 예시 변수·가명화, 레거시 .docx 산출 참조 정정.
+- v2.1.1 (2026-07-03): v1 산출물 서술 잔재 정정(.docx·.xlsx → HTML 대시보드·.series-data JSON).
+- v2.1.0 (2026-05-27): 라이트/다크 토글, JSON 백업 강화(구 네이비 다크 토큰 — v2.2.0에서 폐기).
+- v2 (2026-05): .docx·.xlsx 정적 산출 → 단일 HTML 대시보드 + External/Internal 토글 + 시리즈 영속화.
