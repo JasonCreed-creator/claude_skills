@@ -1,7 +1,7 @@
 ---
 name: mice-aftermath
-version: "v1.1.0"
-description: "MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 종합 결과보고서와 ② 차기 비딩·영업에 재활용하는 레퍼런스 케이스(case study)를 만드는 스킬. mice-ops-docs(KPI)·mice-estimate(예산 실적)·mice-meeting-minutes(교훈)·mice-run-of-show(계획 대비 실제) 산출을 받아 목표 대비 성과·예산 실적·운영 하이라이트·이슈/교훈·차기 권고를 8축으로 구성하고, 리멤버 웜 페이퍼 룩의 결과보고서(Claude Docs·HTML·md) + ChainPayload(→jc-pptx)로 낸다. 입력이 일부만 있어도 기본값으로 바로 초안을 만든다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '결과보고서', '사후보고', '행사 결과보고', '종합 결과보고', 'post-event report', '행사 결산 보고', '사후 평가', 'wrap-up 리포트', '디브리프', 'debrief', '레퍼런스 케이스', '케이스 스터디', 'case study', '행사 사례화', '실적 레퍼런스', '수행 실적 정리'를 말할 때, 또는 끝난 행사의 결과를 발주처/내부 보고 + 차기 영업 재활용으로 정리해 달라고 할 때. 경계 — 결과 수치의 차트·KPI 대시보드는 mice-ops-docs, 백지 산문 공동작성은 jc-doc-coauthor, 제안서·스폰서 데크는 jc-pptx, 회의록은 mice-meeting-minutes, 완성 보고서의 적대적 검증은 jc-redteam. 발주처·실적 식별정보는 외부 주입."
+version: "v1.2.0"
+description: "MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 종합 결과보고서와 ② 차기 비딩·영업에 재활용하는 레퍼런스 케이스(case study)를 만드는 스킬. mice-ops-docs(KPI)·mice-estimate(예산 실적)·mice-meeting-minutes(교훈)·mice-run-of-show(계획 대비 실제)·mice-rfp-analyzer(승률·입찰가 회고) 산출을 받아 목표 대비 성과·예산 실적·운영 하이라이트·이슈/교훈·차기 권고를 8축으로 구성하고, 리멤버 웜 페이퍼 룩의 결과보고서(Claude Docs·HTML·md) + ChainPayload(→jc-pptx·jc-strategy-canvas)로 낸다. 입력이 일부만 있어도 기본값으로 바로 초안을 만들고, '같이 써 나가자'면 축별 확인 옵션으로 함께 쓴다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '결과보고서', '사후보고', '행사 결과보고', '종합 결과보고', 'post-event report', '행사 결산 보고', '사후 평가', 'wrap-up 리포트', '디브리프', 'debrief', '레퍼런스 케이스', '케이스 스터디', 'case study', '행사 사례화', '실적 레퍼런스', '수행 실적 정리'를 말할 때, 또는 끝난 행사의 결과를 발주처/내부 보고 + 차기 영업 재활용으로 정리해 달라고 할 때. 경계 — 결과 수치의 차트·KPI 대시보드는 mice-ops-docs, 결과보고 외 백지 산문 공동작성은 jc-doc-coauthor, 외부 벤치마크 행사 조사는 mice-market-intel, 제안서·스폰서 데크는 jc-pptx, 회의록은 mice-meeting-minutes, 완성 보고서의 적대적 검증은 jc-redteam. 발주처·실적 식별정보는 외부 주입."
 ---
 # mice-aftermath — 행사 사후 결과보고 + 재사용 케이스
 
@@ -25,18 +25,20 @@ description: "MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 �
 ### 다루는 것 (DO)
 - 행사 종료 후 **8축 사후 결과보고서**: 요약·개요·목표 대비 성과·예산 실적·운영 하이라이트·이슈/교훈·이해관계자 피드백·차기 권고. (`references/report-structure.md`)
 - **재사용 레퍼런스 케이스 빌더**: challenge→approach→result(수치)→proof 구조 + 익명화 + 재사용 등급. (`references/case-builder.md`)
-- 체이닝 입력 흡수: mice-ops-docs(KPI)·mice-estimate(예산 vs 실적)·mice-meeting-minutes(교훈/Action)·mice-run-of-show(계획 대비 실제). 또는 직접 입력.
-- 산출: 리멤버 웜 페이퍼 결과보고서(Claude Docs·HTML·md) + `ChainPayload`(→jc-pptx 차기 비딩 레퍼런스·스폰서 ROI 케이스).
+- 체이닝 입력 흡수: mice-ops-docs(KPI)·mice-estimate(예산 vs 실적)·mice-meeting-minutes(교훈/Action)·mice-run-of-show(계획 대비 실제)·mice-rfp-analyzer(추정 승률·권고 입찰가 회고). 또는 직접 입력.
+- "결과보고 같이 써 나가자"도 본 스킬이 받는다 — Phase 2 **축별 확인 옵션**(아래).
+- 산출: 리멤버 웜 페이퍼 결과보고서(Claude Docs·HTML·md) + `ChainPayload`(→jc-pptx 차기 비딩 레퍼런스·스폰서 ROI 케이스, →jc-strategy-canvas 내부 실적 근거).
 
 ### 다루지 않는 것 (DON'T)
 - 결과 데이터를 **차트·KPI 대시보드로 시각화** → **mice-ops-docs** (본 스킬은 그 수치를 *서사·판단·케이스*로 종합)
-- 산문형 문서를 백지에서 **함께 써 나가는 공동작성** → **jc-doc-coauthor**
+- 결과보고 **외** 산문형 문서를 백지에서 **함께 써 나가는 공동작성** → **jc-doc-coauthor** (결과보고는 "같이 쓰자"여도 본 스킬)
+- 외부 벤치마크 행사·타사 레퍼런스 조사 → **mice-market-intel** (본 스킬의 레퍼런스 케이스는 자사 수행실적)
 - 발주처 제출 **제안서**·스폰서 유치 데크 → jc-pptx (본 스킬의 케이스·ROI는 그 *입력 레퍼런스*)
 - 회의록 구조화 → mice-meeting-minutes / 결론·문서 적대 검증 → jc-redteam
 
 > **mice-ops-docs와의 경계**: mice-ops-docs는 "숫자가 무엇인가"(차트·KPI 카드)를 그린다. aftermath는 "그래서 무슨 의미이고 다음에 어떻게 쓰나"(목표 대비 해석·교훈·차기 권고·재사용 케이스)를 *서술*한다. 차트가 필요하면 mice-ops-docs 산출을 인용/임베드하고 재발명하지 않는다.
 >
-> **jc-doc-coauthor와의 경계**: doc-coauthor는 *백지 산문을 단계적으로 함께 쓰는 범용 프로세스*다(개요부터 같이 잡음). aftermath는 *행사 결과 데이터를 고정 8축 프레임으로 종합하고 재사용 케이스까지 체이닝*하는 사후 전용 산출 스킬이다. "결과보고를 같이 써 나가자"면 doc-coauthor, "행사 끝났으니 결과 종합 보고서+케이스로 내줘"면 본 스킬.
+> **jc-doc-coauthor와의 경계**: doc-coauthor는 *결과보고 외 백지 산문을 단계적으로 함께 쓰는 범용 프로세스*다. 결과보고는 작성 방식과 상관없이 본 스킬이 받는다 — "같이 써 나가자"면 Phase 2를 축별 확인 옵션으로 돌리고, "결과 종합 보고서+케이스로 내줘"면 한 번에 초안을 낸다.
 
 ## 2. 호출 시점 판단 가이드
 
@@ -46,7 +48,7 @@ description: "MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 �
 | "이 행사 사례로 만들어 차기 비딩에 쓰게" | ✅ | mice-aftermath |
 | "성과·교훈·차기 권고 종합 보고" | ✅ | mice-aftermath |
 | "행사 실적을 차트·KPI로 시각화" | ❌ | mice-ops-docs |
-| "결과보고 초안 같이 써 나가자" | ❌ | jc-doc-coauthor |
+| "결과보고 초안 같이 써 나가자" | ✅ | mice-aftermath (축별 확인 옵션) |
 | "이 케이스로 발주처 제안서 만들어" | ❌ | jc-pptx |
 
 ## 3. 워크플로우 (Phase)
@@ -56,13 +58,13 @@ description: "MICE 행사 종료 후 결과 데이터를 종합해 ① 사후 �
    ↓
 Phase 0  스코프      보고 대상·행사 정보·입력 소스 파악 (비면 기본값, 묻고 멈추지 않음)
    ↓
-Phase 1  데이터 정합  체이닝 입력(ops-docs/estimate/minutes/run-of-show) 또는 직접 입력 흡수
+Phase 1  데이터 정합  체이닝 입력(ops-docs/estimate/minutes/run-of-show/rfp-analyzer) 또는 직접 입력 흡수
    ↓                + 목표(KPI 타깃·예산 계획) 결합, 없으면 [목표 미설정] → 성과는 '목표 대비'로만 주장
 Phase 2  보고서 구성  8축 프레임으로 종합 (references/report-structure.md)
    ↓                ★ 추정·과장 금지: 수치는 입력 출처에 근거, 미확보는 [미확보] 표기
 Phase 3  케이스 빌드  재사용 레퍼런스 케이스 추출 (references/case-builder.md)
    ↓                challenge→approach→result→proof + 익명화 + 재사용 등급
-Phase 4  산출        결과보고서(Docs/HTML/md) + ChainPayload(→jc-pptx)
+Phase 4  산출        결과보고서(Docs/HTML/md) + ChainPayload(→jc-pptx · →jc-strategy-canvas)
                     (선택) jc-redteam — 성과 과장·생존자 편향·인과 비약 적대 검증
 ```
 
@@ -75,12 +77,14 @@ Phase 4  산출        결과보고서(Docs/HTML/md) + ChainPayload(→jc-pptx)
 ### Phase 2 — 보고서 구성 (8축)
 `report-structure.md`의 8축으로 종합. **수치는 입력 출처에 근거**하고, 없으면 `[미확보]`로 남긴다(지어내지 않음). 실패·이슈를 숨기지 않고 *교훈*으로 전환한다(내부용은 특히).
 
+**축별 확인 옵션** — 사용자가 "같이 써 나가자"·"축별로 보면서"를 원하면 기본(8축 한 번에 초안) 대신 축 단위로 진행한다: 축 초안 → 바꿀 점 한 줄 확인(없으면 다음 축) → 다음 축. 순서는 3축(성과)부터, 1축(요약)은 마지막. 축마다 묻는 것은 그 축의 빈 입력뿐이다.
+
 ### Phase 3 — 케이스 빌드
 보고서에서 **재사용 가능한 케이스**를 추출한다. challenge(과제)→approach(해법)→result(정량 성과)→proof(증빙). 발주처명은 재사용 맥락에 따라 익명화(`A사`·`[공공기관]`) 옵션. 재사용 등급(어느 다운스트림에 쓸지) 부여. `case-builder.md`.
 
 ### Phase 4 — 산출
 - **결과보고서** — Claude Docs(문서 커넥터가 있으면 기본) 또는 리멤버 웜 페이퍼 HTML·md. 레이아웃·토큰·로고 슬롯 `references/report-spec.md`.
-- **ChainPayload** — `source: mice-aftermath`. 케이스·성과를 jc-pptx(R1 차기 비딩 실적 레퍼런스, R2 스폰서 ROI 케이스)로. 스키마 `references/chaining-schema.md`.
+- **ChainPayload** — `source: mice-aftermath`. 케이스·성과를 jc-pptx(R1 차기 비딩 실적 레퍼런스, R2 스폰서 ROI 케이스)와 jc-strategy-canvas(R3 내부 실적 근거, 선택)로. 스키마 `references/chaining-schema.md`.
 - (선택) **jc-redteam** — "성공했다"류 결론의 과장·생존자 편향·인과 비약을 친다.
 
 ## 4. 산출물 — 디자인 (리멤버 웜 페이퍼)
@@ -98,8 +102,9 @@ Phase 4  산출        결과보고서(Docs/HTML/md) + ChainPayload(→jc-pptx)
 
 ## 6. 생태계 연결
 
-- **입력(체이닝)**: mice-ops-docs(KPI)·mice-estimate(예산 vs 실적)·mice-meeting-minutes(교훈·Action)·mice-run-of-show(계획 대비 실제 진행). 봉투 `ChainPayload/v1`(`chaining-protocol.md`).
-- **출력(체이닝)**: → jc-pptx(차기 비딩 *실적 레퍼런스*) · → jc-pptx(스폰서 *ROI 케이스*). 선순환: 한 행사의 결과가 다음 수주 자산이 된다.
+- **입력(체이닝)**: mice-ops-docs(KPI)·mice-estimate(예산 vs 실적)·mice-meeting-minutes(교훈·Action)·mice-run-of-show(계획 대비 실제 진행)·mice-rfp-analyzer(추정 승률·권고 입찰가 vs 실제 — 분석 정확도 회고). 봉투 `ChainPayload/v1`(`chaining-protocol.md`).
+- **출력(체이닝)**: → jc-pptx(차기 비딩 *실적 레퍼런스*) · → jc-pptx(스폰서 *ROI 케이스*) · → jc-strategy-canvas(R3 *내부 실적 근거*, 선택). 선순환: 한 행사의 결과가 다음 수주 자산이 된다.
+- **이웃**: 외부 벤치마크 행사 조사는 mice-market-intel(본 스킬은 자사 수행실적만).
 - **검증(선택)**: jc-redteam — 성과 해석의 과장·편향.
 - **디자인**: jc-design-system SoT(리멤버 웜 페이퍼), 차트는 mice-ops-docs.
 - **세션**: 입력이 많아 길어지면 `jc-session-protocol`.
@@ -112,7 +117,7 @@ mice-aftermath/
 └── references/
     ├── report-structure.md     # 8축 사후 결과보고 프레임 + 축별 지침 + 워크드 예시
     ├── case-builder.md         # 재사용 케이스(challenge→approach→result→proof) + 익명화·재사용 등급
-    ├── chaining-schema.md      # ChainPayload in(ops-docs/estimate/minutes/run-of-show) / out(jc-pptx)
+    ├── chaining-schema.md      # ChainPayload in(ops-docs/estimate/minutes/run-of-show/rfp-analyzer) / out(jc-pptx·jc-strategy-canvas)
     └── report-spec.md          # Docs/HTML/md 리포트 레이아웃 + 웜 페이퍼 토큰 + 로고 슬롯 + 인쇄
 ```
 
@@ -126,6 +131,8 @@ mice-aftermath/
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): '같이 써 나가자' 결과보고도 본 스킬로(Phase 2 축별 확인 옵션, jc-doc-coauthor 경계는 결과보고 외 산문으로 한정), 외부 벤치마크 행사는 mice-market-intel 경계.
+  입력에 mice-rfp-analyzer(승률·입찰가 회고) 추가, R3 케이스 배출 대상을 jc-strategy-canvas로 한정. v1.1.0 중복 이력 2항을 1항으로 병합.
 - v1.1.0 (2026-10-05): 결과보고서 기본 룩을 구 네이비 시그니처 → 리멤버 웜 페이퍼(로고·발행 명의 슬롯, Claude Docs/HTML/md)로, 입력이 비어도 기본값 표로 바로 초안 작성(목표 미설정·미확보 표기 + 보완 목록).
-- v1.1.0 (2026-10-05): 유령·폐합 스킬 참조 정리(proposal·sponsor-deck·dashboard → jc-pptx·mice-ops-docs), 예시 발주처 가명화, ChainPayload 예시 버전·clientId 제거.
+  유령·폐합 스킬 참조 정리(proposal·sponsor-deck·dashboard → jc-pptx·mice-ops-docs), 예시 발주처 가명화, ChainPayload 예시 버전·clientId 제거.
 - v1.0.0 (2026-06-05): 신규. 8축 사후 결과보고 + 재사용 케이스 빌더 + Phase 0~4.
