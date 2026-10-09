@@ -17,8 +17,11 @@
 |------------|----------|
 | `market_size` (tam/sam/som, 출처) | F6 TAM/SAM/SOM 직접 채움 + 출처 각주 |
 | `competitors[]` (이름·점유·강약) | F2 기존경쟁/신규진입, F5 경쟁 대안 |
+| `competitors[].competitor_tier` (direct/adjacent/aspirational) | F2 기존경쟁 강도 — direct=정면 경쟁 강도, adjacent=인접·신규진입 압박, aspirational=목표 기준선(경쟁 강도에 넣지 않고 F5 참조점으로) |
+| `competitors[].scores{}`·`tension_axes` | F5 경쟁 대안 비교 축·긴장축 2×2 근거(데이터 맵 — 포지셔닝 결정은 본 스킬 F5) |
+| `whitespace_candidates[]` | F5 타깃 세그먼트·차별화 축 *후보* — 우선순위·채택 판단은 본 스킬 ③~④ |
 | `trends[]` / `demand_signals` | F2 대체재, F4 pain/gain |
-| `sources[]` (URL·일자) | 각 칸 `[검증]` 표식 근거 |
+| `sources[]` (URL·일자) + 각 데이터의 `source_tier`(T1~T4, 구 `tier`) | 각 칸 `[검증]` 표식 근거 — T3·T4 단독이면 `[가설]`로 낮춘다 |
 
 ### 1-2. ← mice-meeting-minutes
 Discovery/협의 회의록에서 고객 니즈·결정 흡수.
@@ -28,6 +31,16 @@ Discovery/협의 회의록에서 고객 니즈·결정 흡수.
 | `discovery_data` (니즈·목표·KPI) | ① 인테이크, F4 JTBD(기능/감정 job) |
 | `project_context` (예산·일정·이해관계자) | F1 C$/R$ 제약, F3 약점/위협 |
 | `strategic_notes` | F3 SWOT 시드 |
+
+### 1-3. ← mice-aftermath
+자사 수행실적 케이스(R3)를 *내부 실적 근거*로 흡수. 외부 시장 데이터가 아니라 자사 증거이므로 F3·F5의 자사 측 칸에만 쓴다.
+
+| 받는 키(예) | 매핑 대상 |
+|------------|----------|
+| `cases[]` (`reuse_tier`에 R3, `result`·`proof`) | F3 강점(S)·F5 차별화 축의 `[검증]` 근거(proof 병기) |
+| `performance` (`kpis`·`budget`) | F6 SOM 현실 점유 근거, F1 비용구조(C$) 실적치 |
+
+- `anonymize` 플래그를 존중한다 — 외부 공유용 캔버스에서는 발주처를 가명 처리.
 
 > 봉투가 없거나 `$schema≠ChainPayload/v1`이면 체이닝 입력이 아니라 파일/텍스트/대화 입력으로 처리한다. 받은 페이로드는 임의 변경하지 않고, 보정이 필요하면 사유를 남긴다(chaining-protocol §6-2 무변경 승계).
 
@@ -85,7 +98,8 @@ Discovery/협의 회의록에서 고객 니즈·결정 흡수.
 
 ```
 mice-market-intel ─(시장·경쟁 데이터)─┐
-mice-meeting-minutes ─(Discovery)────┼─► jc-strategy-canvas ─► 전략 캔버스(HTML)
+mice-meeting-minutes ─(Discovery)────┤
+mice-aftermath ─(자사 실적 R3)────────┼─► jc-strategy-canvas ─► 전략 캔버스(HTML)
                                       │         │
                                       │         ├─(ChainPayload)─► jc-pptx (전략 논거)
                                       │         └─(ChainPayload)─► mice-rfp-analyzer (전략권고 축)

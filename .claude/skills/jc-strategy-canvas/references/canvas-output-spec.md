@@ -1,6 +1,6 @@
 # 전략 캔버스 HTML 산출 스펙
 
-`jc-strategy-canvas` SKILL §5·⑥의 산출물 정본. 검증(⑤) 통과 후 **단일 파일 HTML 전략 캔버스**를 리멤버 웜 페이퍼 룩으로 생성한다. 모든 색·타이포·간격은 **jc-design-system SoT 런타임 참조** — 값 하드코딩 금지.
+`jc-strategy-canvas` SKILL §4·§3 ⑥의 산출물 정본. 검증(⑤) 통과 후 **단일 파일 HTML 전략 캔버스**를 리멤버 웜 페이퍼 룩으로 생성한다. 모든 색·타이포·간격은 **jc-design-system SoT 런타임 참조** — 값 하드코딩 금지.
 
 ## 0. SoT 토큰 로딩 (값 미러링 금지)
 
@@ -14,8 +14,6 @@
 룩 요약(식별용 — 값은 SoT에서 읽는다):
 - 캔버스 웜 페이퍼(`color.bg`) · 카드 흰색(`surface`) · 헤드라인·본문 잉크(`text`) · 액센트 리멤버 오렌지(`accent`, 작은 강조 텍스트는 `accentStrong`) · 데이터 시리즈 `color.data` 순서 고정.
 - 서체: **Pretendard 단일**(`font.ko`) — 숫자·KPI도 Pretendard `font-variant-numeric: tabular-nums`. 모노(`font.mono`)는 토큰값·코드에만.
-
-ono(숫자·KPI).
 
 ## 1. 레이아웃 골격
 

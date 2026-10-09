@@ -1,7 +1,7 @@
 ---
 name: jc-strategy-canvas
-version: "v1.1.0"
-description: "MICE 전략가의 전략적 사고를 6대 프레임워크(비즈니스 모델 캔버스·Porter 5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 구조화하고 교차 종합해 전략 옵션·권고를 도출한 뒤, jc-redteam 적대 검증을 거쳐 리멤버 웜 페이퍼 전략 캔버스(HTML)와 ChainPayload/v1(→jc-pptx·mice-rfp-analyzer)로 산출하는 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '전략', '전략 수립', '비즈니스 모델', 'BM', 'BMC', 'SWOT', 'TOWS', 'Porter', '5 Forces', '경쟁 구도', '경쟁 포지셔닝', '포지셔닝', 'JTBD', '고객 과업', '시장 규모', 'TAM', 'SAM', 'SOM', '신사업', '사업 아이템', '사업성 검토', '시장 진입', '시장 매력도', 'GTM 전략', '전략 캔버스', '전략 프레임워크', 'PESTLE'을 말할 때, 새 행사·신규 BM·신사업을 구상하며 '전략 짜줘', '프레임워크로 정리해줘', '포지셔닝 잡아줘', '사업성 따져줘'를 요청할 때. 형제 경계 — 주어진 RFP·공고의 7축 분석은 mice-rfp-analyzer, 외부 시장·경쟁 데이터 수집은 mice-market-intel(본 스킬은 그 데이터로 판단하는 쪽), 산문형 전략 메모·기획서 공동 집필은 jc-doc-coauthor, 발주처 제출용 제안서·PPT는 jc-pptx, 견적은 mice-estimate, 이미 내린 결론의 검증만 원하면 jc-redteam."
+version: "v1.2.0"
+description: "MICE 전략가의 전략적 사고를 6대 프레임워크(비즈니스 모델 캔버스·Porter 5 Forces·SWOT/TOWS·JTBD·포지셔닝·TAM/SAM/SOM)로 구조화하고 교차 종합해 전략 옵션·권고를 도출한 뒤, jc-redteam 적대 검증을 거쳐 리멤버 웜 페이퍼 전략 캔버스(HTML)와 ChainPayload/v1(→jc-pptx·mice-rfp-analyzer)로 산출하는 스킬. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '전략 수립', '비즈니스 모델', 'BM', 'BMC', 'SWOT', 'TOWS', 'Porter', '5 Forces', '경쟁 구도 판단(5 Forces)', '진입 매력도', '경쟁 포지셔닝', '포지셔닝', 'JTBD', '고객 과업', '시장 규모 산정(TAM/SAM/SOM)', '신사업', '신사업 GO/NO-GO', '진입 GO/NO-GO', '사업 아이템', '사업성 검토', '시장 진입', '시장 매력도', 'GTM 전략', '전략 캔버스', '전략 프레임워크', 'PESTLE'을 말할 때, 새 행사·신규 BM·신사업을 구상하며 '전략 짜줘', '프레임워크로 정리해줘', '포지셔닝 잡아줘', '사업성 따져줘'를 요청할 때. 형제 경계 — 주어진 RFP·공고의 7축 분석·응찰(비딩) 전략 권고·응찰 GO/NO-GO는 mice-rfp-analyzer, 외부 시장·경쟁·거시환경 데이터 수집은 mice-market-intel('시장 규모 얼마야·찾아줘', 경쟁사 누구·강약 정리, 환경 분석 자료는 그쪽 — 본 스킬은 규모 추산 구조(TAM/SAM/SOM)·들어갈 만한가·포지셔닝·PESTLE 구조화를 판단), 산문형 전략 메모·기획서 공동 집필은 jc-doc-coauthor, 발주처 제출용 제안서·PPT는 jc-pptx, 견적은 mice-estimate, 이미 내린 결론의 검증만 원하면 jc-redteam."
 license: Complete terms in LICENSE.txt
 ---
 
@@ -10,9 +10,9 @@ license: Complete terms in LICENSE.txt
 MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**하는 스킬이다. "막연한 아이디어/상황"을 받아 적합한 프레임워크를 골라 **빈칸을 채우고**, 프레임워크 간 교차 종합으로 **전략 권고**를 뽑고, `jc-redteam` 적대 검증으로 낙관 편향을 친 뒤, 리멤버 웜 페이퍼 **전략 캔버스(HTML)** + `ChainPayload/v1`로 산출한다.
 
 외부 생태계(`maigentic/stratarts`, MIT)의 전략 프레임워크 *패턴(방법론)*을 흡수해 재구성한 것이다. 파일·코드 복사 없이 프레임워크의 *구조와 질문 세트*만 차용했고, 세 가지를 바꿨다:
-1. **MICE 렌즈** — 모든 프레임워크의 예시·질문·함정을 MICE(행사 기획사 신사업·전시/컨퍼런스 BM·발주처 수주 전략·스폰서 시장) 맥락으로 번안. 골격은 `references/framework-catalog.md`.
-2. **검증을 `jc-redteam`으로** — stratarts는 "스코어링"으로 자기 검증을 흉내 낸다. 이 생태계엔 외부 감사관 시각의 레드팀이 있으므로 그 자리에 jc-redteam을 끼운다(§4 ⑤). 전략 결론을 *우호적 채점*이 아니라 *적대적 공격*으로 검증한다.
-3. **상류 사고 도구로 체이닝** — 산출 `ChainPayload/v1`이 `jc-pptx`(제안서)·`mice-rfp-analyzer`의 전략 논거로 흘러든다. 입력은 `mice-market-intel`(시장 데이터)·`mice-meeting-minutes`(Discovery)에서 받는다(§7).
+1. **MICE 렌즈** — 모든 프레임워크의 예시·질문·함정을 MICE(행사 기획사 신사업·전시/컨퍼런스 BM·발주처 포트폴리오 전략·스폰서 시장) 맥락으로 번안. 골격은 `references/framework-catalog.md`.
+2. **검증을 `jc-redteam`으로** — stratarts는 "스코어링"으로 자기 검증을 흉내 낸다. 이 생태계엔 외부 감사관 시각의 레드팀이 있으므로 그 자리에 jc-redteam을 끼운다(§3 ⑤). 전략 결론을 *우호적 채점*이 아니라 *적대적 공격*으로 검증한다.
+3. **상류 사고 도구로 체이닝** — 산출 `ChainPayload/v1`이 `jc-pptx`(제안서)·`mice-rfp-analyzer`의 전략 논거로 흘러든다. 입력은 `mice-market-intel`(시장 데이터)·`mice-meeting-minutes`(Discovery)·`mice-aftermath`(자사 수행실적)에서 받는다(§6).
 
 ## 1. 본 스킬이 다루는 것 / 다루지 않는 것
 
@@ -25,31 +25,18 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 
 ### 다루지 않는 것 (DON'T)
 - 주어진 **RFP·공고의 7축 분석**(요건·평가·리스크·경쟁·일정·예산·전략권고) → `mice-rfp-analyzer` (입력 종속)
+- 특정 비딩의 **응찰 S/W/O/T 메모**(4축 부속)·응찰 전략 권고·**응찰 GO/NO-GO** → `mice-rfp-analyzer` (본 스킬은 신사업·진입 GO/NO-GO와 전사 SWOT·TOWS 옵션화)
 - 산문형 **전략 메모·기획서·의사결정 문서**를 함께 집필 → `jc-doc-coauthor`
 - 발주처 제출용 **제안서 슬라이드(PPTX)** → `jc-pptx`
-- 외부 **시장·경쟁 데이터를 리서치로 수집** → `mice-market-intel` (본 스킬은 그 데이터를 *구조화·판단*하는 상류)
+- 외부 **시장·경쟁 데이터를 리서치로 수집**(시장 규모 수치 찾기, 경쟁사 누구·강약 정리, 거시환경 자료 조사) → `mice-market-intel` (본 스킬은 그 데이터를 *구조화·판단*하는 쪽)
 - **견적·가격 산출** → `mice-estimate` · 발표 대본 → `pt-script`
 - 이미 내려진 결론의 **검증만** 단독 요청 → `jc-redteam` 직접
 
-> **mice-rfp-analyzer와의 경계**: rfp-analyzer는 *발주처가 준 RFP*를 분석한다(입력이 외부 문서). 본 스킬은 *자사가 세우는 전략*을 프레임워크로 구조화한다(입력이 자사 상황·질문). 전자는 "이 비딩 어떻게 이길까", 후자는 "이 사업/행사 자체가 맞나·어떻게 포지셔닝하나"다.
+> **mice-rfp-analyzer와의 경계**: rfp-analyzer는 *발주처가 준 RFP*를 분석한다(입력이 외부 문서). 본 스킬은 *자사가 세우는 전략*을 프레임워크로 구조화한다(입력이 자사 상황·질문). 전자는 "이 비딩 어떻게 이길까·응찰할까(응찰 GO/NO-GO)", 후자는 "이 사업/행사 자체가 맞나(신사업·진입 GO/NO-GO)·어떻게 포지셔닝하나"다. 응찰·비딩 전략 권고는 rfp-analyzer 7축 몫이다.
 >
-> **mice-market-intel과의 경계**: market-intel은 *데이터를 모은다*(시장 규모·경쟁사·트렌드를 리서치). 본 스킬은 *데이터로 판단한다*(모인 데이터를 프레임워크에 꽂아 전략을 도출). market-intel → strategy-canvas 순서가 자연스럽다(§7).
+> **mice-market-intel과의 경계**: market-intel은 *데이터를 모은다*(시장 규모·경쟁사·트렌드·거시환경 자료를 리서치). 본 스킬은 *데이터로 판단한다*(모인 데이터를 프레임워크에 꽂아 전략을 도출). 대칭 기준 — "시장 규모 얼마야·찾아줘"는 market-intel, 규모 추산 구조(TAM/SAM/SOM)는 본 스킬 / 경쟁사 누구·강약 정리는 market-intel, 그래서 들어갈 만한가·어디로 포지셔닝하나는 본 스킬 / 환경 분석 데이터 수집은 market-intel, PESTLE 구조화는 본 스킬. market-intel → strategy-canvas 순서가 자연스럽다(§6).
 
-## 2. 호출 시점 판단 가이드
-
-| 사용자 입력 | 본 스킬 호출 | 사용 스킬 |
-|------------|:-----------:|----------|
-| "이 신사업 아이템 사업성 따져줘" | ✅ | jc-strategy-canvas |
-| "우리 전시회 BM 캔버스로 정리해줘" | ✅ | jc-strategy-canvas |
-| "이 시장 경쟁 구도(5 Forces) 분석" | ✅ | jc-strategy-canvas |
-| "우리 행사 포지셔닝 어떻게 잡지" | ✅ | jc-strategy-canvas |
-| "이 RFP 평가기준·독소조항 분석" + 공고 | ❌ | mice-rfp-analyzer |
-| "이 시장 규모·경쟁사 좀 찾아봐줘" | ❌ | mice-market-intel |
-| "전략 메모 산문으로 같이 써줘" | ❌ | jc-doc-coauthor |
-| "이 전략 결론 허점 때려줘" | ❌ | jc-redteam |
-| "발주처 제안서 PPTX 만들어줘" | ❌ | jc-pptx |
-
-## 3. 6대 프레임워크 — 언제 무엇을
+## 2. 6대 프레임워크 — 언제 무엇을
 
 전략 질문의 *유형*에 따라 프레임워크를 고른다. 상세 구조·질문 세트·MICE 렌즈·흔한 함정은 `references/framework-catalog.md`.
 
@@ -57,19 +44,19 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 |---|-----------|------------|-------------|
 | F1 | **Business Model Canvas** (9블록) | 이 사업은 어떻게 가치를 만들고 돈을 버는가 | 신규 자체행사·유료 컨퍼런스 BM 설계 |
 | F2 | **Porter's Five Forces** | 이 시장은 들어갈 만큼 매력적인가 | 신규 전시 분야·지역 진입 매력도 |
-| F3 | **SWOT / TOWS** | 자사 역량 × 환경으로 어떤 전략이 나오나 | 수주 전략·신사업 GO/NO-GO 옵션화 |
+| F3 | **SWOT / TOWS** | 자사 역량 × 환경으로 어떤 전략이 나오나 | 전사 SWOT·신사업 GO/NO-GO·진입 전략 옵션화 |
 | F4 | **JTBD** (Jobs-to-be-Done) | 고객(발주처·참가자·스폰서)은 무엇을 해결하려 하나 | 행사 가치제안·참가자 경험 설계 |
 | F5 | **Positioning** (A. Dunford) | 경쟁 대안 대비 우리는 무엇으로 다른가 | 행사·기획사 차별화·카테고리 정의 |
 | F6 | **TAM/SAM/SOM** + 시장기회 | 이 기회는 얼마나 크고 우리 몫은 얼마인가 | 신사업·신규 행사 시장 규모화 |
 
 > **조합 권장**: 단일 프레임워크는 한쪽 눈이다. 신사업 검토 = F6(규모)→F2(매력도)→F3(역량 매칭)→F1(수익구조). 차별화 = F4(고객 과업)→F5(포지셔닝). 본 스킬은 질문을 듣고 **조합과 순서를 제안**한다.
 
-> **확장 프레임워크 옵션**: 위 6대는 기본 세트다. 사용자가 **명시적으로 요청**하면(예: "PESTLE로 봐줘", "Porter's Five Forces로 봐줘") 표준 전략 프레임워크를 캔버스 유형으로 추가 구성한다. 대표적으로 **PESTLE**(정치·경제·사회·기술·법·환경 6축 거시환경 스캔 — 신규 지역·해외 진출 검토에 적합)이 있으며, F2(Porter's Five Forces)는 이미 기본 세트에 포함되어 있으므로 별도 요청 시 그대로 재사용한다. 확장 프레임워크도 §4의 가이드 채우기·근거 표식(`[검증]`/`[가설]`/`[추정]`) 규약과 ⑤ jc-redteam 검증을 동일하게 거친다. 기본 6대와 마찬가지로 과적합을 피하고, 결정에 필요할 때만 추가한다.
+> **확장 프레임워크 옵션**: 위 6대는 기본 세트다. 사용자가 **명시적으로 요청**하면(예: "PESTLE로 봐줘", "Porter's Five Forces로 봐줘") 표준 전략 프레임워크를 캔버스 유형으로 추가 구성한다. 대표적으로 **PESTLE**(정치·경제·사회·기술·법·환경 6축 거시환경 스캔 — 신규 지역·해외 진출 검토에 적합)이 있으며, F2(Porter's Five Forces)는 이미 기본 세트에 포함되어 있으므로 별도 요청 시 그대로 재사용한다. 확장 프레임워크도 §3의 가이드 채우기·근거 표식(`[검증]`/`[가설]`/`[추정]`) 규약과 ⑤ jc-redteam 검증을 동일하게 거친다. 기본 6대와 마찬가지로 과적합을 피하고, 결정에 필요할 때만 추가한다.
 
-## 4. 워크플로우
+## 3. 워크플로우
 
 ```
-① 상황 인테이크   결정할 것·맥락 파악 (market-intel / meeting-minutes 페이로드 있으면 흡수 §7)
+① 상황 인테이크   결정할 것·맥락 파악 (market-intel / meeting-minutes / aftermath 페이로드 있으면 흡수 §6)
         ↓
 ② 프레임워크 선택  질문 유형 → 조합·순서를 정해 바로 진행 (고른 조합 한 줄 명시)
         ↓
@@ -85,14 +72,14 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 ### ① 상황 인테이크
 무엇을 *결정*하려는지부터 파악한다(신사업 GO/NO-GO / 행사 포지셔닝 / BM 설계 / 시장 진입 / 차별화). 약식·자유 덤프 허용. 메시지에 없는 것은 되묻기보다 합리적으로 가정하고 `[가설]`로 표식한다. 파악할 것:
 1. 어떤 결정을 앞두고 있나? 데드라인·이해관계자는?
-2. 대상은? (자체 신규 행사 / 신사업 라인 / 특정 비딩 / 기존 행사 재포지셔닝)
+2. 대상은? (자체 신규 행사 / 신사업 라인 / 비딩 사업 분야 진출 / 기존 행사 재포지셔닝 — 개별 RFP 응찰 판단은 mice-rfp-analyzer)
 3. 이미 가진 데이터·가설은? (시장 수치·경쟁사·고객 반응)
 4. 성공/실패의 기준은 무엇으로 볼 건가?
 
 > **연동 활용**: `mice-market-intel` 리서치 산출이나 `mice-meeting-minutes` Discovery 회의록이 `ChainPayload/v1`로 있으면 흡수해 ①을 건너뛴다. Slack·Drive 커넥터가 있으면 관련 자료를 끌어온다(읽기만).
 
 ### ② 프레임워크 선택
-질문 유형 → §3 표로 **조합·순서를 정해 바로 진행**하고, 고른 조합을 한 줄로 밝힌다(예: "신사업 검토 기본 조합 F6→F2→F3→F1로 진행합니다"). 사용자가 가감하면 그대로 반영. 과적합 금지 — 결정에 필요한 최소 프레임워크만.
+질문 유형 → §2 표로 **조합·순서를 정해 바로 진행**하고, 고른 조합을 한 줄로 밝힌다(예: "신사업 검토 기본 조합 F6→F2→F3→F1로 진행합니다"). 사용자가 가감하면 그대로 반영. 과적합 금지 — 결정에 필요한 최소 프레임워크만.
 
 ### ③ 가이드 채우기 (프레임워크별 반복)
 각 프레임워크를 `framework-catalog.md`의 질문 세트로 채운다:
@@ -125,7 +112,7 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 - **ChainPayload/v1** — `source: jc-strategy-canvas`, 전략 권고·차별화 축·핵심 메시지를 `jc-pptx`/`mice-rfp-analyzer`로 전달. 스키마는 `references/chaining-schema.md`.
 - **사용자 최종 책임 고지** — 전략의 소유자·실행 책임자는 사용자다. 가설·추정 칸을 다시 확인하고, 의도한 의사결정에 실제로 답하는지 검증하라고 알린다.
 
-## 5. 산출물 — 디자인 (리멤버 웜 페이퍼, SoT 앵커링)
+## 4. 산출물 — 디자인 (리멤버 웜 페이퍼, SoT 앵커링)
 
 - **토큰 값을 본문/코드에 하드코딩하지 않는다.** 빌드 시 `jc-design-system`을 하우스 규약 §2 순서(형제 `parents[2]/jc-design-system` → `~/.claude/skills/jc-design-system` → `~/.claude/skills/synced/*/jc-design-system`)로 찾아 `jc-design-system/scripts/jc_tokens.py`의 `load_tokens`·`color`로 `signature-tokens.md §6 JSON`을 읽어 CSS 변수로 주입한다. 다크/인쇄는 `mode-mapping.md`.
 - 룩: 웜 페이퍼 캔버스 + 잉크 헤드라인 + 리멤버 오렌지 액센트(화면당 1회 강조), 헤더는 라이트(네이비 바 없음). 서체는 **Pretendard 하나**(숫자도 Pretendard `tabular-nums`, 토큰값·코드만 모노).
@@ -134,18 +121,19 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
 - 공통 룰: `RULE-WCAG`(본문 4.5:1↑)·`RULE-PRINT-LIGHT`(다크 HTML도 인쇄 시 라이트). 정본 `jc-design-system/references/shared-rules.md`.
 - 필터·드릴다운 같은 복합 인터랙션이 필요하면 캔버스 HTML 안에서 직접 구현한다(외부 위임 없음). 차트·표·배지 패턴은 `jc-design-system/references/component-patterns.md`.
 
-## 6. RULE-NO-COMPANY (리멤버 명의 기본 + 실명 주입)
+## 5. RULE-NO-COMPANY (리멤버 명의 기본 + 실명 주입)
 
 발행 명의는 리멤버 MICE비즈팀이 기본이다. 그 외 회사명·개인 실명·부서명은 캔버스·페이로드에 **하드코딩하지 않고** 외부 주입 변수로 처리한다.
 - 허용: "자사", "발주처", "경쟁사 A/B", 일반화 표현 + 변수 슬롯 `{{client_company}}`·`{{event_name}}`·`{{author_name}}`·`{{author_title}}`.
 - 금지: 구 소속사 명칭·프로젝트명, 개인 연락처. 고객사 실명 레퍼런스는 노출 동의 확인 후에만(미확인이면 A사 등 가명).
 - 정본: `jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`. jc-redteam 검증 시 "회사 종속 표현 0건"을 점검 항목에 포함.
 
-## 7. 생태계 연결
+## 6. 생태계 연결
 
 - **입력 체이닝**:
   - `mice-market-intel` → 시장 규모·경쟁사·트렌드 데이터를 F2/F5/F6의 `[검증]` 근거로 흡수.
   - `mice-meeting-minutes` → Discovery 회의록의 고객 니즈·예산·결정사항을 ① 인테이크·F4(JTBD)로 흡수.
+  - `mice-aftermath` → 자사 수행실적 케이스(`cases` R3·`performance`)를 F3 강점·F5 차별화 증거의 내부 실적 근거로 흡수.
   - 봉투: `ChainPayload/v1` — 정본 `jc-design-system/references/chaining-protocol.md`(§1 봉투 · §3 source enum 등재 · §6 수신 규칙 · §7 `detect_input_source`).
 - **검증(핵심)**: `jc-redteam` — ⑤ 전체. 짧은 결론=Quick Strike, 캔버스=Deep Audit.
 - **출력 체이닝**:
@@ -153,9 +141,9 @@ MICE 전략가의 **전략적 사고를 검증된 프레임워크로 구조화**
   - → `mice-rfp-analyzer` — 자사 전략 캔버스를 비딩 전략권고·경쟁 축의 사전 입력으로.
   - 스키마: `references/chaining-schema.md`.
 - **세션**: 프레임워크가 많아 길어지면 세션 분리·핸드오프는 `jc-session-protocol`.
-- **디자인**: `jc-design-system` SoT 런타임 참조(§5).
+- **디자인**: `jc-design-system` SoT 런타임 참조(§4).
 
-## 8. 파일 구조
+## 7. 파일 구조
 
 ```
 jc-strategy-canvas/
@@ -164,10 +152,10 @@ jc-strategy-canvas/
 └── references/
     ├── framework-catalog.md    # 6대 프레임워크 상세(구조·질문·MICE 렌즈·함정)
     ├── canvas-output-spec.md   # 전략 캔버스 HTML 산출 스펙(프레임워크별 레이아웃 + SoT 토큰)
-    └── chaining-schema.md      # ChainPayload/v1 in(←market-intel/minutes) / out(→jc-pptx/rfp-analyzer)
+    └── chaining-schema.md      # ChainPayload/v1 in(←market-intel/minutes/aftermath) / out(→jc-pptx/rfp-analyzer)
 ```
 
-## 9. 운영 원칙 / 한계
+## 8. 운영 원칙 / 한계
 
 - **사용자 agency 우선**: 프레임워크 건너뛰기·가감을 항상 허용한다. 프레임워크는 사고를 돕는 도구이지 관문이 아니다 — 건너뛰면 무엇을 잃는지 1줄로만 알린다.
 - **확인은 한 번**: 단계마다 묻지 않는다. 프레임워크 조합·칸 채우기는 합리적 기본값으로 바로 진행하고 고른 기본값을 한 줄로 밝힌다. 사용자 확인은 ④ 직후 기획안 1회뿐.
@@ -177,7 +165,7 @@ jc-strategy-canvas/
 - **검증은 위임**: 결론의 견고성은 자체 채점하지 말고 `jc-redteam`으로(④→⑤).
 - **본령은 사고 구조화**: 산문 문서가 주가 되면 jc-doc-coauthor, 슬라이드가 주가 되면 jc-pptx로 — 잘못 트리거된 것.
 
-## 10. 버전 히스토리
+## 9. 버전 히스토리
 
 | 버전 | 일자 | 변경 |
 |------|------|------|
@@ -187,4 +175,6 @@ jc-strategy-canvas/
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): 트리거 정리 — bare '전략'·'시장 규모'·'경쟁 구도' 제거, '시장 규모 산정(TAM/SAM/SOM)'·'경쟁 구도 판단(5 Forces)'·'진입 매력도'·'신사업/진입 GO/NO-GO' 추가, mice-market-intel·mice-rfp-analyzer와 대칭 경계(규모·경쟁·환경 분석·응찰 SWOT/GO/NO-GO). §2 호출표 삭제·§ 번호 재정렬.
+  수신 매핑에 market-intel `competitor_tier`→F2·`whitespace_candidates`→F5와 mice-aftermath(`cases`·`performance`) 행 추가, 캔버스 스펙 잔재 토막 삭제.
 - v1.1.0 (2026-10-05): 캔버스 룩을 네이비 헤더·서체 3종 → 리멤버 웜 페이퍼·Pretendard 단일(토큰 런타임 로드, 로고 슬롯)로 교체. 사라진 chaining-protocol §8 '자율 채택' 등재 참조를 §3 enum 정식 등재로 교정하고 폐합 스킬 라우팅을 jc-pptx로 정리. 단계별 확인 → 기획안 1회 확인, RULE-NO-COMPANY v2 반영.
