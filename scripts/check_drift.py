@@ -6,7 +6,7 @@ R1 정합화에서 consumer 스킬로부터 제거한 '비-canon' 디자인 토�
 라이브 코드값으로 유입됐는지 검사한다. 주석(/* */, //)·교정이력·문서 설명은 무시하고
 실제 적용되는 값만 본다. 드리프트 발견 시 비-0 으로 종료(CI 실패).
 
-대상: .claude/skills/<consumer>/  (infographic-patterns.md 제외 — 매체별 스케일/히트맵은 R1 범위 밖)
+대상: .claude/skills/<라이브 스킬>/ 전부 (SoT 자신·메타 스킬 제외, 동적 탐색 — 2026-10-09)
 사용: python3 scripts/check_drift.py        (정합 검사)
       python3 scripts/check_drift.py --selftest  (탐지기 자체 검증)
 """
@@ -18,11 +18,12 @@ import sys
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 SKILLS = REPO / ".claude" / "skills"
-CONSUMERS = ["mice-estimate", "pt-script", "mice-dashboard", "mice-sponsor-deck", "mice-proposal",
-             # 프리셋 개조로 추가된 디자인 토큰 소비/임베드 스킬 (회귀 방지 확장)
-             "jc-theme-factory", "jc-brand-styling", "jc-visual-philosophy", "jc-generative-art",
-             # forge 인테이크 신규 (전략 캔버스 HTML · 리서치 리포트 — 디자인 토큰 소비)
-             "jc-strategy-canvas", "mice-market-intel"]
+# 검사 대상 = .claude/skills 아래 라이브 스킬 전부(SoT 자신과 디자인 비소비 스킬 제외).
+# 2026-10-09 교통정리: 하드코딩 목록(폐합 스킬 포함) → 동적 탐색으로 교체. 폐합 스킬은 폴더가 없으므로 자동 제외.
+NON_CONSUMERS = {"jc-design-system",   # SoT 자신 (legacy-jc 오버레이 값 보유)
+                 "jc-skill-forge", "jc-session-protocol", "jc-slack-relay"}  # 디자인 값을 산출물에 쓰지 않는 메타·운영 스킬
+CONSUMERS = sorted(d.name for d in SKILLS.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
+                   and d.name not in NON_CONSUMERS) if SKILLS.exists() else []
 EXCLUDE_NAMES = set()  # (구) infographic-patterns.md 는 C에서 SoT §1.8 스케일로 정합 → 이제 검사 대상
 SCAN_SUFFIXES = {".md", ".html", ".css", ".js", ".py"}
 
