@@ -1,8 +1,14 @@
 # Upstream Machinery — 상위 skill-creator 평가 기계 포인터
 
-Anthropic 공식 `skill-creator`(claude.ai 예제 스킬 / anthropics/skills 레포)에는 스킬 평가 기계가 있다. 복제하지 말고 **설치돼 있을 때만** 호출한다. 이 PC의 Code 세션에는 기본 설치돼 있지 않다(2026-09-21) — 필요하면 anthropics/skills에서 받아 `~/.claude/skills/skill-creator`에 둔다.
+Anthropic 공식 `skill-creator`(claude.ai 예제 스킬 / anthropics/skills 레포)에는 스킬 평가 기계가 있다. 복제하지 말고 찾은 위치에서 호출한다. 스킬 제작·개선 자체는 `jc-skill-forge`가 맡고 skill-creator는 평가 기계로만 쓴다.
+
+현재 claude.ai 동기화본 `~/.claude/skills/synced/*/skill-creator/`에 있다(2026-10-09 확인 — 약 10분마다 갱신, 편집 금지).
+
+**탐색 순서**: ① `~/.claude/skills/skill-creator`(개인 설치, 우선) → ② `~/.claude/skills/synced/*/skill-creator/`(claude.ai 동기화본) → ③ 둘 다 없으면 anthropics/skills에서 받아 ①에 둔다.
 
 ## 무엇이 있나
+
+아래 경로는 위 탐색 순서로 찾은 `skill-creator/` 폴더 기준이다.
 
 | 자원 | 용도 |
 |------|------|

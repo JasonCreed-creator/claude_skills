@@ -32,7 +32,8 @@
 ## 2. 편집 (① 소스 반영)
 
 - 정본: `C:\.Claude\Code\claude_skills\.claude\skills\<name>\`. 브랜치는 사용자 방식(기본 `main` 또는 작업 브랜치).
-- 변경 전 `_archive\<YYYYMMDD>\<name>\`에 원본 복사 후 바로 수정한다(되돌릴 수 있는 작업 — 단계별 확인 없음). 폐합도 아카이브로 이동.
+- 변경 전 `_archive\<YYYYMMDD>\<name>\`(로컬 롤백 백업 — gitignore, 커밋 안 됨)에 원본 복사 후 바로 수정한다(되돌릴 수 있는 작업 — 단계별 확인 없음).
+- 폐합(ARCHIVE)은 `_archive`가 아니라 git 보관소로: `git mv .claude/skills/<name> archive/skills/<name>` + `lint_skills.py` LIVE/ARCHIVED 갱신 + `archive/README.md` 후속 매핑 행 + `jc-design-system/references/chaining-protocol.md` §3 enum·§3-1 별칭·§7 ALIASES(같은 커밋, 커밋은 사용자).
 - `version` 범프 + SKILL.md `## 변경 이력` 1항(3줄 이내).
 
 ## 3. 검증
@@ -65,7 +66,7 @@ python .claude/skills/jc-skill-forge/scripts/build_skills.py --src <스킬 모�
 
 forge는 아래 안내와 파일 경로만 낸다.
 1. claude.ai → Settings → Capabilities(Skills) → 기존 동명 스킬 **삭제** → `dist\skills\<name>.skill` 업로드.
-2. 폐합 스킬(`_archive` 목록)도 같은 화면에서 삭제해야 synced 목록·Cowork에서 사라진다.
+2. 폐합 스킬(`lint_skills.py` ARCHIVED 집합 = `archive/skills/`)도 같은 화면에서 삭제해야 synced 목록·Cowork에서 사라진다.
 3. 약 10분 뒤 `~/.claude/skills/synced/…/manifest.json`에서 버전 반영을 확인. Cowork는 다음 세션부터.
 
 ## 6. Claude Code 로컬 설치 (② — 승인 후)
@@ -77,10 +78,11 @@ python .claude/skills/jc-skill-forge/scripts/install_local.py --uninstall
 ```
 - 정션(`mklink /J`)이면 레포 편집이 즉시 반영된다. 복사면 재설치 필요.
 - 2026-10-03 기준 Code 로컬 설치는 0종(synced만 있음). claude.ai 업로드가 끝나 synced가 최신이면 설치하지 않아도 된다.
+- 잔존 정리(사용자): 사용자 PC에 구 `/skillupgrade` 커맨드(`.claude/commands/skillupgrade.md`·`~/.claude/commands/skillupgrade.md`)가 남아 있으면 삭제. 그 워크플로우는 forge 모드 A로 대체됐고 원본은 `archive/legacy/`에 보관.
 
 ## 7. 문서 갱신
 
-- `README.md` 카탈로그(라이브 스킬 표) · `docs/CHANGELOG-<날짜>.md` · `PROGRESS.md` 인테이크 로그.
+- `README.md` 카탈로그(라이브 스킬 표) · `docs/CHANGELOG-<날짜>.md` · `PROGRESS.md`(세션 상태) · `docs/skill-intake-log.md`(모드 A 인테이크 판정의 단일 트래커).
 - 사용자 메모리(`project-skill-library-reorg`·`ref-claude-skill-sync-rules`)와 어긋나면 갱신 제안.
 
 ## 8. 커밋 (사용자)

@@ -1,4 +1,4 @@
-# House Conventions v2.1 — jc·mice 스킬 불변식
+# House Conventions v2.2 — jc·mice 스킬 불변식
 
 모든 라이브 스킬이 지키는 규칙. `scripts/lint_skills.py`가 기계 검사 가능한 항목을 검사한다.
 
@@ -25,7 +25,7 @@ license: Complete terms in LICENSE.txt
 ```
 
 - claude.ai 업로드 허용 필드: `name` `description` `license` `compatibility` `metadata` `allowed-tools`(+ 실측상 `version`·`dependencies` 통과). Code 전용 필드(`user-invocable`·`disable-model-invocation`·`context`·`agent`)는 업로드 실패 → 쓰지 않는다.
-- description 규칙: "다음 상황에서 반드시 이 스킬을 사용할 것 — …" 패턴, 사용자가 실제 칠 법한 한국어 표현을 폭넓게, 인접 스킬과의 경계를 명시. **금지 문구**: 폐지된 게이트 문구("실행 전 … 브리프", [A]/[B]/[C] 범위, "N턴 분할"), 폐합 스킬 이름(`_archive` 목록 — `lint_skills.py`의 `ARCHIVED`).
+- description 규칙: "다음 상황에서 반드시 이 스킬을 사용할 것 — …" 패턴, 사용자가 실제 칠 법한 한국어 표현을 폭넓게, 인접 스킬과의 경계를 명시. **금지 문구**: 폐지된 게이트 문구("실행 전 … 브리프", [A]/[B]/[C] 범위, "N턴 분할"), 폐합 스킬 이름(`lint_skills.py` ARCHIVED 집합 = `archive/skills/`).
 - 본문에 "when to use"를 넣지 않는다 — 전부 description에.
 
 ## 2. SoT 앵커 (값 미러 금지)
@@ -54,17 +54,15 @@ license: Complete terms in LICENSE.txt
 - 검증 → `jc-redteam`. 세션·턴·서브에이전트 → `jc-session-protocol`. 데이터 봉투 → `ChainPayload/v1`. 디자인 → `jc-design-system`. Slack → `mice-slack-ops`.
 - 새 스킬이 다른 스킬 기능을 반복하면 MERGE 검토가 먼저.
 
-## 6.1 진행 방식 (게이트)
+## 6.1 진행 방식 — 정본 포인터
 
-- 기본 흐름: **기획안(구성·핵심 메시지) 1회 확인 → 빌드 → 검수(jc-redteam)**. 확인은 고밀도 산출물에만 1회.
-- 되돌릴 수 있는 작업(초안·파일·분석)은 합리적 기본값으로 바로 진행하고, 고른 기본값을 한 줄로 밝힌다. 단계마다 묻지 않는다.
-- 되돌릴 수 없는 작업(외부 발송·게시·삭제·배포·결제)만 승인 후 진행.
-- 폐지: 3턴 분할, [A]/[B]/[C] 범위 게이트, "실행 전 브리프" 게이트.
+- `jc-session-protocol/SKILL.md` §3 준수(정본 — 여기서는 재기재하지 않는다).
+- 폐지 게이트 문구는 description·본문 모두 금지(§1, 린트 검사).
 
 ## 6.2 표기
 
 - 호칭: 사용자 "기획자님", 조직 직함 "팀장"("리더"·"팀리드" 금지).
-- 모델: Opus 5.5(기본) / Sonnet 5.5(정리·가공) / Haiku 4.5(단순 추출·변환) / Fable 5.1(최고난도·장시간). ID `claude-opus-5-5` · `claude-sonnet-5-5` · `claude-haiku-4-5-20251001` · `claude-fable-5-1`. 구 모델명·ID 금지.
+- 모델: 정본 `jc-session-protocol/SKILL.md` §5(계열명·ID), 재기재 금지. 구 모델명·ID는 린트 ERROR.
 - 이미지·영상 생성은 Higgsfield(연결돼 있을 때). 문서 기본 산출은 Claude Docs.
 
 ## 7. 스크립트
@@ -87,6 +85,6 @@ license: Complete terms in LICENSE.txt
 - [ ] 리멤버 명의·주입 슬롯, M&C 0
 - [ ] 생태계 연결 명시(검증·세션·봉투·디자인)
 - [ ] SKILL.md 500줄 미만, 반복 작업은 scripts/, 자가 테스트 통과
-- [ ] 게이트: 기획안 1회 확인만, 되돌릴 수 없는 작업만 승인 · 호칭 '팀장' · 현행 모델명
+- [ ] 진행 규약: jc-session-protocol §3 준수 · 호칭(사용자 '기획자님', 직함 '팀장') · 모델명은 jc-session-protocol §5 기준
 - [ ] `python scripts/lint_skills.py <스킬폴더>` ERROR 0 · 변경 이력 1항 · README 카탈로그 갱신
 - [ ] 배포 보고는 ①소스 반영 ②Code 설치 ③claude.ai 업로드를 따로(③은 사용자 몫, `.skill` ZIP만)

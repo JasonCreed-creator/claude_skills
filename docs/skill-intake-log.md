@@ -1,6 +1,6 @@
 # 스킬 인테이크 로그 (forge)
 
-`jc-skill-forge` / `/skillupgrade` 워크플로우의 단일 트래커. 외부 생태계 대조 → 판정 → 적용 결과를 날짜·소스·결정·근거로 누적한다. (프리셋 개조 프로그램은 `preset-optimization-roadmap.md` 별도.)
+`jc-skill-forge` 모드 A(인테이크) 워크플로우의 단일 트래커(구 `/skillupgrade` 커맨드는 `archive/legacy/`로 이관 — 2026-10-09). 외부 생태계 대조 → 판정 → 적용 결과를 날짜·소스·결정·근거로 누적한다. (프리셋 개조 프로그램은 `preset-optimization-roadmap.md` 별도.)
 
 범례: 🆕 NEW · ⬆️ UPGRADE · 🔀 MERGE · ♻️ REPLACE · ⛔ SKIP
 

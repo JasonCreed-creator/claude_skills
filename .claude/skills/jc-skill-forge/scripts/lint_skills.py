@@ -12,6 +12,8 @@
   호칭       : "리더"·"팀리드" → "팀장" (리더십 제외, ERROR)
   구 시그니처: #0A2540 · #2962FF 하드코딩 (legacy 문맥 제외 ERROR)
   깨진 경로  : md 링크·백틱 경로(references/·scripts/·assets/·<스킬>/…)가 실재하지 않음 (WARN)
+  체이닝 분류: LIVE ⊆ jc-design-system chaining-protocol.md §3(enum + 봉투 비대상 줄), §3에 라이브 아닌 ID (WARN)
+               jc-design-system·jc-skill-forge를 검사할 때만, 파일을 못 찾으면 건너뜀
   스크립트   : .py 컴파일 · SKILL.md 500줄 상한
 이력 문맥: '변경 이력'·'legacy'·'아카이브' 제목 아래, 또는 줄에 이력 표지(흡수·구 ·폐지·금지·legacy·→ 등)가 있으면 면제.
 
@@ -38,7 +40,7 @@ ALLOWED_FIELDS = {"name", "description", "license", "compatibility", "metadata",
 DESC_MAX = 1024
 SKILL_MAX_LINES = 500
 
-# 라이브 스킬 (2026-10-05). 새 스킬을 만들면 여기에 추가한다.
+# 라이브 스킬 (2026-10-05). 새 스킬을 만들면 여기에 추가하고, 같은 커밋에서 chaining-protocol.md §3에도 분류한다.
 LIVE = {
     "jc-design-system", "jc-skill-forge", "jc-session-protocol", "jc-redteam", "jc-pptx", "jc-kv-guide",
     "jc-doc-coauthor", "pt-script", "mice-rfp-analyzer", "jc-strategy-canvas", "mice-market-intel",
@@ -47,7 +49,7 @@ LIVE = {
 }
 # 자가 테스트 픽스처 이름 (없는 스킬 경고에서 제외)
 FIXTURES = {"jc-demo", "jc-good", "jc-bad"}
-# 폐합 스킬 — `_archive` 목록
+# 폐합 스킬 — git 보관소 `archive/skills/` (로컬 롤백 백업 `_archive/`와 다름)
 ARCHIVED = {
     "mice-sponsor-deck", "mice-proposal", "jc-prompt-builder", "jc-orchestrator", "jc-workspace-ops",
     "jc-skill-creator", "jc-theme-factory", "jc-brand-styling", "jc-remember-html", "jc-comms",
@@ -56,12 +58,18 @@ ARCHIVED = {
     "mice-weekly-performance",
 }
 
+# 현행 모델 라인업 — 정본 jc-session-protocol/SKILL.md §5. 라인업이 바뀌면 이 상수도 같은 커밋에서 갱신.
+CURRENT_MODELS = "Opus 5.5 / Sonnet 5.5 / Haiku 4.5 / Fable 5.1"
+# 체이닝 enum 정본 (스킬 모음 폴더 기준 상대 경로)
+CHAINING_DOC = Path("jc-design-system") / "references" / "chaining-protocol.md"
+CHAINING_ID = re.compile(r"`((?:jc|mice|pt)-[a-z][a-z0-9-]*[a-z0-9])`")
+
 # (정규식, 사유, 심각도) — 본문 줄 단위. 이력 문맥이면 면제.
 LINE_RULES = [
     (re.compile(r"실행\s*전\s*\(?\s*(jc-prompt-builder)?\s*\)?\s*브리프"), "폐지된 '실행 전 브리프' 게이트", "ERROR"),
     (re.compile(r"\[A\]\s*/?\s*\[B\]|\[B\]\s*/?\s*\[C\]|범위\s*\[[ABC]\]"), "폐지된 [A]/[B]/[C] 범위 게이트", "ERROR"),
     (re.compile(r"(?<![0-9A-Za-z.])\d턴"), "폐지된 'N턴' 분할 표기 → 기획안 1회 확인 → 빌드 → 검수", "ERROR"),
-    (re.compile(r"claude-(?:opus|sonnet)-4|claude-3[-.]|\b(?:Opus|Sonnet)\s*4(?:\.\d+)?\b"), "구 모델 ID/명칭 → Opus 5.5 / Sonnet 5.5 / Haiku 4.5 / Fable 5.1", "ERROR"),
+    (re.compile(r"claude-(?:opus|sonnet)-4|claude-3[-.]|\b(?:Opus|Sonnet)\s*4(?:\.\d+)?\b"), f"구 모델 ID/명칭 → {CURRENT_MODELS}", "ERROR"),
     (re.compile(r"리더(?!십)|팀리드"), "호칭 '리더'·'팀리드' → '팀장'", "ERROR"),
     (re.compile(r"(?<![0-9A-Fa-f])(?:0A2540|2962FF)(?![0-9A-Fa-f])", re.I), "구 jc 시그니처 HEX 하드코딩 → 리멤버 토큰(jc-design-system)", "ERROR"),
     (re.compile(r"/mnt/skills|/mnt/user-data"), "claude.ai 샌드박스 경로 — Windows Code에서 무효", "ERROR"),
@@ -196,6 +204,26 @@ def lint_skill(d: Path, issues: list, known: set | None = None) -> None:
                 issues.append(("ERROR", name, f"{rel} 컴파일 실패: {e}"))
 
 
+def chaining_ids(doc: Path) -> set | None:
+    """chaining-protocol.md §3(표 + 봉투 비대상 줄, §3-1 별칭 전까지)의 스킬 ID 집합. 없으면 None."""
+    if not doc.is_file():
+        return None
+    t = doc.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r"^## 3\..*?$(.*?)^(?:### 3-1|## 4\.)", t, re.S | re.M)
+    return set(CHAINING_ID.findall(m.group(1))) if m else None
+
+
+def check_chaining(root: Path, issues: list) -> None:
+    """LIVE ⊆ §3 분류 · §3 ⊆ LIVE 대조(WARN). 파일을 못 찾으면 건너뛴다."""
+    ids = chaining_ids(root / CHAINING_DOC)
+    if ids is None:
+        return
+    for s in sorted(LIVE - ids):
+        issues.append(("WARN", "jc-design-system", f"chaining-protocol.md §3에 라이브 스킬 '{s}' 분류 없음 → enum 행 또는 봉투 비대상 줄에 추가"))
+    for s in sorted(ids - LIVE - FIXTURES):
+        issues.append(("WARN", "jc-design-system", f"chaining-protocol.md §3에 라이브가 아닌 '{s}' → §3-1 별칭으로 옮기거나 삭제"))
+
+
 def collect(paths: list, only: set | None, excl: set) -> list:
     dirs: list = []
     if paths:
@@ -215,6 +243,9 @@ def run(dirs: list, strict: bool, quiet: bool = False) -> tuple:
     for d in dirs:
         siblings = {c.name for c in d.parent.iterdir() if (c / "SKILL.md").is_file()}
         lint_skill(d, issues, siblings - ARCHIVED)
+    owners = [d for d in dirs if d.name in ("jc-design-system", "jc-skill-forge")]
+    if owners:
+        check_chaining(owners[0].parent, issues)
     errs = [i for i in issues if i[0] == "ERROR"]; warns = [i for i in issues if i[0] == "WARN"]
     bad = bool(errs) or (strict and bool(warns))
     if not quiet:
@@ -243,6 +274,13 @@ def self_test() -> int:
             "헤더 색 #0A2540, 강조 2962FF.\n대시보드는 jc-asana-html.\n보조는 jc-nonexistent-skill.\n상세 `references/missing.md`.\n",
             encoding="utf-8")
         (bad / "x.py").write_text("def broken(:\n", encoding="utf-8")
+        cp = root / CHAINING_DOC; cp.parent.mkdir(parents=True)
+        cp.write_text("# x\n## 3. enum\n| 단계 | `jc-pptx` · `mice-gone` |\n\n### 3-1. 별칭\n| `mice-proposal` | `jc-pptx` |\n", encoding="utf-8")
+        iss_ch: list = []
+        check_chaining(root, iss_ch)
+        ch_msgs = " | ".join(m for _, _, m in iss_ch)
+        iss_none: list = []
+        check_chaining(root / "nowhere", iss_none)
         rc_good, iss_good = run([good], strict=True, quiet=True)
         rc_bad, iss_bad = run([bad], strict=False, quiet=True)
         msgs = " | ".join(m for _, _, m in iss_bad)
@@ -259,6 +297,10 @@ def self_test() -> int:
             ("없는 스킬", "없는 스킬 'jc-nonexistent-skill'" in msgs),
             ("깨진 경로", "references/missing.md" in msgs),
             ("py 컴파일", "x.py 컴파일 실패" in msgs),
+            ("구 모델 메시지 = CURRENT_MODELS", CURRENT_MODELS in msgs),
+            ("체이닝 §3 분류 누락", "'jc-redteam' 분류 없음" in ch_msgs and "'jc-pptx' 분류 없음" not in ch_msgs),
+            ("체이닝 §3 비라이브 ID", "'mice-gone'" in ch_msgs and "'mice-proposal'" not in ch_msgs),
+            ("체이닝 문서 없음 → 건너뜀", not iss_none),
         ]
         for label, passed in cases:
             print(f"  {'OK ' if passed else 'FAIL'} {label}")
