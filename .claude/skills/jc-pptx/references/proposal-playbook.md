@@ -4,13 +4,19 @@
 
 ---
 
-## 1. 입력 감지 — 3단계 분기 (재분석 금지)
+## 1. 입력 감지 — 3단계 분기 + 상류 보강 (재분석 금지)
 
 | 수준 | 상태 | 출발점 |
 |------|------|--------|
 | **Full** | `mice-rfp-analyzer` ChainPayload(분석 보고서·평가 매트릭스·GO) 있음 | RFP 재분석 금지. `requirements`→요건 태깅(MANDATORY/WEIGHTED/NICE), `evaluation_focus`→배점 가중치, `differentiation_points`→승부 메시지 근거, `proposal_structure_hint.page_allocation`→분량 초안. `risk_notes_for_negotiation`은 본문 노출 금지 |
 | **Partial** | RFP 원문만, 또는 `mice-meeting-minutes` Discovery 데이터만 | 핵심 정보(행사명·발주처·유형·일시/장소·규모·예산·**배점표**·필수 요구·제출 조건)를 추출해 분석 요약을 1회 확인. GO 판단이 필요하면 rfp-analyzer 선행 권유(강제 아님) |
 | **Zero** | 구두 요청만 | 골격을 좌우하는 것(행사 유형·규모·평가 방식·마감)만 최소 질문. 모르는 항목은 슬라이드에 `[확인 필요]` |
+| **보강** | `mice-estimate` 봉투(`totalAmount`·`totalAmountVat`·`sections`) 있음 | ⑦ 예산(T09)·DS 09 견적 요약 자동 채움 — 총액은 `kpi()`(VAT 별도/포함 캡션), `sections` 키별 금액은 표 행. 금액은 봉투 값 그대로 옮긴다(§5-3 숫자 정합). 없으면 ⑦은 `[견적 확정 후 반영]` |
+| **보강** | `jc-strategy-canvas` 봉투(`recommendation`·`key_messages`·`differentiation_axes`) 있음 | `recommendation.headline`·`key_messages` → 원 메시지(§2-2) 후보, `differentiation_axes` → 차별화(§2-3) 근거 축. `evidence_flags`의 가설·추정 비중이 높으면 단정 표현을 피한다 |
+| **보강** | `mice-market-intel` 봉투(`market_size`·`competitors`·`trends`) 있음 | ② 배경·시장 슬라이드(T05·T10) — 수치마다 출처·기준일(`scope.as_of`·`sources[].date`) 캡션 병기. `competitors`는 내부 배틀카드(§2-3)로만, `gaps` 항목은 `[확인 필요]`. `sponsor_candidates`는 스폰서 덱(`sponsor-deck.md §1`) |
+| **보강** | `mice-aftermath` 봉투(`cases`·`performance`) 있음 | ⑥ 유사 실적·수행실적(T11·T05) — `reuse_tier`에 R1이 있는 케이스, `anonymize` 플래그 존중(동의 없으면 가명). R2 케이스는 스폰서 덱(`sponsor-deck.md §5`), 결과보고 덱은 `performance.kpis` → KPI(T05) |
+
+보강 행은 Full·Partial·Zero 어느 수준에도 겹쳐 적용한다. 봉투 판별·무변경 승계는 `jc-design-system/references/chaining-protocol.md §6~§7`.
 
 ## 2. 설득 설계 (슬라이드 생성 전 완료)
 
@@ -43,7 +49,7 @@
 | 컨퍼런스·포럼 | 콘셉트·프로그램(연사·세션·통역) + 타깃 모객 |
 | 기업행사(고객 초청·어프리시에이션) | 크리에이티브·KPI(브랜드 가이드·임원 동선·관계 시간) |
 | 인센티브·워크숍 | 프로그램·연출(참가자 경험·F&B) |
-| 공공 위탁(국가계약) | 대응형 목차 그대로 + 안전·정산·산출내역서(`mice-estimate` 공공형) |
+| 공공 위탁(국가계약) | 대응형 목차 그대로 + 안전·정산·산출내역서(`mice-estimate` 리멤버 양식 — 발주 서식 항목명·합계 구조만 맞춤) |
 
 ### 3.2 다크 슬라이드 배분
 표지 · 섹션 구분(2~4회) · 클로징. 그 외 다크는 KPI 강조 1장까지. 전체 30% 이하.
@@ -71,13 +77,23 @@
 {
   "$schema": "ChainPayload/v1", "source": "jc-pptx", "version": "<SKILL.md version>",
   "generatedAt": "…", "target": "mice-estimate", "clientId": "…", "projectTitle": "…",
-  "deck_meta": { "purpose": "proposal|intro|report", "slides": 51, "storyline": "response", "density": "CUSTOM" },
+  "deck_meta": { "purpose": "proposal|sponsor|intro|report", "slides": 51, "storyline": "response", "density": "CUSTOM" },
   "sections": [ { "id": "03", "title": "운영 계획", "slides": [12, 24] } ],
   "coverage_map": [ { "rfp_item": "운영 계획(30점)", "slides": [12, 13, 18] } ],
-  "estimate_hint": { "eventScale": 250, "venue": "{{venue}}", "options": ["led", "photowall"], "guarantee": null },
+  "client": "{{client_company}}", "eventDate": "2026-06-18",
+  "eventScale": { "target": 250, "guarantee": 225 },
+  "venue": { "type": "5star", "region": "{{region}}", "name": "{{venue}}", "rental": null },
+  "options": { "video": false, "emcee": true, "souvenir": false, "scaler4k": false, "survey": false,
+               "photowall_basic": true, "photowall_premium": false, "photo": false, "aving": false },
+  "displayType": "led", "boothCount": 0, "format": "remember",
   "presentation": { "minutes": 15, "tone": "formal" }
 }
 ```
 
-- `estimate_hint` → `mice-estimate` 자동 산출 입력. `presentation`(`minutes`·`tone`·선택 `presenter`·`audience`) → `pt-script`가 읽어 발표 시간·톤을 채운다.
+- **견적 입력 키(`estimate_hint`로 불러 온 묶음)** — `eventScale`·`venue`·`options`·`displayType`·`boothCount`·`eventDate`·`client`를 봉투 최상위에 평탄하게 싣는다. 중첩 객체(`"estimate_hint": {…}`)로 감싸지 않는다 — `mice-estimate`는 최상위 키만 읽는다(정본 `mice-estimate/references/chaining-schema.md §2` 입력 스키마).
+  - `eventScale.guarantee`는 모객 개런티 인원(없으면 `null` → target과 같게 처리). `venue.rental`은 확정 대관료(원), 미정이면 `null`(자동 산출).
+  - `options`는 불리언 맵 — 위 9키만 쓴다. 문자열 배열(`["led", …]`) 금지. LED·프로젝터는 옵션이 아니라 `displayType`(`led`|`projector`), 포토월은 `photowall_basic`/`photowall_premium`.
+  - `format`은 항상 `remember`(양식 단일). 미정 값은 `null` — `venue: null`이면 대관료 자동 산출, `options: null`이면 옵션 전부 미적용으로 처리된다.
+  - mice-estimate가 `source: "jc-pptx"`를 아직 자동 감지하지 못하면 봉투 파일을 주며 "이 봉투로 견적 산출"을 명시 요청한다(키 구조는 같다).
+- `presentation`(`minutes`·`tone`·선택 `type`·`presenter`·`audience`) → `pt-script`가 읽어 발표 시간·톤을 채운다. `presentation.minutes`·`sections`는 `mice-run-of-show`가 발표 블록 시간·순서 참고로 읽는다(프로그램 세그먼트 배열은 내지 않는다).
 - 수신 측은 `source: "mice-proposal"`을 본 스킬 별칭으로 취급한다(하위호환).

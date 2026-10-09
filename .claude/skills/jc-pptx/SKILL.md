@@ -1,7 +1,7 @@
 ---
 name: jc-pptx
-description: 리멤버 MICE비즈팀의 PPTX 산출물 전부 — 발주처 제안서(RFP·비딩 대응), 리멤버 MICE 솔루션 소개서, 발표덱, 결과보고 덱 — 를 리멤버 웜 페이퍼 룩으로 구성·빌드·검수하는 단일 프레젠테이션 엔진. 실측 문법(주장형 헤드라인·네비게이션·KPI·구조 도해·16종 슬라이드 타입)과 제안서 설득 설계(배점 역설계·원 메시지·근거 있는 차별화)를 내재하고, python-pptx deck_kit으로 Claude Design DS 슬라이드 템플릿 10종과 같은 지오메트리를 빌드한다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'PPT', 'PPTX', '슬라이드', '데크', '장표', '발표자료', '제안서', '소개서', '비딩 자료', 'PT 자료', '피티', '프레젠테이션', '이걸로 PPT 구성해줘', '장표로 만들어줘', '제안서 써줘', '기존 PPT 리멤버 톤으로 바꿔줘', '리스킨'을 언급할 때. RFP·추진계획·회의록·기획 메모를 주며 덱을 요청할 때. 기본 pptx 스킬 대신 본 스킬을 우선 사용한다(기본 pptx는 빌드 기계로만 참조). 형제 경계 — 디자인 토큰 값은 jc-design-system(읽기만), RFP 7축 분석·GO/NO-GO는 mice-rfp-analyzer(상류), 견적 xlsx는 mice-estimate, 발표 대본은 pt-script(하류), 운영계획서·결과보고서 문서는 mice-ops-docs, 완성 덱의 적대 검증은 jc-redteam. HTML 슬라이드·랜딩은 본 스킬 밖.
-version: "v2.1.0"
+description: 리멤버 MICE비즈팀의 PPTX 산출물 전부 — 발주처 제안서(RFP·비딩 대응), 스폰서·협찬 제안 덱, 리멤버 MICE 솔루션 소개서, 발표덱, 결과보고 덱 — 를 리멤버 웜 페이퍼 룩으로 구성·빌드·검수하는 단일 프레젠테이션 엔진. 실측 문법(주장형 헤드라인·네비게이션·KPI·구조 도해·16종 슬라이드 타입)과 설득 설계(배점 역설계·원 메시지·근거 있는 차별화·스폰서 Tier·ROI 케이스)를 내재하고, python-pptx deck_kit으로 Claude Design DS 슬라이드 템플릿 10종과 같은 지오메트리를 빌드한다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'PPT', 'PPTX', '슬라이드', '데크', '장표', '발표자료', '제안서', '소개서', '비딩 자료', 'PT 자료', '피티 자료', '프레젠테이션', '스폰서 제안서', '협찬 제안서', '스폰서십 데크', '후원 제안', '이걸로 PPT 구성해줘', '장표로 만들어줘', '제안서 써줘', '기존 PPT 리멤버 톤으로 바꿔줘', '리스킨'을 언급할 때. RFP·추진계획·회의록·기획 메모를 주며 덱을 요청할 때. 기본 pptx 스킬 대신 본 스킬을 우선 사용한다(기본 pptx는 빌드 기계로만 참조). 형제 경계 — 디자인 토큰 값은 jc-design-system(읽기만), RFP 7축 분석·GO/NO-GO는 mice-rfp-analyzer(상류), 견적 xlsx는 mice-estimate, 발표 대본·프레젠테이션 스크립트는 pt-script(하류), 운영계획서·KPI 대시보드는 mice-ops-docs, 결과보고서 문서·레퍼런스 케이스는 mice-aftermath, 완성 덱의 적대 검증은 jc-redteam. HTML 슬라이드·랜딩은 본 스킬 밖.
+version: "v2.2.0"
 ---
 
 # JC PPTX v2 — 리멤버 프레젠테이션 엔진
@@ -18,9 +18,10 @@ version: "v2.1.0"
 | 용도 | 스토리라인 | 참조 |
 |------|-----------|------|
 | **발주처 제안서** (RFP·비딩·위탁) | 대응형 — 배점표가 목차의 상위 규칙 | `references/proposal-playbook.md` |
+| **스폰서·협찬 제안 덱** (스폰서 유치) | 설득형 + Tier 패키지·혜택·ROI 케이스 | `references/sponsor-deck.md` |
 | **리멤버 솔루션 소개서** (세일즈) | 설득형 — 문제→자격→구조→가치→논증→클로징 | `scripts/examples/build_deck2.py`(2026-09 실증 34장) |
 | **발표덱·경영진 보고** | 보고형 — 결론 선행 | `references/design-language.md §3` |
-| **결과보고 덱** | 보고형 + KPI | `mice-ops-docs` 결과보고 ChainPayload 수용 |
+| **결과보고 덱** | 보고형 + KPI | `mice-aftermath` 결과보고 ChainPayload(`event`·`performance`·`cases`) 수용 — KPI 원천은 `mice-ops-docs` 경유 |
 | **기존 PPTX 리스킨** | 서식만 교체 | `scripts/restyle_pptx.py` |
 
 ## 워크플로우 (기획안 1회 확인 → 빌드 → 검수)
@@ -28,8 +29,8 @@ version: "v2.1.0"
 되돌릴 수 있는 작업(구성안·초안 파일·분석)은 합리적 기본값으로 바로 진행하고, 고른 기본값을 한 줄로 밝힌다. 사용자 확인은 기획안 1회뿐이다. 외부 발송·게시는 승인 후.
 
 ### ① 기획안 — 1회 확인 (파일 생성 전)
-1. **인테이크**: 프로젝트명 / 용도 / 청중 / 콘텐츠 소스 / 발주처 슬롯(로고·표지 이미지·푸터 행사명). 누락은 추론으로 채우고 '가정' 표기(되묻지 않는다). ChainPayload(`mice-rfp-analyzer`·`mice-meeting-minutes`)가 있으면 재분석하지 않는다.
-2. **제안서면 설득 설계 먼저**: 배점 역설계 → 커버리지 매핑표 → 원 메시지 → 근거 있는 차별화 → 발주처 언어 미러링 → 리스크 선제 응답 (`proposal-playbook.md §2`).
+1. **인테이크**: 프로젝트명 / 용도 / 청중 / 콘텐츠 소스 / 발주처 슬롯(로고·표지 이미지·푸터 행사명). 누락은 추론으로 채우고 '가정' 표기(되묻지 않는다). ChainPayload(아래 생태계 연결의 상류 — 키→슬라이드 매핑은 `proposal-playbook.md §1`)가 있으면 재분석하지 않는다.
+2. **제안서면 설득 설계 먼저**: 배점 역설계 → 커버리지 매핑표 → 원 메시지 → 근거 있는 차별화 → 발주처 언어 미러링 → 리스크 선제 응답 (`proposal-playbook.md §2`). 스폰서 덱이면 청중 프로파일 → Tier·혜택 매트릭스 → ROI 케이스 (`sponsor-deck.md §2~§5`).
 3. **기획안 제시**: 핵심 메시지 1문장 + `[번호 | 타입 T01~T16 | 헤드라인 초안 | 콘텐츠 슬롯]` 표 + 다크 슬라이드 위치(표지·섹션·클로징) + 분량. 헤드라인은 이 단계에서 이미 주장 문장. 구성·핵심 메시지만 한 번 확인받는다(사용자가 "바로 만들어"라고 했으면 확인 없이 진행).
 
 ### ② 빌드
@@ -59,6 +60,7 @@ jc-pptx/
 │   ├── slide-types.md              # 16종 타입 지오메트리 + DS 템플릿 10종 매핑
 │   ├── themes.md                   # remember 기본 프리셋(토큰 매핑) · 명명 프리셋 · 주입 규칙
 │   ├── proposal-playbook.md        # 제안서 설득 설계 · 7섹션 골격 · 유형별 강조 · 완료 게이트 · 체이닝
+│   ├── sponsor-deck.md             # 스폰서·협찬 덱: 청중 프로파일 · Tier · 혜택 카탈로그 · ROI 케이스 · 골격
 │   └── remember-deck-templates.md  # T1~T12 HTML 문법 + DS 슬라이드 01~10 레시피
 ├── scripts/
 │   ├── deck_kit.py                 # 빌드 헬퍼 (그리드·테마·네비·컴포넌트·표지·클로징)
@@ -76,13 +78,15 @@ jc-pptx/
 ## 생태계 연결
 
 - 디자인 정본: `jc-design-system` v2 (`jc-design-system/scripts/jc_tokens.py` 런타임 로드)
-- 상류: `mice-rfp-analyzer`(요건·배점·차별화) · `mice-meeting-minutes`(Discovery 데이터) · `mice-ops-docs`(결과보고)
-- 하류: `mice-estimate`(견적 힌트) · `pt-script`(발표 대본)
+- 상류: `mice-rfp-analyzer`(요건·배점·차별화) · `mice-meeting-minutes`(`discovery_data`·`project_context`·`strategic_notes`) · `jc-strategy-canvas`(`recommendation`·`key_messages`·`differentiation_axes`) · `mice-market-intel`(`market_size`·`competitors`·`trends`·`sponsor_candidates`) · `mice-aftermath`(`cases`·`performance` — R1 수행실적·R2 스폰서 ROI, 결과보고 덱) · `mice-estimate`(`totalAmount`·`sections` → ⑦예산). 매핑은 `proposal-playbook.md §1`
+- 하류: `mice-estimate`(견적 입력 키 `eventScale`·`venue`·`options`) · `pt-script`(`presentation` — 발표 대본) · `mice-run-of-show`(`presentation.minutes`·`sections` 참고)
 - 검증: `jc-redteam` (납품 전 필수)
 - 봉투: `jc-design-system/references/chaining-protocol.md` — source `jc-pptx`, 발표 메타는 `presentation` 키(하류 `pt-script`가 읽음). 구 source `mice-proposal`은 하위호환 별칭
 
 ## 변경 이력
 
+- v2.2.0 (2026-10-09): 스폰서·협찬 제안 덱 역량 신설(`sponsor-deck.md`, 구 스폰서 덱 스킬 방법론 이관)·트리거 추가, '피티'→'피티 자료'. 형제 경계를 mice-ops-docs(운영계획서·KPI)/mice-aftermath(결과보고·케이스)로 정정.
+  상류 수신 매핑(estimate·strategy-canvas·market-intel·aftermath) 추가, 견적 입력 키를 mice-estimate 평탄 스키마로, 공공 산출내역서를 리멤버 양식으로.
 - v2.1.0 (2026-10-05): '3턴' 워크플로우 → '기획안 1회 확인 → 빌드 → 검수'(기본값 진행). 예제 빌더의 '리더' 직함 → '팀장', 구 jc-remember-html 경로 → jc-design-system, 고객사 실명 → 가명(A사 등).
   존재하지 않는 LICENSE.txt 참조 삭제, `python3` → `python`.
 

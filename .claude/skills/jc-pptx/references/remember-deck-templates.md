@@ -19,6 +19,8 @@
 
 ## B. T1~T12 HTML 문법 (구 jc-remember-html v1.0.0 흡수 — 현 정본 jc-design-system)
 
+> HTML 원문은 역사 참조, 빌드는 deck_kit — CSS 스니펫은 모티프 설명용이며 PPTX는 각 항목의 `→ deck_kit` 메서드(없으면 `box()`·`grad()`·`ring()` 조합)로 만든다.
+
 ### T1 · TITLE — 링 모티프 (라이트, 소개서 표지)
 - surface 배경, 우하단 화면 밖으로 잘리는 그라디언트 링(테두리만) + 작은 도트 1개
 - 링: `border-radius:50%; border:26px solid transparent; background: linear-gradient(#FFF,#FFF) padding-box, linear-gradient(135deg,#EB6F2A,#F5A05A) border-box`
