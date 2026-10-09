@@ -4,14 +4,14 @@
 
 ## 1. 계약완료 → 등록·갱신
 
-1. `mice-slack-ops`가 계약완료 메시지를 파싱해 `contract` 페이로드와 `action`(`new | update`)·`matched_row`를 낸다.
+1. `mice-slack-ops`가 계약완료 메시지를 파싱해 `contract` 페이로드와 `action`(`new | update`)·`matched_row`·`status_hint`(`keep | 계약 | 준비`, 기본 `keep`)를 낸다.
 2. `python scripts/board_rows.py payload.json` → 프로젝트 탭 행 값 표(TSV) 확인.
 3. 사용자에게 행 값 표를 보여주고 승인을 받는다.
 4. 입력: PC 세션은 `chrome-ext-recipes.md` 셀 입력, 아니면 사용자가 붙여넣기(TSV는 시트에 그대로 붙는다).
 5. 신규만: 메뉴 "프로젝트 ID 채우기" → "표준 마일스톤 생성" → 배정 탭 영업 3 M/D.
 6. TSV를 `data/프로젝트_등록_YYYY-MM-DD.tsv`(또는 `_갱신_`)로 저장.
 
-갱신일 때 바꾸는 열: B 행사명 · E 상태(`계약` 또는 유지) · L·M · N · O 비고(누적). A·P와 다른 탭은 그대로.
+갱신일 때 바꾸는 열: B 행사명 · E 상태(`status_hint`가 `계약`·`준비`일 때만 — 기본 `keep`이면 빈칸 = 유지) · L·M · N · O 비고(payload `notes`, 누적). A·P와 다른 탭은 그대로.
 
 ### DMS·주최형(③)
 
@@ -28,7 +28,7 @@
 | 완료 | 정산완료 | 정산 탭 마감 |
 | (어디서든) | 드롭 | 사용자 지시. O 비고에 `드롭 M/D: 사유` |
 
-역행(예: 진행 → 준비)은 일정 변경일 때만, 비고에 사유.
+역행(예: 진행 → 준비)은 일정 변경일 때만, 비고에 사유. 계약완료 갱신으로 `준비` 이후 행을 `계약`으로 되돌리지 않는다(`status_hint: keep`).
 
 ## 3. 표준 마일스톤
 
