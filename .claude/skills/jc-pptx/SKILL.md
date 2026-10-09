@@ -1,7 +1,7 @@
 ---
 name: jc-pptx
 description: 리멤버 MICE비즈팀의 PPTX 산출물 전부 — 발주처 제안서(RFP·비딩 대응), 스폰서·협찬 제안 덱, 리멤버 MICE 솔루션 소개서, 발표덱, 결과보고 덱 — 를 리멤버 웜 페이퍼 룩으로 구성·빌드·검수하는 단일 프레젠테이션 엔진. 실측 문법(주장형 헤드라인·네비게이션·KPI·구조 도해·16종 슬라이드 타입)과 설득 설계(배점 역설계·원 메시지·근거 있는 차별화·스폰서 Tier·ROI 케이스)를 내재하고, python-pptx deck_kit으로 Claude Design DS 슬라이드 템플릿 10종과 같은 지오메트리를 빌드한다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 'PPT', 'PPTX', '슬라이드', '데크', '장표', '발표자료', '제안서', '소개서', '비딩 자료', 'PT 자료', '피티 자료', '프레젠테이션', '스폰서 제안서', '협찬 제안서', '스폰서십 데크', '후원 제안', '이걸로 PPT 구성해줘', '장표로 만들어줘', '제안서 써줘', '기존 PPT 리멤버 톤으로 바꿔줘', '리스킨'을 언급할 때. RFP·추진계획·회의록·기획 메모를 주며 덱을 요청할 때. 기본 pptx 스킬 대신 본 스킬을 우선 사용한다(기본 pptx는 빌드 기계로만 참조). 형제 경계 — 디자인 토큰 값은 jc-design-system(읽기만), RFP 7축 분석·GO/NO-GO는 mice-rfp-analyzer(상류), 견적 xlsx는 mice-estimate, 발표 대본·프레젠테이션 스크립트는 pt-script(하류), 운영계획서·KPI 대시보드는 mice-ops-docs, 결과보고서 문서·레퍼런스 케이스는 mice-aftermath, 완성 덱의 적대 검증은 jc-redteam. HTML 슬라이드·랜딩은 본 스킬 밖.
-version: "v2.2.0"
+version: "v2.3.0"
 ---
 
 # JC PPTX v2 — 리멤버 프레젠테이션 엔진
@@ -17,7 +17,7 @@ version: "v2.2.0"
 
 | 용도 | 스토리라인 | 참조 |
 |------|-----------|------|
-| **발주처 제안서** (RFP·비딩·위탁) | 대응형 — 배점표가 목차의 상위 규칙 | `references/proposal-playbook.md` |
+| **발주처 제안서** (RFP·비딩·위탁) | 대응형 — 배점표가 목차의 상위 규칙 | `references/proposal-playbook.md` · `references/proposal-voice.md`(어투·표기·금칙 — 우선) |
 | **스폰서·협찬 제안 덱** (스폰서 유치) | 설득형 + Tier 패키지·혜택·ROI 케이스 | `references/sponsor-deck.md` |
 | **리멤버 솔루션 소개서** (세일즈) | 설득형 — 문제→자격→구조→가치→논증→클로징 | `scripts/examples/build_deck2.py`(2026-09 실증 34장) |
 | **발표덱·경영진 보고** | 보고형 — 결론 선행 | `references/design-language.md §3` |
@@ -31,24 +31,27 @@ version: "v2.2.0"
 ### ① 기획안 — 1회 확인 (파일 생성 전)
 1. **인테이크**: 프로젝트명 / 용도 / 청중 / 콘텐츠 소스 / 발주처 슬롯(로고·표지 이미지·푸터 행사명). 누락은 추론으로 채우고 '가정' 표기(되묻지 않는다). ChainPayload(아래 생태계 연결의 상류 — 키→슬라이드 매핑은 `proposal-playbook.md §1`)가 있으면 재분석하지 않는다.
 2. **제안서면 설득 설계 먼저**: 배점 역설계 → 커버리지 매핑표 → 원 메시지 → 근거 있는 차별화 → 발주처 언어 미러링 → 리스크 선제 응답 (`proposal-playbook.md §2`). 스폰서 덱이면 청중 프로파일 → Tier·혜택 매트릭스 → ROI 케이스 (`sponsor-deck.md §2~§5`).
-3. **기획안 제시**: 핵심 메시지 1문장 + `[번호 | 타입 T01~T16 | 헤드라인 초안 | 콘텐츠 슬롯]` 표 + 다크 슬라이드 위치(표지·섹션·클로징) + 분량. 헤드라인은 이 단계에서 이미 주장 문장. 구성·핵심 메시지만 한 번 확인받는다(사용자가 "바로 만들어"라고 했으면 확인 없이 진행).
+3. **기획안 제시**: 핵심 메시지 1문장 + `[번호 | 타입 T01~T16 | 헤드라인 초안 | 콘텐츠 슬롯]` 표 + 다크 슬라이드 위치(표지·섹션·클로징) + 분량. 헤드라인은 이 단계에서 이미 주장 카피(제안서는 `proposal-voice.md` §3 한국어 어투). 구성·핵심 메시지만 한 번 확인받는다(사용자가 "바로 만들어"라고 했으면 확인 없이 진행).
 
 ### ② 빌드
 4. **테마**: 기본 `remember`(`references/themes.md`). 발주처 슬롯은 `jc-design-system/references/client-overlays.md §1`. 발주처 컬러는 받지 않는다.
 5. **빌드**: `scripts/deck_kit.py` — 그리드 상수·컴포넌트 헬퍼만 사용, 좌표·색 하드코딩 금지. 한글 서체는 `set_font_all`(latin·ea·cs)로. 사진 없으면 `image_placeholder` + 이미지 브리프(임의 스톡 금지, 이미지 생성이 필요하면 Higgsfield).
-6. **자가 검수**: `python scripts/check_deck.py <deck.pptx>` 위반 0까지.
+6. **자가 검수**: `python scripts/check_deck.py <deck.pptx>` 위반 0까지. 제안서는 `--voice proposal`(A4 명사구 검사 대신 어투 V1~V7 + 금칙 수식어 후보).
 
 ### ③ 검수·납품
-7. 렌더 확인(PowerPoint 또는 soffice→PNG) → 시각 결함 수정 → `jc-redteam` 검수(제안서는 `proposal-playbook.md §5` 완료 게이트 6항 포함) → PPTX + PDF 납품. 폰트 미설치 PC 공유는 PDF.
+7. 렌더 확인(PowerPoint 또는 soffice→PNG) → 시각 결함 수정 → `jc-redteam` 검수(제안서는 `proposal-playbook.md §5` 제안서 게이트 10항 포함) → PPTX + PDF 납품. 폰트 미설치 PC 공유는 PDF.
+8. **슬라이드 노트**: 기획안의 발표 메모(핵심 멘트·근거 수치·다음 장 전환 한 줄)를 본문 슬라이드마다 `s.notes_slide.notes_text_frame.text`로 넣는다 — `pt-script`가 speaker 노트(우선순위 1)로 읽는다.
+   이미지 교체·폰트 안내는 메모 뒤 빈 줄 다음에 `■ 이미지 교체 안내`·`■ 폰트 안내`·`[META]` 머리줄로 시작하는 빈 줄 없는 블록으로 붙인다(pt-script가 메타로 걸러낸다).
 
 ## 절대 규칙
 
-- **한 슬라이드 = 한 메시지.** 본문 제목은 주장 문장(명사구 금지), 강조어구는 슬라이드당 1개 오렌지.
+- **한 슬라이드 = 한 메시지.** 본문 제목은 주장을 싣고, 강조어구는 슬라이드당 1개 오렌지. 어투는 용도로 분기 — **제안서(발주처 제출용)** 는 `proposal-voice.md` §3-1 명사형 종결 주장 카피('~제공'·'~구축'·'~설계'), **그 외 덱**(소개서·발표덱·결과보고·스폰서 덱)은 주장 문장(`design-language.md` §2-1). 주장 없는 명사구는 어느 쪽이든 금지.
+- **제안서 어투 우선권**: 제안서의 카피·문체·헤드라인·표기 규칙이 본 SKILL·`proposal-playbook.md`·`design-language.md`와 충돌하면 `proposal-voice.md`가 우선(수주 제안서 10건 증류·블라인드 재채점 통과). 배점 역설계·발주처 권고 목차는 그보다 상위.
 - **네비게이션 전 슬라이드 반복**: 아이브로우(`NN · SECTION`) + 푸터(좌 행사명 · 중앙 페이지 · 우 로고). deck_kit이 자동.
 - **다크는 표지·섹션 구분·클로징만**(덱의 30% 이하). 그라디언트·솔리드 KPI·다크 패널은 슬라이드당 1회.
 - **테마 토큰 외 색 금지.** 오렌지 텍스트는 큰 글자 전용, 작은 강조는 딥 오렌지(RULE-WCAG).
 - **명의·식별정보**: 리멤버 MICE비즈팀 명의 기본, 발주처·담당자는 슬롯 주입. 구 소속사 언급·누적 건수 금지(RULE-NO-COMPANY v2).
-- **안티패턴 8종**(`design-language.md §7`) — check_deck.py가 기계 검수.
+- **안티패턴 8종**(`design-language.md §7`) — check_deck.py가 기계 검수(제안서는 `--voice proposal`).
 
 ## 파일 구조
 
@@ -59,12 +62,13 @@ jc-pptx/
 │   ├── design-language.md          # 문법 SoT: 7원칙·엔진·밀도·카피·안티패턴
 │   ├── slide-types.md              # 16종 타입 지오메트리 + DS 템플릿 10종 매핑
 │   ├── themes.md                   # remember 기본 프리셋(토큰 매핑) · 명명 프리셋 · 주입 규칙
-│   ├── proposal-playbook.md        # 제안서 설득 설계 · 7섹션 골격 · 유형별 강조 · 완료 게이트 · 체이닝
+│   ├── proposal-playbook.md        # 제안서 설득 설계 · 7섹션 골격(순서 규칙) · 유형별 강조 · 제안서 게이트 10항 · 체이닝
+│   ├── proposal-voice.md           # 제안서 어투·번역투 금칙·표기·리스크 화법·금칙 27·홀드아웃 — 카피 규칙 충돌 시 우선
 │   ├── sponsor-deck.md             # 스폰서·협찬 덱: 청중 프로파일 · Tier · 혜택 카탈로그 · ROI 케이스 · 골격
 │   └── remember-deck-templates.md  # T1~T12 HTML 문법 + DS 슬라이드 01~10 레시피
 ├── scripts/
 │   ├── deck_kit.py                 # 빌드 헬퍼 (그리드·테마·네비·컴포넌트·표지·클로징)
-│   ├── check_deck.py               # 안티패턴 자동 검수 CLI
+│   ├── check_deck.py               # 안티패턴 + 제안서 어투(--voice proposal) 검수 CLI · --self-test
 │   ├── restyle_pptx.py             # 기존 PPTX 리스킨(서체·텍스트색·도형 채움)
 │   └── examples/
 │       ├── remember_kit.py         # 2026-09-18 소개서 실증 빌더(v1 kit 위 리멤버 토큰) — 참고용
@@ -85,6 +89,8 @@ jc-pptx/
 
 ## 변경 이력
 
+- v2.3.0 (2026-10-09): 구 제안서 스킬 proposal-voice v1.1.0(수주 10건 증류·블라인드 재채점 통과)을 `proposal-voice.md`로 계승, 카피 규칙 충돌 시 우선. 헤드라인 어투 제안서/그 외 분기,
+  골격 순서(발주처 권고 목차 → 없으면 회사·레퍼런스 앞단)·모객 개런티 조건부·제안서 게이트 10항. check_deck `--voice proposal`·`--self-test`(제목 추출을 도형 단위로 고쳐 A4 실작동), 슬라이드 노트 규칙.
 - v2.2.0 (2026-10-09): 스폰서·협찬 제안 덱 역량 신설(`sponsor-deck.md`, 구 스폰서 덱 스킬 방법론 이관)·트리거 추가, '피티'→'피티 자료'. 형제 경계를 mice-ops-docs(운영계획서·KPI)/mice-aftermath(결과보고·케이스)로 정정.
   상류 수신 매핑(estimate·strategy-canvas·market-intel·aftermath) 추가, 견적 입력 키를 mice-estimate 평탄 스키마로, 공공 산출내역서를 리멤버 양식으로.
 - v2.1.0 (2026-10-05): '3턴' 워크플로우 → '기획안 1회 확인 → 빌드 → 검수'(기본값 진행). 예제 빌더의 '리더' 직함 → '팀장', 구 jc-remember-html 경로 → jc-design-system, 고객사 실명 → 가명(A사 등).
