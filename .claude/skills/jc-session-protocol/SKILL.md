@@ -1,7 +1,7 @@
 ---
 name: jc-session-protocol
-description: 여러 세션·여러 서피스(Claude Code 데스크톱·Cowork·클라우드 세션)에 걸치는 프로젝트를 "폴더=세션 · 요청 하나=스레드 하나" 규약으로 굴리는 운영·오케스트레이션 정본(구 오케스트레이터 스킬 흡수). 프로젝트 폴더의 CLAUDE.md(불변 컨텍스트)·PROGRESS.md(가변 상태) 2파일, 체크인 3줄 복명·체크아웃 7항목, 체크리스트 진행과 고밀도 산출물만 기획안 1회 확인 → 빌드 → 검수 흐름, 착수 지시문(code-brief) 양식, 서브에이전트 병렬 분할·쓰기 경계·핸드오프·모델 라우팅(Opus 5.5·Sonnet 5.5·Haiku 4.5·Fable 5.1), 이 PC(Windows 11) 환경 제약을 담는다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '체크인', '체크아웃', 'PROGRESS', '이어서 작업', '이어서 진행', '세션 이어서', '새 세션에서 계속', '컨텍스트 꽉 찼어', '폴더에서 이어서', '착수 지시문', 'code brief', '기획안 확인', '진행 규약', '오케스트레이션', '서브에이전트 병렬', '모델 라우팅', '킥오프', '핸드오프', '쓰기 경계', '에이전트 팀', '새 프로젝트 세팅', '프로젝트 폴더 만들어줘'를 언급할 때. 새 프로젝트의 실행 체계를 잡아달라고 할 때. 프로젝트 폴더에 CLAUDE.md·PROGRESS.md가 있으면 체크인부터 시작한다. 형제 경계 — 개별 산출물 생성은 각 전용 스킬(jc-pptx·mice-ops-docs·mice-estimate 등), 완성물 검증은 jc-redteam, Slack 채널 운영은 mice-slack-ops, 팀 보드 조작은 mice-team-board, 스킬 제작·배포는 jc-skill-forge.
-version: "v1.1.0"
+description: 여러 세션·여러 서피스(Claude Code 데스크톱·Cowork·클라우드 세션)에 걸치는 프로젝트를 "폴더=세션 · 요청 하나=스레드 하나" 규약으로 굴리는 운영·오케스트레이션 정본. 프로젝트 폴더의 CLAUDE.md(불변 컨텍스트)·PROGRESS.md(가변 상태) 2파일, 체크인 3줄 복명·체크아웃 7항목, 체크리스트 진행과 고밀도 산출물만 기획안 1회 확인 → 빌드 → 검수 흐름, 착수 지시문(code-brief) 양식, 서브에이전트 병렬 분할·쓰기 경계·핸드오프·모델 라우팅, 이 PC(Windows 11) 환경 제약을 담는다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '세션 체크인', '체크인 복명', '세션 체크아웃', 'PROGRESS', '이어서 작업', '이어서 진행', '세션 이어서', '새 세션에서 계속', '컨텍스트 꽉 찼어', '폴더에서 이어서', '착수 지시문', 'code brief', '기획안 확인', '진행 규약', '오케스트레이션', '서브에이전트 병렬', '모델 라우팅', '서브에이전트 킥오프', '에이전트 킥오프', '킥오프 블록', '핸드오프', '쓰기 경계', '에이전트 팀', '새 프로젝트 세팅', '프로젝트 폴더 만들어줘'를 언급할 때. 새 프로젝트의 실행 체계를 잡아달라고 할 때. 프로젝트 폴더에 CLAUDE.md·PROGRESS.md가 있으면 체크인부터 시작한다. 형제 경계 — 개별 산출물 생성은 각 전용 스킬(jc-pptx·mice-ops-docs·mice-estimate 등), 완성물 검증은 jc-redteam, Slack 채널 운영과 행사 킥오프 댓글·회의록 공유는 mice-slack-ops, 회의 킥오프 정리는 mice-meeting-minutes, 행사 참가자 체크인·현장 운영은 mice-ops-docs·mice-run-of-show, 팀 보드 조작은 mice-team-board, 스킬 제작·배포는 jc-skill-forge.
+version: "v1.2.0"
 license: Complete terms in LICENSE.txt
 ---
 
@@ -43,7 +43,7 @@ Cowork 기획 → Code 빌드 분업은 서피스가 바뀔 때만 쓴다. 착�
 
 - 에이전트 사이를 흐르는 것은 대화가 아니라 **파일**이다. 호출 시 읽을 파일 경로 열거("앞 단계 참고" 금지), 산출 경로·형식 사전 계약, 완료 보고 = 산출 경로 + 핵심 결정 3줄 + 미해결 이슈.
 - 병렬은 ⓐ 같은 파일을 쓰지 않고 ⓑ 서로의 출력을 입력으로 삼지 않는 노드에만. 확신 없으면 순차. 공통 기반(계약·스키마·토큰) 먼저, 그 위에 독립 구현 병렬.
-- 쓰기 경계는 킥오프에서 겹침 0으로 선언, 변경은 킥오프 개정으로만. 메인이 계약 기준으로 병합·검수.
+- 쓰기 경계는 킥오프 블록에서 겹침 0으로 선언, 변경은 킥오프 블록 개정으로만. 메인이 계약 기준으로 병합·검수.
 - 실패 시 조용한 스펙 축소 금지 — 중단 보고(사유 + 시도 + 대안 1개).
 - 백그라운드 에이전트는 PC 절전·앱 종료 시 스톨로 죽는다 → 파일 단위로 범위를 잘라 새로 띄우는 편이 안전(2026-09-11 실증).
 - 킥오프 블록·Task 표준 지시문·아키타입 8종·라운드 동기화는 `references/subagent-handoff.md`.
@@ -57,7 +57,14 @@ Cowork 기획 → Code 빌드 분업은 서피스가 바뀔 때만 쓴다. 착�
 | 단순 추출·변환(명령 실행·조회·포맷 변환) | Haiku 4.5 | `claude-haiku-4-5-20251001` |
 | 최고난도·장시간(설계 분기·근본원인·긴 자율 작업) | Fable 5.1 | `claude-fable-5-1` |
 
-킥오프 블록의 '위임 모델' 줄과 `assets/code-conductor/`(지휘-실행 분리 훅 프리셋, 설치본 기준 `claude-opus-5-5`)가 이 표를 따른다. 모델 ID는 시점 팩트 — 바뀌면 검증일과 함께 이 표부터 고친다(RULE-VERSION-FACTS).
+킥오프 블록의 '위임 모델' 줄과 `assets/code-conductor/`(지휘-실행 분리 훅 프리셋, 설치본 기준 `claude-opus-5-5`)가 이 표를 따른다. 모델 ID는 시점 팩트 — 바뀌면 검증일과 함께 이 표부터 고친다(RULE-VERSION-FACTS). 이 표가 라이브러리 전체의 모델 정본이다(다른 스킬은 재기재하지 않고 여기를 가리킨다).
+
+**복제 위치 체크리스트** — 라인업·ID를 바꾸면 같은 커밋에서 아래를 함께 고친다(agents·env.sh에 구 ID가 남으면 서브에이전트 호출이 404).
+
+- [ ] `references/subagent-handoff.md` §4 킥오프 블록 '위임 모델' 줄 · §7 code-conductor 요지
+- [ ] `assets/code-conductor/` — README.md · INSTALL.md · agents/deep-reasoner.md · agents/runner.md(`model:` 줄) · env.sh(리매핑 ID) · fable.md(라우팅 계층)
+- [ ] 템플릿 2종 — `assets/templates/CLAUDE.md.template` · `assets/templates/code-brief.md.template`(권장 모델 줄)
+- [ ] `jc-skill-forge/scripts/lint_skills.py`의 `CURRENT_MODELS` 상수(구 모델 경고 메시지) — 구 ID 정규식도 함께 검토
 
 ## 6. 환경 메모 (이 PC)
 
@@ -87,12 +94,14 @@ jc-session-protocol/
 
 - 산출물: `jc-pptx` · `mice-ops-docs` · `mice-estimate` · `mice-meeting-minutes` · `mice-team-board`(보드 프로젝트 자체가 이 규약으로 운영됨). 문서 기본 산출은 Claude Docs, 이미지·영상 생성은 Higgsfield
 - 스킬 제작·배포: `jc-skill-forge`
-- 검증: `jc-redteam` — 검수 턴의 기본 도구. Deep Audit 판정 형식은 `turn-protocol.md §4`
+- 검증: `jc-redteam` — 검수 턴의 기본 도구. Deep Audit 판정 형식은 `turn-protocol.md §5`
 - 데이터: `jc-design-system/references/chaining-protocol.md`(ChainPayload/v1)
 - 흡수 이력: `jc-orchestrator` v1.1.2(오케스트레이션 — 킥오프·핸드오프·아키타입·code-conductor) + `jc-workspace-ops` v1.1.0 §5(세션 연속성) + `jc-prompt-builder` v1.0.1(카드, 게이트는 폐지) — 2026-09-21 흡수. 폐합 스킬이 호출되던 자리는 모두 이 스킬로 온다
 
 ## 변경 이력
 
+- v1.2.0 (2026-10-09): 트리거 한정 — '체크인'·'체크아웃'·'킥오프' → '세션 체크인'·'체크인 복명'·'세션 체크아웃'·'서브에이전트/에이전트 킥오프'·'킥오프 블록', 경계에 행사 킥오프 댓글(mice-slack-ops)·회의 킥오프 정리(mice-meeting-minutes)·참가자 체크인(mice-ops-docs·mice-run-of-show) 추가.
+  §5를 모델 정본으로 선언 + 복제 위치 체크리스트, description의 모델 나열 삭제. 판정 형식 참조 §4→§5 정정, turn-protocol §5 판정 라벨을 jc-redteam 3종으로 통일.
 - v1.1.0 (2026-10-05): 3턴 분할·[A]/[B]/[C] 범위 게이트 삭제 → "요청 하나=스레드 하나 · 체크리스트 진행 · 고밀도만 기획안 1회 확인 → 빌드 → 검수", 체크인 승인 대기 제거, 템플릿·brief-card·turn-protocol 개정.
   모델 라우팅 표 신설(Opus 5.5 / Sonnet 5.5 / Haiku 4.5 / Fable 5.1), code-conductor를 설치본(`claude-opus-5-5`)에 맞춤, 구 오케스트레이터 흡수 표기 정리.
 
