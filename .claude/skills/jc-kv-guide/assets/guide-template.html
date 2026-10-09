@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* ── 토큰 미러 — 정본: jc-design-system/references/signature-tokens.md §1(컬러)·§2(타이포)·§3(간격·라운드·그림자), 기계 파싱은 §6 JSON
+   --orange-deep = accent-deep(§6 accentStrong #B8431A) — 18px 미만 오렌지 글자 전용(RULE-WCAG)
+   값을 여기서 바꾸지 말고 정본을 바꾼 뒤 미러한다. ── */
+:root{
+  --paper:#FBFAF6; --surface:#FFFFFF; --surface-warm:#F4F1EA;
+  --ink:#1A1A1A; --ink-sub:#6E6E6E; --warm-gray:#8C867A;
+  --border:#DCD6C8; --line:#C9C9C0; --line-soft:#EFEBE2;
+  --brown:#4A463F; --charcoal:#332F29;
+  --orange:#EB6F2A; --orange-deep:#B8431A; --orange-soft:#F5A05A; --orange-tint:#FFF1E6;
+  --steel:#476580; --steel-tint:#E8EEF3;
+  --positive:#196B24; --positive-bg:#E7EFE8; --negative:#D93636; --negative-bg:#FBE9E9;
+  --shadow:0 2px 12px rgba(74,70,63,0.08);
+  --font:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-card:12px; --r-btn:8px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--orange-deep);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 36px 96px}
+
+/* 문서 헤더 — component-patterns.md '문서 헤더' 패턴 */
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:8px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--orange-deep);font-weight:600}
+.meta{font-family:var(--mono);font-size:12px;color:var(--warm-gray);text-align:right;white-space:nowrap}
+h1{font-size:31px;font-weight:700;letter-spacing:-0.5px;line-height:1.25;margin:6px 0 14px}
+.rule{width:52px;height:4px;background:var(--orange);border-radius:2px;margin-bottom:16px}
+.lead{font-size:14px;color:var(--brown);line-height:1.7;max-width:760px;margin:0 0 10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--ink-sub);margin:12px 0 28px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* 내비 */
+nav.toc{position:sticky;top:0;z-index:5;background:rgba(251,250,246,0.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);margin:0 -36px 28px;padding:10px 36px;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+nav.toc a{color:var(--brown);font-weight:500}nav.toc a:hover{color:var(--orange-deep)}
+
+/* 섹션 카드 */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);box-shadow:var(--shadow);padding:22px 24px 20px;margin-bottom:20px;scroll-margin-top:56px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--orange-deep);letter-spacing:1px}
+h2{font-size:20px;font-weight:600;margin:0;letter-spacing:-0.2px}
+h2 .count{font-family:var(--mono);font-size:12px;color:var(--warm-gray);margin-left:6px}
+.lead-sm{font-size:13px;color:var(--ink-sub);margin:0 0 14px}
+
+/* 테이블 — component-patterns.md '테이블' 패턴 */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--surface-warm);color:var(--brown);font-weight:600;font-size:12px;letter-spacing:0.5px;text-align:left;padding:9px 12px}
+td{padding:10px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.label{width:22%;color:var(--brown);font-weight:600}
+td.src{width:24%;color:var(--ink-sub);font-size:13px;white-space:nowrap}
+.quote{font-variant-numeric:tabular-nums}
+.tbd{color:var(--negative);font-weight:600}
+code.var{font-family:var(--mono);font-size:12.5px;background:var(--steel-tint);color:var(--steel);padding:2px 6px;border-radius:4px}
+.ref{font-family:var(--mono);font-size:11px;color:var(--warm-gray);margin-left:4px}
+
+/* 출처 배지 — component-patterns.md '배지(pill)' 상태 매핑 */
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;letter-spacing:0.2px}
+.badge-quote{background:var(--orange-tint);color:var(--orange-deep)}
+.badge-variable{background:var(--steel-tint);color:var(--steel)}
+.badge-tbd{background:var(--negative-bg);color:var(--negative)}
+.badge-standard{background:var(--positive-bg);color:var(--positive)}
+
+/* 스와치 — 값 표시만 */
+.swatch-note{margin-top:16px}
+.swatches{display:flex;flex-wrap:wrap;gap:14px}
+.swatch{width:150px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:12px}
+.chip{height:56px;border-radius:6px;border:1px solid var(--line);margin-bottom:8px}
+.sw-name{color:var(--brown);font-weight:600}
+.sw-hex{font-family:var(--mono);color:var(--ink-sub);font-variant-numeric:tabular-nums;margin:2px 0 6px}
+
+/* 입력 문서 */
+ul.docs{list-style:none;padding:0;margin:0;font-size:14px}
+ul.docs li{padding:6px 0;border-bottom:1px solid var(--line-soft)}ul.docs li:last-child{border-bottom:none}
+.doc-id{font-family:var(--mono);font-size:12px;color:var(--orange-deep);font-weight:600;margin-right:10px}
+
+/* 질문 블록 */
+.questions pre{white-space:pre-wrap;font-family:var(--font);font-size:14px;line-height:1.7;background:var(--surface-warm);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:0 0 12px}
+.btn{font-family:var(--font);font-size:14px;font-weight:600;background:var(--orange-deep);color:#fff;border:none;border-radius:var(--r-btn);padding:10px 20px;cursor:pointer}
+.btn:hover{background:var(--brown)}
+
+footer{margin-top:40px;font-family:var(--mono);font-size:11px;color:var(--warm-gray);border-top:1px solid var(--line);padding-top:14px}
+
+/* 인쇄 — 라이트 단일 모드. 정본: jc-design-system/references/shared-rules.md#RULE-PRINT-LIGHT (내비 숨김·카드 나눔 방지만) */
+@media print{
+  nav.toc,.btn{display:none}
+  .card{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+  .wrap{padding:0}
+}
+@media (max-width:720px){
+  .wrap{padding:20px 16px 64px}
+  .doc-head{flex-direction:column}
+  .meta{text-align:left;white-space:normal}
+  nav.toc{margin:0 -16px 20px;padding:10px 16px}
+  td.label{width:30%}td.src{white-space:normal}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="doc-head">
+      <div>
+        <div class="kicker">키비주얼(KV) 제작 가이드</div>
+        <h1>{{EVENT}}</h1>
+      </div>
+      <div class="meta">{{META_RIGHT}}</div>
+    </div>
+    <div class="rule"></div>
+    <p class="lead">이 문서는 규칙·제약·필수 요소·규격·검수 기준만 담습니다. 디자인 결정은 디자이너의 몫입니다. 빈 항목은 [확인 필요]로 두었고, 말미의 질문이 확정되면 채워집니다.</p>
+    <div class="legend">
+      <span><span class="badge badge-quote">원문</span>발주처 자료 그대로</span>
+      <span><span class="badge badge-variable">주입값</span>이번 건에 전달받은 값</span>
+      <span><span class="badge badge-tbd">확인 필요</span>발주처 확인 대기</span>
+      <span><span class="badge badge-standard">표준</span>공통 안전 항목 — 삭제 가능</span>
+    </div>
+  </header>
+
+  <nav class="toc">{{NAV}}</nav>
+
+  {{BODY}}
+
+  <footer>생성 {{GENERATED}} · 정본 guide.json에서 HTML·MD 동시 생성</footer>
+</div>
+<script>
+function copyQ(){
+  var t=document.getElementById('qtext').innerText;
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert('복사했습니다.');});}
+  else{var r=document.createRange();r.selectNodeContents(document.getElementById('qtext'));var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
+}
+</script>
+</body>
+</html>

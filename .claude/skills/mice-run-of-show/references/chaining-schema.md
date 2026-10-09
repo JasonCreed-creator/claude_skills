@@ -1,6 +1,6 @@
 # Chaining Schema — mice-run-of-show 입출력
 
-본 스킬이 상류(mice-proposal·pt-script)에서 프로그램·시간 구조를 받아 큐시트로 구체화하고, 사후 스킬로 계획 데이터를 넘기는 페이로드 매핑.
+본 스킬이 상류(jc-pptx·pt-script)에서 프로그램·시간 구조를 받아 큐시트로 구체화하고, 사후 스킬로 계획 데이터를 넘기는 페이로드 매핑.
 
 > **봉투 정본**: 공통 `ChainPayload/v1` 봉투(`$schema`·`source`·`version`·`generatedAt`)·표준 규약·자동 라우팅은 [jc-design-system/references/chaining-protocol.md](../../jc-design-system/references/chaining-protocol.md) 참조. 본 문서는 mice-run-of-show **고유 페이로드**만 정의한다. 봉투 식별은 `source`로 수렴한다.
 
@@ -9,25 +9,25 @@
 ## 1. 워크플로우상의 위치
 
 ```
-mice-proposal (프로그램 구조) ─┐
+jc-pptx (프로그램 구조) ─┐
                                ├─→ mice-run-of-show ─→ 큐시트 XLSX (현장 종착)
-pt-script (발표 세그먼트 시간) ─┘                     └─(선택)→ mice-dashboard / mice-aftermath
+pt-script (발표 세그먼트 시간) ─┘                     └─(선택)→ mice-ops-docs / mice-aftermath
 ```
 
 운영 단계 **소비자**. 1차 용도는 현장 XLSX이며, 출력 봉투는 사후 비교(계획 vs 실제)용 선택지다.
 
 ---
 
-## 2. 입력 — `mice-proposal` 에서 받기
+## 2. 입력 — `jc-pptx` 에서 받기
 
 제안서의 프로그램/일정 슬라이드 → 세그먼트 스켈레톤.
 
 ```json
 {
   "$schema": "ChainPayload/v1",
-  "source": "mice-proposal",
-  "version": "v2.x.x",
-  "projectTitle": "T社 테크 포럼 2026",
+  "source": "jc-pptx",
+  "version": "<송신 스킬 버전>",
+  "projectTitle": "A사 테크 포럼 2026",
   "eventDate": "2026-06-20",
   "venue": { "name": "[베뉴]" },
   "program": [
@@ -59,7 +59,7 @@ pt-script (발표 세그먼트 시간) ─┘                     └─(선택)
 {
   "$schema": "ChainPayload/v1",
   "source": "pt-script",
-  "version": "v2.x.x",
+  "version": "<송신 스킬 버전>",
   "proposal_meta": { "presentation_minutes": 20, "presentation_type": "conference" },
   "segments": [
     { "segment": "오프닝", "duration_min": 2, "stage": "발표자", "cue": "VT 인트로" },
@@ -83,10 +83,10 @@ pt-script (발표 세그먼트 시간) ─┘                     └─(선택)
 {
   "$schema": "ChainPayload/v1",
   "source": "mice-run-of-show",
-  "version": "v1.0.0",
+  "version": "<스킬 버전>",
   "generatedAt": "2026-06-05T10:00:00+09:00",
-  "target": "mice-dashboard",
-  "projectTitle": "T社 테크 포럼 2026",
+  "target": "mice-ops-docs",
+  "projectTitle": "A사 테크 포럼 2026",
   "eventDate": "2026-06-20",
   "plan": {
     "startTime": "09:00",
@@ -98,13 +98,13 @@ pt-script (발표 세그먼트 시간) ─┘                     └─(선택)
     ]
   },
   "version_no": 1,
-  "runsheetFile": "런오브쇼_T社테크포럼_v1_260620.xlsx"
+  "runsheetFile": "런오브쇼_A사테크포럼_v1_260620.xlsx"
 }
 ```
 
 ### 활용
-- **mice-dashboard**: 계획 타임라인 vs 실제 진행 비교 KPI(지연·초과 세그먼트).
-- **mice-aftermath**(향후): 사후 결과보고의 운영 타임라인 섹션.
+- **mice-ops-docs**(기본 target, 구 mice-dashboard 대체): 계획 타임라인 vs 실제 진행 비교 KPI 대시보드(지연·초과 세그먼트).
+- **mice-aftermath**: 사후 결과보고의 "계획 대비 실제" 운영 타임라인 섹션. `target="mice-aftermath"`로 지정.
 
 ---
 
@@ -117,7 +117,7 @@ pt-script (발표 세그먼트 시간) ─┘                     └─(선택)
 ## 6. 입력 검증 체크
 
 - [ ] `$schema`가 `ChainPayload/v1`(또는 레거시 스킬 전용)인가
-- [ ] `source`가 `mice-proposal` / `pt-script`인가
+- [ ] `source`가 `jc-pptx` / `pt-script`인가
 - [ ] `program[]`/`segments[]`의 각 항목에 `segment`가 있는가
 - [ ] `duration_min`이 양의 정수인가(없으면 사용자 보완 플래그)
 - [ ] 회사 식별정보 0건(헤더·owner·segment에서 검출 시 경고)

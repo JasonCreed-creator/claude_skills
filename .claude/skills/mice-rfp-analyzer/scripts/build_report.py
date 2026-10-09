@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 build_report.py - RFP 분석 보고서 .docx 생성
 
@@ -9,7 +9,7 @@ mice-rfp-analyzer 의 7축 분석 결과를 받아 jc-design-system 토큰이 �
     from build_report import build_analysis_report
     output_path = build_analysis_report(
         analysis_data,
-        output_dir="/mnt/user-data/outputs",
+        output_dir="outputs",
         mode="full"  # or "quick"
     )
 """
@@ -26,8 +26,12 @@ if hasattr(sys.stdout, 'reconfigure'):
 if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8')
 
-from docx import Document
-from docx.shared import Pt, Mm, RGBColor, Cm
+try:
+    from docx import Document
+    from docx.shared import Pt, Mm, RGBColor, Cm
+except ImportError:
+    sys.stderr.write("python-docx가 필요합니다 → python -m pip install python-docx\n")
+    sys.exit(2)
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
 from docx.oxml.ns import qn
@@ -35,29 +39,42 @@ from docx.oxml import OxmlElement
 
 
 # =====================================================================
-# 1. 디자인 토큰 (jc-design-system 호출)
+# 1. 디자인 토큰 — jc-design-system v2(리멤버 웜 페이퍼) 런타임 로드
+#    값 미러 금지: rfp_tokens.palette()가 signature-tokens.md §6 JSON을 읽는다.
 # =====================================================================
-COLOR_PRIMARY      = RGBColor(0x0A, 0x25, 0x40)  # Deep Navy
-COLOR_ACCENT       = RGBColor(0x29, 0x62, 0xFF)  # Electric Blue
-COLOR_NEON         = RGBColor(0x00, 0xE6, 0x76)  # Neon Green (GO)
-COLOR_ORANGE       = RGBColor(0xFF, 0x57, 0x22)  # Orange (HOLD)
-COLOR_MAGENTA      = RGBColor(0xE9, 0x1E, 0x63)  # Magenta (NO-GO)
-COLOR_DARK_GRAY    = RGBColor(0x33, 0x33, 0x33)
-COLOR_MID_GRAY     = RGBColor(0x77, 0x77, 0x77)
-COLOR_WHITE        = RGBColor(0xFF, 0xFF, 0xFF)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rfp_tokens import palette, logo_path, ISSUER  # noqa: E402
 
-# Hex strings (셀 배경용)
-HEX_PRIMARY     = "0A2540"
-HEX_ACCENT      = "2962FF"
-HEX_NEON        = "00E676"
-HEX_ORANGE      = "FF5722"
-HEX_MAGENTA     = "E91E63"
-HEX_LIGHT_NAVY  = "F0F4FA"
-HEX_LIGHT_GRAY  = "F8F9FB"
-HEX_BORDER      = "E0E0E0"
+P = palette()
+
+
+def _rgb(hex6: str) -> RGBColor:
+    return RGBColor.from_string(hex6.upper())
+
+
+COLOR_INK        = _rgb(P["text"])           # 헤드라인·본문
+COLOR_INK2       = _rgb(P["textSecondary"])  # 보조 본문
+COLOR_MUTED      = _rgb(P["textMuted"])      # 메타·서브
+COLOR_ACCENT_DEEP = _rgb(P["accentStrong"])  # 작은 강조 텍스트(AA)
+COLOR_WHITE      = RGBColor(0xFF, 0xFF, 0xFF)
+
+# 셀 배경·테두리용 HEX ('#' 없음)
+HEX_ACCENT      = P["accent"]       # 강조 룰·바
+HEX_ACCENT_TINT = P["accentSoft"]   # 강조 박스 면
+HEX_HEAD        = P["surfaceAlt"]   # 표 헤더 면 (웜 페이퍼 표준)
+HEX_ZEBRA       = P["bg"]           # 짝수 행
+HEX_BORDER      = P["border"]
+
+# 판정 배지 (배경, 글자) — GO=positive, HOLD=amber 면+잉크(앰버 단독 텍스트 금지), NO-GO=negative
+JUDGMENT_STYLE = {
+    "GO":        (P["success"], COLOR_WHITE),
+    "GO 조건부":  (P["successBg"], _rgb(P["success"])),
+    "HOLD":      (P["warning"], COLOR_INK),
+    "NO-GO":     (P["danger"], COLOR_WHITE),
+}
 
 FONT_KO = "Pretendard"
-FONT_FALLBACK = "맑은 고딕"
+FONT_FALLBACK = "Malgun Gothic"
 
 
 # =====================================================================
@@ -73,7 +90,7 @@ def _set_cell_bg(cell, hex_color: str):
     tcPr.append(shd)
 
 
-def _set_run_font(run, name=FONT_KO, size=10.5, bold=False, color=COLOR_DARK_GRAY):
+def _set_run_font(run, name=FONT_KO, size=10.5, bold=False, color=COLOR_INK):
     """런 글꼴 일괄 설정"""
     run.font.name = name
     run.font.size = Pt(size)
@@ -106,25 +123,25 @@ def _add_section_break(doc):
 def _add_heading(doc, text: str, level: int = 1):
     """
     제목 위계 추가
-    level 1: 18pt ExtraBold Primary Navy
-    level 2: 14pt SemiBold Primary Navy
-    level 3: 12pt SemiBold Dark Gray
+    level 1: 18pt Bold 잉크
+    level 2: 14pt Bold 잉크
+    level 3: 12pt Bold 보조 잉크
     """
     para = doc.add_paragraph()
     run = para.add_run(text)
     if level == 1:
-        _set_run_font(run, size=18, bold=True, color=COLOR_PRIMARY)
+        _set_run_font(run, size=18, bold=True, color=COLOR_INK)
         _set_para_spacing(para, before=24, after=12)
     elif level == 2:
-        _set_run_font(run, size=14, bold=True, color=COLOR_PRIMARY)
+        _set_run_font(run, size=14, bold=True, color=COLOR_INK)
         _set_para_spacing(para, before=18, after=9)
     else:
-        _set_run_font(run, size=12, bold=True, color=COLOR_DARK_GRAY)
+        _set_run_font(run, size=12, bold=True, color=COLOR_INK)
         _set_para_spacing(para, before=12, after=6)
     return para
 
 
-def _add_body(doc, text: str, bold=False, color=COLOR_DARK_GRAY):
+def _add_body(doc, text: str, bold=False, color=COLOR_INK):
     """본문 단락 추가"""
     para = doc.add_paragraph()
     run = para.add_run(text)
@@ -134,36 +151,30 @@ def _add_body(doc, text: str, bold=False, color=COLOR_DARK_GRAY):
 
 
 def _add_emphasis_box(doc, text: str):
-    """강조 박스 (좌측 4pt Primary Navy 테두리, Light Navy 배경)"""
+    """강조 박스 (좌측 4pt accent 룰, accentSoft 면)"""
     table = doc.add_table(rows=1, cols=1)
     cell = table.rows[0].cells[0]
-    _set_cell_bg(cell, HEX_LIGHT_NAVY)
+    _set_cell_bg(cell, HEX_ACCENT_TINT)
 
-    # 좌측 테두리 4pt Primary Navy
+    # 좌측 테두리 4pt 리멤버 오렌지
     tcPr = cell._tc.get_or_add_tcPr()
     tcBorders = OxmlElement("w:tcBorders")
     left = OxmlElement("w:left")
     left.set(qn("w:val"), "single")
     left.set(qn("w:sz"), "32")  # 4pt = 32 1/8th-pt units
-    left.set(qn("w:color"), HEX_PRIMARY)
+    left.set(qn("w:color"), HEX_ACCENT)
     tcBorders.append(left)
     tcPr.append(tcBorders)
 
     para = cell.paragraphs[0]
     run = para.add_run(text)
-    _set_run_font(run, size=10.5, color=COLOR_DARK_GRAY)
+    _set_run_font(run, size=10.5, color=COLOR_INK)
     _set_para_spacing(para, before=8, after=8, line=1.4)
 
 
 def _add_judgment_badge(doc, judgment: str, score: float):
     """GO/HOLD/NO-GO 색상 박스"""
-    color_map = {
-        "GO":         (HEX_NEON, COLOR_WHITE),
-        "GO 조건부":   (HEX_NEON, COLOR_PRIMARY),
-        "HOLD":       (HEX_ORANGE, COLOR_WHITE),
-        "NO-GO":      (HEX_MAGENTA, COLOR_WHITE),
-    }
-    bg, fg = color_map.get(judgment, (HEX_PRIMARY, COLOR_WHITE))
+    bg, fg = JUDGMENT_STYLE.get(judgment, (HEX_HEAD, COLOR_INK))
 
     table = doc.add_table(rows=1, cols=1)
     cell = table.rows[0].cells[0]
@@ -180,8 +191,8 @@ def _add_judgment_badge(doc, judgment: str, score: float):
 def _add_data_table(doc, headers: list, rows: list, col_widths_cm=None):
     """
     표준 데이터 표 생성
-    헤더: Primary Navy 배경 + 흰 글자
-    데이터 행: 짝수 Light Gray, 홀수 흰색
+    헤더: surfaceAlt 면 + 잉크 Semibold
+    데이터 행: 짝수 canvas, 홀수 흰색
     """
     table = doc.add_table(rows=1 + len(rows), cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -190,12 +201,12 @@ def _add_data_table(doc, headers: list, rows: list, col_widths_cm=None):
     hdr = table.rows[0]
     for i, h in enumerate(headers):
         cell = hdr.cells[i]
-        _set_cell_bg(cell, HEX_PRIMARY)
+        _set_cell_bg(cell, HEX_HEAD)
         cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
         para = cell.paragraphs[0]
         para.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = para.add_run(h)
-        _set_run_font(run, size=10, bold=True, color=COLOR_WHITE)
+        _set_run_font(run, size=10, bold=True, color=COLOR_INK)
         _set_para_spacing(para, before=4, after=4)
 
     # 데이터 행
@@ -204,11 +215,11 @@ def _add_data_table(doc, headers: list, rows: list, col_widths_cm=None):
         for c_idx, val in enumerate(row):
             cell = tr.cells[c_idx]
             if r_idx % 2 == 0:
-                _set_cell_bg(cell, HEX_LIGHT_GRAY)
+                _set_cell_bg(cell, HEX_ZEBRA)
             cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
             para = cell.paragraphs[0]
             run = para.add_run(str(val))
-            _set_run_font(run, size=9.5, color=COLOR_DARK_GRAY)
+            _set_run_font(run, size=9.5, color=COLOR_INK)
             _set_para_spacing(para, before=2, after=2)
 
     # 컬럼 너비 설정
@@ -235,29 +246,36 @@ def _set_doc_margins(doc):
 
 
 def _build_cover(doc, data: Dict):
-    """표지 페이지"""
+    """표지 페이지 — 좌상단 리멤버 로고 슬롯(없으면 발행 명의 텍스트)"""
+    p = doc.add_paragraph()
+    logo = logo_path(P)
+    if logo is not None:
+        p.add_run().add_picture(str(logo), height=Mm(7))
+    else:
+        run = p.add_run(data.get("issuer", ISSUER))
+        _set_run_font(run, size=10, bold=True, color=COLOR_INK)
     # 상단 여백
-    for _ in range(3):
+    for _ in range(2):
         doc.add_paragraph()
 
     # 메인 타이틀
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run("RFP 분석 보고서")
-    _set_run_font(run, size=32, bold=True, color=COLOR_PRIMARY)
+    _set_run_font(run, size=32, bold=True, color=COLOR_INK)
     _set_para_spacing(p, before=0, after=24)
 
     # 행사명 + 발주처
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(data.get("event_name", "[행사명]"))
-    _set_run_font(run, size=18, bold=True, color=COLOR_DARK_GRAY)
+    _set_run_font(run, size=18, bold=True, color=COLOR_INK)
     _set_para_spacing(p, before=0, after=6)
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(data.get("client", "[발주처]"))
-    _set_run_font(run, size=14, color=COLOR_MID_GRAY)
+    _set_run_font(run, size=14, color=COLOR_MUTED)
     _set_para_spacing(p, before=0, after=36)
 
     # 판정 배지
@@ -266,8 +284,9 @@ def _build_cover(doc, data: Dict):
     # 메타 정보
     doc.add_paragraph()
     meta_rows = [
+        ["발행", data.get("issuer", ISSUER)],
         ["분석 일자", datetime.now().strftime("%Y-%m-%d")],
-        ["분석자", data.get("analyst", "MICE 전략가")],
+        ["분석자", data.get("analyst", ISSUER)],
         ["추정 승률", f"{data.get('winrate', 0)*100:.0f}% (참고용)"],
         ["행사 일자", data.get("event_date", "-")],
         ["발주가", data.get("budget", "-")],
@@ -374,7 +393,7 @@ def _build_appendix(doc, data: Dict):
 # =====================================================================
 def build_analysis_report(
     data: Dict,
-    output_dir: str = "/mnt/user-data/outputs",
+    output_dir: str = "outputs",
     mode: str = "full"
 ) -> str:
     """
@@ -432,9 +451,9 @@ def build_analysis_report(
 # =====================================================================
 # 5. CLI 진입점 (단독 실행 / 검증용)
 # =====================================================================
-if __name__ == "__main__":
-    # 검증용 샘플 데이터
-    sample = {
+def _sample() -> Dict:
+    """검증용 샘플 데이터 (가명)"""
+    return {
         "client": "샘플발주처",
         "event_name": "샘플 컨퍼런스",
         "event_date": "2026-09-15",
@@ -517,5 +536,42 @@ if __name__ == "__main__":
             "내부 모의 발표 (5월 30일)"
         ]
     }
-    path = build_analysis_report(sample, output_dir="/tmp", mode="full")
+
+
+LEGACY_HEX = ("0A2540", "2962FF", "00E676", "FF5722", "E91E63")  # 구 네이비·네온 — 재유입 감시용
+
+
+def _self_test() -> int:
+    """샘플로 full·quick 빌드 → 재오픈 → 구 팔레트 0건·리멤버 액센트 존재 확인."""
+    import tempfile
+    import zipfile
+    print(f"토큰 출처: {P['_source']}")
+    with tempfile.TemporaryDirectory() as td:
+        for mode in ("full", "quick"):
+            path = build_analysis_report(_sample(), output_dir=td, mode=mode)
+            Document(path)  # 재오픈 가능 여부
+            with zipfile.ZipFile(path) as z:
+                xml = z.read("word/document.xml").decode("utf-8").upper()
+            bad = [h for h in LEGACY_HEX if h in xml]
+            if bad:
+                print(f"FAIL [{mode}] 구 팔레트 잔존: {bad}")
+                return 1
+            if P["accent"].upper() not in xml:
+                print(f"FAIL [{mode}] 액센트 {P['accent']} 미적용")
+                return 1
+            print(f"OK   [{mode}] {Path(path).name}")
+    print("SELF-TEST PASS")
+    return 0
+
+
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RFP 분석 보고서 .docx 빌더")
+    ap.add_argument("--self-test", action="store_true", help="샘플 빌드·검증 후 종료")
+    ap.add_argument("--out", default="outputs", help="샘플 출력 폴더")
+    ap.add_argument("--quick", action="store_true")
+    args = ap.parse_args()
+    if args.self_test:
+        sys.exit(_self_test())
+    path = build_analysis_report(_sample(), output_dir=args.out, mode="quick" if args.quick else "full")
     print(f"생성 완료: {path}")

@@ -10,7 +10,7 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 - **시트 수**: 7개 (요건 / 평가 / 리스크 / 경쟁 / 일정 / 예산 / 종합)
 - **인코딩**: UTF-8
 - **글꼴**: 본문 Pretendard 10pt / 헤더 Pretendard SemiBold 11pt
-- **색상**: jc-design-system signature 토큰 호출
+- **색상**: jc-design-system v2(리멤버 웜 페이퍼) 토큰 런타임 로드 — `scripts/rfp_tokens.py`. 아래 서식 규칙은 **토큰 역할명**으로 적는다(HEX 미러 금지).
 
 ---
 
@@ -23,11 +23,12 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 | A | 항목 라벨 | 25 |
 | B | 값 | 40 |
 | C | 비고 | 30 |
+| D | 리멤버 로고 슬롯 | 24 |
 
 ### 행 구성
 
 ```
-1행:  RFP 분석 평가 매트릭스 (병합 A1:C1, 헤더, 16pt Bold, Primary Navy 배경)
+1행:  RFP 분석 평가 매트릭스 (병합 A1:C1, 16pt Bold 잉크, bg 면 + 하단 accent 굵은 룰) | D1 리멤버 로고(없으면 발행 명의 텍스트)
 3행:  발주처              | [발주처명]
 4행:  행사명              | [행사명]
 5행:  분석 일자            | [YYYY-MM-DD]
@@ -51,10 +52,10 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - B18 셀 조건부 서식:
-  - "GO" → 배경 #00E676 (Neon Green)
-  - "GO 조건부" → 배경 #00E676 (Neon Green) 30% 투명도
-  - "HOLD" → 배경 #FF5722 (Orange)
-  - "NO-GO" → 배경 #E91E63 (Magenta), 글자 흰색
+  - "GO" → 배경 `success`, 글자 흰색
+  - "GO 조건부" → 배경 `successBg`, 글자 `success`
+  - "HOLD" → 배경 `warning`, 글자 잉크(`text`) — 앰버 단독 텍스트 금지
+  - "NO-GO" → 배경 `danger`, 글자 흰색
 
 ---
 
@@ -82,9 +83,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - A열 조건부 서식:
-  - "필수" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "선택" → 배경 #FF5722 (Orange)
-  - "가산" → 배경 #00E676 (Neon Green)
+  - "필수" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "선택" → 배경 `warningBg`, 글자 잉크
+  - "가산" → 배경 `successBg`, 글자 `success`
 - D열 조건부 서식:
   - "불가" + A열="필수" → 행 전체 빨강 강조 (실격 위험 경고)
 
@@ -114,9 +115,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - G열 조건부 서식:
-  - "강점" → 배경 #2962FF (Electric Blue), 글자 흰색
-  - "약점" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "중립" → 배경 회색
+  - "강점" → 배경 `steelTint`, 글자 `steel` Bold
+  - "약점" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "중립" → 서식 없음(기본 행)
 
 ---
 
@@ -135,9 +136,9 @@ mice-rfp-analyzer가 생성하는 .xlsx 파일의 시트 구조·컬럼·수식�
 
 ### 서식 규칙
 - D열 조건부 서식:
-  - "상" → 배경 #E91E63 (Magenta), 글자 흰색
-  - "중" → 배경 #FF5722 (Orange)
-  - "하" → 배경 #00E676 (Neon Green) 50% 투명도
+  - "상" → 배경 `dangerBg`, 글자 `danger` Bold
+  - "중" → 배경 `warningBg`, 글자 잉크
+  - "하" → 배경 `successBg`, 글자 `success`
 
 ### 자동 집계
 ```
@@ -191,8 +192,8 @@ D열 간격       | =B열 - 직전 행 B열
 
 ### 서식 규칙
 - C열 조건부 서식:
-  - 7일 이하 → 배경 #E91E63 Magenta
-  - 14일 이하 → 배경 #FF5722 Orange
+  - 7일 이하 → 배경 `dangerBg`
+  - 14일 이하 → 배경 `warningBg`
 - E열 조건부 서식 동일 매핑
 
 ---
@@ -225,36 +226,40 @@ D열 간격       | =B열 - 직전 행 B열
 
 ### 서식 규칙
 - B5 조건부 서식:
-  - 5% 미만 → 배경 #E91E63 Magenta
-  - 5~15% → 배경 #FF5722 Orange
-  - 15% 이상 → 배경 #00E676 Neon Green
+  - 5% 미만 → 배경 `dangerBg`
+  - 5~15% → 배경 `warningBg`
+  - 15% 이상 → 배경 `successBg`
 
 ---
 
-## 공통 서식 토큰 (jc-design-system 호출)
+## 공통 서식 토큰 (jc-design-system 런타임 로드)
 
 ```python
-# build_matrix.py 에서 사용할 컬러 상수
-COLOR_PRIMARY     = "0A2540"  # Deep Navy
-COLOR_ACCENT      = "2962FF"  # Electric Blue
-COLOR_NEON        = "00E676"  # Neon Green (GO)
-COLOR_ORANGE      = "FF5722"  # Orange (HOLD)
-COLOR_MAGENTA     = "E91E63"  # Magenta (NO-GO/리스크 상)
-COLOR_LIGHT_GRAY  = "F5F5F5"  # 헤더 배경
-COLOR_DARK_GRAY   = "333333"  # 본문 텍스트
+# build_matrix.py — 값 미러 금지. SoT(signature-tokens.md §6)에서 역할명으로 읽는다.
+from rfp_tokens import palette
+P = palette()          # P["text"], P["surfaceAlt"], P["accent"], P["danger"] … ('#' 없는 HEX)
 ```
 
+| 역할 | 토큰 |
+|------|------|
+| 본문·헤더 글자 | `text` |
+| 헤더 면 | `surfaceAlt` |
+| 짝수 행 면 | `bg` |
+| 테두리 | `border` |
+| 섹션 라벨(▼·▶) | `accentStrong` Bold 11pt |
+| 상태 상/중/하 | `danger*` / `warning*` / `success*` |
+
 ## 헤더 행 표준 서식
-- 배경: COLOR_PRIMARY
-- 글자: 흰색 (#FFFFFF)
-- 글꼴: Pretendard SemiBold 11pt
+- 배경: `surfaceAlt`
+- 글자: 잉크(`text`) Bold
+- 글꼴: Pretendard 11pt
 - 가운데 정렬
 - 행 높이: 28pt
-- 셀 테두리: 흰색 1pt
+- 셀 테두리: `border` thin, 하단 잉크 medium
 
 ## 데이터 행 표준 서식
-- 배경: 짝수 행 #F8F9FB / 홀수 행 흰색
-- 글자: COLOR_DARK_GRAY
+- 배경: 짝수 행 `bg` / 홀수 행 흰색
+- 글자: 잉크(`text`)
 - 글꼴: Pretendard 10pt
-- 셀 테두리: #E0E0E0 0.5pt
+- 셀 테두리: `border` thin
 - 행 높이: 22pt

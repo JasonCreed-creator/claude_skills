@@ -1,7 +1,7 @@
 """build_runsheet.py — 행사 운영 큐시트(run of show) XLSX 생성기.
 
 입력(event 메타 + cues 리스트) → 10컬럼 큐시트 + 변경이력 시트 xlsx.
-mice-estimate xlsx 패턴 재사용(openpyxl + jc-design SoT 런타임 로드 + 무결성 검증).
+mice-estimate xlsx 패턴 재사용(openpyxl + jc-design-system SoT 런타임 로드 + 무결성 검증).
 
 진입점:
     build_runsheet(event, cues, output_path, changelog=None, verify=True) -> str
@@ -10,34 +10,57 @@ mice-estimate xlsx 패턴 재사용(openpyxl + jc-design SoT 런타임 로드 + 
 1. 클록 자동 산출 (start_time + 누적 소요)
 2. 시간 무결성 검증 (Σ duration_min == end−start, end_time 제공 시)
 3. 10컬럼 그리드 + 변경이력 시트
-4. jc-design SoT 토큰 적용 (실패 시 미러 폴백)
+4. jc-design-system SoT 토큰 적용 (실패 시 미러 폴백)
 5. 저장 후 재오픈 무결성
 
-자가검증:  python build_runsheet.py   (반일 컨퍼런스 self-test)
+자가검증:  python build_runsheet.py --self-test   (반일 컨퍼런스 + 토큰 키 정합)
 """
 
 import sys
 from datetime import date, datetime
 from pathlib import Path
 
-from openpyxl import Workbook, load_workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from openpyxl.utils import get_column_letter
+try:
+    from openpyxl import Workbook, load_workbook
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    from openpyxl.utils import get_column_letter
+except ImportError:  # pragma: no cover
+    sys.stderr.write("openpyxl 이 필요합니다: python -m pip install openpyxl\n")
+    sys.exit(2)
 
 
 # ============================================================
-# jc-design-system SoT 토큰 (런타임 로드 + 미러 폴백)
+# jc-design-system SoT 토큰 (런타임 로드 + §6 폴백) — 리멤버 웜 페이퍼
 #   값 정본: jc-design-system/references/signature-tokens.md §6 JSON.
-#   xlsx는 CSS 변수 불가 → hex 리터럴 불가피. 각 값은 SoT 미러이며 하드코딩 아님.
+#   탐색 순서(하우스 규약 §2): 형제 경로 → ~/.claude/skills → ~/.claude/skills/synced/*.
 #   openpyxl 은 '#' 없는 RRGGBB 사용.
+#   v1.1.0 버그 수정: v1.0.0은 SoT에 없는 키('orange')를 조회해 연출 cue 색만 구 값(FF5722)으로
+#   폴백되면서 나머지 색(SoT)과 섞였다. 모든 조회 키를 §6 실제 키로 맞추고, 키 누락은
+#   self-test에서 실패시킨다.
 # ============================================================
+def _find_design_system():
+    here = Path(__file__).resolve()
+    cands = []
+    if len(here.parents) >= 3:
+        cands.append(here.parents[2] / "jc-design-system")
+    home = Path.home()
+    cands.append(home / ".claude" / "skills" / "jc-design-system")
+    cands.extend(sorted(home.glob(".claude/skills/synced/*/jc-design-system")))
+    for c in cands:
+        if (c / "references" / "signature-tokens.md").is_file():
+            return c
+    return None
+
+
 def _load_jc_tokens():
     import json
     import re
     try:
-        sot = (Path(__file__).resolve().parents[2]
-               / "jc-design-system" / "references" / "signature-tokens.md")
-        m = re.search(r"```json\s*\n(.*?)\n```", sot.read_text(encoding="utf-8"), re.S)
+        sot = _find_design_system()
+        if sot is None:
+            return {}
+        md = sot / "references" / "signature-tokens.md"
+        m = re.search(r"```json\s*\n(.*?)\n```", md.read_text(encoding="utf-8"), re.S)
         return json.loads(m.group(1)) if m else {}
     except Exception:
         return {}
@@ -45,34 +68,58 @@ def _load_jc_tokens():
 
 _JC = _load_jc_tokens()
 
+# 역할 → (SoT 키, §6 폴백). 키는 반드시 signature-tokens.md §6 color(.point/.semantic)에 실재해야 한다.
+TOKEN_ROLES = {
+    "ink":        ("primary",      "1A1A1A"),  # 타이틀 밴드(잉크)
+    "onInk":      ("bg",           "FBFAF6"),  # 잉크 위 글자
+    "accent":     ("accent",       "EB6F2A"),  # 컬럼 헤더 하단 룰(오렌지)
+    "accentText": ("accentStrong", "B8431A"),  # 연출 cue 강조 글자(작은 글자용 딥 오렌지)
+    "headerBg":   ("surfaceSoft",  "EFEBE2"),  # 컬럼 헤더 면
+    "border":     ("borderStrong", "CFC8BC"),  # 셀 테두리
+    "breakBg":    ("surfaceAlt",   "F4F1EA"),  # 휴식·전환 행
+    "text":       ("text",         "1A1A1A"),  # 본문
+}
 
-def _jc(key, fallback):
+
+def _lookup(key):
     c = _JC.get("color", {})
-    v = c.get(key) or c.get("point", {}).get(key) or c.get("semantic", {}).get(key) or fallback
-    return str(v).lstrip("#")
+    return c.get(key) or c.get("point", {}).get(key) or c.get("semantic", {}).get(key)
 
 
-COLOR_PRIMARY = _jc("primary", "0A2540")        # 헤더·타이틀
-COLOR_ACCENT = _jc("accent", "2962FF")          # 컬럼 헤더
-COLOR_BORDER = _jc("borderStrong", "C9CFD8")    # 구분면
-COLOR_ORANGE = _jc("orange", "FF5722")          # 연출 cue 강조 (point)
-COLOR_SURFACE_ALT = _jc("surfaceAlt", "F4F6FA") # 휴식·전환 행
-COLOR_WHITE = "FFFFFF"
-COLOR_TEXT = _jc("text", "1A1D24")
+def _jc(role):
+    key, fallback = TOKEN_ROLES[role]
+    v = _lookup(key) or fallback
+    return str(v).lstrip("#").upper()
 
-FONT_TITLE = Font(name="Pretendard", size=14, bold=True, color=COLOR_WHITE)
-FONT_META = Font(name="Pretendard", size=10, color=COLOR_WHITE)
-FONT_HDR = Font(name="Pretendard", size=11, bold=True, color=COLOR_WHITE)
+
+COLOR_INK = _jc("ink")
+COLOR_ON_INK = _jc("onInk")
+COLOR_ACCENT = _jc("accent")
+COLOR_CUE = _jc("accentText")
+COLOR_HEADER_BG = _jc("headerBg")
+COLOR_BORDER = _jc("border")
+COLOR_SURFACE_ALT = _jc("breakBg")
+COLOR_TEXT = _jc("text")
+TOKEN_SOURCE = "sot" if _JC else "fallback(§6)"
+
+SKILL_VERSION = "v1.1.0"  # frontmatter version과 동기
+PUBLISHER = "리멤버 MICE비즈팀"  # 발행 명의 기본(RULE-NO-COMPANY v2). 발주처는 event로 주입
+
+FONT_TITLE = Font(name="Pretendard", size=14, bold=True, color=COLOR_ON_INK)
+FONT_META = Font(name="Pretendard", size=10, color=COLOR_ON_INK)
+FONT_HDR = Font(name="Pretendard", size=11, bold=True, color=COLOR_TEXT)
 FONT_BODY = Font(name="Pretendard", size=10, color=COLOR_TEXT)
 FONT_BODY_BOLD = Font(name="Pretendard", size=10, bold=True, color=COLOR_TEXT)
-FONT_CUE = Font(name="Pretendard", size=10, bold=True, color=COLOR_ORANGE)
+FONT_CUE = Font(name="Pretendard", size=10, bold=True, color=COLOR_CUE)
 
-FILL_TITLE = PatternFill("solid", fgColor=COLOR_PRIMARY)
-FILL_HDR = PatternFill("solid", fgColor=COLOR_ACCENT)
+FILL_TITLE = PatternFill("solid", fgColor=COLOR_INK)
+FILL_HDR = PatternFill("solid", fgColor=COLOR_HEADER_BG)
 FILL_BREAK = PatternFill("solid", fgColor=COLOR_SURFACE_ALT)
 
 _side = Side(style="thin", color=COLOR_BORDER)
 BORDER = Border(left=_side, right=_side, top=_side, bottom=_side)
+_rule = Side(style="medium", color=COLOR_ACCENT)  # 오렌지 룰(컬럼 헤더 하단)
+BORDER_HDR = Border(left=_side, right=_side, top=_side, bottom=_rule)
 
 AL_C = Alignment(horizontal="center", vertical="center", wrap_text=True)
 AL_L = Alignment(horizontal="left", vertical="center", wrap_text=True)
@@ -178,7 +225,7 @@ def build_runsheet(event: dict, cues: list, output_path: str,
     # Row 2: 메타
     ws.merge_cells(f"A2:{last_col}2")
     gen = datetime.now().strftime("%Y-%m-%d %H:%M")
-    meta = (f"일자: {event.get('date','-')}    베뉴: {event.get('venue','-')}    "
+    meta = (f"{event.get('publisher') or PUBLISHER}    일자: {event.get('date','-')}    베뉴: {event.get('venue','-')}    "
             f"버전: v{version}    생성: {gen}    "
             f"시간: {event.get('start_time','-')}~{event.get('end_time','-')}")
     c = ws["A2"]
@@ -188,7 +235,7 @@ def build_runsheet(event: dict, cues: list, output_path: str,
     # Row 3: 컬럼 헤더
     for idx, (label, _w) in enumerate(COLUMNS, start=1):
         cell = ws.cell(row=3, column=idx, value=label)
-        cell.fill, cell.font, cell.alignment, cell.border = FILL_HDR, FONT_HDR, AL_C, BORDER
+        cell.fill, cell.font, cell.alignment, cell.border = FILL_HDR, FONT_HDR, AL_C, BORDER_HDR
     ws.row_dimensions[3].height = 22
 
     # Row 4+: cue 행
@@ -259,7 +306,7 @@ def _verify(output_path: str, n_cues: int, n_changes: int):
 # ============================================================
 # 출력 ChainPayload (선택)
 # ============================================================
-def to_chain_payload(event: dict, cues: list, target: str = "mice-dashboard") -> dict:
+def to_chain_payload(event: dict, cues: list, target: str = "mice-ops-docs") -> dict:
     """큐시트 계획 → ChainPayload/v1 (source=mice-run-of-show)."""
     clocks = _validate_and_clock(event, cues)
     start = _to_min(event["start_time"])
@@ -267,7 +314,7 @@ def to_chain_payload(event: dict, cues: list, target: str = "mice-dashboard") ->
     return {
         "$schema": "ChainPayload/v1",
         "source": "mice-run-of-show",
-        "version": "v1.0.0",
+        "version": SKILL_VERSION,
         "generatedAt": datetime.now().isoformat(),
         "target": target,
         "projectTitle": event.get("title", ""),
@@ -293,7 +340,7 @@ def to_chain_payload(event: dict, cues: list, target: str = "mice-dashboard") ->
 # ============================================================
 def _self_test() -> int:
     event = {
-        "title": "T社 테크 포럼 2026", "date": "2026-06-20",
+        "title": "A사 테크 포럼 2026", "date": "2026-06-20",
         "venue": "[그랜드볼룸]", "start_time": "09:00", "end_time": "12:30",
         "version": 1, "client_id": None,
     }
@@ -313,14 +360,30 @@ def _self_test() -> int:
     total = sum(c["duration_min"] for c in cues)
     assert total == 210, f"self-test 데이터 오류: 소요 합 {total} ≠ 210"
 
-    out = Path(__file__).parent / "_self_test_runsheet.xlsx"
+    # 토큰 키 정합: 모든 역할 키가 SoT에 실재해야 한다(SoT 로드 시). 키 불일치 = 색 혼합 버그
+    if _JC:
+        missing = [f"{r}:{k}" for r, (k, _fb) in TOKEN_ROLES.items() if not _lookup(k)]
+        assert not missing, f"SoT에 없는 토큰 키 → 폴백 색과 혼합됨: {missing}"
+    legacy = {"0A2540", "2962FF", "FF5722", "E91E63", "00E676", "C9CFD8", "F4F6FA", "1A1D24"}  # legacy-jc 금지 목록
+    used = {COLOR_INK, COLOR_ON_INK, COLOR_ACCENT, COLOR_CUE, COLOR_HEADER_BG, COLOR_BORDER, COLOR_SURFACE_ALT, COLOR_TEXT}
+    assert not (used & legacy), f"legacy 색 혼입: {used & legacy}"
+
+    import tempfile
+    out = Path(tempfile.gettempdir()) / "_self_test_runsheet.xlsx"
     build_runsheet(event, cues, str(out), verify=True)
+    wb = load_workbook(str(out))
+    fills = {wb["큐시트"]["A1"].fill.fgColor.rgb[-6:], wb["큐시트"]["A3"].fill.fgColor.rgb[-6:]}
+    cue_color = wb["큐시트"]["H4"].font.color.rgb[-6:]
+    wb.close()
+    assert fills == {COLOR_INK, COLOR_HEADER_BG} and cue_color == COLOR_CUE, (fills, cue_color)
 
     # 출력 ChainPayload 스모크
     cp = to_chain_payload(event, cues)
     assert cp["plan"]["totalMinutes"] == 210 and cp["plan"]["cueCount"] == 11
     assert cp["plan"]["endTime"] == "12:30", cp["plan"]["endTime"]
+    assert cp["target"] == "mice-ops-docs" and cp["version"] == SKILL_VERSION
 
+    print(f"PASS: 토큰 {TOKEN_SOURCE} · 키 정합 · legacy 색 0")
     print(f"PASS: {out.name}  (cue {len(cues)}개, 소요 합 {total}분 = 09:00~12:30, 무결성 검증)")
 
     # 시간 무결성 실패 케이스도 검증 (불일치는 ValueError 여야 함)
@@ -337,4 +400,5 @@ def _self_test() -> int:
 
 
 if __name__ == "__main__":
+    # 인자 없이 또는 --self-test 로 실행 시 자가검증
     sys.exit(_self_test())

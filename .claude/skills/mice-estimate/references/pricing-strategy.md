@@ -1,8 +1,8 @@
 # 전략 프라이싱 (원가 → 제안가)
 
-`pricing-engine.md`가 **"얼마 드는가"**(원가·마진 기계 산출)를 답한다면, 본 문서는 **"얼마에 제안/판매할까"**(전략적 가격 결정)를 답하는 선택 레이어다. 출처 패턴: `maigentic/stratarts`의 pricing-strategy-architect(Van Westendorp) — *방법만* 흡수, MICE 맥락 재구성.
+`calc_estimate_remember`(데이터셋 단가·산식)가 **"얼마 드는가"**(원가·마진 기계 산출)를 답한다면, 본 문서는 **"얼마에 제안/판매할까"**(전략적 가격 결정)를 답하는 선택 레이어다. 출처 패턴: `maigentic/stratarts`의 pricing-strategy-architect(Van Westendorp) — *방법만* 흡수, MICE 맥락 재구성.
 
-> **언제 쓰나**: 사용자가 견적의 *제안가·판매가·할인폭·패키지 가격*을 원가+마진을 넘어 **전략적으로** 정할 때. 기계적 산출만 필요하면 `pricing-engine.md`로 충분 — 본 문서를 끌어들이지 않는다.
+> **언제 쓰나**: 사용자가 견적의 *제안가·판매가·할인폭·패키지 가격*을 원가+마진을 넘어 **전략적으로** 정할 때. 기계적 산출만 필요하면 방식 A(자동 산출)로 충분 — 본 문서를 끌어들이지 않는다.
 
 ## 4대 가격 레버
 
@@ -28,14 +28,14 @@
 
 ## MICE 적용 맥락
 
-- **발주처 입찰**: 예정가격·기초금액(나라장터 공고) 대비 제안가 포지셔닝. 과도한 저가는 평가 감점·실행 리스크. 원가(`pricing-engine`) 하한 + 평가 배점(가격 vs 기술) 가중을 함께 본다.
+- **발주처 입찰**: 예정가격·기초금액(나라장터 공고) 대비 제안가 포지셔닝. 과도한 저가는 평가 감점·실행 리스크. 원가(자동 산출 결과) 하한 + 평가 배점(가격 vs 기술) 가중을 함께 본다.
 - **스폰서 패키지**: Tier별 가격은 노출·리드 가치 기반(→ `mice-sponsor-deck` Tier 프레임워크와 정합).
 - **경쟁가 맥락**: 경쟁사 추정가·시장가는 사실 근거로만 — `mice-market-intel` 조사 결과(`competitors`) 활용.
 
 ## 가드레일 / 경계
 
 - **추정 금지**: 지불의향·경쟁가에 데이터 없으면 `[가설]`. 숫자를 지어내지 않는다.
-- **수집·판단 분리**: 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션의 *전략 판단*(가치 vs 점유)은 `jc-strategy-canvas`, *원가 산출*은 `pricing-engine.md`. 본 문서는 그 사이의 가격 *결정 논리*.
+- **수집·판단 분리**: 경쟁가·지불의향 *조사*는 `mice-market-intel`, 가격 포지션의 *전략 판단*(가치 vs 점유)은 `jc-strategy-canvas`, *원가 산출*은 `calc_estimate_remember`. 본 문서는 그 사이의 가격 *결정 논리*.
 - **RULE-NO-COMPANY**: 자사·발주처·경쟁사 식별은 변수/공개사실로만(`jc-design-system/references/shared-rules.md#RULE-NO-COMPANY`).
 - 최종 제안가의 타당성은 필요 시 `jc-redteam`(저가수주 리스크·낙관 마진 가정 공격)으로 점검.
 
@@ -44,5 +44,5 @@
 ```
 mice-market-intel (경쟁가·지불의향 조사) ─┐
 jc-strategy-canvas (가격 포지션 판단) ────┼─► [전략 프라이싱] ─► mice-estimate 제안가/티어
-pricing-engine.md (원가 하한) ───────────┘
+calc_estimate_remember (원가 하한) ───────────┘
 ```

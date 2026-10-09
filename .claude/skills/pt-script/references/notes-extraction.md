@@ -1,13 +1,13 @@
-# PPTX Speaker Notes 자동 추출 (v2.0)
+# PPTX Speaker Notes 자동 추출 (v2.2.0)
 
-본 문서는 pt-script v2.0 의 핵심 신규 기능 — PPTX 파일에서 슬라이드별 speaker notes·본문 텍스트·메타데이터를 자동 추출하여 발표 대본 베이스로 활용하는 워크플로우를 정의한다. mice-proposal v2.1.1 산출물과의 무결한 체이닝을 보장한다.
+본 문서는 PPTX 파일에서 슬라이드별 speaker notes·본문 텍스트·메타데이터를 자동 추출하여 발표 대본 베이스로 활용하는 워크플로우를 정의한다. 기본 업스트림은 `jc-pptx` 덱이며, 구 mice-proposal 양식 덱의 메타 노트도 그대로 걸러낸다.
 
 ---
 
 ## 1. 추출 워크플로우
 
 ```
-proposal.pptx (mice-proposal v2.1.1 산출물)
+deck.pptx (jc-pptx 산출물 또는 임의 PPTX)
     ↓
 extract_notes.py (python-pptx 기반)
     ↓
@@ -32,19 +32,17 @@ build_script.py 입력
 
 ### 1-2. 출력 JSON 위치
 
-기본: `/tmp/notes-extraction.json` 또는 `--out` 옵션 경로
-- 권장 경로: `/mnt/user-data/outputs/notes-extraction.json` (사용자 다운로드용)
-- 임시 경로: `/tmp/notes.json` (build_script.py 만 입력으로 사용 시)
+`--out` 옵션 경로. 기본은 작업 폴더(예: `C:\work\notes-extraction.json`). build_script.py 입력으로만 쓰면 임시 폴더에 두어도 된다.
 
 ---
 
-## 2. mice-proposal v2.1.1 슬라이드 노트 표준
+## 2. 덱 슬라이드 노트 표준 (jc-pptx · 구 mice-proposal 양식)
 
-mice-proposal v2.1.1 은 PPTX 생성 시 슬라이드별로 다음 두 종류의 노트를 자동 삽입한다.
+덱 노트에는 다음 두 종류가 섞여 들어온다(구 mice-proposal 양식은 메타 노트를 자동 삽입했다).
 
 ### 2-1. 메타 노트 (필터링 대상)
 
-mice-proposal 의 `visual-patterns.md` §1-7 표준 텍스트:
+메타 노트 예시(구 mice-proposal 양식 표준 텍스트):
 
 ```
 ■ 이미지 교체 안내 (회색 박스 모드)
@@ -62,7 +60,7 @@ PowerPoint에서: 박스 클릭 → Delete → 동일 위치에 [삽입 → 사�
 
 ### 2-2. Speaker Notes (정상 발표 베이스)
 
-기획자가 mice-proposal Phase 5 이후 수동 추가하거나, mice-proposal v2.1.1 의 메시지 추출 기능이 자동 생성한 노트. 예시:
+기획자가 jc-pptx 빌드 후 직접 적었거나 덱 빌더가 핵심 메시지로 넣은 노트. 예시:
 
 ```
 이 슬라이드에서는 우리의 핵심 제안 3가지를 강조한다.
@@ -144,9 +142,9 @@ def generate_from_title_only(title, slide_type, tone="formal"):
 import re
 
 META_NOTE_PATTERNS = [
-    r"^■\s*이미지\s*교체\s*안내",     # mice-proposal 이미지 안내
-    r"^■\s*폰트\s*안내",              # mice-proposal 폰트 안내
-    r"^■\s*PPTX\s*제작\s*안내",       # mice-proposal 일반 제작 안내
+    r"^■\s*이미지\s*교체\s*안내",     # 이미지 안내 (구 mice-proposal 양식)
+    r"^■\s*폰트\s*안내",              # 폰트 안내 (구 mice-proposal 양식)
+    r"^■\s*PPTX\s*제작\s*안내",       # 일반 제작 안내 (구 mice-proposal 양식)
     r"^\[META\]",                      # 명시적 META 태그
     r"^TODO[:：]",                     # TODO 메모
     r"^FIXME[:：]",                    # FIXME 메모
@@ -196,7 +194,7 @@ def remove_meta_blocks(notes_text):
 
 ### 4-2. 혼합 노트 처리
 
-mice-proposal v2.1.1 표준은 메타 노트만 자동 삽입한다. 그러나 기획자가 같은 노트 영역에 발표 멘트를 추가로 적은 경우 (혼합 노트), §4-1 `remove_meta_blocks` 함수가 메타 블록만 제거하고 발표 부분을 보존한다.
+구 mice-proposal 양식은 메타 노트만 자동 삽입했다. 기획자가 같은 노트 영역에 발표 멘트를 추가로 적은 경우 (혼합 노트), §4-1 `remove_meta_blocks` 함수가 메타 블록만 제거하고 발표 부분을 보존한다.
 
 예시 입력:
 ```
@@ -222,8 +220,7 @@ mice-proposal v2.1.1 표준은 메타 노트만 자동 삽입한다. 그러나 �
 ### 5-1. 기본 사용
 
 ```bash
-python scripts/extract_notes.py /mnt/user-data/uploads/proposal.pptx \
-  --out /tmp/notes-extraction.json
+python scripts/extract_notes.py "C:\work\deck.pptx" --out "C:\work\notes-extraction.json"
 ```
 
 ### 5-2. 상세 모드 (디버그)
@@ -369,5 +366,5 @@ def infer_slide_type(index, title, body_text, has_chart, total_slides):
 |------|------|
 | `script-guide.md` | 슬라이드 유형 8종별 멘트 패턴 (notes_type=speaker/empty 변환 시 활용) |
 | `jc-design-mapping.md` | docx 디자인 토큰 매핑 |
-| `chaining-schema.md` | mice-proposal → pt-script 입력 JSON 스키마 |
+| `chaining-schema.md` | jc-pptx → pt-script 입력 스키마 (`presentation` 키) |
 | `../scripts/extract_notes.py` | 본 문서의 구현체 |

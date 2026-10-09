@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 parse_rfp.py - RFP 파일 텍스트 추출 모듈
 
@@ -272,9 +272,41 @@ def extract_keywords_with_context(
 # =====================================================================
 # 7. CLI 진입점 (단독 실행 시)
 # =====================================================================
+def _self_test() -> int:
+    """stdlib만으로 HWPX 파싱·날짜/금액/키워드 추출을 점검한다."""
+    import tempfile
+    sample_xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<hs:sec xmlns:hs="urn:hs" xmlns:hp="urn:hp"><hp:p><hp:run>'
+        '<hp:t>제안서 제출 마감 2026-11-20. 사업 예산 300,000,000원.</hp:t>'
+        '<hp:t>필수 요건 미충족 시 실격 처리한다.</hp:t>'
+        '</hp:run></hp:p></hs:sec>'
+    )
+    with tempfile.TemporaryDirectory() as td:
+        f = Path(td) / "sample.hwpx"
+        with zipfile.ZipFile(f, "w") as z:
+            z.writestr("Contents/section0.xml", sample_xml)
+        text, meta = parse_rfp(str(f))
+    checks = [
+        ("hwpx 섹션 수", meta.get("sections") == 1),
+        ("본문 추출", "실격" in text),
+        ("날짜 추출", any("2026" in d for d in extract_dates(text))),
+        ("금액 추출", any("300,000,000" in m for m in extract_money(text))),
+        ("키워드 문맥", len(extract_keywords_with_context(text, ["실격"], 10)) == 1),
+    ]
+    ok = True
+    for name, passed in checks:
+        print(("OK   " if passed else "FAIL ") + name)
+        ok &= passed
+    print("SELF-TEST PASS" if ok else "SELF-TEST FAIL")
+    return 0 if ok else 1
+
+
 if __name__ == "__main__":
+    if len(sys.argv) >= 2 and sys.argv[1] == "--self-test":
+        sys.exit(_self_test())
     if len(sys.argv) < 2:
-        print("Usage: python parse_rfp.py <rfp_file>")
+        print("Usage: python parse_rfp.py <rfp_file> | --self-test")
         sys.exit(1)
 
     filepath = sys.argv[1]

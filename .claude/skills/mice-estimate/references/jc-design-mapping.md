@@ -6,7 +6,7 @@
 
 mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접 사용 → 디자인 일관성 깨짐. v2/R1은 각 색상의 **시맨틱 역할**을 jc-design-system 시그니처 토큰에 매핑한다. 모든 색상 값의 정본은 jc-design-system `signature-tokens.md §6 JSON 정본`이며, 본 문서는 "Excel 셀 역할 → SoT 토큰" 참조표다.
 
-> **매체 제약**: Excel(xlsx)은 CSS 변수를 사용할 수 없으므로, 렌더링 단계의 hex 리터럴은 불가피하다. 이 리터럴은 반드시 SoT 정본값과 일치시키고 `SoT 미러: --jc-xxx` 주석을 단다(`scripts/export_estimate.py` 참조). 값 자체는 본 문서가 아니라 SoT JSON 정본을 진실의 원천으로 한다.
+> **매체 제약**: Excel(xlsx)은 CSS 변수를 사용할 수 없으므로, 렌더링 단계의 hex 리터럴은 불가피하다. 이 리터럴은 반드시 SoT 정본값과 일치시키고 `SoT 미러: --jc-xxx` 주석을 단다(`scripts/export_estimate_remember.py` 참조). 값 자체는 본 문서가 아니라 SoT JSON 정본을 진실의 원천으로 한다.
 
 ---
 
@@ -17,29 +17,6 @@ mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접
 3. **유니버설 vs 클라이언트별**:
    - 시맨틱(danger·success 등)·중립(텍스트·보더·서피스) 역할 → 유니버설 (SoT 시그니처 그대로)
    - 브랜드(primary·accent) 역할 → 시그니처는 SoT, 클라이언트별 차별화는 오버레이
-
----
-
-## 2. 산출내역서(공공형) 양식 매핑 (Excel 셀 역할 → SoT 토큰)
-
-값은 모두 jc-design-system `signature-tokens.md §6 JSON 정본` 기준. 아래 hex는 "SoT 정본값"으로, Excel 렌더링 시 미러링되는 참고치다.
-
-| Excel 위치 | 시맨틱 역할 | SoT 토큰 | SoT 정본값 | 비고 |
-|---|---|---|---|---|
-| 세부산출내역 타이틀 (A19:K19) | 헤더·타이틀 (신뢰 톤) | `--jc-primary` | `#0A2540` | Deep Navy — 표지/헤더/로고 역할 |
-| 열 헤더 행 (Row 20) | 헤더 배경 | `--jc-primary` | `#0A2540` | 동상 |
-| 카테고리 행 (예: "1. 유통판로 지원") | 액센트·구분 강조 | `--jc-accent` | `#2962FF` | Electric Blue 액센트 |
-| 소계 금액 강조 | 위험·금액 강조 (시맨틱) | `--jc-danger` | `#D32F2F` | 유니버설 — 모든 클라이언트 공통 |
-| 소계 행 배경 | 중립 강조 보더/면 | `--jc-border-strong` | `#C9CFD8` | 유니버설 |
-| 헤더 텍스트 | 카드·시트 서피스(흰색) | `--jc-surface` | `#FFFFFF` | 유니버설 |
-| Row 17 (총견적) 배경 | 헤더·강조 | `--jc-primary` | `#0A2540` | 유니버설(시그니처) |
-| 데이터 행 hair 테두리 | 구분선 | `--jc-border` | `#E5E8ED` | 유니버설 (hair/thin 두께는 렌더 로직) |
-| 데이터 행 thin 외곽 | 강조 보더 | `--jc-border-strong` | `#C9CFD8` | 유니버설 |
-| 본문 폰트 | 본문 | `--jc-font-ko` + `--jc-text-base`(16px) | Pretendard | 산출내역서(공공형) 표준 (xlsx 실제 12pt 매체값) |
-| 타이틀 폰트 | 페이지 타이틀 | `--jc-font-heading` + `--jc-text-4xl`(44px) | Pretendard | Row 1 (xlsx 실제 30pt 매체값) |
-| 헤더 폰트 | H4·소제목 | `--jc-font-heading` + `--jc-text-xl`(22px) + `--jc-weight-bold` | Pretendard | 행사명·고객명 등 (xlsx 실제 14pt 매체값) |
-
-> Excel 폰트 포인트(12/14/30pt)는 xlsx 매체 고유 단위로, SoT의 px 스케일과 1:1 대응이 아니라 역할(본문/헤딩/타이틀) 기준 매핑이다.
 
 ---
 
@@ -65,7 +42,7 @@ mice-estimate v1은 Excel 자체 색상 hex(예: `#003366`, `#FF6D01`)을 직접
 # 개념 모식 — 실제 토큰 값은 jc-design-system SoT가 반환
 from jc_design_system import get_token, set_overlay
 
-set_overlay('remember')                   # 산출내역서(공공형)·리멤버 견적서 생성 시 (소속사 기본 오버레이 Track A)
+set_overlay('remember')                   # 리멤버 견적서 생성 시 (소속사 기본 오버레이 Track A)
 primary = get_token('--jc-primary')       # 시그니처 정본 → '#0A2540'
 
 point = get_token('--jc-point-orange')    # → '#FF5722' (리멤버 포인트 역할)
@@ -80,7 +57,7 @@ xlsx는 매체 특성상 hex를 직접 기입하되, 의미는 본 문서의 SoT
 | 항목 | 적용 여부 |
 |---|---|
 | 역할 매핑 문서 (본 문서) | ✅ |
-| Excel 생성 코드 hex → SoT 정본값 정합 + `SoT 미러` 주석 | ✅ (`scripts/export_estimate.py`) |
+| Excel 생성 코드 hex → SoT 정본값 정합 + `SoT 미러` 주석 | ✅ (`scripts/export_estimate_remember.py`) |
 | 런타임 jc-design-system 토큰 fetch | jc-design-system SoT 책임 (향후) |
 | 클라이언트 오버레이 자동 토글 | jc-design-system `client-overlays.md` 책임 |
 | Pretendard 폰트 보장 | 사용자 PC 설치 책임 |

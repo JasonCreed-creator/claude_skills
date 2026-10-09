@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "jc-kv-guide/guide.schema.json",
+  "title": "jc-kv-guide guide.json",
+  "description": "키비주얼 제작 가이드 정본. ChainPayload/v1 봉투(평탄 구조) + guide 페이로드. 정본: jc-design-system/references/chaining-protocol.md",
+  "type": "object",
+  "required": ["$schema", "source", "version", "generatedAt", "guide"],
+  "properties": {
+    "$schema": { "const": "ChainPayload/v1" },
+    "source": { "const": "jc-kv-guide" },
+    "version": { "type": "string", "pattern": "^v\\d+\\.\\d+(\\.\\d+)?$" },
+    "generatedAt": { "type": "string", "description": "ISO 8601" },
+    "target": { "type": ["string", "null"] },
+    "clientId": { "type": ["string", "null"] },
+    "guide": {
+      "type": "object",
+      "required": ["eventName", "docVersion", "issuedAt", "slug", "inputDocs", "sections"],
+      "properties": {
+        "eventName": { "type": "string", "description": "{{event_name}} — 원문/주입값. 미정이면 '[확인 필요]'" },
+        "docVersion": { "type": "string", "description": "가이드 문서 버전 (v0.1, v0.2 …)" },
+        "issuedAt": { "type": "string", "description": "발행일 YYYY-MM-DD" },
+        "issuer": { "type": "string", "description": "{{company_name}} — 발행 주체. 비우면 리멤버 MICE비즈팀" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "출력 파일명" },
+        "mode": { "type": "string", "enum": ["source-mapping", "overview-extract"], "description": "원문 매핑 / 개요 추출" },
+        "inputDocs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "kind"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^D\\d+$" },
+              "name": { "type": "string" },
+              "kind": { "type": "string", "enum": ["request", "brand", "overview", "lp_spec", "brief", "other"] }
+            }
+          }
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "items"],
+            "properties": {
+              "id": { "type": "string", "enum": ["01", "02", "03", "04", "05", "06", "07", "08"] },
+              "title": { "type": "string" },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["label", "source"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "value": { "type": "string", "description": "tbd이면 반드시 빈 문자열" },
+                    "source": { "type": "string", "enum": ["quote", "variable", "tbd", "standard"] },
+                    "ref": { "type": "string", "description": "quote 필수. 예: D1 §2, D2 p.4" },
+                    "question": { "type": "string", "description": "tbd 필수. 발주처에 보낼 평이한 한국어 질문 문장" }
+                  }
+                }
+              },
+              "swatches": {
+                "type": "array",
+                "description": "섹션 04 전용. 값 표시만 — 용도·조합 제안 필드 없음",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "hex", "source"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+                    "source": { "type": "string", "enum": ["quote", "variable"] },
+                    "ref": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "sourceCorrections": {
+          "type": "array",
+          "description": "원문 수정 제안 블록 — 오탈자·명백한 오류만",
+          "items": {
+            "type": "object",
+            "required": ["ref", "original", "suggested", "reason"],
+            "properties": {
+              "ref": { "type": "string" },
+              "original": { "type": "string" },
+              "suggested": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

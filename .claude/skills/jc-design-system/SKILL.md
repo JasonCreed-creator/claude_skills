@@ -1,127 +1,105 @@
 ---
 name: jc-design-system
-description: 개인 MICE 전략가용 디자인 토큰 시스템. 다른 스킬이 산출물 생성 시 참조하는 reference 자산이다. 컬러·타이포·사이즈·간격·컴포넌트 패턴을 통합 정의하며 클라이언트별 오버레이를 토글로 지원한다. 다음 상황에서 반드시 이 스킬을 사용할 것 사용자가 '디자인 토큰', '디자인 시스템', '스타일 가이드', '비주얼 시스템', 'JC 디자인', '개인 디자인 토큰'을 언급할 때. 또한 mice-proposal / mice-estimate / pt-script / mice-dashboard 등 다른 스킬이 산출물 디자인 일관성을 위해 자동 호출할 때. 컬러 팔레트 정의·수정·확장, 클라이언트별 컬러 오버레이 적용, 라이트/다크 모드 매핑 조회, KPI 카드·차트 컨테이너·섹션 구분 등 컴포넌트 패턴 적용 시에도 사용한다.
-version: "v1.4.0"
+description: 리멤버 MICE비즈팀 산출물(제안서·소개서 PPTX, 문서·대시보드·캔버스 HTML, 견적·큐시트 xlsx, 대본 docx)의 디자인 토큰 정본이자 스킬 간 데이터 봉투(ChainPayload/v1) 정본. 룩은 '리멤버 웜 페이퍼'(웜 아이보리 캔버스 · 잉크 블랙 · 리멤버 오렌지 액센트 · Pretendard 단일 서체) 하나이며, 다른 스킬(jc-pptx·mice-ops-docs·pt-script·mice-meeting-minutes·mice-run-of-show·mice-aftermath 등)이 런타임으로 읽는 reference 자산이다. 다음 상황에서 반드시 이 스킬을 사용할 것 — 사용자가 '디자인 토큰', '디자인 시스템', '리멤버 룩', '리멤버 디자인', '웜 페이퍼', '스타일 가이드', '컬러 팔레트', '오렌지 액센트', '다크 슬라이드', '발주처 로고 오버레이', '대비비', 'WCAG', 'ChainPayload', '체이닝 봉투'를 언급할 때. HTML·PPTX·XLSX·DOCX 산출물의 색·서체·간격·컴포넌트 패턴을 정할 때(다른 스킬이 자동 참조). 발주처별 로고·표지·푸터 슬롯을 바꿀 때. 형제 경계 — PPTX 빌드는 jc-pptx, 문서·대시보드 HTML 생성은 각 산출 스킬, 산출물 검증은 jc-redteam이며 본 스킬은 값·규칙·봉투 규약만 제공한다. 구 jc 시그니처(네이비·일렉트릭블루)는 legacy-jc 오버레이로만 남아 있으며 명시 요청 시에만 쓴다.
+version: "v2.1.0"
 ---
 
-# JC Design System
+# JC Design System v2 — 리멤버 웜 페이퍼
 
-MICE 전략가의 개인 디자인 토큰 시스템이다. 회사 종속이 아닌 개인 자산으로, Track A(행사 기획 전략 역할) / Track B(독립 전략가 퍼스널 브랜드) 양쪽에서 활용된다.
+리멤버 MICE비즈팀이 내는 모든 산출물의 디자인 정본. 값은 이 스킬에만 살고, 다른 스킬은 읽기만 한다.
 
 ## 핵심 원칙
 
-1. **시그니처는 고정 자산** — 컬러 베이스·텍스트·타이포·사이즈·간격은 개인 정체성으로 변경 금지
-2. **클라이언트는 오버레이로만 차별화** — primary / accent / logo 3개 토큰만 외부 주입 변수로 처리
-3. **회사 종속 표현 배제** — "MICE 전문가" 일반 용어 사용
-4. **Single Source of Truth** — 모든 산출물 디자인은 이 스킬을 통해 일관성 유지
-
-## 사용 시점
-
-### 직접 호출
-- 디자인 토큰 조회·수정·확장 요청
-- 신규 클라이언트 오버레이 추가 요청
-- 컴포넌트 패턴 확장 요청
-
-### 자동 호출 (다른 스킬에서)
-- `mice-proposal` 제안서 생성 시 → 색상·타이포·표지 적용
-- `mice-estimate` 견적서 생성 시 → 헤더 컬러·강조 톤 적용
-- `pt-script` 발표 대본 생성 시 → 문서 헤더·강조 스타일 적용
-- `mice-dashboard` 대시보드 생성 시 → KPI 카드·차트 시리즈 적용
-
-> 본 스킬은 ChainPayload/v1 8종 체이닝 대상(mice-rfp-analyzer·mice-proposal·mice-estimate·pt-script·mice-dashboard·mice-meeting-minutes·mice-sponsor-deck·jc-redteam)에 속하지 않으며, 봉투를 직접 생산·수신하지 않는다. 다만 봉투의 clientId 필드를 통해 client-overlays.md 오버레이와 연결되는 '보조 소비자'로 8종 체이닝 생태계에 간접 참여한다.
+1. **룩은 하나** — 웜 아이보리 캔버스 위 잉크 블랙 타이포, 오렌지 한 점. 쿨 그레이·퓨어 블랙 금지.
+2. **오렌지는 주인공 1회** — 그라디언트·다크 패널은 슬라이드(화면)당 1회. 오렌지 텍스트는 큰 글자 전용(§대비비).
+3. **Pretendard 단일 서체** — 한글·영문 모두. 숫자는 tabular-nums, 토큰값·코드 표기만 JetBrains Mono.
+4. **발주처는 슬롯으로만** — 로고·표지 이미지·푸터 문구 3곳만 바뀐다. 오렌지는 바꾸지 않는다.
+5. **값 미러 금지** — 소비 스킬은 `references/signature-tokens.md §6 JSON`을 `scripts/jc_tokens.py`로 런타임 로드한다.
+6. **토큰 정본과의 정합** — 이 문서의 값은 Claude Design 프로젝트 "리멤버 제안서 디자인 시스템"(`remember-proposal-ds` 레포 `packages/tokens/css`)과 같다. 값이 바뀌면 양쪽을 같이 고친다.
 
 ## 호출 흐름
 
-토큰 로드 → 클라이언트 오버레이 → 라이트/다크 모드 결정 → 컴포넌트 패턴 적용, 4단계로 진행 후 다른 스킬이 산출물을 빌드한다.
-상세 절차는 `references/usage-guide.md` 참조.
+```
+1. signature-tokens.md §6 JSON 로드 (jc_tokens.load_tokens)
+2. 발주처 지정 시 client-overlays.md 슬롯 적용 (로고·표지·푸터만)
+3. 모드 결정 — 기본 라이트. 다크는 표지·섹션 구분·클로징 3종 + 대시보드 토글 (mode-mapping.md)
+4. 산출물 유형별 컴포넌트 패턴 적용 (component-patterns.md)
+5. 소비 스킬이 빌드 → 대비비·인쇄·HEX 규칙 점검 (shared-rules.md)
+```
+
+상세 절차와 코드 예시는 `references/usage-guide.md`.
+
+## 빠른 참조
+
+| 항목 | 값 |
+|------|-----|
+| 캔버스 / 카드 / 웜 서피스 | `#FBFAF6` / `#FFFFFF` / `#F4F1EA` |
+| 잉크 / 보조 / 뮤트 / 캡션 | `#1A1A1A` / `#4A463F` / `#6E6E6E` / `#8C867A` |
+| 보더 / 강조 보더 | `#DCD6C8` / `#CFC8BC` |
+| 액센트 / 딥 / 라이트 / 틴트 | `#EB6F2A` / `#B8431A` / `#F5A05A` / `#FFF1E6` |
+| 그라디언트 | `135deg #EB6F2A → #F5A05A` (1회) |
+| 다크 스테이지 / 패널 / 차콜 | `#141210` / `#211E1A` / `#332F29` |
+| 보조 Steel / 긍정 / 부정 | `#476580` / `#196B24` / `#D93636` |
+| 차트 시리즈 | S1 `#EB6F2A` → S2 `#476580` → S3 `#4A463F` → S4 `#8C867A` → S5 `#F3B48A` |
+| 서체 | Pretendard (Variable) · 모노 JetBrains Mono |
+| 문서 스케일 | 12 / 14 / 16 / 20 / 25 / 31 / 39 / 49 px (1.250) |
+| 덱 스케일 (1920×1080) | cover 88 · kpi 96 · headline 64 · title 44 · sub 30 · body 26 · caption 18 px |
+| 간격 · 라운드 | base 4px · r6(버튼) / r10~12(카드) / pill |
+| 로고 | 라이트 `assets/remember-black.png` · 다크 `assets/remember-offwhite.png` |
+
+전체 토큰과 JSON은 `references/signature-tokens.md`.
+
+## 대비비 요약 (WCAG AA, 실측)
+
+- 오렌지 `#EB6F2A` 텍스트: 카드 위 3.07:1 · 캔버스 위 2.94:1 → **큰 텍스트(24px+ 또는 18px+ Bold) 전용**. 작은 강조 텍스트·링크는 딥 오렌지 `#B8431A`(5.45:1).
+- 캡션 `#8C867A`: 3.6:1 → 캡션·단위·푸터 등 보조 정보에만. 본문에 쓰지 않는다.
+- 앰버 `#D39A1F`: 2.5:1 → 단독 텍스트 금지. 배지는 배경 `#FBF2DF` + 잉크 텍스트.
+- 다크 위 오렌지 텍스트는 `#F08A4C`(6.7:1 이상). 면 채움은 `#EB6F2A` 유지.
+- 전체 표는 `references/mode-mapping.md §5`.
+
+## 금지
+
+- 쿨 그레이(`#E5E7EB`·Tailwind slate 계열)·퓨어 블랙 `#000` · 오렌지 다중 그라디언트 · 3D·그림자 차트
+- 라이트 캔버스 위 오브제 PNG · 로고 재염색·비율 왜곡 · 슬라이드 좌측 컬러 보더 카드
+- 이모지·느낌표·과장 수사(제안서 문체 규칙은 `component-patterns.md §0`)
+
+## legacy-jc (구 시그니처)
+
+Deep Navy `#0A2540` · Electric Blue `#2962FF` 체계는 `client-overlays.md §3.3 legacy-jc`에 보존한다. 사용자가 "jc 시그니처로", "네이비 톤으로"를 명시할 때만 쓴다. 기본값이 아니다.
 
 ## 파일 구조
 
 ```
 jc-design-system/
-├── SKILL.md                        # 본 파일 — 진입점
-└── references/
-    ├── signature-tokens.md         # 시그니처 고정 토큰 (변경 금지)
-    ├── client-overlays.md          # 클라이언트 주입 스키마 + 샘플
-    ├── mode-mapping.md             # 라이트/다크 모드 매핑
-    ├── component-patterns.md       # KPI 카드·차트·섹션·테이블 패턴
-    ├── cinematic-campaign-html.md  # 포인터 — 정본은 jc-cinematic-html/references/build-kit.md
-    └── usage-guide.md              # 다른 스킬에서 호출하는 방법
+├── SKILL.md
+├── references/
+│   ├── signature-tokens.md     # 토큰 정본 + §6 JSON (기계 파싱)
+│   ├── mode-mapping.md         # 라이트/다크 매핑 · 인쇄 강제 · 대비비 표 · WCAG 계산 표준
+│   ├── client-overlays.md      # 발주처 슬롯 3종 · legacy-jc · 아카이브
+│   ├── component-patterns.md   # 문체 규칙 + KPI·카드·표·배지·헤더·대시보드 패턴
+│   ├── usage-guide.md          # 소비 스킬 호출 절차 · Python/CSS 코드 패턴
+│   ├── shared-rules.md         # RULE-WCAG · PRINT-LIGHT · PPTX-HEX · NO-COMPANY · VISUAL-ROUTING · VERSION-FACTS
+│   └── chaining-protocol.md    # ChainPayload/v1 봉투 규약 · 라이브 source enum · 판별 함수
+├── scripts/
+│   ├── jc_tokens.py            # §6 JSON 로더 (stdlib)
+│   └── test_jc_tokens.py
+└── assets/
+    ├── remember-black.png · remember-offwhite.png   # 로고타입 2종
+    └── objet-01~07-*.png                           # 다크 슬라이드 히어로 오브제 7점
 ```
-
-## 빠른 참조
-
-| 항목 | 값 / 위치 |
-|------|----------|
-| Primary (Deep Navy) | `#0A2540` |
-| Accent (Electric Blue) | `#2962FF` |
-| Point Pool | Orange `#FF5722` / Magenta `#E91E63` / Neon `#00E676` / Blue `#2962FF` |
-| 한글 폰트 | Pretendard |
-| 영문 폰트 | Inter |
-| 숫자·데이터 폰트 | JetBrains Mono |
-| 사이즈 스케일 | 1.250 (Major Third) |
-| 간격 base | 4px |
-
-전체 토큰은 `references/signature-tokens.md` 참조.
-
-## 다른 스킬에서 호출하는 방법
-
-다른 스킬(mice-proposal 등) 작업 중 디자인 적용이 필요하면:
-
-```
-1. references/signature-tokens.md 를 읽어 토큰 값을 추출한다
-2. 클라이언트가 지정된 경우 references/client-overlays.md 에서 오버레이를 적용한다
-3. 산출물 유형(PPTX/DOCX/HTML)에 맞춰 references/component-patterns.md 패턴을 적용한다
-```
-
-상세 가이드는 `references/usage-guide.md` 참조.
-
-## 변경 정책
-
-- 시그니처 토큰 변경: 본 스킬을 직접 수정하는 빌드 챗에서만 가능
-- 클라이언트 오버레이 추가: `client-overlays.md` 의 샘플 형식 따라 추가
-- 컴포넌트 패턴 확장: 기존 패턴과 충돌하지 않는 범위에서 추가
 
 ## 변경 이력
 
-### v1.4.0 (2026-08-18) — 리멤버 전환 (D2): 오버레이 소속사 지위 교체
+- v2.1.0 (2026-10-05): 체이닝 정본 enum을 라이브 스킬 기준으로 재작성(run-of-show·aftermath 라이브 복구, strategy-canvas·market-intel·mice-ops-docs·mice-team-board 등록, 폐합 source는 별칭), §6 절 번호·§7 판별 함수 명시.
+  구 소속사 오버레이(`mc`·`darktrace`) 행 삭제, 예시 고객사 실명 → A사, 흡수된 구 HTML 스킬 참조 정리, §6 JSON version 2.1.0, 없는 LICENSE.txt 참조 삭제.
 
-`client-overlays.md` 개정 (변경명세서 v1.0 §2.2, D2 확정):
-- `remember` 오버레이 **Track B → A 승격** — 소속사 산출물 기본 오버레이로 지정. 컬러(Deep Navy `#0A2540` / Electric Blue `#2962FF`)는 jc 시그니처와 동일하므로 유지.
-- `mc`(구 소속사 M&C)·`darktrace`(구 소속사 시절 클라이언트) **아카이브(deprecated)** — §3.4로 이관, 신규 산출물 사용 금지. `mc.png` 로고 자산 사용 중단.
-- `personal`·`confex` 무변경. 스키마 예시의 client_id 예시를 `remember, confex`로 갱신.
+### v2.0.0 (2026-09-21) — 리멤버 베이스 전환
+- 기본 룩을 jc 시그니처(네이비·블루)에서 **리멤버 웜 페이퍼**로 교체. 값 출처: `jc-remember-html` v1.0.0 토큰 + `remember-proposal-ds`(2026 고객 행사 제안서 51장 실측) + 팀 보드·플레이북 HTML 실전 CSS.
+- `jc-remember-html` 스킬을 본 스킬로 흡수(토큰·컴포넌트·로고·오브제). 덱 템플릿 문법은 `jc-pptx/references/remember-deck-templates.md`로 이관.
+- 클라이언트 오버레이를 컬러 주입에서 **슬롯 3종(로고·표지·푸터)**으로 축소. 구 시그니처는 `legacy-jc` 오버레이로 보존.
+- 대비비 표를 리멤버 팔레트로 재계산(37조합). 오렌지 텍스트 큰 글자 전용 규칙 신설.
+- `RULE-NO-COMPANY`를 "리멤버 명의 기본, 발주처·담당자만 주입"으로 재정의. `mice-sponsor-deck` 등 폐지 스킬 참조 제거.
+- 삭제: `cinematic-campaign-html.md` 포인터, Tier/priority 다크 변형(구 sponsor-deck 전용).
 
-### (무범프, 2026-07-25 결정 반영) — cinematic 룩 분리
-
-cinematic 룩은 `jc-cinematic-html` 스킬로 분리 — `references/cinematic-campaign-html.md`는 포인터로 축약(드리프트 방지, PROGRESS 병합노트 v2).
-
-### v1.3.1 (2026-07-03) — 정합 감사 후속
-
-호출 흐름 중복 서술 축약(상세는 usage-guide.md 일원화), 8종 체이닝 '보조 소비자' 역할 명문화, chaining-protocol.md §8 마이그레이션 표 실측 반영(mice-estimate generatedAt 보강 + 자율 채택 2종 등재).
-
-### v1.1.0 (2026-05-27) — Sprint 7 보강
-
-Sprint 1~6 누적 백로그 8건 반영 + CLAUDE.md §10 위반 정정.
-
-| 백로그 ID | 항목 | 반영 위치 |
-|----------|------|----------|
-| BL-S2-3 | Chart.js 글로벌 색상 CSS 변수 직접 참조 | `references/usage-guide.md` §8 |
-| BL-S3-디자인-1 | SVP-6 퍼널 단계 `#5B9BD5` 토큰화 | `references/signature-tokens.md` §1.7 `--jc-accent-light` |
-| BL-S3-디자인-2 | SVP-7 매트릭스 Q4 `#FFF3E0` 토큰화 | `references/signature-tokens.md` §1.7 `--jc-point-orange-softest` |
-| BL-S3-디자인-3 | 다크 모드 Tier 가이드 표 | `references/mode-mapping.md` §7 |
-| BL-S4-디자인-1 | Q&A 답변 레이블 WCAG AA 강한 녹색 | `references/signature-tokens.md` §1.7 `--jc-success-strong` |
-| BL-S5-디자인-1 | 다크 priority-p3 콘트라스트 강화 | `references/mode-mapping.md` §8 |
-| BL-S5-디자인-2 | WCAG AA 대비비 계산 표준화 (WebAIM) | `references/mode-mapping.md` §9 |
-| BL-S6-디자인-1 | POINT vs STATUS 시리즈 선택 가이드 | `references/component-patterns.md` §9 |
-
-**신규 자산**:
-- 토큰 4종 (`--jc-accent-light`, `--jc-point-orange-softest`, `--jc-point-magenta-soft`, `--jc-success-strong`)
-- usage-guide §7 실제 사용 사례 7개 (Sprint 1~6 결과 기반)
-- WCAG AA 계산 표준 (sRGB 공식 + WebAIM Contrast Checker)
-
-**§10 위반 정정**:
-- description 본인명 트리거 제거 + 외부 주입 변수 5종 표준화 (`{{client_company}}`, `{{author_name}}`, `{{personal_brand}}`, `{{author_title}}`, `{{company_name}}`)
-
-### v1.0.0 (2026-04 초안)
-
-기본 자산 — 시그니처 토큰 + 클라이언트 오버레이 + 모드 매핑 + 컴포넌트 패턴 + 사용 가이드 5종 references.
+### v1.4.0 이전
+구 jc 시그니처 체계의 이력은 git 히스토리(2026-04 ~ 2026-08-18)에 보존.

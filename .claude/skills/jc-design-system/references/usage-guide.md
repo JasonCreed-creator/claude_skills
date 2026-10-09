@@ -1,432 +1,131 @@
 # Usage Guide — 다른 스킬에서 호출하는 방법
 
-`mice-proposal`, `mice-estimate`, `pt-script`, `mice-dashboard` 등 다른 스킬이 본 디자인 시스템을 참조하는 표준 절차를 정의한다.
-
 ---
 
-## 1. 호출 표준 절차 (4단계)
-
-### Step 1. 시그니처 토큰 로드
+## 1. 호출 표준 절차
 
 ```
-references/signature-tokens.md 의 §6 JSON 추출 블록을 읽어
-토큰 객체로 메모리에 보관
+Step 1  토큰 로드      scripts/jc_tokens.py → load_tokens()  (§6 JSON)
+Step 2  발주처 슬롯     client-overlays.md → logo_path / cover_image / footer_text
+Step 3  모드 결정      mode-mapping.md §1 (기본 라이트, 다크는 표지·섹션·클로징·토글)
+Step 4  패턴 적용      component-patterns.md (산출물 유형별)
+Step 5  규칙 점검      shared-rules.md (WCAG · PRINT-LIGHT · PPTX-HEX · NO-COMPANY)
 ```
 
-### Step 2. 클라이언트 오버레이 적용
-
-```
-사용자 또는 호출 스킬이 client_id 를 지정한 경우:
-    references/client-overlays.md 에서 해당 항목 조회
-    overrides 의 null 이 아닌 값만 토큰 객체에 덮어쓰기
-
-client_id 미지정 시:
-    "personal" 오버레이 적용 (시그니처 그대로)
-```
-
-### Step 3. 모드 결정
-
-```
-산출물 유형별 기본 모드 (references/mode-mapping.md §1):
-    PPTX 제안서 → Light
-    XLSX 견적서 → Light
-    DOCX 대본   → Light
-    HTML 대시보드 → Light + Dark 토글
-    표지 슬라이드 → Dark (선택적)
-
-다크 모드인 경우:
-    references/mode-mapping.md §3 매핑 테이블로 토큰 변환
-```
-
-### Step 4. 컴포넌트 패턴 적용
-
-```
-산출물에 필요한 컴포넌트를 references/component-patterns.md 에서 참조:
-    KPI 카드 → §1
-    차트 컨테이너 → §2
-    섹션 구분 → §3
-    테이블 → §4
-    헤더/표지/푸터 → §5
-    배지·콜아웃 → §6, §7
-
-§8 동시 사용 규칙 준수
-```
-
----
+SoT 경로 탐색 순서(소비 스크립트 공통):
+1. 형제 경로 `Path(__file__).resolve().parents[2] / "jc-design-system"` (레포·claude.ai 설치본)
+2. `~/.claude/skills/jc-design-system` (Claude Code 개인 스킬)
+3. `~/.claude/skills/synced/*/jc-design-system` (claude.ai 동기화본)
+4. 실패 시 각 스크립트의 폴백 상수(출처 주석 필수)
 
 ## 2. 스킬별 적용 가이드
 
-### 2.1 mice-proposal (제안서)
+| 스킬 | 산출물 | 적용 요지 |
+|------|--------|-----------|
+| jc-pptx | PPTX | `themes.md`의 `remember` 프리셋이 §6 JSON을 매핑. 다크는 표지·섹션·클로징만. 발주처 슬롯 3종 |
+| mice-ops-docs | HTML·md·xlsx | 문서 헤더·섹션 넘버링·카드·표 패턴. 탭형 문서는 플레이북 컴포넌트 |
+| mice-meeting-minutes | 구글독·캔버스·HTML | 플랫폼 서식 우선. HTML 옵션만 KPI·액션 카드 패턴 |
+| pt-script | DOCX | 헤더 잉크 밴드 + 오렌지 룰, 본문 Pretendard 11pt, 강조 `#B8431A` |
+| mice-rfp-analyzer | DOCX·XLSX | 헤더 잉크 배경 + 오렌지 라벨, 평가 매트릭스 셀 배지색(§2 배지) |
+| mice-run-of-show | XLSX 큐시트 | 헤더 잉크 밴드 + 웜 서피스 행, 큐 유형 배지색(§2 배지). 인쇄 라이트 |
+| mice-aftermath | HTML·DOCX 결과보고 | 문서 헤더·KPI 카드(목표 대비)·표 패턴. 리멤버 명의 기본 |
+| jc-strategy-canvas | HTML 캔버스 | 잉크 헤더 + 웜 카드 그리드, `[검증]/[가설]/[추정]` 배지 |
+| mice-market-intel | HTML·md 리포트 | 문서 헤더·출처 티어 배지·표 패턴, 차트 시리즈 S1~S5 |
+| jc-redteam | md·HTML 감수 리포트 | 심각도 배지(부정·앰버 배지·캡션), 헤더 잉크 + 오렌지 룰 |
+| jc-kv-guide | HTML·PPTX 가이드 | 발행 명의 리멤버 MICE비즈팀, 오렌지 큰 글자 전용 |
+| mice-team-board | Apps Script HTML | 팀 보드 `styles.css`가 곧 구현체 — 토큰 변경 시 그 파일도 동기화 |
+| mice-slack-ops | 캔버스·메시지 | 색 없음. 구조 규칙만(`mice-slack-ops/references/canvas-rules.md`) |
 
-**적용 우선순위**: 표지 → 헤더/푸터 → 섹션 타이틀 → 차트 → KPI 카드 → 테이블
+## 3. 코드 패턴
 
-**필수 적용**:
-- 표지: `component-patterns.md §5.2` (Dark 풀블리드)
-- 본문 페이지: Light 모드 + 상단 헤더 (§5.1)
-- 섹션 타이틀: §3.1 (액센트 라인 + 번호)
-- 폰트: 한글 Pretendard, 영문 Inter, 숫자 JetBrains Mono
-
-**클라이언트 처리**:
-- 표지 우상단에 `client_name` 표기
-- 표지 좌하단에 클라이언트 로고 (있을 시)
-
-### 2.2 mice-estimate (견적서)
-
-**적용 우선순위**: 헤더 → 테이블 → 합계 행
-
-**필수 적용**:
-- 상단 헤더: `--jc-primary` 풀블리드 + 흰색 텍스트
-- 테이블: §4.1 표준 테이블
-- 합계 행: `--jc-primary` 배경 + 흰색 텍스트
-- 금액 컬럼: `--jc-font-mono` + 우측 정렬 + 천단위 콤마
-
-**클라이언트 처리**:
-- 헤더 좌측에 클라이언트 로고
-- 헤더 우측에 발행일·견적번호
-
-### 2.3 pt-script (발표 대본)
-
-**적용 우선순위**: 문서 헤더 → 슬라이드 라벨 → 본문 → 강조
-
-**필수 적용**:
-- 문서 헤더: §5.1 압축형
-- 슬라이드 번호 라벨: 배지 형태 (§6.1)
-- 본문: `--jc-text` + `--jc-leading-relaxed` (1.7)
-- 강조 멘트: 콜아웃 (§7)
-- 시간 표시: `--jc-font-mono`
-
-**컬러 운용**:
-- 액센트(파란색) — 강조 멘트
-- Orange — 주의·강조 표시
-- 단조로움 회피 위해 페이지당 강조 1~2회 한정
-
-### 2.4 mice-dashboard (대시보드)
-
-**적용 우선순위**: KPI 카드 → 차트 → 테이블 → 필터/컨트롤
-
-**필수 적용**:
-- 라이트/다크 자동 토글 (§4.1 mode-mapping)
-- KPI 카드: §1.1 표준형 또는 §1.2 강조형
-- 차트: §2.1 컨테이너 + 데이터 시리즈 5단계
-- 인터랙티브 호버: `--jc-accent-soft` 배경
-
-**컬러 운용**:
-- data-1 (Electric Blue) → 메인 지표
-- data-2 (Magenta) → 비교 지표
-- data-3 (Orange) → 핫스팟
-- data-4 (Neon) → 라이브·실시간만
-- data-5 (Deep Navy) → 누적·합계
-
----
-
-## 3. 코드 호출 패턴
-
-### 3.1 Python (PPTX·DOCX·XLSX 생성)
-
-> ✅ **구현체 제공:** `jc-design-system/scripts/jc_tokens.py` (`load_tokens`/`color`, 테스트 `test_jc_tokens.py`). mice-estimate·pt-script·mice-sponsor-deck 스크립트가 형제 경로의 SoT §6 JSON 을 **런타임 로딩**하며, 실패 시 미러값으로 폴백한다. (구 'Sprint 7 런타임 fetch' 목표 완결.)
+### 3.1 Python 토큰 로드
 
 ```python
-import json
-import re
+import sys
 from pathlib import Path
 
-def load_jc_tokens(skill_path: Path, client_id: str = "personal") -> dict:
-    """JC 디자인 시스템 토큰을 로드하고 클라이언트 오버레이 적용"""
-    
-    # 1. 시그니처 토큰 로드
-    sig_md = (skill_path / "references" / "signature-tokens.md").read_text(encoding="utf-8")
-    sig_json = re.search(r'```json\n(.*?)\n```', sig_md, re.DOTALL)
-    tokens = json.loads(sig_json.group(1))
-    
-    # 2. 클라이언트 오버레이 적용
-    overlay_md = (skill_path / "references" / "client-overlays.md").read_text(encoding="utf-8")
-    # client_id 매칭 블록 파싱 후 overrides 적용
-    # (null 항목은 시그니처 유지)
-    
-    return tokens
+def find_sot():
+    here = Path(__file__).resolve()
+    for c in [here.parents[2] / "jc-design-system",
+              Path.home() / ".claude/skills/jc-design-system",
+              *Path.home().glob(".claude/skills/synced/*/jc-design-system")]:
+        if (c / "references/signature-tokens.md").is_file():
+            return c
+    return None
 
-# 사용 예시
-tokens = load_jc_tokens(Path("/path/to/jc-design-system"), client_id="remember")
-primary_color = tokens["color"]["primary"]      # "#0A2540"
-accent_color  = tokens["color"]["accent"]       # "#2962FF"
-data_series   = tokens["color"]["data"]         # 5색 리스트
+SOT = find_sot()
+sys.path.insert(0, str(SOT / "scripts"))
+from jc_tokens import load_tokens, color, dark
+
+tok = load_tokens(SOT)
+ACCENT = color(tok, "accent", "#EB6F2A")        # "#EB6F2A"
+INK    = color(tok, "text", "#1A1A1A")
+DARK_BG = dark(tok, "bg", "#141210")
+SERIES = tok["color"]["data"]
 ```
 
-### 3.2 PPTX 색상 적용 (python-pptx)
+### 3.2 python-pptx (RULE-PPTX-HEX — `#` 없이)
 
 ```python
 from pptx.dml.color import RGBColor
-
-def hex_to_rgb(hex_str: str) -> RGBColor:
-    h = hex_str.lstrip('#')
-    return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
-
-# 표지 배경
-slide.background.fill.solid()
-slide.background.fill.fore_color.rgb = hex_to_rgb(tokens["color"]["primary"])
-
-# 액센트 라인
-shape.fill.solid()
-shape.fill.fore_color.rgb = hex_to_rgb(tokens["color"]["accent"])
+def C(h): return RGBColor.from_string(h.lstrip("#"))
+shape.fill.solid(); shape.fill.fore_color.rgb = C(color(tok, "accent"))
 ```
 
-### 3.3 XLSX 색상 적용 (openpyxl)
+한글 렌더링을 위해 run 폰트는 latin·ea·cs 세 곳에 모두 지정한다(`jc-pptx/scripts/deck_kit.py` `set_font_all`).
+
+### 3.3 openpyxl
 
 ```python
 from openpyxl.styles import PatternFill, Font
-
-# 헤더 행
-header_fill = PatternFill("solid", fgColor=tokens["color"]["primary"].lstrip("#"))
-header_font = Font(name="Pretendard", size=14, bold=True, color="FFFFFF")
-
-# 합계 행 강조
-total_fill = PatternFill("solid", fgColor=tokens["color"]["accent"].lstrip("#"))
+hdr = PatternFill("solid", fgColor=color(tok, "primary", hash_prefix=False))   # 1A1A1A
+lab = Font(name="Pretendard", bold=True, color=color(tok, "accent", hash_prefix=False))
 ```
 
-### 3.4 HTML/CSS 적용
+### 3.4 HTML/CSS
 
 ```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
-:root {
-  --jc-primary: #0A2540;
-  --jc-accent: #2962FF;
-  --jc-text: #1A1D24;
-  /* signature-tokens.md §6 JSON 을 CSS 변수로 변환 */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --jc-primary: #0A2540;
-    --jc-bg: #0A1220;
-    /* mode-mapping.md §3 매핑 적용 */
-  }
-}
+:root{--paper:#FBFAF6;--surface:#FFFFFF;--surface-warm:#F4F1EA;--ink:#1A1A1A;--ink-sub:#6E6E6E;--warm-gray:#8C867A;
+--border:#DCD6C8;--line:#C9C9C0;--line-soft:#EFEBE2;--brown:#4A463F;--charcoal:#332F29;--orange:#EB6F2A;--orange-deep:#B8431A;
+--orange-soft:#F5A05A;--orange-tint:#FFF1E6;--orange-pale:#F3B48A;--steel:#476580;--steel-tint:#E8EEF3;--positive:#196B24;
+--positive-bg:#E7EFE8;--negative:#D93636;--negative-bg:#FBE9E9;--amber:#D39A1F;--amber-bg:#FBF2DF;
+--s1:#EB6F2A;--s2:#476580;--s3:#4A463F;--s4:#8C867A;--s5:#F3B48A;--shadow:0 2px 12px rgba(74,70,63,.08);
+--r-card:12px;--r-btn:6px;--font:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+:root[data-theme="dark"]{--paper:#211E1A;--surface:#2A2620;--surface-warm:#322D26;--ink:#F4F0E9;--ink-sub:#A89F92;--warm-gray:#6E655A;
+--border:#3E3931;--line:#4A443B;--line-soft:#383229;--brown:#C9C0B2;--charcoal:#171512;--orange-deep:#F08A4C;--orange-tint:#3A2A1E;
+--steel:#8FAEC7;--steel-tint:#26313A;--positive:#6FBF7C;--positive-bg:#22301F;--negative:#F07A7A;--negative-bg:#3A2323;
+--amber:#E2B558;--amber-bg:#3A3021;--shadow:0 2px 12px rgba(0,0,0,.32)}
+body{background:var(--paper);color:var(--ink);font-family:var(--font)}
+.num{font-variant-numeric:tabular-nums}
 </style>
 ```
 
----
+이 변수 이름은 팀 보드·플레이북 HTML과 같다. 새 HTML 산출물도 같은 이름을 쓰면 컴포넌트를 그대로 옮길 수 있다. Claude Design DS와 연결할 때는 `--rm-*` 접두 토큰(`remember-proposal-ds/packages/tokens/css`)을 `@import`한다.
 
-## 4. 자동 호출 트리거 (다른 스킬 SKILL.md 작성 시 권장)
+### 3.5 Chart.js
 
-> ※ 이하는 스킬 저작자를 위한 메타 안내이며 실행 시 참조 불필요.
-
-다른 스킬 작성 시 SKILL.md 본문에 다음 문장 포함을 권장:
-
-```markdown
-## 디자인 적용
-산출물 생성 직전 jc-design-system 스킬의 references/ 를 로드하여
-시그니처 토큰을 적용한다. 클라이언트가 지정된 경우 오버레이를 함께 적용한다.
+```js
+const v = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const series = ['--s1','--s2','--s3','--s4','--s5'].map(v);
+// 테마 토글 후: chart.data.datasets.forEach((d,i)=>d.backgroundColor=series[i]); chart.update();
 ```
 
----
+## 4. 자동 호출 트리거 (소비 스킬 SKILL.md 권장 문구)
+
+```
+## 디자인 적용
+- 정본: jc-design-system (v2 리멤버 웜 페이퍼). 값 하드코딩 금지 — scripts/jc_tokens.py 런타임 로드.
+- 발주처 슬롯: client-overlays.md §1. 규칙: shared-rules.md#RULE-WCAG / #RULE-PRINT-LIGHT / #RULE-PPTX-HEX.
+```
 
 ## 5. 트러블슈팅
 
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| 한글 깨짐 | Pretendard 미설치 환경 | 폴백 `Apple SD Gothic Neo` / `Malgun Gothic` 적용 (signature-tokens.md §2.3) |
-| 네온 그린이 인쇄에서 칙칙함 | 형광 컬러 인쇄 한계 | `#00C853` 폴백 자동 적용 |
-| 다크 모드에서 액센트가 너무 어두움 | 라이트 모드 토큰 그대로 사용 | mode-mapping.md §3 매핑으로 `#5B8DEF` 사용 |
-| 차트 시리즈가 너무 많아 구분 안 됨 | 시리즈 4종 이상 사용 | 최대 3종으로 제한, 나머지는 그레이 톤 처리 |
-| 클라이언트 컬러가 시그니처와 충돌 | CI 컬러가 Deep Navy와 유사 | client-overlays.md §6 충돌 회피 규칙 적용 |
-
----
-
-## 6. 우선순위 매트릭스
-
-산출물 빌드 시 디자인 토큰 적용 우선순위:
-
-```
-1. 사용자 명시 지정          ← 최우선 (절대값)
-2. 클라이언트 오버레이
-3. 시그니처 토큰
-4. 폴백 (시스템 기본)        ← 최종 안전망
-```
-
-상위 단계 값이 있으면 하위 단계는 무시한다.
-
----
-
-## 7. 실제 사용 사례 (Sprint 1~6 결과 기반)
-
-본 스킬이 다른 7개 스킬에서 어떻게 적용되었는지 실제 산출물 기반 정리. v1.1.0 추가 (Sprint 1~6 완료 후).
-
-### 7.1 mice-estimate (Sprint 1) — XLSX 견적서
-
-**적용 패턴**: Excel 셀 색상이 jc-design 토큰에 매핑
-
-| 셀 영역 | 토큰 | HEX | 적용 방식 |
-|---------|------|-----|----------|
-| 헤더 행 (1~3행) | `--jc-primary` | `#0A2540` | openpyxl PatternFill |
-| 항목 라벨 컬럼 | `--jc-text` | `#1A1D24` | Font color |
-| 금액 컬럼 | `--jc-font-mono` | JetBrains Mono | Font name |
-| 합계 행 | `--jc-accent` | `#2962FF` | PatternFill + 흰색 텍스트 |
-| 부가세 행 | `--jc-text-muted` | `#5A6270` | Font color |
-
-**견적서 양식 A / 양식 B 공통**: 헤더는 `--jc-primary`, 합계는 `--jc-accent`로 통일.
-
-### 7.2 mice-dashboard (Sprint 2) — HTML 인터랙티브 대시보드
-
-**적용 패턴**: 4종 자체 팔레트 → JC 시맨틱 토큰 매핑 + 다크 모드 5종 변형
-
-| 자체 팔레트 | 매핑 JC 토큰 |
-|-------------|-------------|
-| KPI 카드 강조 | `--jc-accent` |
-| 트렌드 상승 | `--jc-success` (또는 `--jc-success-strong` for AA) |
-| 트렌드 하락 | `--jc-danger` |
-| 데이터 시리즈 5종 | `--jc-data-1` ~ `--jc-data-5` |
-| 다크 토글 배경 | DARK_BG (`#0A1220`) |
-
-**Chart.js 적용**: 차트 색상은 CSS 변수로 동적 주입 (§7.8 가이드 참조)
-
-### 7.3 mice-sponsor-deck (Sprint 3) — HTML 슬라이드 데크
-
-**적용 패턴**: SVP-1~SVP-7 7종 비주얼 패턴 + DARK 5종 토글 + Tier 색상 6종 매핑
-
-| 패턴 | 핵심 토큰 |
-|------|-----------|
-| SVP-1 (표지 임팩트) | `--jc-primary` 풀블리드 + `--jc-accent` 라인 |
-| SVP-6 (퍼널 5단계) | `--jc-accent` → `--jc-accent-light` (`#5B9BD5`) 그라데이션 |
-| SVP-7 (2x2 매트릭스) | Q1 Magenta / Q2 Accent / Q3 Orange / Q4 `--jc-point-orange-softest` (`#FFF3E0`) |
-| Tier 1/2/3 배지 | Magenta / Accent / Orange POINT 시리즈 |
-
-**다크 모드 토글**: §7 Tier 다크 변형 표 적용. F06292 / 5B8DEF / FF7043 / B8C5D6 / 3D5F87 / 69F0AE
-
-### 7.4 pt-script (Sprint 4) — DOCX 발표 대본
-
-**적용 패턴**: docx 헤더 컬러·강조 컬러·표 스타일·시간 초과 경고가 jc-design 토큰 매핑
-
-| 영역 | 토큰 | 적용 |
-|------|------|------|
-| 문서 헤더 | `--jc-primary` 풀블리드 | python-docx paragraph shading |
-| 슬라이드 라벨 배지 | `--jc-accent-soft` 배경 + `--jc-accent-strong` 텍스트 | Run.font.color |
-| 강조 멘트 콜아웃 | `--jc-accent` 좌측 3px 라인 | Border style |
-| 시간 초과 경고 | `--jc-danger` | Font.highlight_color |
-| Q&A 예상 답변 레이블 | `--jc-success-strong` (`#00733B`) | WCAG AA 충족 (BL-S4-1 반영) |
-
-### 7.5 mice-meeting-minutes (Sprint 5) — HTML 대시보드 + 다크 토글
-
-**적용 패턴**: HTML 대시보드 다크 모드 토글 + 8축 KPI 카드 다크 변형
-
-| 8축 카드 | 컬러 토큰 |
-|----------|----------|
-| 안건 (Agenda) | `--jc-primary` |
-| 발언요지 (Remarks) | `--jc-text` |
-| 결정사항 (Decisions) | `--jc-success-strong` |
-| Action Items | `--jc-accent` |
-| 리스크 (Risks) | `--jc-danger` |
-| 미결사항 (Open Items) | `--jc-warning` |
-| 후속일정 (Schedule) | `--jc-text-muted` |
-| 전략메모 (Strategy) | `--jc-point-magenta` |
-
-**Priority 라인 다크**: priority-p1 / p2 / p3 = DARK_DANGER / DARK_WARNING / DARK_TEXT_MUTED (BL-S5-1 반영)
-
-### 7.6 mice-rfp-analyzer (Sprint 6) — DOCX 분석 보고서 + XLSX 평가 매트릭스
-
-**적용 패턴**: docx 분석 보고서 + xlsx 평가 매트릭스 + GO/HOLD/NO-GO 판정 색상
-
-| 판정 | STATUS 시리즈 (의미적) | POINT 시리즈 (시각적 임팩트) |
-|------|---------------------|---------------------------|
-| GO | `--jc-success-strong` (`#00733B`) | `--jc-point-neon` (`#00E676`) |
-| HOLD | `--jc-warning` (`#FFA000`) | `--jc-point-orange` (`#FF5722`) |
-| NO-GO | `--jc-danger` (`#D32F2F`) | `--jc-point-magenta` (`#E91E63`) |
-
-**선택 가이드**: §9 component-patterns.md 시리즈 선택 가이드 참조 (BL-S6-1 반영)
-
-### 7.7 mice-proposal v2.1.1 (기준점) — PPTX 제안서
-
-**적용 패턴**: 17개 비주얼 패턴 + 5개 확장 모듈 (인포그래픽·다크·아이콘·마스터·jc-design 연동)
-
-| 모듈 | 핵심 토큰 |
-|------|-----------|
-| 표지 풀블리드 | `--jc-primary` + `--jc-accent` 라인 |
-| 섹션 타이틀 | `--jc-accent` 라인 + `--jc-primary` 헤딩 |
-| KPI 카드 | `--jc-surface` 배경 + `--jc-accent` 강조 |
-| 차트 시리즈 | `--jc-data-1` ~ `--jc-data-5` |
-| 인포그래픽 (퍼널/매트릭스/타임라인) | POINT 시리즈 4종 + 확장 variant |
-| 다크 마스터 슬라이드 | 다크 모드 매핑 표 전체 적용 |
-
-A+ 등급 기준점. 모든 후속 스킬은 이 패턴을 따른다.
-
----
-
-## 8. Chart.js CSS 변수 직접 참조 가이드 (BL-S2-3)
-
-Chart.js v3+에서 `--jc-data-1` 등 CSS 변수를 차트 `backgroundColor`·`borderColor` 에 직접 주입하는 패턴.
-
-### 8.1 패턴 코드 (JavaScript)
-
-```javascript
-// CSS 변수에서 토큰 값 추출
-const root = document.documentElement;
-const tokens = {
-  primary: getComputedStyle(root).getPropertyValue('--jc-primary').trim(),
-  accent: getComputedStyle(root).getPropertyValue('--jc-accent').trim(),
-  data1: getComputedStyle(root).getPropertyValue('--jc-data-1').trim(),
-  data2: getComputedStyle(root).getPropertyValue('--jc-data-2').trim(),
-  data3: getComputedStyle(root).getPropertyValue('--jc-data-3').trim(),
-  data4: getComputedStyle(root).getPropertyValue('--jc-data-4').trim(),
-  data5: getComputedStyle(root).getPropertyValue('--jc-data-5').trim(),
-};
-
-// Chart.js 차트 생성
-const ctx = document.getElementById('myChart').getContext('2d');
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['1월', '2월', '3월', '4월'],
-    datasets: [{
-      label: '매출',
-      data: [12, 19, 3, 5],
-      backgroundColor: tokens.data1,
-      borderColor: tokens.data1,
-      borderWidth: 2
-    }, {
-      label: '비용',
-      data: [8, 12, 5, 7],
-      backgroundColor: tokens.data2,
-      borderColor: tokens.data2
-    }]
-  },
-  options: {
-    plugins: {
-      legend: { labels: { color: tokens.primary } }
-    },
-    scales: {
-      x: { ticks: { color: tokens.primary } },
-      y: { ticks: { color: tokens.primary } }
-    }
-  }
-});
-```
-
-### 8.2 다크 모드 자동 갱신
-
-```javascript
-// prefers-color-scheme 변경 감지 시 차트 재생성
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-  // CSS 변수는 :root + @media 로 자동 갱신됨
-  // 차트 갱신은 chart.update() 호출
-  chart.data.datasets[0].backgroundColor = getComputedStyle(root).getPropertyValue('--jc-data-1').trim();
-  chart.update();
-});
-```
-
-### 8.3 투명도 추가 (rgba 변환)
-
-```javascript
-function hexToRgba(hex, alpha) {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.substring(0,2), 16);
-  const g = parseInt(h.substring(2,4), 16);
-  const b = parseInt(h.substring(4,6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-// 사용 예: 배경 반투명
-dataset.backgroundColor = hexToRgba(tokens.data1, 0.3);  // "rgba(41, 98, 255, 0.3)"
-```
-
-### 8.4 적용 스킬
-
-mice-dashboard (Sprint 2), mice-meeting-minutes (Sprint 5) HTML 대시보드 산출물에서 본 패턴 사용. CSS 변수가 토큰과 1:1 매핑되므로 라이트/다크 모드 전환 시 차트도 자동 갱신.
+| 증상 | 원인 → 조치 |
+|------|-------------|
+| PPTX 한글이 다른 서체로 보임 | `a:ea` 미지정 → `set_font_all` 사용 |
+| 오렌지 글자가 흐릿함 | 작은 글자에 `#EB6F2A` → `#B8431A`로 |
+| 색이 안 먹힘(python-pptx) | `#` 포함 → 6자리로 |
+| 다크 인쇄가 검게 나옴 | `@media print` 라이트 강제 누락 → mode-mapping §4.2 |
+| SoT 못 찾음 | 경로 탐색 §1 순서 확인, 폴백 상수 출처 주석 |

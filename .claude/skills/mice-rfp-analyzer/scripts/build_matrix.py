@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 build_matrix.py - RFP 평가 매트릭스 .xlsx 생성
 
@@ -8,7 +8,7 @@ build_matrix.py - RFP 평가 매트릭스 .xlsx 생성
     from build_matrix import build_evaluation_matrix
     output_path = build_evaluation_matrix(
         analysis_data,
-        output_dir="/mnt/user-data/outputs"
+        output_dir="outputs"
     )
 """
 
@@ -24,32 +24,63 @@ if hasattr(sys.stdout, 'reconfigure'):
 if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8')
 
-from openpyxl import Workbook
-from openpyxl.styles import (
-    Font, PatternFill, Alignment, Border, Side
-)
-from openpyxl.formatting.rule import (
-    CellIsRule, FormulaRule, ColorScaleRule
-)
-from openpyxl.utils import get_column_letter
+try:
+    from openpyxl import Workbook
+    from openpyxl.styles import (
+        Font, PatternFill, Alignment, Border, Side
+    )
+    from openpyxl.formatting.rule import (
+        CellIsRule, FormulaRule, ColorScaleRule
+    )
+    from openpyxl.utils import get_column_letter
+except ImportError:
+    sys.stderr.write("openpyxl이 필요합니다 → python -m pip install openpyxl\n")
+    sys.exit(2)
 
 
 # =====================================================================
-# 1. 디자인 토큰 (jc-design-system 호출)
+# 1. 디자인 토큰 — jc-design-system v2(리멤버 웜 페이퍼) 런타임 로드
+#    값 미러 금지: rfp_tokens.palette()가 signature-tokens.md §6 JSON을 읽는다.
 # =====================================================================
-HEX_PRIMARY     = "0A2540"
-HEX_ACCENT      = "2962FF"
-HEX_NEON        = "00E676"
-HEX_ORANGE      = "FF5722"
-HEX_MAGENTA     = "E91E63"
-HEX_LIGHT_NAVY  = "F0F4FA"
-HEX_LIGHT_GRAY  = "F8F9FB"
-HEX_BORDER      = "E0E0E0"
-HEX_DARK_GRAY   = "333333"
-HEX_MID_GRAY    = "777777"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rfp_tokens import palette, logo_path, ISSUER  # noqa: E402
+
+P = palette()
+
+HEX_INK         = P["text"]           # 본문·라벨·헤더 글자
+HEX_ACCENT      = P["accent"]         # 섹션 라벨 룰·타이틀 밴드 하단 룰
+HEX_ACCENT_DEEP = P["accentStrong"]   # 작은 강조 텍스트(섹션 라벨)
+HEX_HEAD        = P["surfaceAlt"]     # 표 헤더 면
+HEX_ZEBRA       = P["bg"]             # 짝수 행
+HEX_BORDER      = P["border"]
 HEX_WHITE       = "FFFFFF"
+HEX_STEEL_TINT  = P["steelTint"]      # 강점 셀 면
+HEX_STEEL       = P["steel"]
+
+# 3단계 상태 면 (배경 tint + 잉크/상태색 글자) — 상=negative, 중=amber, 하=positive
+SEV_HIGH = (P["dangerBg"], P["danger"])
+SEV_MID  = (P["warningBg"], HEX_INK)   # 앰버 단독 텍스트 금지 → 잉크 글자
+SEV_LOW  = (P["successBg"], P["success"])
+
+# 판정 셀 (면, 글자)
+JUDGE = {
+    "GO":        (P["success"], HEX_WHITE),
+    "GO 조건부":  (P["successBg"], P["success"]),
+    "HOLD":      (P["warning"], HEX_INK),
+    "NO-GO":     (P["danger"], HEX_WHITE),
+}
 
 FONT_NAME = "Pretendard"
+
+
+def _sev_rule(formula: str, sev: tuple, bold: bool = True):
+    bg, fg = sev
+    return FormulaRule(formula=[formula], fill=PatternFill("solid", fgColor=bg),
+                       font=Font(name=FONT_NAME, color=fg, bold=bold))
+
+
+def _section_font():
+    return Font(name=FONT_NAME, size=11, bold=True, color=HEX_ACCENT_DEEP)
 
 
 # =====================================================================
@@ -57,22 +88,22 @@ FONT_NAME = "Pretendard"
 # =====================================================================
 def _style_header(cell):
     """헤더 행 표준 스타일"""
-    cell.font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_WHITE)
-    cell.fill = PatternFill("solid", fgColor=HEX_PRIMARY)
+    cell.font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_INK)
+    cell.fill = PatternFill("solid", fgColor=HEX_HEAD)
     cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     cell.border = Border(
-        left=Side(style="thin", color=HEX_WHITE),
-        right=Side(style="thin", color=HEX_WHITE),
-        top=Side(style="thin", color=HEX_PRIMARY),
-        bottom=Side(style="thin", color=HEX_PRIMARY),
+        left=Side(style="thin", color=HEX_BORDER),
+        right=Side(style="thin", color=HEX_BORDER),
+        top=Side(style="thin", color=HEX_BORDER),
+        bottom=Side(style="medium", color=HEX_INK),
     )
 
 
 def _style_data(cell, alt_row=False):
     """데이터 행 표준 스타일"""
-    cell.font = Font(name=FONT_NAME, size=10, color=HEX_DARK_GRAY)
+    cell.font = Font(name=FONT_NAME, size=10, color=HEX_INK)
     if alt_row:
-        cell.fill = PatternFill("solid", fgColor=HEX_LIGHT_GRAY)
+        cell.fill = PatternFill("solid", fgColor=HEX_ZEBRA)
     cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
     cell.border = Border(
         left=Side(style="thin", color=HEX_BORDER),
@@ -84,7 +115,7 @@ def _style_data(cell, alt_row=False):
 
 def _style_label(cell):
     """라벨(가운데 정렬, 굵게) 셀"""
-    cell.font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_DARK_GRAY)
+    cell.font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
     cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     cell.border = Border(
         left=Side(style="thin", color=HEX_BORDER),
@@ -92,6 +123,25 @@ def _style_label(cell):
         top=Side(style="thin", color=HEX_BORDER),
         bottom=Side(style="thin", color=HEX_BORDER),
     )
+
+
+def _place_logo(ws, anchor: str, issuer: str):
+    """리멤버 로고 슬롯. 이미지 삽입 실패(로고 없음·Pillow 미설치) 시 발행 명의 텍스트."""
+    logo = logo_path(P)
+    if logo is not None:
+        try:
+            from openpyxl.drawing.image import Image as XLImage
+            img = XLImage(str(logo))
+            ratio = 28 / img.height if img.height else 1
+            img.height, img.width = 28, int(img.width * ratio)
+            ws.add_image(img, anchor)
+            return
+        except Exception:
+            pass
+    c = ws[anchor]
+    c.value = issuer
+    c.font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
+    c.alignment = Alignment(horizontal="right", vertical="center")
 
 
 def _set_col_widths(ws, widths: List[float]):
@@ -125,23 +175,27 @@ def _write_data_rows(ws, start_row: int, data: List[List]):
 # =====================================================================
 def _build_summary_sheet(wb: Workbook, data: Dict):
     ws = wb.create_sheet("0_종합", 0)
-    _set_col_widths(ws, [25, 40, 30])
+    _set_col_widths(ws, [25, 40, 30, 24])
 
     # 타이틀 (병합)
     ws.merge_cells("A1:C1")
     c = ws["A1"]
     c.value = "RFP 분석 평가 매트릭스"
-    c.font = Font(name=FONT_NAME, size=16, bold=True, color=HEX_WHITE)
-    c.fill = PatternFill("solid", fgColor=HEX_PRIMARY)
-    c.alignment = Alignment(horizontal="center", vertical="center")
+    c.font = Font(name=FONT_NAME, size=16, bold=True, color=HEX_INK)
+    c.fill = PatternFill("solid", fgColor=HEX_ZEBRA)
+    c.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    for col in range(1, 4):
+        ws.cell(row=1, column=col).border = Border(bottom=Side(style="thick", color=HEX_ACCENT))
     ws.row_dimensions[1].height = 42
+    # 리멤버 로고 슬롯 (D1, 타이틀 밴드 오른쪽). 로고 파일이 없거나 Pillow 미설치면 발행 명의 텍스트로 대체
+    _place_logo(ws, "D1", data.get("issuer", ISSUER))
 
     # 메타 정보
     meta = [
         ("발주처", data.get("client", "-"), ""),
         ("행사명", data.get("event_name", "-"), ""),
         ("분석 일자", datetime.now().strftime("%Y-%m-%d"), ""),
-        ("분석자", data.get("analyst", "MICE 전략가"), ""),
+        ("분석자", data.get("analyst", ISSUER), ""),
     ]
     for i, (label, val, note) in enumerate(meta, start=3):
         ws.cell(row=i, column=1, value=label)
@@ -150,10 +204,10 @@ def _build_summary_sheet(wb: Workbook, data: Dict):
         for col in range(1, 4):
             _style_data(ws.cell(row=i, column=col), alt_row=(i % 2 == 0))
         # 라벨 컬럼은 굵게
-        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_DARK_GRAY)
+        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
 
     # 7축 점수
-    ws.cell(row=8, column=1, value="▼ 7축 종합 점수").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=8, column=1, value="▼ 7축 종합 점수").font = _section_font()
 
     axes = data.get("axes_scores", {})
     axis_data = [
@@ -171,47 +225,36 @@ def _build_summary_sheet(wb: Workbook, data: Dict):
         ws.cell(row=i, column=3, value=note)
         for col in range(1, 4):
             _style_data(ws.cell(row=i, column=col), alt_row=(i % 2 == 0))
-        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_DARK_GRAY)
+        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
 
     # 가중 평균 종합 점수 (수식)
-    ws.cell(row=17, column=1, value="▶ 가중 평균 종합 점수").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=17, column=1, value="▶ 가중 평균 종합 점수").font = _section_font()
     ws.cell(row=17, column=2, value="=B9*0.15+B10*0.2+B11*0.2+B12*0.15+B13*0.1+B14*0.15+B15*0.05")
     ws.cell(row=17, column=2).number_format = "0.00"
 
     # 판정 (수식)
-    ws.cell(row=18, column=1, value="▶ 판정").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=18, column=1, value="▶ 판정").font = _section_font()
     ws.cell(row=18, column=2, value='=IF(B17>=4,"GO",IF(B17>=3,"GO 조건부",IF(B17>=2,"HOLD","NO-GO")))')
     judge_cell = ws.cell(row=18, column=2)
-    judge_cell.font = Font(name=FONT_NAME, size=12, bold=True, color=HEX_WHITE)
+    judge_cell.font = Font(name=FONT_NAME, size=12, bold=True, color=HEX_INK)
     judge_cell.alignment = Alignment(horizontal="center", vertical="center")
     ws.row_dimensions[18].height = 30
 
     # 조건부 서식 — 판정 셀
-    from openpyxl.formatting.rule import FormulaRule
-    ws.conditional_formatting.add(
-        "B18",
-        FormulaRule(formula=['$B$18="GO"'], fill=PatternFill("solid", fgColor=HEX_NEON))
-    )
-    ws.conditional_formatting.add(
-        "B18",
-        FormulaRule(formula=['$B$18="GO 조건부"'], fill=PatternFill("solid", fgColor=HEX_NEON))
-    )
-    ws.conditional_formatting.add(
-        "B18",
-        FormulaRule(formula=['$B$18="HOLD"'], fill=PatternFill("solid", fgColor=HEX_ORANGE))
-    )
-    ws.conditional_formatting.add(
-        "B18",
-        FormulaRule(formula=['$B$18="NO-GO"'], fill=PatternFill("solid", fgColor=HEX_MAGENTA))
-    )
+    for label, (bg, fg) in JUDGE.items():
+        ws.conditional_formatting.add(
+            "B18",
+            FormulaRule(formula=[f'$B$18="{label}"'], fill=PatternFill("solid", fgColor=bg),
+                        font=Font(name=FONT_NAME, size=12, bold=True, color=fg))
+        )
 
     # 추정 승률
-    ws.cell(row=19, column=1, value="▶ 추정 승률").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=19, column=1, value="▶ 추정 승률").font = _section_font()
     ws.cell(row=19, column=2, value=data.get("winrate_text", "-"))
     ws.cell(row=19, column=3, value="참고용")
 
     # 핵심 메시지
-    ws.cell(row=21, column=1, value="▼ 핵심 메시지 (GO인 경우)").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=21, column=1, value="▼ 핵심 메시지 (GO인 경우)").font = _section_font()
     messages = data.get("core_messages", [])
     for i, msg in enumerate(messages[:3], start=22):
         ws.cell(row=i, column=1, value=f"메시지 {i-21}")
@@ -234,22 +277,9 @@ def _build_requirements_sheet(wb: Workbook, data: Dict):
     # 조건부 서식 — 분류 컬럼
     last_row = max(2, 1 + len(rows))
     range_a = f"A2:A{last_row}"
-    ws.conditional_formatting.add(
-        range_a,
-        FormulaRule(formula=['$A2="필수"'],
-                    fill=PatternFill("solid", fgColor=HEX_MAGENTA),
-                    font=Font(name=FONT_NAME, color=HEX_WHITE, bold=True))
-    )
-    ws.conditional_formatting.add(
-        range_a,
-        FormulaRule(formula=['$A2="선택"'],
-                    fill=PatternFill("solid", fgColor=HEX_ORANGE))
-    )
-    ws.conditional_formatting.add(
-        range_a,
-        FormulaRule(formula=['$A2="가산"'],
-                    fill=PatternFill("solid", fgColor=HEX_NEON))
-    )
+    ws.conditional_formatting.add(range_a, _sev_rule('$A2="필수"', SEV_HIGH))
+    ws.conditional_formatting.add(range_a, _sev_rule('$A2="선택"', SEV_MID))
+    ws.conditional_formatting.add(range_a, _sev_rule('$A2="가산"', SEV_LOW))
 
 
 # =====================================================================
@@ -266,18 +296,8 @@ def _build_evaluation_sheet(wb: Workbook, data: Dict):
     # G열 강점 조건부 서식
     last_row = max(2, 1 + len(rows))
     range_g = f"G2:G{last_row}"
-    ws.conditional_formatting.add(
-        range_g,
-        FormulaRule(formula=['$G2="강점"'],
-                    fill=PatternFill("solid", fgColor=HEX_ACCENT),
-                    font=Font(name=FONT_NAME, color=HEX_WHITE, bold=True))
-    )
-    ws.conditional_formatting.add(
-        range_g,
-        FormulaRule(formula=['$G2="약점"'],
-                    fill=PatternFill("solid", fgColor=HEX_MAGENTA),
-                    font=Font(name=FONT_NAME, color=HEX_WHITE, bold=True))
-    )
+    ws.conditional_formatting.add(range_g, _sev_rule('$G2="강점"', (HEX_STEEL_TINT, HEX_STEEL)))
+    ws.conditional_formatting.add(range_g, _sev_rule('$G2="약점"', SEV_HIGH))
 
 
 # =====================================================================
@@ -294,22 +314,9 @@ def _build_risks_sheet(wb: Workbook, data: Dict):
     # D열 등급 조건부 서식
     last_row = max(2, 1 + len(rows))
     range_d = f"D2:D{last_row}"
-    ws.conditional_formatting.add(
-        range_d,
-        FormulaRule(formula=['$D2="상"'],
-                    fill=PatternFill("solid", fgColor=HEX_MAGENTA),
-                    font=Font(name=FONT_NAME, color=HEX_WHITE, bold=True))
-    )
-    ws.conditional_formatting.add(
-        range_d,
-        FormulaRule(formula=['$D2="중"'],
-                    fill=PatternFill("solid", fgColor=HEX_ORANGE))
-    )
-    ws.conditional_formatting.add(
-        range_d,
-        FormulaRule(formula=['$D2="하"'],
-                    fill=PatternFill("solid", fgColor=HEX_NEON))
-    )
+    ws.conditional_formatting.add(range_d, _sev_rule('$D2="상"', SEV_HIGH))
+    ws.conditional_formatting.add(range_d, _sev_rule('$D2="중"', SEV_MID))
+    ws.conditional_formatting.add(range_d, _sev_rule('$D2="하"', SEV_LOW))
 
 
 # =====================================================================
@@ -325,7 +332,7 @@ def _build_competition_sheet(wb: Workbook, data: Dict):
 
     # SWOT 영역 (시트 하단)
     swot_start = max(8, len(rows) + 4)
-    ws.cell(row=swot_start, column=1, value="▼ 우리 측 SWOT").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=swot_start, column=1, value="▼ 우리 측 SWOT").font = _section_font()
 
     swot = data.get("swot", {})
     swot_items = [
@@ -356,22 +363,9 @@ def _build_timeline_sheet(wb: Workbook, data: Dict):
     # E열 압박 강도 조건부 서식
     last_row = max(2, 1 + len(rows))
     range_e = f"E2:E{last_row}"
-    ws.conditional_formatting.add(
-        range_e,
-        FormulaRule(formula=['$E2="상"'],
-                    fill=PatternFill("solid", fgColor=HEX_MAGENTA),
-                    font=Font(name=FONT_NAME, color=HEX_WHITE, bold=True))
-    )
-    ws.conditional_formatting.add(
-        range_e,
-        FormulaRule(formula=['$E2="중"'],
-                    fill=PatternFill("solid", fgColor=HEX_ORANGE))
-    )
-    ws.conditional_formatting.add(
-        range_e,
-        FormulaRule(formula=['$E2="하"'],
-                    fill=PatternFill("solid", fgColor=HEX_NEON))
-    )
+    ws.conditional_formatting.add(range_e, _sev_rule('$E2="상"', SEV_HIGH))
+    ws.conditional_formatting.add(range_e, _sev_rule('$E2="중"', SEV_MID))
+    ws.conditional_formatting.add(range_e, _sev_rule('$E2="하"', SEV_LOW))
 
 
 # =====================================================================
@@ -398,7 +392,7 @@ def _build_budget_sheet(wb: Workbook, data: Dict):
         ws.cell(row=i, column=3, value=note)
         for col in range(1, 4):
             _style_data(ws.cell(row=i, column=col), alt_row=(i % 2 == 0))
-        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_DARK_GRAY)
+        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
     ws.cell(row=2, column=2).number_format = "#,##0"
     ws.cell(row=4, column=2).number_format = "#,##0"
     ws.cell(row=5, column=2).number_format = "#,##0"
@@ -407,7 +401,7 @@ def _build_budget_sheet(wb: Workbook, data: Dict):
     ws.cell(row=8, column=2).number_format = "0.00%"
 
     # 입찰가 시뮬레이션
-    ws.cell(row=10, column=1, value="▼ 입찰가 권고 시뮬레이션").font = Font(name=FONT_NAME, size=11, bold=True, color=HEX_PRIMARY)
+    ws.cell(row=10, column=1, value="▼ 입찰가 권고 시뮬레이션").font = _section_font()
     sim_rows = [
         ("목표 마진율", budget.get("target_margin", 0.18), "행사 유형별 표준"),
         ("리스크 프리미엄", budget.get("risk_premium", 0.05), "리스크 시트 참조"),
@@ -420,7 +414,7 @@ def _build_budget_sheet(wb: Workbook, data: Dict):
         ws.cell(row=i, column=3, value=note)
         for col in range(1, 4):
             _style_data(ws.cell(row=i, column=col), alt_row=(i % 2 == 0))
-        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_DARK_GRAY)
+        ws.cell(row=i, column=1).font = Font(name=FONT_NAME, size=10, bold=True, color=HEX_INK)
     ws.cell(row=11, column=2).number_format = "0.00%"
     ws.cell(row=12, column=2).number_format = "0.00%"
     ws.cell(row=13, column=2).number_format = "#,##0"
@@ -430,17 +424,17 @@ def _build_budget_sheet(wb: Workbook, data: Dict):
     ws.conditional_formatting.add(
         "B6",
         CellIsRule(operator="lessThan", formula=["0.05"],
-                   fill=PatternFill("solid", fgColor=HEX_MAGENTA))
+                   fill=PatternFill("solid", fgColor=SEV_HIGH[0]))
     )
     ws.conditional_formatting.add(
         "B6",
         CellIsRule(operator="between", formula=["0.05", "0.15"],
-                   fill=PatternFill("solid", fgColor=HEX_ORANGE))
+                   fill=PatternFill("solid", fgColor=SEV_MID[0]))
     )
     ws.conditional_formatting.add(
         "B6",
         CellIsRule(operator="greaterThanOrEqual", formula=["0.15"],
-                   fill=PatternFill("solid", fgColor=HEX_NEON))
+                   fill=PatternFill("solid", fgColor=SEV_LOW[0]))
     )
 
 
@@ -449,7 +443,7 @@ def _build_budget_sheet(wb: Workbook, data: Dict):
 # =====================================================================
 def build_evaluation_matrix(
     data: Dict,
-    output_dir: str = "/mnt/user-data/outputs"
+    output_dir: str = "outputs"
 ) -> str:
     """
     7축 분석 데이터를 .xlsx 파일로 빌드.
@@ -488,8 +482,9 @@ def build_evaluation_matrix(
 # =====================================================================
 # 11. CLI 진입점 (검증용)
 # =====================================================================
-if __name__ == "__main__":
-    sample = {
+def _sample() -> Dict:
+    """검증용 샘플 데이터 (가명)"""
+    return {
         "client": "샘플발주처",
         "event_name": "샘플 컨퍼런스",
         "analyst": "MICE 전략가",
@@ -547,5 +542,47 @@ if __name__ == "__main__":
             "risk_premium": 0.05
         }
     }
-    path = build_evaluation_matrix(sample, output_dir="/tmp")
+
+
+LEGACY_HEX = ("0A2540", "2962FF", "00E676", "FF5722", "E91E63")  # 구 네이비·네온 — 재유입 감시용
+
+
+def _self_test() -> int:
+    """샘플 빌드 → 재오픈 → 7시트·구 팔레트 0건·리멤버 토큰 적용 확인."""
+    import tempfile
+    import zipfile
+    from openpyxl import load_workbook
+    print(f"토큰 출처: {P['_source']}")
+    with tempfile.TemporaryDirectory() as td:
+        path = build_evaluation_matrix(_sample(), output_dir=td)
+        wb = load_workbook(path)
+        expected = ["0_종합", "1_요건", "2_평가", "3_리스크", "4_경쟁", "5_일정", "6_예산"]
+        if wb.sheetnames != expected:
+            print(f"FAIL 시트 구성 {wb.sheetnames}")
+            return 1
+        with zipfile.ZipFile(path) as z:
+            blob = "".join(z.read(n).decode("utf-8", "ignore") for n in z.namelist()
+                           if n.endswith(".xml")).upper()
+        bad = [h for h in LEGACY_HEX if h in blob]
+        if bad:
+            print(f"FAIL 구 팔레트 잔존: {bad}")
+            return 1
+        for key in ("accent", "surfaceAlt", "danger"):
+            if P[key].upper() not in blob:
+                print(f"FAIL 토큰 {key}={P[key]} 미적용")
+                return 1
+        print(f"OK   {Path(path).name} (7시트)")
+    print("SELF-TEST PASS")
+    return 0
+
+
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description="RFP 평가 매트릭스 .xlsx 빌더")
+    ap.add_argument("--self-test", action="store_true", help="샘플 빌드·검증 후 종료")
+    ap.add_argument("--out", default="outputs", help="샘플 출력 폴더")
+    args = ap.parse_args()
+    if args.self_test:
+        sys.exit(_self_test())
+    path = build_evaluation_matrix(_sample(), output_dir=args.out)
     print(f"생성 완료: {path}")

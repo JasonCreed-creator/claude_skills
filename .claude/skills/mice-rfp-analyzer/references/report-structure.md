@@ -12,7 +12,7 @@ mice-rfp-analyzer가 생성하는 .docx 분석 보고서의 목차·섹션 구�
 - **여백**: 상하좌우 25mm
 - **본문 글꼴**: Pretendard 10.5pt
 - **줄간격**: 1.4
-- **색상**: jc-design-system signature 토큰 호출
+- **색상**: jc-design-system v2(리멤버 웜 페이퍼) 토큰 런타임 로드 — `scripts/rfp_tokens.py`. 아래는 **토큰 역할명**(HEX 미러 금지)
 
 ---
 
@@ -145,30 +145,31 @@ Executive Summary (1페이지)
 ### 제목 위계
 | 위계 | 글꼴 | 크기 | 색상 | 간격 |
 |------|------|------|------|------|
-| 표지 메인 | Pretendard ExtraBold | 32pt | Primary Navy | - |
-| 표지 서브 | Pretendard SemiBold | 18pt | Dark Gray | - |
-| 섹션 1단계 (1.) | Pretendard ExtraBold | 18pt | Primary Navy | 위 24pt 아래 12pt |
-| 섹션 2단계 (1-1.) | Pretendard SemiBold | 14pt | Primary Navy | 위 18pt 아래 9pt |
-| 섹션 3단계 | Pretendard SemiBold | 12pt | Dark Gray | 위 12pt 아래 6pt |
-| 본문 | Pretendard | 10.5pt | Dark Gray | 줄간격 1.4 |
-| 캡션 | Pretendard | 9pt | Mid Gray | 줄간격 1.2 |
+| 표지 로고 슬롯 | 리멤버 로고(`jc-design-system/assets/remember-black.png`, 높이 7mm) | - | - | 좌상단. 없으면 발행 명의 텍스트 |
+| 표지 메인 | Pretendard Bold | 32pt | `text` | - |
+| 표지 서브 | Pretendard Bold | 18pt | `text` | - |
+| 섹션 1단계 (1.) | Pretendard Bold | 18pt | `text` | 위 24pt 아래 12pt |
+| 섹션 2단계 (1-1.) | Pretendard Bold | 14pt | `text` | 위 18pt 아래 9pt |
+| 섹션 3단계 | Pretendard Bold | 12pt | `text` | 위 12pt 아래 6pt |
+| 본문 | Pretendard | 10.5pt | `text` | 줄간격 1.4 |
+| 캡션 | Pretendard | 9pt | `textMuted` | 줄간격 1.2 |
 
 ### 강조 박스 (Executive Summary, 핵심 메시지)
-- 배경: #F0F4FA (Light Navy Tint)
-- 좌측 테두리: 4pt Primary Navy
+- 배경: `accentSoft`
+- 좌측 테두리: 4pt `accent`
 - 패딩: 12pt
 - 본문 글꼴 동일
 
 ### 판정 색상 박스
-- GO: 배경 #00E676, 글자 흰색, 굵게
-- GO 조건부: 배경 #00E676 50% 투명도, 글자 Primary Navy
-- HOLD: 배경 #FF5722, 글자 흰색, 굵게
-- NO-GO: 배경 #E91E63, 글자 흰색, 굵게
+- GO: 배경 `success`, 글자 흰색, 굵게
+- GO 조건부: 배경 `successBg`, 글자 `success`, 굵게
+- HOLD: 배경 `warning`, 글자 잉크(`text`), 굵게 — 앰버 단독 텍스트 금지
+- NO-GO: 배경 `danger`, 글자 흰색, 굵게
 
 ### 표 서식
-- 헤더 행: 배경 Primary Navy, 글자 흰색, SemiBold 10pt
-- 데이터 행: 짝수 #F8F9FB / 홀수 흰색
-- 테두리: 헤더 하단 2pt Primary Navy / 데이터 행 0.5pt #E0E0E0
+- 헤더 행: 배경 `surfaceAlt`, 글자 잉크 Bold 10pt
+- 데이터 행: 짝수 `bg` / 홀수 흰색
+- 테두리: `border` 0.5pt
 - 셀 패딩: 8pt
 
 ### 아이콘·기호 사용
@@ -183,31 +184,26 @@ Executive Summary (1페이지)
 ### 페이지 번호
 - 위치: 하단 가운데
 - 형식: "X / Y"
-- 글꼴: Pretendard 9pt, Mid Gray
+- 글꼴: Pretendard 9pt, `textMuted`
 
 ### 페이지 머리글
 - 좌: [발주처] - [행사명]
 - 우: RFP 분석 보고서
-- 글꼴: Pretendard 8pt, Mid Gray
-- 하단 구분선: 0.5pt #E0E0E0
+- 글꼴: Pretendard 8pt, `textMuted`
+- 하단 구분선: 0.5pt `border`
 
 ---
 
-## 색상 토큰 (jc-design-system 호출)
+## 색상 토큰 (jc-design-system 런타임 로드)
 
 ```python
-# build_report.py 에서 사용
-COLOR_PRIMARY      = RGBColor(0x0A, 0x25, 0x40)  # Deep Navy
-COLOR_ACCENT       = RGBColor(0x29, 0x62, 0xFF)  # Electric Blue
-COLOR_NEON         = RGBColor(0x00, 0xE6, 0x76)  # Neon Green
-COLOR_ORANGE       = RGBColor(0xFF, 0x57, 0x22)  # Orange
-COLOR_MAGENTA      = RGBColor(0xE9, 0x1E, 0x63)  # Magenta
-COLOR_DARK_GRAY    = RGBColor(0x33, 0x33, 0x33)  # 본문
-COLOR_MID_GRAY     = RGBColor(0x77, 0x77, 0x77)  # 캡션
-COLOR_LIGHT_NAVY   = RGBColor(0xF0, 0xF4, 0xFA)  # 강조 박스 배경
-COLOR_LIGHT_GRAY   = RGBColor(0xF8, 0xF9, 0xFB)  # 짝수 행 배경
-COLOR_BORDER       = RGBColor(0xE0, 0xE0, 0xE0)  # 테두리
+# build_report.py — 값 미러 금지
+from rfp_tokens import palette
+P = palette()                      # signature-tokens.md §6 JSON → 역할명 dict ('#' 없는 HEX)
+COLOR_INK = RGBColor.from_string(P["text"])
 ```
+
+SoT 로드 실패 시에만 `rfp_tokens._FALLBACK`(출처 주석 `signature-tokens.md §6`)을 쓰고, 빌드 로그 `토큰 출처: fallback`을 보고에 명시한다. 구 네이비·네온 룩은 "jc 시그니처" 명시 요청 시 `legacy-jc` 오버레이로만.
 
 ---
 
@@ -215,5 +211,6 @@ COLOR_BORDER       = RGBColor(0xE0, 0xE0, 0xE0)  # 테두리
 
 - 표지 / 머리글 / 1장 RFP 개요 / 본문 직접 인용 시에만 발주처 명 사용
 - 발주처 로고는 사용자가 명시적으로 제공한 경우에만 삽입
-- **발주처 컬러를 보고서 디자인에 적용하지 않음** (작업자 베이스 유지)
+- **발주처 컬러를 보고서 디자인에 적용하지 않음** (리멤버 웜 페이퍼 유지)
+- 발행 명의: 리멤버 MICE비즈팀 기본(`issuer`로 덮어쓰기 가능). 구 소속사 명칭·개인 연락처 금지(`RULE-NO-COMPANY`)
 - 단, 발주처 명을 표지 외에는 과도하게 반복하지 않음 (분석자 시선 강조)

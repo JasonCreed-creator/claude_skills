@@ -1,0 +1,107 @@
+{
+  "$schema": "ChainPayload/v1",
+  "source": "jc-kv-guide",
+  "version": "v1.0.0",
+  "generatedAt": "2026-09-10T15:00:00+09:00",
+  "target": null,
+  "clientId": null,
+  "guide": {
+    "eventName": "스마트 제조 인사이트 데이 2026 (샘플)",
+    "docVersion": "v0.1",
+    "issuedAt": "2026-09-10",
+    "issuer": "{{company_name}}",
+    "slug": "kv-guide-sample",
+    "mode": "overview-extract",
+    "inputDocs": [
+      { "id": "D1", "name": "행사 개요 메일 본문 (2026-09-08)", "kind": "overview" },
+      { "id": "D2", "name": "발주처 브랜드 가이드 v3 (PDF)", "kind": "brand" }
+    ],
+    "sections": [
+      {
+        "id": "01",
+        "title": "행사 개요·핵심 메시지",
+        "items": [
+          { "label": "행사명(국문)", "value": "스마트 제조 인사이트 데이 2026", "source": "quote", "ref": "D1 제목" },
+          { "label": "행사명(영문)", "value": "", "source": "tbd", "question": "키비주얼에 표기할 행사명 영문 표기를 알려주세요. (예: 대문자·소문자 규칙 포함)" },
+          { "label": "일시", "value": "2026년 11월 12일(수) 13:00~17:30", "source": "quote", "ref": "D1 §1" },
+          { "label": "장소", "value": "코엑스 컨퍼런스룸 401호", "source": "quote", "ref": "D1 §1" },
+          { "label": "주최", "value": "{{client_company}}", "source": "variable" },
+          { "label": "행사 주제 문장", "value": "제조 현장의 데이터를 의사결정으로 연결하는 방법을 공유하는 자리", "source": "quote", "ref": "D1 §2" },
+          { "label": "핵심 메시지(슬로건)", "value": "", "source": "tbd", "question": "키비주얼에 실릴 핵심 메시지(슬로건) 문장을 확정해 주세요. 후보가 여럿이면 우선순위와 함께 주시면 됩니다." }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "용도·타깃",
+        "items": [
+          { "label": "1차 사용 지면", "value": "행사 랜딩페이지 상단(히어로) 이미지", "source": "variable" },
+          { "label": "보는 사람", "value": "제조 기업의 생산·품질·IT 부서 실무자와 팀장급", "source": "quote", "ref": "D1 §3" }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "필수 요소",
+        "items": [
+          { "label": "반드시 들어갈 텍스트", "value": "행사명, 일시, 장소", "source": "quote", "ref": "D1 §4" },
+          { "label": "반드시 들어갈 로고", "value": "{{logo_files}}", "source": "variable" },
+          { "label": "로고·주최 표기 위계", "value": "", "source": "tbd", "question": "주최·주관·후원 로고의 표기 순서와 크기 우선순위를 알려주세요." }
+        ]
+      },
+      {
+        "id": "04",
+        "title": "브랜드 제약",
+        "items": [
+          { "label": "서체", "value": "본문·제목 모두 Pretendard, 제목은 Bold 이상", "source": "quote", "ref": "D2 p.7" },
+          { "label": "로고 사용 규정", "value": "로고 최소 높이 24px, 여백은 로고 높이의 1/2 이상 확보", "source": "quote", "ref": "D2 p.4" }
+        ],
+        "swatches": [
+          { "name": "주 색상", "hex": "#0057B8", "source": "quote", "ref": "D2 p.3" },
+          { "name": "보조 색상", "hex": "#00A3A3", "source": "quote", "ref": "D2 p.3" },
+          { "name": "본문 잉크", "hex": "#1E1E1E", "source": "quote", "ref": "D2 p.3" }
+        ]
+      },
+      {
+        "id": "05",
+        "title": "무드·톤 키워드",
+        "items": [
+          { "label": "원문 표현", "value": "\"현장감 있고 실용적인\"", "source": "quote", "ref": "D1 §2" },
+          { "label": "추가 방향", "value": "", "source": "tbd", "question": "키비주얼이 전달해야 할 인상·방향을 한두 단어로 더 알려주세요. (현재 확보된 표현: \"현장감 있고 실용적인\")" }
+        ]
+      },
+      {
+        "id": "06",
+        "title": "금지 사항",
+        "items": [
+          { "label": "발주처 지정", "value": "경쟁사 제품 사진 사용 금지", "source": "quote", "ref": "D1 §5" },
+          { "label": "S1", "value": "로고의 비율 왜곡·색 변경·효과(그림자·외곽선 등) 적용 금지", "source": "standard" },
+          { "label": "S2", "value": "저작권·사용권을 확인하지 않은 이미지·서체 사용 금지", "source": "standard" },
+          { "label": "S3", "value": "3. 필수 요소 누락 금지", "source": "standard" },
+          { "label": "S4", "value": "7. 규격의 텍스트 안전영역 침범 금지", "source": "standard" }
+        ]
+      },
+      {
+        "id": "07",
+        "title": "규격",
+        "items": [
+          { "label": "가로×세로 크기", "value": "{{lp_hero_spec}}", "source": "variable" },
+          { "label": "해상도·색 공간", "value": "", "source": "tbd", "question": "납품 이미지의 해상도(예: 가로 2880px)와 색 공간(웹용 RGB)을 확정해 주세요." },
+          { "label": "텍스트 안전영역", "value": "", "source": "tbd", "question": "모바일에서 잘리지 않아야 하는 영역(안전영역) 기준이 있으면 알려주세요. 없으면 랜딩페이지 담당자와 정해 회신드리겠습니다." },
+          { "label": "납품 파일 형식", "value": "", "source": "tbd", "question": "납품 파일 형식을 확정해 주세요. (예: 원본 작업 파일 + 웹용 JPG/PNG)" }
+        ]
+      },
+      {
+        "id": "08",
+        "title": "납품·일정·검수",
+        "items": [
+          { "label": "납품물 목록", "value": "{{deliverables}}", "source": "variable" },
+          { "label": "초안 마감", "value": "{{deadline}}", "source": "variable" },
+          { "label": "검수 기준", "value": "행사명·일시·장소 표기 일치 / 로고·주최 위계 준수 / 규격 일치 / 필수 요소 전부 포함 / 금지 항목 위반 없음", "source": "standard" },
+          { "label": "연락", "value": "{{contact}}", "source": "variable" }
+        ]
+      }
+    ],
+    "sourceCorrections": [
+      { "ref": "D1 §1", "original": "11월 12일(수)", "suggested": "11월 12일(목)", "reason": "2026-11-12는 목요일 — 요일 표기 오류로 보임. 확인 요청" }
+    ]
+  }
+}

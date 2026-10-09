@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-build_script.py — 발표 대본 .docx 빌드 (pt-script v2.0)
+build_script.py — 발표 대본 .docx 빌드 (pt-script v2.2.0)
 
 python-docx 를 사용하여 notes-extraction.json + (선택) proposal-meta.json
 을 입력으로 받아 jc-design-system 토큰이 적용된 발표 대본 .docx 를 생성한다.
@@ -25,7 +25,8 @@ Usage:
         --rfp-title "[행사명] 운영 제안" \\
         --out /tmp/script.docx
 
-본 스크립트는 jc-design-mapping.md §2~7 의 토큰 매핑을 자동 적용한다.
+본 스크립트는 references/jc-design-mapping.md §2~7 의 리멤버 웜 페이퍼 토큰 매핑을 자동 적용한다.
+자가 테스트: python build_script.py --self-test
 """
 
 from __future__ import annotations
@@ -46,59 +47,87 @@ if hasattr(sys.stderr, "reconfigure"):
 
 
 # ============================================================
-# JC Design System 토큰 (jc-design-mapping.md §2-3 기준)
+# 디자인 토큰 — 리멤버 웜 페이퍼 (jc-design-system v2, 런타임 로드)
 # ============================================================
-# docx는 CSS 변수를 못 쓰므로 HEX 리터럴은 "매체 불가피"로 남되,
-# 값은 jc-design-system signature-tokens.md §6 JSON 라이트 정본과 일치시킨다 (SoT 미러).
+# docx는 CSS 변수를 못 쓰므로 HEX 리터럴로 쓰되, 값은 jc-design-system
+# references/signature-tokens.md §6 JSON 에서 런타임 로드한다.
+# 탐색 순서: 형제 경로 → ~/.claude/skills → ~/.claude/skills/synced/* (house-conventions §2).
+# 아래 폴백 상수는 로드 실패 시에만 쓰며, 출처 = signature-tokens.md §6 (brand remember 2.1.0).
+# 구 네이비·일렉트릭블루 시그니처는 쓰지 않는다(legacy-jc 오버레이는 명시 요청 시 jc-design-system에서).
 
-# 컬러 토큰 (HEX) — jc-design-system(SoT) §6 JSON 런타임 로딩, 실패 시 미러 폴백.
-def _load_jc_tokens():
-    import json, re
-    from pathlib import Path
+_JSON_FENCE = re.compile(r"```json\s*\n(.*?)\n```", re.S)
+
+
+def _find_signature_tokens() -> Optional[Path]:
+    here = Path(__file__).resolve()
+    cands = []
+    if len(here.parents) >= 3:
+        cands.append(here.parents[2] / "jc-design-system")
+    home = Path.home()
+    cands.append(home / ".claude" / "skills" / "jc-design-system")
+    cands.extend(sorted(home.glob(".claude/skills/synced/*/jc-design-system")))
+    for c in cands:
+        f = c / "references" / "signature-tokens.md"
+        if f.is_file():
+            return f
+    return None
+
+
+def _load_tokens() -> dict:
     try:
-        sot = Path(__file__).resolve().parents[2] / "jc-design-system" / "references" / "signature-tokens.md"
-        m = re.search(r"```json\s*\n(.*?)\n```", sot.read_text(encoding="utf-8"), re.S)
+        f = _find_signature_tokens()
+        if f is None:
+            return {}
+        m = _JSON_FENCE.search(f.read_text(encoding="utf-8"))
         return json.loads(m.group(1)) if m else {}
-    except Exception:
+    except Exception:  # noqa: BLE001 — 로드 실패 시 폴백 상수 사용
         return {}
 
-_JC = _load_jc_tokens()
-def _jc(key, fallback):
-    c = _JC.get("color", {})
+
+TOKENS = _load_tokens()
+TOKENS_LOADED = bool(TOKENS.get("color"))
+
+
+def _tok(key: str, fallback: str) -> str:
+    c = TOKENS.get("color", {})
     v = c.get(key) or c.get("point", {}).get(key) or c.get("semantic", {}).get(key) or fallback
-    return v.lstrip("#")
+    return str(v).lstrip("#").upper()
 
-JC_PRIMARY = _jc("primary", "0A2540")              # --jc-primary
-JC_PRIMARY_SOFT = _jc("primarySoft", "1A3556")     # --jc-primary-soft
-JC_ACCENT = _jc("accent", "2962FF")                # --jc-accent
-JC_ACCENT_STRONG = _jc("accentStrong", "1E4DCC")   # --jc-accent-strong
-JC_TEXT = _jc("text", "1A1D24")                    # --jc-text
-JC_TEXT_MUTED = _jc("textMuted", "5A6270")         # --jc-text-muted
-JC_SURFACE = _jc("surface", "FFFFFF")              # --jc-surface
-JC_SURFACE_ALT = _jc("surfaceAlt", "F1F3F7")       # --jc-surface-alt
-JC_BORDER = _jc("border", "E5E8ED")                # --jc-border
-JC_BORDER_STRONG = _jc("borderStrong", "C9CFD8")   # --jc-border-strong
-JC_SUCCESS = _jc("success", "00C853")              # --jc-success
-JC_WARNING = _jc("warning", "FFA000")              # --jc-warning
-JC_DANGER = _jc("danger", "D32F2F")                # --jc-danger
-JC_POINT_ORANGE = _jc("orange", "FF5722")          # --jc-point-orange
-# mc 표지용 옅은 오렌지 배경 (--jc-point-orange-softest). 구 drift값 FFE5DD → FFF3E0 정합 (대비 14.8:1 AAA).
-JC_POINT_ORANGE_SOFTEST = _jc("orangeSoftest", "FFF3E0")  # --jc-point-orange-softest
 
-# 발표 유형별 강조 컬러 매핑 (jc-design-mapping.md §5)
+# 폴백 = signature-tokens.md §6 값
+RM_INK = _tok("text", "1A1A1A")                 # color.text — 본문·제목
+RM_INK_SUB = _tok("textSecondary", "4A463F")    # color.textSecondary (brown)
+RM_MUTED = _tok("textMuted", "6E6E6E")          # color.textMuted — 팁·메타
+RM_CHARCOAL = _tok("primarySoft", "332F29")     # color.primarySoft — 표 헤더 배경
+RM_ACCENT = _tok("accent", "EB6F2A")            # color.accent — 18pt 이상 큰 글자 전용
+RM_ACCENT_DEEP = _tok("accentStrong", "B8431A") # color.accentStrong (accent-deep) — 작은 강조 글자
+RM_ACCENT_SOFT = _tok("accentSoft", "FFF1E6")   # color.accentSoft — 옅은 오렌지 배경
+RM_SURFACE = _tok("surface", "FFFFFF")          # color.surface
+RM_SURFACE_ALT = _tok("surfaceAlt", "F4F1EA")   # color.surfaceAlt — 웜 서피스·짝수 행
+RM_BORDER = _tok("border", "DCD6C8")            # color.border
+RM_STEEL = _tok("steel", "476580")              # color.point.steel
+RM_SUCCESS = _tok("success", "196B24")          # color.semantic.success
+RM_WARNING_BG = _tok("warningBg", "FBF2DF")     # color.semantic.warningBg — 시간 초과 알림 배경
+
+# 발표 유형별 강조 (jc-design-mapping.md §5). 인쇄 문서라 표지는 라이트(RULE-PRINT-LIGHT).
 PRESENTATION_TYPE_OVERRIDES = {
-    "bidding_pt": {"heading_accent": JC_ACCENT, "cover_bg": JC_PRIMARY},
-    "conference": {"heading_accent": JC_PRIMARY_SOFT, "cover_bg": JC_PRIMARY},
-    "forum": {"heading_accent": JC_PRIMARY_SOFT, "cover_bg": JC_PRIMARY},
-    "corporate_event": {"heading_accent": JC_POINT_ORANGE, "cover_bg": JC_PRIMARY},
-    "mc": {"heading_accent": JC_POINT_ORANGE, "cover_bg": JC_POINT_ORANGE_SOFTEST},
-    "general_business": {"heading_accent": JC_ACCENT, "cover_bg": JC_PRIMARY},
+    "bidding_pt": {"heading_accent": RM_ACCENT, "cover_bg": RM_SURFACE_ALT},
+    "conference": {"heading_accent": RM_INK, "cover_bg": RM_SURFACE_ALT},
+    "forum": {"heading_accent": RM_INK, "cover_bg": RM_SURFACE_ALT},
+    "corporate_event": {"heading_accent": RM_ACCENT, "cover_bg": RM_ACCENT_SOFT},
+    "mc": {"heading_accent": RM_ACCENT, "cover_bg": RM_ACCENT_SOFT},
+    "general_business": {"heading_accent": RM_ACCENT, "cover_bg": RM_SURFACE_ALT},
 }
 
-# 회사 종속 표현 (검증용)
+# 발표 주체 기본값 (v2.1.0 — 2026-10-01: 전 직장 치환 규칙 제거, 현 소속 리멤버앤컴퍼니를 기본 발표 주체로)
+DEFAULT_PRESENTER = "리멤버앤컴퍼니"
+# 산출물에 남아 있으면 안 되는 표현 (검증용) — 전 직장 명칭·전 부서명
 FORBIDDEN_COMPANY_TERMS = [
-    "엠앤씨", "M&C커뮤니케이션즈", "리멤버앤컴퍼니", "신사업실",
+    "[발표 주체]", "[부서명]",
 ]
+DEFAULT_DEPARTMENT = "마이스 비즈 팀"
+# 전 직장 상호 — 치환하지 않고 유출 경고만 낸다(RULE-NO-COMPANY v2: 리멤버 명의 문서에 구 소속사 0건).
+FORMER_COMPANY_TERMS = ["M&C", "엠앤씨"]
 
 
 # ============================================================
@@ -244,7 +273,7 @@ def format_seconds(sec: int) -> str:
 # ============================================================
 
 def validate_company_mentions(text: str) -> list:
-    """텍스트에서 회사 종속 표현 검출."""
+    """텍스트에서 미치환 자리표시자 검출."""
     detected = []
     for term in FORBIDDEN_COMPANY_TERMS:
         if term in text:
@@ -252,15 +281,19 @@ def validate_company_mentions(text: str) -> list:
     return detected
 
 
-def sanitize_text(text: str) -> str:
-    """회사 종속 표현을 일반 표현으로 치환."""
+def detect_former_company(text: str) -> list:
+    """전 직장 상호 검출 — 유출 경고용(치환하지 않는다)."""
+    return [t for t in FORMER_COMPANY_TERMS if t in (text or "")]
+
+
+def sanitize_text(text: str, presenter: str = DEFAULT_PRESENTER) -> str:
+    """구 양식의 치환 자리표시자([발표 주체]·[부서명])를 현 소속으로 채운다.
+    v2.1.0(2026-10-01): 전 직장 명칭 치환 규칙은 삭제. 발표 주체는 기본값 리멤버앤컴퍼니이며 사용자가 presenter 로 바꿀 수 있다."""
     if not text:
         return ""
     sanitized = text
-    sanitized = re.sub(r"엠앤씨\s*커뮤니케이션즈", "[발표 주체]", sanitized)
-    sanitized = re.sub(r"M&C\s*커뮤니케이션즈", "[발표 주체]", sanitized)
-    sanitized = re.sub(r"리멤버앤컴퍼니", "[발표 주체]", sanitized)
-    sanitized = re.sub(r"신사업실", "[부서명]", sanitized)
+    sanitized = sanitized.replace("[발표 주체]", presenter)
+    sanitized = sanitized.replace("[부서명]", DEFAULT_DEPARTMENT)
     return sanitized
 
 
@@ -269,7 +302,8 @@ def sanitize_text(text: str) -> str:
 # ============================================================
 
 def generate_mention(slide: dict, allocation: dict, tone: str = "formal",
-                     presentation_type: str = "bidding_pt") -> str:
+                     presentation_type: str = "bidding_pt",
+                     presenter: str = DEFAULT_PRESENTER) -> str:
     """슬라이드 데이터 기반 발표 멘트 자동 생성 (폴백용 간이 버전).
 
     실제 운영 시 LLM 호출로 더 자연스러운 멘트 생성 권장.
@@ -283,7 +317,7 @@ def generate_mention(slide: dict, allocation: dict, tone: str = "formal",
 
     # 우선순위 1: speaker notes 그대로 활용 (sanitize 만 적용)
     if notes_type == "speaker" and notes:
-        return sanitize_text(notes)
+        return sanitize_text(notes, presenter)
 
     # 우선순위 2~3: 슬라이드 유형별 패턴
     if slide_type == "cover":
@@ -426,7 +460,7 @@ def build_script_docx(
         from docx.enum.table import WD_TABLE_ALIGNMENT
     except ImportError as exc:
         raise RuntimeError(
-            "python-docx 가 설치되지 않았습니다. `pip install python-docx` 실행."
+            "python-docx 가 설치되지 않았습니다. `python -m pip install python-docx` 실행."
         ) from exc
 
     # ----- 메타 추출 -----
@@ -434,10 +468,11 @@ def build_script_docx(
     qna_minutes = int(meta.get("qna_minutes", round(total_minutes * 0.2)))
     presentation_type = meta.get("presentation_type", "bidding_pt")
     tone = meta.get("tone", "formal")
-    client_name = sanitize_text(meta.get("client_name", "[발주처명]"))
-    rfp_title = sanitize_text(meta.get("rfp_title", "[발표 주제]"))
-    presenter_role = sanitize_text(meta.get("presenter_role", "발표자"))
-    presenter_name = sanitize_text(meta.get("presenter_name") or "")
+    presenter = meta.get("presenter") or DEFAULT_PRESENTER
+    client_name = sanitize_text(meta.get("client_name", "[발주처명]"), presenter)
+    rfp_title = sanitize_text(meta.get("rfp_title", "[발표 주제]"), presenter)
+    presenter_role = sanitize_text(meta.get("presenter_role", "발표자"), presenter)
+    presenter_name = sanitize_text(meta.get("presenter_name") or "", presenter)
     audience_type = meta.get("audience_type", "심사위원")
     qna_included = meta.get("qna_included", True)
 
@@ -447,8 +482,8 @@ def build_script_docx(
     cover_bg = overrides["cover_bg"]
     heading_accent = overrides["heading_accent"]
 
-    # 표지 텍스트 컬러 (배경이 밝으면 진한 색, 어두우면 흰색)
-    cover_text_color = JC_SURFACE if cover_bg in (JC_PRIMARY,) else JC_TEXT
+    # 표지는 라이트 배경 + 잉크 텍스트 (RULE-PRINT-LIGHT)
+    cover_text_color = RM_INK
 
     # ----- 시간 배분 계산 -----
     slides = notes_data.get("slides", [])
@@ -479,6 +514,7 @@ def build_script_docx(
     # 표지 메타 정보
     meta_lines = [
         f"발표 대상: {audience_type}",
+        f"발표 주체: {presenter}",
         f"발표자: {presenter_role}" + (f" {presenter_name}" if presenter_name else ""),
         f"발표 시간: {total_minutes}분" + (f" (Q&A {qna_minutes}분 포함)" if qna_included else ""),
         f"발표 일자: {datetime.now().strftime('%Y년 %m월 %d일')}",
@@ -488,14 +524,14 @@ def build_script_docx(
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r = p.add_run(line)
-        set_run_font(r, "Pretendard", size_pt=12, color_hex=JC_TEXT_MUTED)
+        set_run_font(r, "Pretendard", size_pt=12, color_hex=RM_MUTED)
 
     add_page_break(doc)
 
     # ===== [발표 개요 — 시간 배분표] =====
     overview_heading = doc.add_paragraph()
     r = overview_heading.add_run("발표 개요 — 시간 배분")
-    set_run_font(r, "Pretendard", size_pt=24, color_hex=JC_PRIMARY, bold=True)
+    set_run_font(r, "Pretendard", size_pt=24, color_hex=RM_INK, bold=True)
     overview_heading.paragraph_format.space_after = Pt(18)
 
     table = doc.add_table(rows=1, cols=4)
@@ -509,40 +545,40 @@ def build_script_docx(
         hdr[i].text = ""  # 기존 텍스트 비우기
         p = hdr[i].paragraphs[0]
         run = p.add_run(h)
-        set_run_font(run, "Pretendard", size_pt=11, color_hex=JC_SURFACE, bold=True)
-        set_cell_shading(hdr[i], JC_PRIMARY)
+        set_run_font(run, "Pretendard", size_pt=11, color_hex=RM_SURFACE, bold=True)
+        set_cell_shading(hdr[i], RM_CHARCOAL)
 
     # 데이터 행
     for i, alloc in enumerate(allocations):
         row = table.add_row().cells
-        bg = JC_SURFACE_ALT if (i + 1) % 2 == 0 else JC_SURFACE
+        bg = RM_SURFACE_ALT if (i + 1) % 2 == 0 else RM_SURFACE
 
         row[0].text = ""
         p0 = row[0].paragraphs[0]
         r0 = p0.add_run(f"#{alloc['index']}")
-        set_run_font(r0, "Pretendard", size_pt=11, color_hex=JC_TEXT)
-        if bg != JC_SURFACE:
+        set_run_font(r0, "Pretendard", size_pt=11, color_hex=RM_INK)
+        if bg != RM_SURFACE:
             set_cell_shading(row[0], bg)
 
         row[1].text = ""
         p1 = row[1].paragraphs[0]
         r1 = p1.add_run(alloc["title"][:30])
-        set_run_font(r1, "Pretendard", size_pt=11, color_hex=JC_TEXT)
-        if bg != JC_SURFACE:
+        set_run_font(r1, "Pretendard", size_pt=11, color_hex=RM_INK)
+        if bg != RM_SURFACE:
             set_cell_shading(row[1], bg)
 
         row[2].text = ""
         p2 = row[2].paragraphs[0]
         r2 = p2.add_run(format_seconds(alloc["seconds"]))
-        set_run_font(r2, "Pretendard", size_pt=11, color_hex=JC_TEXT)
-        if bg != JC_SURFACE:
+        set_run_font(r2, "Pretendard", size_pt=11, color_hex=RM_INK)
+        if bg != RM_SURFACE:
             set_cell_shading(row[2], bg)
 
         row[3].text = ""
         p3 = row[3].paragraphs[0]
         r3 = p3.add_run(format_seconds(alloc["cumulative_seconds"]))
-        set_run_font(r3, "Pretendard", size_pt=11, color_hex=JC_TEXT)
-        if bg != JC_SURFACE:
+        set_run_font(r3, "Pretendard", size_pt=11, color_hex=RM_INK)
+        if bg != RM_SURFACE:
             set_cell_shading(row[3], bg)
 
     add_page_break(doc)
@@ -550,10 +586,11 @@ def build_script_docx(
     # ===== [슬라이드별 스크립트] =====
     section_heading = doc.add_paragraph()
     r = section_heading.add_run("슬라이드별 발표 스크립트")
-    set_run_font(r, "Pretendard", size_pt=24, color_hex=JC_PRIMARY, bold=True)
+    set_run_font(r, "Pretendard", size_pt=24, color_hex=RM_INK, bold=True)
     section_heading.paragraph_format.space_after = Pt(18)
 
     total_chars = 0
+    leaks: list[str] = []
     for slide, alloc in zip(slides, allocations):
         # 슬라이드 헤딩 (Heading2 강조)
         sh = doc.add_paragraph()
@@ -565,42 +602,44 @@ def build_script_docx(
         # 배정 시간
         time_p = doc.add_paragraph()
         r = time_p.add_run(f"배정 시간: {format_seconds(alloc['seconds'])}  |  유형: {alloc['slide_type']}")
-        set_run_font(r, "Pretendard", size_pt=11, color_hex=JC_TEXT_MUTED, italic=True)
+        set_run_font(r, "Pretendard", size_pt=11, color_hex=RM_MUTED, italic=True)
         time_p.paragraph_format.space_after = Pt(6)
 
         # 슬라이드 내용 요약
         if slide.get("body_text"):
             summary_label = doc.add_paragraph()
             r = summary_label.add_run("[슬라이드 내용 요약]")
-            set_run_font(r, "Pretendard", size_pt=12, color_hex=JC_TEXT, bold=True)
+            set_run_font(r, "Pretendard", size_pt=12, color_hex=RM_INK, bold=True)
             summary_label.paragraph_format.space_after = Pt(2)
 
             summary_p = doc.add_paragraph()
-            r = summary_p.add_run(sanitize_text(slide["body_text"])[:300])
-            set_run_font(r, "Pretendard", size_pt=11, color_hex=JC_TEXT_MUTED)
+            r = summary_p.add_run(sanitize_text(slide["body_text"], presenter)[:300])
+            set_run_font(r, "Pretendard", size_pt=11, color_hex=RM_MUTED)
             summary_p.paragraph_format.line_spacing = 1.3
             summary_p.paragraph_format.space_after = Pt(10)
 
         # 발표 멘트 (핵심 영역)
         mention_label = doc.add_paragraph()
         r = mention_label.add_run("【발표 멘트】")
-        set_run_font(r, "Pretendard", size_pt=14, color_hex=JC_ACCENT_STRONG, bold=True)
+        set_run_font(r, "Pretendard", size_pt=14, color_hex=RM_ACCENT_DEEP, bold=True)
         mention_label.paragraph_format.space_after = Pt(4)
 
-        mention_text = generate_mention(slide, alloc, tone=tone, presentation_type=presentation_type)
-        mention_text = sanitize_text(mention_text)
+        mention_text = generate_mention(slide, alloc, tone=tone, presentation_type=presentation_type,
+                                        presenter=presenter)
+        mention_text = sanitize_text(mention_text, presenter)
+        leaks.extend(f"슬라이드 {slide['index']}: {w}" for w in detect_former_company(mention_text))
         total_chars += len(mention_text)
 
         mention_p = doc.add_paragraph()
         r = mention_p.add_run(mention_text)
-        set_run_font(r, "Pretendard", size_pt=14, color_hex=JC_TEXT)
+        set_run_font(r, "Pretendard", size_pt=14, color_hex=RM_INK)
         mention_p.paragraph_format.line_spacing = 1.5
         mention_p.paragraph_format.space_after = Pt(10)
 
         # 발표 팁
         tip_p = doc.add_paragraph()
         r = tip_p.add_run(f"💡 발표 팁: {generate_tip(alloc['slide_type'])}")
-        set_run_font(r, "Pretendard", size_pt=11, color_hex=JC_TEXT_MUTED, italic=True)
+        set_run_font(r, "Pretendard", size_pt=11, color_hex=RM_MUTED, italic=True)
         tip_p.paragraph_format.line_spacing = 1.3
         tip_p.paragraph_format.space_after = Pt(18)
 
@@ -610,28 +649,28 @@ def build_script_docx(
     if qna_included:
         qna_heading = doc.add_paragraph()
         r = qna_heading.add_run("Q&A 예상 질의응답")
-        set_run_font(r, "Pretendard", size_pt=24, color_hex=JC_PRIMARY, bold=True)
+        set_run_font(r, "Pretendard", size_pt=24, color_hex=RM_INK, bold=True)
         qna_heading.paragraph_format.space_after = Pt(18)
 
         qna_list = generate_qna(slides, presentation_type)
         for i, item in enumerate(qna_list, start=1):
             # 질문
             q_p = doc.add_paragraph()
-            r = q_p.add_run(f"Q{i}. {sanitize_text(item['q'])}")
-            set_run_font(r, "Pretendard", size_pt=14, color_hex=JC_TEXT, bold=True)
+            r = q_p.add_run(f"Q{i}. {sanitize_text(item['q'], presenter)}")
+            set_run_font(r, "Pretendard", size_pt=14, color_hex=RM_INK, bold=True)
             q_p.paragraph_format.space_before = Pt(12)
             q_p.paragraph_format.space_after = Pt(4)
 
             # 답변 라벨
             a_label = doc.add_paragraph()
             r = a_label.add_run("예상 답변:")
-            set_run_font(r, "Pretendard", size_pt=12, color_hex=JC_SUCCESS, bold=True)
+            set_run_font(r, "Pretendard", size_pt=12, color_hex=RM_SUCCESS, bold=True)
             a_label.paragraph_format.space_after = Pt(2)
 
             # 답변 본문
             a_p = doc.add_paragraph()
-            r = a_p.add_run(sanitize_text(item["a"]))
-            set_run_font(r, "Pretendard", size_pt=14, color_hex=JC_TEXT)
+            r = a_p.add_run(sanitize_text(item["a"], presenter))
+            set_run_font(r, "Pretendard", size_pt=14, color_hex=RM_INK)
             a_p.paragraph_format.line_spacing = 1.5
             a_p.paragraph_format.space_after = Pt(12)
 
@@ -640,7 +679,7 @@ def build_script_docx(
     # ===== [발표 체크리스트] =====
     cl_heading = doc.add_paragraph()
     r = cl_heading.add_run("발표 체크리스트")
-    set_run_font(r, "Pretendard", size_pt=24, color_hex=JC_PRIMARY, bold=True)
+    set_run_font(r, "Pretendard", size_pt=24, color_hex=RM_INK, bold=True)
     cl_heading.paragraph_format.space_after = Pt(18)
 
     checklist = {
@@ -667,14 +706,16 @@ def build_script_docx(
     for category, items in checklist.items():
         cat_p = doc.add_paragraph()
         r = cat_p.add_run(f"■ {category}")
-        set_run_font(r, "Pretendard", size_pt=14, color_hex=heading_accent, bold=True)
+        # 14pt는 작은 글자 — 오렌지는 accent-deep로 (RULE-WCAG)
+        cat_color = RM_ACCENT_DEEP if heading_accent == RM_ACCENT else heading_accent
+        set_run_font(r, "Pretendard", size_pt=14, color_hex=cat_color, bold=True)
         cat_p.paragraph_format.space_before = Pt(12)
         cat_p.paragraph_format.space_after = Pt(4)
 
         for item in items:
             li = doc.add_paragraph()
             r = li.add_run(f"□  {item}")
-            set_run_font(r, "Pretendard", size_pt=12, color_hex=JC_TEXT)
+            set_run_font(r, "Pretendard", size_pt=12, color_hex=RM_INK)
             li.paragraph_format.left_indent = Inches(0.3)
             li.paragraph_format.line_spacing = 1.4
 
@@ -688,12 +729,12 @@ def build_script_docx(
     if time_overrun:
         warning_p = doc.add_paragraph()
         warning_p.paragraph_format.space_before = Pt(24)
-        set_paragraph_shading(warning_p, JC_WARNING)
+        set_paragraph_shading(warning_p, RM_WARNING_BG)
         r = warning_p.add_run(
             f"⚠ 시간 검증: 예상 멘트 시간 {estimated_minutes}분 vs 순수 발표 시간 {pure_minutes}분. "
             f"오차 {overrun_pct:.1f}% — 리허설 시 멘트 조정 권장."
         )
-        set_run_font(r, "Pretendard", size_pt=12, color_hex=JC_TEXT, bold=True)
+        set_run_font(r, "Pretendard", size_pt=12, color_hex=RM_INK, bold=True)
 
     # ===== 저장 =====
     out_path = Path(output_path)
@@ -708,6 +749,8 @@ def build_script_docx(
         "pure_minutes": pure_minutes,
         "overrun_pct": round(overrun_pct, 1),
         "time_overrun": time_overrun,
+        "presenter": presenter,
+        "former_company_leaks": leaks,
     }
 
 
@@ -729,17 +772,97 @@ def build_meta_from_args(args) -> dict:
         "qna_included": not args.no_qna,
         "qna_minutes": args.qna_minutes if args.qna_minutes is not None else round(args.minutes * 0.2),
         "client_id": args.client_id,
+        "presenter": args.presenter or DEFAULT_PRESENTER,
     }
+
+
+def meta_from_payload(meta_full: dict) -> dict:
+    """메타 JSON → proposal_meta dict.
+
+    지원 입력:
+      1) pt-script 고유 스키마 — {"proposal_meta": {...}}
+      2) jc-pptx ChainPayload/v1 — {"$schema": "ChainPayload/v1", "source": "jc-pptx",
+         "projectTitle": ..., "presentation": {"minutes", "tone", "presenter"?, "audience"?, "type"?}}
+         (구 source "mice-proposal"도 하위호환 별칭으로 수용)
+    """
+    if "proposal_meta" in meta_full:
+        return dict(meta_full.get("proposal_meta") or {})
+    pres = meta_full.get("presentation")
+    if isinstance(pres, dict):
+        meta: dict = {}
+        if meta_full.get("projectTitle"):
+            meta["rfp_title"] = meta_full["projectTitle"]
+        if meta_full.get("clientName"):
+            meta["client_name"] = meta_full["clientName"]
+        if pres.get("minutes") is not None:
+            meta["presentation_minutes"] = int(pres["minutes"])
+        if pres.get("tone"):
+            meta["tone"] = pres["tone"]
+        if pres.get("presenter"):
+            meta["presenter"] = pres["presenter"]
+        if pres.get("presenter_role"):
+            meta["presenter_role"] = pres["presenter_role"]
+        if pres.get("audience"):
+            meta["audience_type"] = pres["audience"]
+        if pres.get("type"):
+            meta["presentation_type"] = pres["type"]
+        purpose = (meta_full.get("deck_meta") or {}).get("purpose")
+        if "presentation_type" not in meta and purpose == "proposal":
+            meta["presentation_type"] = "bidding_pt"
+        return meta
+    return {}
+
+
+def self_test() -> int:
+    """샘플 notes → docx 빌드 후 토큰·발표 주체·체이닝 키를 검증."""
+    import tempfile
+    try:
+        import docx  # noqa: F401
+    except ImportError:
+        print("[self-test] python-docx 미설치 — `python -m pip install python-docx` 후 다시 실행", file=sys.stderr)
+        return 3
+    notes = {"slides": [
+        {"index": 1, "title": "A사 고객 초청 세미나 운영 제안", "body_text": "", "notes": "", "notes_type": "empty", "slide_type_hint": "cover"},
+        {"index": 2, "title": "핵심 제안", "body_text": "타겟 · 쇼업 · 세일즈", "notes": "[발표 주체]의 [부서명]이 직접 운영합니다.", "notes_type": "speaker", "slide_type_hint": "core_proposal"},
+        {"index": 3, "title": "감사합니다", "body_text": "", "notes": "", "notes_type": "empty", "slide_type_hint": "thanks"},
+    ]}
+    payload = {"$schema": "ChainPayload/v1", "source": "jc-pptx", "projectTitle": "A사 세미나 제안",
+               "deck_meta": {"purpose": "proposal"}, "presentation": {"minutes": 15, "tone": "formal"}}
+    meta = meta_from_payload(payload)
+    checks = {
+        "presentation 키 → minutes": meta.get("presentation_minutes") == 15,
+        "purpose proposal → bidding_pt": meta.get("presentation_type") == "bidding_pt",
+        "고유 스키마 하위호환": meta_from_payload({"proposal_meta": {"tone": "casual"}}).get("tone") == "casual",
+        "자리표시자 치환": sanitize_text("[발표 주체] [부서명]") == f"{DEFAULT_PRESENTER} {DEFAULT_DEPARTMENT}",
+        "유출 경고 검출": detect_former_company("구 M&C 실적") == ["M&C"],
+        "구 네이비 미사용": "0A2540" not in {RM_INK, RM_CHARCOAL, RM_ACCENT, RM_SURFACE_ALT},
+    }
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "script.docx"
+        res = build_script_docx(notes, meta, str(out))
+        from docx import Document
+        body = "\n".join(p.text for p in Document(str(out)).paragraphs)
+        checks["docx 생성"] = out.is_file() and res["slide_count"] == 3
+        checks["발표 주체 기본값 표기"] = DEFAULT_PRESENTER in body
+        checks["미치환 자리표시자 0"] = "[발표 주체]" not in body and "[부서명]" not in body
+    print(f"[self-test] 토큰 로드: {'jc-design-system §6' if TOKENS_LOADED else '폴백 상수(§6 미러)'}")
+    for k, v in checks.items():
+        print(f"[self-test] {k}: {'OK' if v else 'FAIL'}")
+    ok = all(checks.values())
+    print("[self-test]", "PASS" if ok else "FAIL")
+    return 0 if ok else 1
 
 
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="발표 대본 .docx 빌드 (pt-script v2.0)",
+        description="발표 대본 .docx 빌드 (pt-script v2.2.0)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--notes", required=True, help="extract_notes.py 산출 JSON 경로")
-    parser.add_argument("--meta", default=None, help="proposal-meta.json 경로 (선택)")
-    parser.add_argument("--out", "-o", required=True, help="출력 .docx 파일 경로")
+    parser.add_argument("--notes", default=None, help="extract_notes.py 산출 JSON 경로")
+    parser.add_argument("--meta", default=None,
+                        help="메타 JSON 경로 (선택) — pt-script 고유 proposal_meta 또는 jc-pptx ChainPayload(presentation 키)")
+    parser.add_argument("--out", "-o", default=None, help="출력 .docx 파일 경로")
+    parser.add_argument("--self-test", action="store_true", help="샘플 빌드 자가 검증")
 
     # 메타 JSON 없을 시 직접 옵션
     parser.add_argument("--minutes", type=int, default=20, help="전체 발표 시간 (분)")
@@ -751,6 +874,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--tone", default="formal", choices=["formal", "semi_formal", "casual"])
     parser.add_argument("--client-name", default=None)
     parser.add_argument("--rfp-title", default=None)
+    parser.add_argument("--presenter", default=None,
+                        help=f"발표 주체(회사·팀) — 기본 {DEFAULT_PRESENTER}")
     parser.add_argument("--presenter-role", default=None)
     parser.add_argument("--presenter-name", default=None)
     parser.add_argument("--audience-type", default=None)
@@ -761,6 +886,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--verbose", "-v", action="store_true")
 
     args = parser.parse_args(argv)
+    if args.self_test:
+        return self_test()
+    if not args.notes or not args.out:
+        parser.error("--notes 와 --out 이 필요합니다 (또는 --self-test).")
 
     # ----- 입력 로드 -----
     notes_path = Path(args.notes)
@@ -775,10 +904,12 @@ def main(argv: Optional[list[str]] = None) -> int:
             print(f"[ERROR] meta JSON 파일 없음: {args.meta}", file=sys.stderr)
             return 2
         meta_full = json.loads(meta_path.read_text(encoding="utf-8"))
-        meta = meta_full.get("proposal_meta", {})
+        meta = meta_from_payload(meta_full)
         # 메타 JSON 의 필드와 CLI 옵션 병합 (CLI 우선)
         if args.minutes != 20:  # 기본값 아니면 덮어쓰기
             meta["presentation_minutes"] = args.minutes
+        if args.presenter:
+            meta["presenter"] = args.presenter
     else:
         meta = build_meta_from_args(args)
 
@@ -813,7 +944,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         "overrun_pct": result["overrun_pct"],
         "time_overrun": result["time_overrun"],
         "company_mention_warnings": company_warns,
+        "presenter": result["presenter"],
+        "former_company_leaks": result["former_company_leaks"],
     }
+    for leak in result["former_company_leaks"]:
+        print(f"[WARN] 전 직장 상호 유출 의심 — {leak}. 리멤버 명의 문서이므로 해당 문장을 고칠 것", file=sys.stderr)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
     if args.verbose:

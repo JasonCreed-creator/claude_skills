@@ -73,7 +73,7 @@ mice-proposal이 제안서 PPTX 작성 후, 견적 단계로 전환할 때 생�
 }
 ```
 
-> `format` 기본값은 `remember`(리멤버 전환 D1). 공공·관 발주(국가계약법 산출내역서)면 `"mnc"`로 지정한다.
+> `format`은 항상 `remember`(v3.3.0 양식 단일화 — 다른 값은 무시하고 리멤버 양식으로 작성).
 
 ### 필드 매핑 (input JSON → calc_estimate input)
 
@@ -85,8 +85,8 @@ mice-proposal이 제안서 PPTX 작성 후, 견적 단계로 전환할 때 생�
 | `venue.name` | `venueName` | 그대로 |
 | `options` | `options` | 그대로 (9개 옵션 키) |
 | `boothCount` | `boothCount` | 그대로 |
-| `format` | (양식 선택) | `mnc`(산출내역서 공공형) / `remember` 분기. **기본값 `remember`**(리멤버 전환 D1). 공공·관 발주면 `mnc` 명시 |
-| `projectTitle`, `client`, `eventDate` | (Excel 헤더 채우기) | 산출내역서(공공형): A3·B3 등에 사용 |
+| `format` | (양식) | 항상 `remember` (v3.3.0 — 분기 없음) |
+| `projectTitle`, `client`, `eventDate` | (Excel 헤더 채우기) | 리멤버 양식 상단 메타(Project Title·비고)에 사용 |
 
 ---
 
@@ -119,7 +119,7 @@ RFP 분석 단계 — 베뉴·옵션이 미정일 수 있어 일부 필드 옵�
   "venue": null,
   "options": null,
   "boothCount": 0,
-  "format": "mnc",
+  "format": "remember",
   "notes": "RFP 단계 — 베뉴·옵션 TBD. 표준값 추정."
 }
 ```
@@ -234,7 +234,7 @@ def to_chain_payload(result: dict, meta: dict) -> dict:
         'version': 'v3.0',
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'projectTitle': meta.get('projectTitle', ''),
-        'format': meta.get('format', 'remember'),   # 기본 양식: 리멤버 (D1). mnc=산출내역서(공공형)
+        'format': 'remember',   # v3.3.0 — 단일 양식
         'isCustom': result['isCustom'],
         'totalAmount': result['pk'],
         'totalAmountVat': result['pkVat'],

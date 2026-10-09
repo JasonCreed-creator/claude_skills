@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-extract_notes.py — PPTX speaker notes 자동 추출 (pt-script v2.0)
+extract_notes.py — PPTX speaker notes 자동 추출 (pt-script v2.2.0)
 
 python-pptx 를 사용하여 .pptx 파일에서 슬라이드별 제목·본문 텍스트·
 speaker notes·메타데이터를 추출하여 JSON 으로 출력한다.
 
-mice-proposal v2.1.1 의 메타 노트 (■ 이미지 교체 안내 / ■ 폰트 안내)
+jc-pptx(구 mice-proposal 흡수) 덱의 메타 노트 (■ 이미지 교체 안내 / ■ 폰트 안내)
 는 자동 필터링하여 발표 베이스에서 제외한다.
 
 Usage:
@@ -258,7 +258,7 @@ def extract_pptx_notes(pptx_path: str, verbose: bool = False) -> dict:
 
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="PPTX speaker notes 자동 추출 (pt-script v2.0)",
+        description="PPTX speaker notes 자동 추출 (pt-script v2.2.0)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("pptx", help="입력 PPTX 파일 경로")
