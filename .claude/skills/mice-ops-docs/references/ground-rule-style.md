@@ -2,6 +2,8 @@
 
 마켓데이터사업실(마데실) Ground Rule 문서의 문체와 구조. Slack 캔버스로 옮길 때의 방언·서식은 `mice-slack-ops/references/canvas-rules.md`가 정본이고, 본 문서는 본문 작성 규칙만 정한다.
 
+> **Ground Rule 문체 정본 = 본 문서 §2.** `mice-slack-ops`(SKILL·`canvas-rules.md`)는 문체를 다시 적지 않고 이 절을 포인터로 참조하며, 캔버스 방언(헤딩 번호·콜아웃·멘션)만 정한다. 문체를 고칠 때는 여기만 고친다.
+
 ---
 
 ## 1. 범위 3층
